@@ -15,10 +15,8 @@ import {
   IconLoader2,
   IconLogin,
   IconProps,
-  IconShoppingBag,
   IconMoon,
   IconDotsVertical,
-  IconPizza,
   IconPlus,
   IconSettings,
   IconSun,
@@ -29,14 +27,15 @@ import {
   IconUserEdit,
   IconUserX,
   IconX,
-  IconLayoutKanban,
   IconBrandGithub,
   IconFolder,
   IconUsers,
-  IconCrown,
-  IconStar,
-  IconBox,
-  IconPalette
+  IconPalette,
+  IconShield,
+  IconBrain,
+  IconMessageCircle,
+  IconLink,
+  IconHome
 } from '@tabler/icons-react';
 
 export type Icon = React.ComponentType<IconProps>;
@@ -46,10 +45,8 @@ export const Icons = {
   logo: IconCommand,
   login: IconLogin,
   close: IconX,
-  product: IconBox,
   palette: IconPalette,
   spinner: IconLoader2,
-  kanban: IconLayoutKanban,
   chevronLeft: IconChevronLeft,
   chevronRight: IconChevronRight,
   trash: IconTrash,
@@ -67,7 +64,6 @@ export const Icons = {
   user: IconUser,
   arrowRight: IconArrowRight,
   help: IconHelpCircle,
-  pizza: IconPizza,
   sun: IconSun,
   moon: IconMoon,
   laptop: IconDeviceLaptop,
@@ -76,8 +72,13 @@ export const Icons = {
   check: IconCheck,
   workspace: IconFolder,
   teams: IconUsers,
-  pro: IconCrown,
-  exclusive: IconStar,
   account: IconUserCircle,
-  profile: IconUser
+  profile: IconUser,
+  // New icons for portfolio platform
+  shield: IconShield,
+  brain: IconBrain,
+  messageCircle: IconMessageCircle,
+  link: IconLink,
+  home: IconHome,
+  folder: IconFolder
 };
