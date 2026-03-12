@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { createHash, randomBytes } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { demoApiKeys } from '@/constants/demo-data';
 
 export async function POST(req: Request) {
   const { userId } = await auth();
@@ -33,7 +34,13 @@ export async function POST(req: Request) {
   });
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // Demo mode: return seeded fake keys (read-only)
+  const isDemoMode = req.cookies.get('demo_mode')?.value === 'true';
+  if (isDemoMode) {
+    return NextResponse.json({ keys: demoApiKeys });
+  }
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

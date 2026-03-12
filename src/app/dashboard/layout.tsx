@@ -1,5 +1,6 @@
 import KBar from '@/components/kbar';
 import AppSidebar from '@/components/layout/app-sidebar';
+import { DemoBanner } from '@/components/layout/demo-banner';
 import Header from '@/components/layout/header';
 import { InfoSidebar } from '@/components/layout/info-sidebar';
 import { InfobarProvider } from '@/components/ui/infobar';
@@ -24,12 +25,14 @@ export default async function DashboardLayout({
   // Persisting the sidebar state in the cookie.
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar_state')?.value === 'true';
+  const isDemoMode = cookieStore.get('demo_mode')?.value === 'true';
   return (
     <KBar>
       <SidebarProvider defaultOpen={defaultOpen}>
         <InfobarProvider defaultOpen={false}>
           <AppSidebar />
           <SidebarInset>
+            {isDemoMode && <DemoBanner />}
             <Header />
             {/* page main content */}
             {children}

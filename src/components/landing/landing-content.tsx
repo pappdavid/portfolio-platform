@@ -14,20 +14,28 @@ import {
   IconCurrencyDollar,
   IconLock,
   IconMinimize,
-  IconDownload
+  IconDownload,
+  IconEye
 } from '@tabler/icons-react';
 const proofPoints = [
   {
     metric: '40%',
     label: 'fewer support calls',
-    detail: 'After shipping structured guard-rails on an LLM-powered support bot — measured over 60 days post-launch'
+    detail:
+      'After shipping structured guard-rails on an LLM-powered support bot — measured over 60 days post-launch'
   },
   {
     metric: 'Zero',
     label: 'injection incidents',
-    detail: 'Across 3 production AI features using a layered input-validation + prompt-hardening approach'
+    detail:
+      'Across 3 production AI features using a layered input-validation + prompt-hardening approach'
   },
-  { metric: '3', label: 'product launches led', detail: 'End-to-end: spec → design → build → deploy across MCP Sentinel, RAG Chat, and a fine-tuning pipeline' }
+  {
+    metric: '3',
+    label: 'product launches led',
+    detail:
+      'End-to-end: spec → design → build → deploy across MCP Sentinel, RAG Chat, and a fine-tuning pipeline'
+  }
 ];
 const pillars = [
   {
@@ -109,10 +117,17 @@ export function LandingContent() {
               </Link>
             </Button>
             <Button asChild variant='outline' size='lg'>
-              <Link href='/dashboard/overview'>View Dashboard</Link>
+              <Link href='/api/demo'>
+                <IconEye className='mr-2 h-4 w-4' />
+                View Demo
+              </Link>
             </Button>
             <Button asChild variant='ghost' size='lg'>
-              <a href='/david-papp-cv.pdf' target='_blank' rel='noopener noreferrer'>
+              <a
+                href='/david-papp-cv.pdf'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
                 <IconDownload className='mr-2 h-4 w-4' />
                 Download CV
               </a>

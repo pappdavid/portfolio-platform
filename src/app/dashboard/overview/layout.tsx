@@ -16,6 +16,8 @@ import {
 } from '@tabler/icons-react';
 import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { demoStats } from '@/constants/demo-data';
+import { cookies } from 'next/headers';
 import React from 'react';
 
 async function getStats(userId: string) {
@@ -52,10 +54,18 @@ export default async function OverViewLayout({
   bar_stats: React.ReactNode;
   area_stats: React.ReactNode;
 }) {
-  const { userId } = await auth();
-  const stats = userId
-    ? await getStats(userId)
-    : { mcpCalls: 0, datasets: 0, activeKeys: 0 };
+  const cookieStore = await cookies();
+  const isDemoMode = cookieStore.get('demo_mode')?.value === 'true';
+
+  let stats;
+  if (isDemoMode) {
+    stats = demoStats;
+  } else {
+    const { userId } = await auth();
+    stats = userId
+      ? await getStats(userId)
+      : { mcpCalls: 0, datasets: 0, activeKeys: 0 };
+  }
 
   return (
     <PageContainer>

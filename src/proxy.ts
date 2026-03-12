@@ -4,7 +4,11 @@ import { NextRequest } from 'next/server';
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  if (isProtectedRoute(req)) await auth.protect();
+  if (isProtectedRoute(req)) {
+    // Allow read-only demo access without Clerk authentication
+    const isDemoMode = req.cookies.get('demo_mode')?.value === 'true';
+    if (!isDemoMode) await auth.protect();
+  }
 });
 export const config = {
   matcher: [
