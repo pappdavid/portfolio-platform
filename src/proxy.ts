@@ -4,7 +4,14 @@ import { NextRequest } from 'next/server';
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  if (isProtectedRoute(req)) await auth.protect();
+  if (isProtectedRoute(req)) {
+    // Allow read-only demo access without Clerk authentication.
+    // Security note: this bypass is intentional for the portfolio demo — the
+    // demo_mode cookie only exposes seeded, read-only fake data. Destructive
+    // API operations (POST/DELETE) still require a real Clerk session.
+    const isDemoMode = req.cookies.get('demo_mode')?.value === 'true';
+    if (!isDemoMode) await auth.protect();
+  }
 });
 export const config = {
   matcher: [

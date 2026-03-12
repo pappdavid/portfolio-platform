@@ -2,7 +2,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { SignIn as ClerkSignInForm } from '@clerk/nextjs';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { IconStar } from '@tabler/icons-react';
+import { IconEye, IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { InteractiveGridPattern } from './interactive-grid';
@@ -83,6 +83,16 @@ export default function SignInViewPage({ stars }: { stars: number }) {
               emailAddress: 'your_mail+clerk_test@example.com'
             }}
           />
+          <Link
+            href='/api/demo'
+            className={cn(
+              buttonVariants({ variant: 'outline' }),
+              'w-full max-w-sm'
+            )}
+          >
+            <IconEye className='mr-2 size-4' />
+            View Demo (no account needed)
+          </Link>
           <div className='text-muted-foreground space-y-2 px-8 text-center text-xs'>
             <p>
               This is an{' '}
