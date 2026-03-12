@@ -1,5 +1,4 @@
 'use client';
-
 import Link from 'next/link';
 import { Spotlight } from '@/components/ui/spotlight';
 import { BackgroundBeams } from '@/components/ui/background-beams';
@@ -14,23 +13,22 @@ import {
   IconArrowRight,
   IconCurrencyDollar,
   IconLock,
-  IconMinimize
+  IconMinimize,
+  IconDownload
 } from '@tabler/icons-react';
-
 const proofPoints = [
   {
     metric: '40%',
     label: 'fewer support calls',
-    detail: 'via structured guard rails'
+    detail: 'After shipping structured guard-rails on an LLM-powered support bot — measured over 60 days post-launch'
   },
   {
     metric: 'Zero',
     label: 'injection incidents',
-    detail: 'with input validation layer'
+    detail: 'Across 3 production AI features using a layered input-validation + prompt-hardening approach'
   },
-  { metric: '3', label: 'product launches led', detail: 'end-to-end delivery' }
+  { metric: '3', label: 'product launches led', detail: 'End-to-end: spec → design → build → deploy across MCP Sentinel, RAG Chat, and a fine-tuning pipeline' }
 ];
-
 const pillars = [
   {
     title: 'MCP Sentinel',
@@ -57,7 +55,6 @@ const pillars = [
     color: 'from-orange-500 to-red-500'
   }
 ];
-
 const howItWorksChart = `graph LR
   A[Your Codebase] --> B[MCP Sentinel]
   B --> C[Guard & Log]
@@ -67,7 +64,6 @@ const howItWorksChart = `graph LR
   F --> G[Fine-tuned Model]
   G --> H[RAG Chat]
   H --> I[3D Viewer]`;
-
 const philosophyItems = [
   {
     icon: IconCurrencyDollar,
@@ -88,7 +84,6 @@ const philosophyItems = [
       'Ship the smallest thing that works. No over-abstraction. Three lines of code beats a premature framework.'
   }
 ];
-
 export function LandingContent() {
   return (
     <div className='flex flex-col'>
@@ -106,7 +101,7 @@ export function LandingContent() {
             and retrieval-augmented chat — built with cost discipline and
             security in mind.
           </p>
-          <div className='mt-8 flex items-center justify-center gap-4'>
+          <div className='mt-8 flex flex-wrap items-center justify-center gap-4'>
             <Button asChild size='lg'>
               <Link href='/mcp'>
                 Explore MCP Sentinel
@@ -116,10 +111,15 @@ export function LandingContent() {
             <Button asChild variant='outline' size='lg'>
               <Link href='/dashboard/overview'>View Dashboard</Link>
             </Button>
+            <Button asChild variant='ghost' size='lg'>
+              <a href='/david-papp-cv.pdf' target='_blank' rel='noopener noreferrer'>
+                <IconDownload className='mr-2 h-4 w-4' />
+                Download CV
+              </a>
+            </Button>
           </div>
         </div>
       </section>
-
       {/* Proof Points */}
       <section className='border-border/40 border-y py-16'>
         <div className='mx-auto grid max-w-4xl grid-cols-1 gap-8 px-4 sm:grid-cols-3'>
@@ -138,7 +138,6 @@ export function LandingContent() {
           ))}
         </div>
       </section>
-
       {/* Pillars */}
       <section className='py-20'>
         <div className='mx-auto max-w-6xl px-4'>
@@ -168,7 +167,7 @@ export function LandingContent() {
                     {pillar.description}
                   </p>
                   <span className='text-primary mt-auto text-sm font-medium group-hover:underline'>
-                    Learn more &rarr;
+                    Learn more →
                   </span>
                 </HoverBorderGradient>
               </Link>
@@ -176,7 +175,6 @@ export function LandingContent() {
           </div>
         </div>
       </section>
-
       {/* How It Works */}
       <section className='bg-muted/30 py-20'>
         <div className='mx-auto max-w-4xl px-4'>
@@ -191,7 +189,6 @@ export function LandingContent() {
           </div>
         </div>
       </section>
-
       {/* Build Philosophy */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
