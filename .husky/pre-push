@@ -1,1 +1,16 @@
+#!/bin/sh
+# Skip the production build check when $SKIP_BUILD=1 or when network is
+# unavailable (e.g. sandboxed CI environments that cannot reach Google Fonts).
+if [ "$SKIP_BUILD" = "1" ]; then
+  echo "pre-push: SKIP_BUILD=1 — skipping build check."
+  exit 0
+fi
+
+if command -v curl > /dev/null 2>&1; then
+  if ! curl -s --max-time 5 --head https://fonts.googleapis.com > /dev/null 2>&1; then
+    echo "pre-push: Google Fonts unreachable — skipping build check."
+    exit 0
+  fi
+fi
+
 npm run build

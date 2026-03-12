@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
   );
   response.cookies.set('demo_mode', 'true', {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60, // 1 hour
     path: '/'
