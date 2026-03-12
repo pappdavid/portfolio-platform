@@ -1,7 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import {
+  IconBrandGithub,
+  IconExternalLink,
+  IconLock
+} from '@tabler/icons-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeBlock } from '@/components/shared/code-block';
 import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
@@ -12,6 +19,9 @@ type Project = {
   title: string;
   description: string;
   tags: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+  privateRepo?: boolean;
   tabs: {
     overview: string;
     code: { snippet: string; language: string; filename: string };
@@ -26,6 +36,8 @@ const projects: Project[] = [
     description:
       'A proxy layer for Model Context Protocol that logs, guards, and audits every agent tool call in real time.',
     tags: ['TypeScript', 'MCP', 'Supabase', 'Security'],
+    privateRepo: true,
+    liveUrl: '/mcp',
     tabs: {
       overview:
         'MCP Sentinel sits between AI agents and their tools. It validates inputs against guard rules (injection detection, PII scanning, cost limits), logs every event to Supabase with RLS, and surfaces anomalies in a dashboard. Designed for teams running LLM agents in production who need compliance and visibility.',
@@ -72,6 +84,8 @@ async function runGuards(event: MCPEvent): Promise<GuardResult> {
     description:
       'Automated pipeline to convert codebases into fine-tuning datasets. Supports LoRA adapters for any compatible model.',
     tags: ['Python', 'LLM', 'Fine-tuning', 'LoRA'],
+    privateRepo: true,
+    liveUrl: '/training',
     tabs: {
       overview:
         'The training pipeline parses Git repositories, chunks code by semantic boundaries, and generates instruction-response pairs using a configurable prompt template. Output is OpenAI-compatible JSONL ready for fine-tuning with any LoRA framework. Includes validation, deduplication, and quality scoring.',
@@ -111,6 +125,8 @@ class SemanticChunker:
     description:
       'Retrieval-augmented chat interface with document upload and Three.js visualization for spatial data.',
     tags: ['Next.js', 'Three.js', 'OpenAI', 'Supabase'],
+    privateRepo: true,
+    liveUrl: '/chat',
     tabs: {
       overview:
         'Users upload PDFs or text, which are chunked and embedded into a Supabase vector store. Queries retrieve relevant context and feed it to the LLM along with the conversation. When responses contain spatial or structural data, they render in an interactive Three.js viewer alongside the chat.',
@@ -150,6 +166,8 @@ async function retrieve(query: string, topK = 5) {
     description:
       'This site itself. A Next.js 16 dashboard with multi-theme system, RBAC navigation, and Clerk auth.',
     tags: ['Next.js 16', 'shadcn/ui', 'Clerk', 'Tailwind v4'],
+    githubUrl: 'https://github.com/pappdavid/portfolio-platform',
+    liveUrl: '/',
     tabs: {
       overview:
         'Forked from next-shadcn-dashboard-starter and reconfigured as a portfolio platform. Features six OKLCH themes, client-side RBAC navigation filtering, parallel dashboard routes, and Supabase backend. The public-facing pages use Aceternity effects for visual polish.',
@@ -236,6 +254,56 @@ export function ProjectsContent() {
                       {tag}
                     </Badge>
                   ))}
+                </div>
+                {/* Links row */}
+                <div className='mt-4 flex flex-wrap items-center gap-2'>
+                  {p.githubUrl ? (
+                    <Link
+                      href={p.githubUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      onClick={(e) => e.stopPropagation()}
+                      className='text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-xs transition-colors'
+                    >
+                      <IconBrandGithub
+                        className='h-3.5 w-3.5'
+                        aria-hidden='true'
+                      />
+                      GitHub
+                    </Link>
+                  ) : p.privateRepo ? (
+                    <span className='text-muted-foreground inline-flex items-center gap-1 text-xs'>
+                      <IconLock className='h-3.5 w-3.5' aria-hidden='true' />
+                      Private repo — available on request
+                    </span>
+                  ) : null}
+                  {p.liveUrl && (
+                    <Button
+                      asChild
+                      size='sm'
+                      variant='outline'
+                      className='h-6 gap-1 px-2 text-xs'
+                    >
+                      <Link
+                        href={p.liveUrl}
+                        target={
+                          p.liveUrl.startsWith('http') ? '_blank' : undefined
+                        }
+                        rel={
+                          p.liveUrl.startsWith('http')
+                            ? 'noopener noreferrer'
+                            : undefined
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <IconExternalLink
+                          className='h-3 w-3'
+                          aria-hidden='true'
+                        />
+                        Live Demo
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </button>
             ))}
