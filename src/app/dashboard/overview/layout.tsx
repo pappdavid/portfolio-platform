@@ -1,5 +1,6 @@
 import PageContainer from '@/components/layout/page-container';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardHeader,
@@ -12,10 +13,12 @@ import {
   IconShieldCheck,
   IconDatabase,
   IconMessageCircle,
-  IconKey
+  IconKey,
+  IconInfoCircle
 } from '@tabler/icons-react';
 import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import Link from 'next/link';
 import React from 'react';
 
 async function getStats(userId: string) {
@@ -60,6 +63,18 @@ export default async function OverViewLayout({
   return (
     <PageContainer>
       <div className='flex flex-1 flex-col space-y-2'>
+        {!userId && (
+          <div className='bg-muted/60 border-border flex items-center gap-3 rounded-lg border px-4 py-3 text-sm'>
+            <IconInfoCircle className='text-muted-foreground h-4 w-4 shrink-0' />
+            <span className='text-muted-foreground flex-1'>
+              You&apos;re viewing a read-only demo. Real data appears after
+              sign-in.
+            </span>
+            <Button asChild size='sm' variant='outline'>
+              <Link href='/auth/sign-in'>Sign in</Link>
+            </Button>
+          </div>
+        )}
         <div className='flex items-center justify-between space-y-2'>
           <h2 className='text-2xl font-bold tracking-tight'>
             Dashboard Overview
