@@ -8,8 +8,8 @@ const footerLinks = [
 ];
 
 const socialLinks = [
-  { title: 'GitHub', href: 'https://github.com/davidpapp' },
-  { title: 'LinkedIn', href: 'https://linkedin.com/in/davidpapp' }
+    { title: 'GitHub', href: 'https://github.com/pappdavid' },
+    { title: 'LinkedIn', href: 'https://linkedin.com/in/d%C3%A1vid-papp' }
 ];
 
 export function Footer() {
