@@ -19,6 +19,8 @@ import {
   IconCheck
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+import { GridBackground } from '@/components/ui/grid-background';
+import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 
 const steps = [
   {
@@ -137,25 +139,32 @@ export function TrainingContent() {
   return (
     <div className='flex flex-col'>
       {/* Hero */}
-      <section className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <Badge variant='secondary' className='mb-4'>
-            Fine-Tuning Pipeline
-          </Badge>
-          <h1 className='text-foreground text-4xl font-bold tracking-tight sm:text-5xl'>
-            Custom Training
-          </h1>
-          <p className='text-muted-foreground mt-4 max-w-2xl text-lg leading-relaxed'>
-            Turn your codebase into a fine-tuned model. Automated parsing,
-            dataset generation, and training — all in your infrastructure.
-          </p>
-        </div>
+      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
+        <GridBackground />
+        <MonoEyebrow color='purple' className='mb-6'>
+          Fine-Tuning Pipeline
+        </MonoEyebrow>
+        <h1
+          className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
+          style={{
+            background:
+              'linear-gradient(160deg,#fff 0%,rgba(255,255,255,0.5) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}
+        >
+          Custom Training
+        </h1>
+        <p className='mb-8 max-w-2xl text-base leading-relaxed text-[#71717a]'>
+          Turn your codebase into a fine-tuned model. Automated parsing, dataset
+          generation, and training — all in your infrastructure.
+        </p>
       </section>
 
       {/* Stepper Wizard */}
-      <section className='bg-muted/30 py-20'>
+      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
+          <h2 className='mb-8 text-2xl font-bold text-white'>
             Pipeline Walkthrough
           </h2>
 
@@ -168,10 +177,10 @@ export function TrainingContent() {
                   className={cn(
                     'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors',
                     i < currentStep
-                      ? 'border-primary bg-primary text-primary-foreground'
+                      ? 'border-[#a855f7] bg-[#a855f7] text-black'
                       : i === currentStep
-                        ? 'border-primary text-primary'
-                        : 'border-muted-foreground/30 text-muted-foreground'
+                        ? 'border-[#a855f7] text-[#a855f7]'
+                        : 'border-white/20 text-[#52525b]'
                   )}
                 >
                   {i < currentStep ? <IconCheck className='h-4 w-4' /> : i + 1}
@@ -180,7 +189,7 @@ export function TrainingContent() {
                   <div
                     className={cn(
                       'mx-2 h-0.5 flex-1',
-                      i < currentStep ? 'bg-primary' : 'bg-muted-foreground/20'
+                      i < currentStep ? 'bg-[#a855f7]' : 'bg-white/10'
                     )}
                   />
                 )}
@@ -189,14 +198,14 @@ export function TrainingContent() {
           </div>
 
           {/* Step content */}
-          <div className='bg-background rounded-xl border p-8'>
-            <p className='text-muted-foreground mb-1 text-sm'>
+          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-8 backdrop-blur-sm'>
+            <p className='mb-1 text-sm text-[#71717a]'>
               Step {currentStep + 1} of {steps.length}
             </p>
-            <h3 className='text-foreground mb-2 text-xl font-semibold'>
+            <h3 className='mb-2 text-xl font-semibold text-white'>
               {steps[currentStep].title}
             </h3>
-            <p className='text-muted-foreground mb-6'>
+            <p className='mb-6 text-[#71717a]'>
               {steps[currentStep].description}
             </p>
 
@@ -210,14 +219,12 @@ export function TrainingContent() {
                     className={cn(
                       'rounded-lg border p-4 text-left transition-colors',
                       selectedMode === mode.id
-                        ? 'border-primary bg-primary/5'
-                        : 'hover:border-foreground/20'
+                        ? 'border-[#a855f7] bg-[#a855f7]/[0.05] text-white'
+                        : 'border-white/[0.07] text-[#71717a] hover:border-white/20'
                     )}
                   >
-                    <h4 className='text-foreground font-medium'>
-                      {mode.title}
-                    </h4>
-                    <p className='text-muted-foreground mt-1 text-sm'>
+                    <h4 className='font-medium text-white'>{mode.title}</h4>
+                    <p className='mt-1 text-sm text-[#71717a]'>
                       {mode.description}
                     </p>
                   </button>
@@ -228,11 +235,12 @@ export function TrainingContent() {
             {/* Input (step 1) */}
             {currentStep === 1 && (
               <div className='space-y-4'>
-                <div className='rounded-lg border p-4'>
-                  <p className='text-foreground text-sm font-medium'>
-                    Source: <span className='text-primary'>{selectedMode}</span>
+                <div className='rounded-lg border border-white/[0.07] p-4'>
+                  <p className='text-sm font-medium text-white'>
+                    Source:{' '}
+                    <span className='text-[#a855f7]'>{selectedMode}</span>
                   </p>
-                  <p className='text-muted-foreground mt-2 text-sm'>
+                  <p className='mt-2 text-sm text-[#71717a]'>
                     {selectedMode === 'repo'
                       ? 'Enter a Git repository URL or local path. The parser will extract .py, .ts, .tsx, .md files.'
                       : selectedMode === 'docs'
@@ -240,8 +248,8 @@ export function TrainingContent() {
                         : 'Paste code or text directly into the input area.'}
                   </p>
                 </div>
-                <div className='bg-muted/50 flex h-32 items-center justify-center rounded-lg border-2 border-dashed'>
-                  <span className='text-muted-foreground text-sm'>
+                <div className='flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-white/10 bg-white/[0.015]'>
+                  <span className='text-sm text-[#71717a]'>
                     Input area (configured in dashboard)
                   </span>
                 </div>
@@ -259,11 +267,12 @@ export function TrainingContent() {
                   { label: 'Max Pairs/Chunk', value: '3' },
                   { label: 'System Prompt', value: 'Code assistant' }
                 ].map((config) => (
-                  <div key={config.label} className='rounded-lg border p-3'>
-                    <p className='text-muted-foreground text-xs'>
-                      {config.label}
-                    </p>
-                    <p className='text-foreground text-sm font-medium'>
+                  <div
+                    key={config.label}
+                    className='rounded-lg border border-white/[0.07] p-3'
+                  >
+                    <p className='text-xs text-[#52525b]'>{config.label}</p>
+                    <p className='text-sm font-medium text-white'>
                       {config.value}
                     </p>
                   </div>
@@ -283,11 +292,9 @@ export function TrainingContent() {
             {/* Train (step 4) */}
             {currentStep === 4 && (
               <div className='space-y-4 text-center'>
-                <IconBrain className='text-primary mx-auto h-16 w-16' />
-                <p className='text-foreground font-medium'>
-                  Ready to fine-tune
-                </p>
-                <p className='text-muted-foreground text-sm'>
+                <IconBrain className='mx-auto h-16 w-16 text-[#a855f7]' />
+                <p className='font-medium text-white'>Ready to fine-tune</p>
+                <p className='text-sm text-[#71717a]'>
                   Dataset validated with 847 training examples. Estimated
                   training time: ~45 minutes on A100.
                 </p>
@@ -324,21 +331,17 @@ export function TrainingContent() {
       {/* Architecture */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
-            Architecture
-          </h2>
-          <div className='bg-background rounded-xl border p-6'>
+          <h2 className='mb-8 text-2xl font-bold text-white'>Architecture</h2>
+          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
             <MermaidDiagram chart={architectureChart} />
           </div>
         </div>
       </section>
 
       {/* Code Snippets */}
-      <section className='bg-muted/30 py-20'>
+      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
-            Code Examples
-          </h2>
+          <h2 className='mb-8 text-2xl font-bold text-white'>Code Examples</h2>
           <Tabs defaultValue='parser'>
             <TabsList>
               <TabsTrigger value='parser'>Parser</TabsTrigger>
@@ -365,12 +368,14 @@ export function TrainingContent() {
       {/* FAQ */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>FAQ</h2>
+          <h2 className='mb-8 text-2xl font-bold text-white'>FAQ</h2>
           <Accordion type='single' collapsible className='w-full'>
             {faqItems.map((item, i) => (
               <AccordionItem key={i} value={`faq-${i}`}>
                 <AccordionTrigger>{item.q}</AccordionTrigger>
-                <AccordionContent>{item.a}</AccordionContent>
+                <AccordionContent className='text-[#71717a]'>
+                  {item.a}
+                </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
