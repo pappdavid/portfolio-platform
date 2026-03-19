@@ -138,9 +138,9 @@ export function TrainingContent() {
 
   return (
     <div className='flex flex-col'>
+      <GridBackground />
       {/* Hero */}
       <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <GridBackground />
         <MonoEyebrow color='purple' className='mb-6'>
           Fine-Tuning Pipeline
         </MonoEyebrow>
@@ -174,6 +174,8 @@ export function TrainingContent() {
               <div key={step.id} className='flex flex-1 items-center'>
                 <button
                   onClick={() => setCurrentStep(i)}
+                  aria-label={`Go to step ${i + 1}`}
+                  aria-current={i === currentStep ? 'step' : undefined}
                   className={cn(
                     'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors',
                     i < currentStep
@@ -183,7 +185,11 @@ export function TrainingContent() {
                         : 'border-white/20 text-[#52525b]'
                   )}
                 >
-                  {i < currentStep ? <IconCheck className='h-4 w-4' /> : i + 1}
+                  {i < currentStep ? (
+                    <IconCheck aria-hidden='true' className='h-4 w-4' />
+                  ) : (
+                    i + 1
+                  )}
                 </button>
                 {i < steps.length - 1 && (
                   <div
@@ -219,7 +225,7 @@ export function TrainingContent() {
                     className={cn(
                       'rounded-lg border p-4 text-left transition-colors',
                       selectedMode === mode.id
-                        ? 'border-[#a855f7] bg-[#a855f7]/[0.05] text-white'
+                        ? 'border-[#a855f7] bg-[rgba(168,85,247,0.05)] text-white'
                         : 'border-white/[0.07] text-[#71717a] hover:border-white/20'
                     )}
                   >
@@ -371,7 +377,7 @@ export function TrainingContent() {
           <h2 className='mb-8 text-2xl font-bold text-white'>FAQ</h2>
           <Accordion type='single' collapsible className='w-full'>
             {faqItems.map((item, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
+              <AccordionItem key={item.q} value={`faq-${i}`}>
                 <AccordionTrigger>{item.q}</AccordionTrigger>
                 <AccordionContent className='text-[#71717a]'>
                   {item.a}
