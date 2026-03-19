@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { trainingRateLimit } from '@/lib/rate-limit';
@@ -8,6 +8,12 @@ import {
   generateDataset,
   toJsonl
 } from '@/lib/training/parser';
+import { getOrCreateCompanyForUser } from '@/lib/company';
+import {
+  checkAndConsumeQuota,
+  DemoExpiredError,
+  QuotaExhaustedError
+} from '@/lib/demo-quota';
 
 interface FileEntry {
   name: string;
@@ -79,6 +85,22 @@ export async function POST(req: Request) {
       { error: 'Rate limit exceeded (5/hr)' },
       { status: 429 }
     );
+  }
+
+  // Quota check
+  try {
+    const user = await currentUser();
+    if (user) {
+      const company = await getOrCreateCompanyForUser(user);
+      await checkAndConsumeQuota(company.companyId, 'training', userId);
+    }
+  } catch (err) {
+    if (err instanceof DemoExpiredError) {
+      return NextResponse.json({ code: 'DEMO_EXPIRED' }, { status: 403 });
+    }
+    if (err instanceof QuotaExhaustedError) {
+      return NextResponse.json({ code: 'QUOTA_EXHAUSTED' }, { status: 403 });
+    }
   }
 
   const body = await req.json();

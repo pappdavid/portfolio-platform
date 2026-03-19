@@ -801,6 +801,20 @@ export function LandingContent() {
             >
               View Dashboard
             </Link>
+            <a
+              href='mailto:david@example.com'
+              className='inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-px hover:bg-white/90'
+            >
+              Contact me
+            </a>
+            <a
+              href='https://calendly.com/david-papp'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
+            >
+              Book a call
+            </a>
           </div>
         </div>
         <div className='flex justify-center'>

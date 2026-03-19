@@ -144,7 +144,6 @@ export default async function OverViewLayout({
         </div>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7'>
           <div className='col-span-4'>{bar_stats}</div>
-          <div className='col-span-4 md:col-span-3'>{sales}</div>
           <div className='col-span-4'>{area_stats}</div>
           <div className='col-span-4 md:col-span-3'>{pie_stats}</div>
         </div>

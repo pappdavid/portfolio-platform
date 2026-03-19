@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
 import { GridBackground } from '@/components/ui/grid-background';
@@ -12,11 +13,30 @@ import {
   IconSend,
   IconFile,
   IconX,
-  IconLoader2
+  IconLoader2,
+  IconBrandGithub,
+  IconCheck,
+  IconCode
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
+
+export type CodeChunk = {
+  id: string;
+  filename: string;
+  summary: string;
+  tokens: number;
+};
+
+export type UploadedFile = {
+  id: string;
+  file: File;
+  name: string;
+  size: number;
+  include: boolean;
+  status: 'processing' | 'ready';
+};
 
 const architectureChart = `graph LR
   A[Upload PDF/Text] --> B[Chunker]
@@ -42,12 +62,25 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   }
 ];
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function ChatContent() {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
-  const [files, setFiles] = useState<{ name: string; content: string }[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Repo URL state
+  const [repoUrl, setRepoUrl] = useState('');
+  const [cloning, setCloning] = useState(false);
+  const [cloneStatus, setCloneStatus] = useState<string | null>(null);
+  const [codeChunks, setCodeChunks] = useState<CodeChunk[]>([]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(
@@ -59,6 +92,44 @@ export function ChatContent() {
       readerRef.current?.cancel();
     };
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleCloneRepo = useCallback(() => {
+    const url = repoUrl.trim();
+    if (!url || cloning) return;
+    setCloning(true);
+    setCloneStatus('Cloning repo…');
+    setCodeChunks([]);
+
+    setTimeout(() => {
+      const repoName = url.split('/').slice(-1)[0] ?? 'repo';
+      setCodeChunks([
+        {
+          id: '1',
+          filename: `src/agent/pipeline.ts`,
+          summary: 'Main agent execution pipeline with guard middleware',
+          tokens: 512
+        },
+        {
+          id: '2',
+          filename: `src/guards/injection.ts`,
+          summary: 'Prompt injection detection and sanitization',
+          tokens: 348
+        },
+        {
+          id: '3',
+          filename: `${repoName}/README.md`,
+          summary: 'Repository overview and setup instructions',
+          tokens: 224
+        }
+      ]);
+      setCloning(false);
+      setCloneStatus('Repo loaded into context');
+    }, 1500);
+  }, [repoUrl, cloning]);
 
   const handleSend = useCallback(async () => {
     const trimmed = input.trim();
@@ -73,7 +144,23 @@ export function ChatContent() {
     setError(null);
 
     try {
-      const context = files.map((f) => f.content).join('\n---\n') || undefined;
+      const includedFiles = uploadedFiles
+        .filter((f) => f.include && f.status === 'ready')
+        .map((f) => f.name)
+        .join(', ');
+
+      const codeContext =
+        codeChunks.length > 0
+          ? `Code context from repo:\n${codeChunks.map((c) => `${c.filename}: ${c.summary}`).join('\n')}`
+          : undefined;
+
+      const fileContext = includedFiles
+        ? `Uploaded files in context: ${includedFiles}`
+        : undefined;
+
+      const context =
+        [codeContext, fileContext].filter(Boolean).join('\n\n') || undefined;
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -91,6 +178,20 @@ export function ChatContent() {
             content:
               'Rate limit reached (2 requests/hour for guests). Sign in for 50/hour.'
           };
+          return updated;
+        });
+        return;
+      }
+
+      if (res.status === 403) {
+        const data = await res.json();
+        const msg =
+          data.code === 'DEMO_EXPIRED'
+            ? 'Demo expired — contact David for full access.'
+            : 'Demo quota exhausted — contact David for full access.';
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'assistant', content: msg };
           return updated;
         });
         return;
@@ -134,22 +235,46 @@ export function ChatContent() {
       readerRef.current = null;
       setIsStreaming(false);
     }
-  }, [input, isStreaming, messages, files]);
+  }, [input, isStreaming, messages, uploadedFiles, codeChunks]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files;
     if (!selected) return;
-    Array.from(selected).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setFiles((prev) => [
-          ...prev,
-          { name: file.name, content: ev.target?.result as string }
-        ]);
-      };
-      reader.readAsText(file);
+
+    const newFiles: UploadedFile[] = Array.from(selected).map((file) => ({
+      id: `${Date.now()}-${Math.random()}`,
+      file,
+      name: file.name,
+      size: file.size,
+      include: true,
+      status: 'processing' as const
+    }));
+
+    setUploadedFiles((prev) => [...prev, ...newFiles]);
+
+    // Simulate processing
+    newFiles.forEach((uf) => {
+      setTimeout(
+        () => {
+          setUploadedFiles((prev) =>
+            prev.map((f) => (f.id === uf.id ? { ...f, status: 'ready' } : f))
+          );
+        },
+        800 + Math.random() * 700
+      );
     });
+
     e.target.value = '';
+  };
+
+  const toggleFileInclude = (id: string) => {
+    setUploadedFiles((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, include: !f.include } : f))
+    );
+  };
+
+  const removeFile = (id: string) => {
+    setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
   return (
@@ -177,7 +302,68 @@ export function ChatContent() {
           <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
             {/* Chat panel */}
             <div className='flex flex-col gap-4 lg:col-span-2'>
-              {/* Upload */}
+              {/* Repo URL Input */}
+              <div className='flex gap-2'>
+                <div className='relative flex-1'>
+                  <IconBrandGithub className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#71717a]' />
+                  <Input
+                    value={repoUrl}
+                    onChange={(e) => setRepoUrl(e.target.value)}
+                    placeholder='Paste a GitHub/GitLab repo URL…'
+                    className='border-white/[0.08] bg-white/[0.04] pl-9 text-white placeholder:text-[#52525b] focus-visible:ring-[#22c55e]/30'
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleCloneRepo();
+                    }}
+                    disabled={cloning}
+                  />
+                </div>
+                <Button
+                  onClick={handleCloneRepo}
+                  disabled={!repoUrl.trim() || cloning}
+                  variant='outline'
+                  size='sm'
+                  className='shrink-0 border-white/[0.08] bg-white/[0.04] text-white hover:bg-white/[0.08]'
+                >
+                  {cloning ? (
+                    <IconLoader2 className='h-4 w-4 animate-spin' />
+                  ) : (
+                    'Load'
+                  )}
+                </Button>
+              </div>
+
+              {/* Clone status & code chunks */}
+              {cloneStatus && (
+                <div className='rounded-lg border border-white/[0.07] bg-white/[0.03] p-3'>
+                  <div className='mb-2 flex items-center gap-2 text-xs text-[#22c55e]'>
+                    {cloning ? (
+                      <IconLoader2 className='h-3 w-3 animate-spin' />
+                    ) : (
+                      <IconCheck className='h-3 w-3' />
+                    )}
+                    {cloneStatus}
+                  </div>
+                  {codeChunks.length > 0 && (
+                    <div className='flex flex-wrap gap-1.5'>
+                      {codeChunks.map((chunk) => (
+                        <Badge
+                          key={chunk.id}
+                          variant='outline'
+                          className='gap-1 border-[#22c55e]/20 bg-[#22c55e]/5 text-xs text-[#22c55e]'
+                        >
+                          <IconCode className='h-3 w-3' />
+                          {chunk.filename}
+                          <span className='text-[#22c55e]/60'>
+                            {chunk.tokens}t
+                          </span>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* File Upload */}
               <div>
                 <input
                   ref={fileInputRef}
@@ -195,28 +381,47 @@ export function ChatContent() {
                   <IconUpload className='h-4 w-4' />
                   Drop PDFs, text, or markdown here
                 </button>
-                {files.length > 0 && (
-                  <div className='mt-2 flex flex-wrap gap-2'>
-                    {files.map((f, i) => (
-                      <Badge
-                        key={i}
-                        variant='outline'
-                        className='gap-1 border-white/[0.1] bg-white/[0.04] text-[#a1a1aa]'
+
+                {uploadedFiles.length > 0 && (
+                  <div className='mt-2 flex flex-col gap-1.5'>
+                    {uploadedFiles.map((f) => (
+                      <div
+                        key={f.id}
+                        className='flex items-center gap-2 rounded-md border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-xs'
                       >
-                        <IconFile className='h-3 w-3' aria-hidden='true' />
-                        {f.name}
+                        <input
+                          type='checkbox'
+                          checked={f.include}
+                          onChange={() => toggleFileInclude(f.id)}
+                          className='accent-[#22c55e]'
+                          aria-label={`Include ${f.name}`}
+                        />
+                        <IconFile className='h-3.5 w-3.5 shrink-0 text-[#71717a]' />
+                        <span className='flex-1 truncate text-[#d1d5db]'>
+                          {f.name}
+                        </span>
+                        <span className='text-[#52525b]'>
+                          {formatBytes(f.size)}
+                        </span>
+                        <Badge
+                          variant='outline'
+                          className={cn(
+                            'px-1.5 py-0 text-[10px]',
+                            f.status === 'processing'
+                              ? 'border-yellow-500/30 text-yellow-400'
+                              : 'border-[#22c55e]/30 text-[#22c55e]'
+                          )}
+                        >
+                          {f.status}
+                        </Badge>
                         <button
-                          onClick={() =>
-                            setFiles((prev) =>
-                              prev.filter((_, idx) => idx !== i)
-                            )
-                          }
-                          className='ml-1 hover:text-white'
+                          onClick={() => removeFile(f.id)}
+                          className='text-[#52525b] hover:text-white'
                           aria-label={`Remove ${f.name}`}
                         >
-                          <IconX className='h-3 w-3' aria-hidden='true' />
+                          <IconX className='h-3.5 w-3.5' />
                         </button>
-                      </Badge>
+                      </div>
                     ))}
                   </div>
                 )}
