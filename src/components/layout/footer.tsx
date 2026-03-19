@@ -1,15 +1,10 @@
 import Link from 'next/link';
 
-const footerLinks = [
-  { title: 'Privacy', href: '/privacy-policy' },
-  { title: 'Terms', href: '/terms-of-service' },
-  { title: 'Security', href: '/security' },
-  { title: 'About', href: '/about' }
-];
+const footerLinks = [{ title: 'About', href: '/about' }];
 
 const socialLinks = [
   { title: 'GitHub', href: 'https://github.com/pappdavid' },
-  { title: 'LinkedIn', href: 'https://linkedin.com/in/d%C3%A1vid-papp' }
+  { title: 'LinkedIn', href: 'https://www.linkedin.com/in/dávid-papp' }
 ];
 
 export function Footer() {
