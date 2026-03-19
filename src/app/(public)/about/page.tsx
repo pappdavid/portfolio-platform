@@ -84,28 +84,86 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Tech Stack */}
+      {/* Skills */}
       <section className='py-16'>
         <div className='mx-auto max-w-3xl px-4'>
-          <h2 className='text-foreground mb-6 text-2xl font-bold'>Stack</h2>
-          <div className='flex flex-wrap gap-2'>
+          <h2 className='text-foreground mb-6 text-2xl font-bold'>Skills</h2>
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
             {[
-              'TypeScript',
-              'Python',
-              'Next.js',
-              'React',
-              'Supabase',
-              'PostgreSQL',
-              'OpenAI API',
-              'Tailwind CSS',
-              'Clerk',
-              'Upstash',
-              'Vercel',
-              'Node.js'
-            ].map((tech) => (
-              <Badge key={tech} variant='secondary'>
-                {tech}
-              </Badge>
+              {
+                group: 'LLM Application Layer',
+                level: 'Daily use',
+                levelColor: 'text-[#22c55e]',
+                context:
+                  'Prompt engineering, structured outputs, tool calling, and guard rail design.',
+                tags: [
+                  'OpenAI API',
+                  'Anthropic API',
+                  'LangChain',
+                  'Structured Outputs'
+                ]
+              },
+              {
+                group: 'RAG & Retrieval',
+                level: 'Active',
+                levelColor: 'text-[#06b6d4]',
+                context:
+                  'Document chunking, embedding pipelines, vector search, and reranking.',
+                tags: [
+                  'pgvector',
+                  'Supabase',
+                  'OpenAI Embeddings',
+                  'Hybrid Search'
+                ]
+              },
+              {
+                group: 'Agentic Systems',
+                level: 'Daily use',
+                levelColor: 'text-[#22c55e]',
+                context:
+                  'MCP protocol, injection detection, observability middleware, and cost guards.',
+                tags: ['MCP', 'Guard Rails', 'Event Logging', 'HMAC Signing']
+              },
+              {
+                group: 'Full-Stack Engineering',
+                level: 'Daily use',
+                levelColor: 'text-[#22c55e]',
+                context:
+                  'End-to-end TypeScript/Python products with auth, DB, and deployment.',
+                tags: ['Next.js', 'TypeScript', 'Supabase', 'Clerk', 'Vercel']
+              },
+              {
+                group: 'Model Training & Infra',
+                level: 'Active',
+                levelColor: 'text-[#06b6d4]',
+                context:
+                  'LoRA fine-tuning, JSONL dataset prep, eval loops, and job management.',
+                tags: ['LoRA', 'JSONL', 'Python', 'Docker', 'HuggingFace']
+              }
+            ].map((item) => (
+              <div
+                key={item.group}
+                className='bg-background rounded-xl border p-5'
+              >
+                <div className='mb-2 flex items-center justify-between'>
+                  <h3 className='text-foreground text-sm font-semibold'>
+                    {item.group}
+                  </h3>
+                  <span className={`font-mono text-xs ${item.levelColor}`}>
+                    {item.level}
+                  </span>
+                </div>
+                <p className='text-muted-foreground mb-3 text-xs leading-relaxed'>
+                  {item.context}
+                </p>
+                <div className='flex flex-wrap gap-1.5'>
+                  {item.tags.map((tag) => (
+                    <Badge key={tag} variant='secondary' className='text-xs'>
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -122,14 +180,14 @@ export default function AboutPage() {
           </p>
           <div className='flex flex-wrap gap-4'>
             <Button asChild size='lg'>
-              <a href='mailto:hello@davidpapp.dev'>
+              <a href='mailto:contact@davidpapp.dev'>
                 <IconMail className='mr-2 h-5 w-5' />
                 Email me about a role
               </a>
             </Button>
             <Button asChild variant='outline' size='lg'>
               <a
-                href='https://cal.com/davidpapp/intro'
+                href='https://calendly.com/david-webinform/30min'
                 target='_blank'
                 rel='noopener noreferrer'
               >
@@ -137,11 +195,17 @@ export default function AboutPage() {
                 Book a 20-min intro call
               </a>
             </Button>
+            <Button asChild variant='outline' size='lg'>
+              <a href='/cv.pdf' target='_blank' rel='noopener noreferrer'>
+                <IconFileText className='mr-2 h-5 w-5' />
+                Download CV
+              </a>
+            </Button>
           </div>
           <div className='mt-8 flex flex-wrap gap-2'>
             <Button asChild variant='ghost' size='sm'>
               <a
-                href='https://github.com/davidpapp'
+                href='https://github.com/pappdavid'
                 target='_blank'
                 rel='noopener noreferrer'
               >
@@ -151,7 +215,7 @@ export default function AboutPage() {
             </Button>
             <Button asChild variant='ghost' size='sm'>
               <a
-                href='https://linkedin.com/in/davidpapp'
+                href='https://www.linkedin.com/in/dávid-papp'
                 target='_blank'
                 rel='noopener noreferrer'
               >
