@@ -1,16 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
 import { CodeBlock } from '@/components/shared/code-block';
 import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
 import {
@@ -18,13 +11,13 @@ import {
   IconPlayerPlay,
   IconCheck,
   IconClock,
-  IconAlertTriangle,
-  IconArrowRight
+  IconAlertTriangle
 } from '@tabler/icons-react';
 import { GridBackground } from '@/components/ui/grid-background';
 import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 
-const quickstartCode = `import { MCPSentinel } from '@your-org/mcp-sentinel';
+const quickstartCode = `// Reference implementation — github.com/pappdavid/mcp-sentinel
+import { MCPSentinel } from './sentinel';
 
 const sentinel = new MCPSentinel({
   apiKey: process.env.MCP_API_KEY,
@@ -95,29 +88,6 @@ type MockEvent = {
   timestamp: string;
 };
 
-const faqItems = [
-  {
-    q: 'What protocols does Sentinel support?',
-    a: 'Sentinel supports the Model Context Protocol (MCP) standard. It works with any MCP-compatible client including Claude Desktop, ChatGPT plugins, and custom agent frameworks.'
-  },
-  {
-    q: 'Does it add latency?',
-    a: 'Guard checks add ~5-15ms per request. Event logging is asynchronous and adds zero latency to the response path.'
-  },
-  {
-    q: 'Can I self-host?',
-    a: 'Yes. Sentinel is designed to run in your infrastructure. Deploy as a Docker container or serverless function alongside your MCP server.'
-  },
-  {
-    q: 'What guards are available?',
-    a: 'Built-in guards include injection detection, PII scanning, cost tracking, rate limiting, and output validation. Custom guards can be added via the plugin API.'
-  },
-  {
-    q: 'How is data stored?',
-    a: 'Event logs are stored in your Supabase instance with row-level security. No data leaves your infrastructure unless you explicitly configure external alerting.'
-  }
-];
-
 function generateMockEvents(): MockEvent[] {
   const tools = [
     'file_read',
@@ -187,16 +157,6 @@ export function McpContent() {
         </p>
         <div className='flex gap-4'>
           <Button
-            asChild
-            size='lg'
-            className='bg-[#22c55e] text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:bg-[#16a34a]'
-          >
-            <Link href='/dashboard/mcp'>
-              Open Dashboard
-              <IconArrowRight className='ml-2 h-4 w-4' />
-            </Link>
-          </Button>
-          <Button
             variant='outline'
             size='lg'
             asChild
@@ -250,9 +210,7 @@ export function McpContent() {
       {/* Integration Guide */}
       <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>
-            Integration Guide
-          </h2>
+          <h2 className='mb-8 text-2xl font-bold text-white'>How It Works</h2>
           <Tabs defaultValue='claude'>
             <TabsList>
               <TabsTrigger value='claude'>Claude Desktop</TabsTrigger>
@@ -369,47 +327,21 @@ export function McpContent() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className='border-y border-white/[0.07] bg-white/[0.015] py-16'>
+      {/* Demo limits */}
+      <section className='py-16'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-4 text-2xl font-bold text-white'>
-            Pricing &amp; Limits
-          </h2>
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-            <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
-              <h3 className='mb-2 font-semibold text-white'>Free Tier</h3>
-              <ul className='space-y-2 text-sm text-[#71717a]'>
-                <li>100 events/minute rate limit</li>
-                <li>7-day event retention</li>
-                <li>3 guard rules</li>
-                <li>1 API key</li>
-              </ul>
-            </div>
-            <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
-              <h3 className='mb-2 font-semibold text-white'>Pro</h3>
-              <ul className='space-y-2 text-sm text-[#71717a]'>
-                <li>Unlimited events</li>
-                <li>90-day retention</li>
-                <li>Unlimited guard rules</li>
-                <li>Team API keys + webhooks</li>
-              </ul>
-            </div>
+          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+            <p className='font-mono text-xs text-[#52525b]'>
+              Demo is rate-limited to 100 events/minute with mock data.{' '}
+              <a
+                href='mailto:contact@davidpapp.dev'
+                className='text-[#22c55e] hover:underline'
+              >
+                Contact me
+              </a>{' '}
+              for a full walkthrough or to discuss deployment.
+            </p>
           </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>FAQ</h2>
-          <Accordion type='single' collapsible className='w-full'>
-            {faqItems.map((item, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger>{item.q}</AccordionTrigger>
-                <AccordionContent>{item.a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         </div>
       </section>
     </div>
