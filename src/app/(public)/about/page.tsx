@@ -11,8 +11,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'About — David Papp',
-  description:
-    'AI engineer focused on production-grade tooling: agent observability, fine-tuning pipelines, and retrieval systems.'
+  description: 'AI Engineer building production LLM systems.'
 };
 
 export default function AboutPage() {

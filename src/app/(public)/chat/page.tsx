@@ -1,11 +1,12 @@
-import { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/metadata';
 import { ChatContent } from '@/components/chat/chat-content';
 
-export const metadata: Metadata = {
+export const metadata = generatePageMetadata({
   title: 'RAG + 3D Chat',
   description:
-    'Chat with your docs, render 3D outputs. Retrieval-augmented generation with visual context.'
-};
+    'Upload documents, ask questions, get answers grounded in your data with Three.js visualization.',
+  slug: 'rag-chat'
+});
 
 export default function ChatPage() {
   return <ChatContent />;
