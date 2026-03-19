@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -50,6 +50,15 @@ export function ChatContent() {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(
+    null
+  );
+
+  useEffect(() => {
+    return () => {
+      readerRef.current?.cancel();
+    };
+  }, []);
 
   const handleSend = useCallback(async () => {
     const trimmed = input.trim();
@@ -92,6 +101,7 @@ export function ChatContent() {
       }
 
       const reader = res.body.getReader();
+      readerRef.current = reader;
       const decoder = new TextDecoder();
 
       while (true) {
@@ -121,6 +131,7 @@ export function ChatContent() {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setMessages((prev) => prev.slice(0, -1));
     } finally {
+      readerRef.current = null;
       setIsStreaming(false);
     }
   }, [input, isStreaming, messages, files]);
