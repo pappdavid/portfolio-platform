@@ -178,7 +178,7 @@ export default function RagChatDetailPage() {
       {/* Architecture */}
       <section className='mb-16 border-t border-white/[0.07] pt-16'>
         <h2 className='mb-4 text-2xl font-bold'>Architecture</h2>
-        <ArchDiagram nodes={nodes} edges={edges} height={420} />
+        <ArchDiagram nodes={nodes} edges={edges} />
       </section>
 
       {/* Tech stack */}
