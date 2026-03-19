@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Background Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #040408;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    canvas { position: fixed; inset: 0; z-index: 0; }
+    .tabs {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 100; display: flex; gap: 5px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 6px;
+      backdrop-filter: blur(24px);
+    }
+    .tab-btn {
+      padding: 8px 20px; border-radius: 9px; border: none;
+      background: transparent; color: rgba(255,255,255,0.38);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .tab-btn.active { background: rgba(255,255,255,0.11); color: white; box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+    .tab-btn:hover:not(.active) { color: rgba(255,255,255,0.65); }
+    .hero {
+      position: relative; z-index: 10;
+      display: flex; align-items: center;
+      min-height: 100vh; padding: 0 10%;
+      pointer-events: none;
+    }
+    .hero-content { max-width: 560px; }
+    .eyebrow {
+      display: inline-flex; padding: 6px 14px;
+      border: 1px solid rgba(34,197,94,0.4); border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #22c55e; margin-bottom: 28px;
+    }
+    h1 {
+      font-size: clamp(48px, 6vw, 72px); font-weight: 800;
+      line-height: 1.05; letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.45) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 20px;
+    }
+    .subtext { font-size: 16px; line-height: 1.7; color: #71717a; margin-bottom: 36px; max-width: 440px; }
+    .cta {
+      display: inline-flex; padding: 14px 28px;
+      background: #22c55e; color: #000; font-size: 14px; font-weight: 600;
+      border-radius: 10px; text-decoration: none;
+      box-shadow: 0 0 36px rgba(34,197,94,0.45); pointer-events: all;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('wave',  this)">⌇ Mesh Wave</button>
+  <button class="tab-btn"        onclick="switchTab('hex',   this)">⬡ Hex Pulse</button>
+  <button class="tab-btn"        onclick="switchTab('topo',  this)">≋ Topographic</button>
+</div>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">AI Engineering · Production-Grade</div>
+    <h1>Build AI products<br>that ship.</h1>
+    <p class="subtext">Agent observability, fine-tuning pipelines, and RAG chat — built with cost discipline, security-first, and zero over-engineering.</p>
+    <a href="mailto:hello@davidpapp.dev" class="cta">Email me about your AI role</a>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+let W, H, mode = 'wave', rafId;
+
+const resize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
+resize();
+window.addEventListener('resize', resize);
+
+function switchTab(m, btn) {
+  mode = m;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHARED vignette
+// ─────────────────────────────────────────────────────────────────────────────
+function vignette() {
+  const g = ctx.createRadialGradient(W/2,H/2,H*0.05, W/2,H/2,W*0.8);
+  g.addColorStop(0, 'transparent');
+  g.addColorStop(1, 'rgba(4,4,8,0.78)');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. MESH WAVE
+// ─────────────────────────────────────────────────────────────────────────────
+const MESH_COLS = 28;
+const MESH_ROWS = 18;
+
+function drawMeshWave(t) {
+  const cellW = W / (MESH_COLS - 1);
+  const cellH = H / (MESH_ROWS - 1);
+  const AMP   = 22;
+  const FREQ  = 0.0038;
+  const SPEED = 0.00055;
+
+  // build displaced grid
+  const pts = [];
+  for (let r = 0; r < MESH_ROWS; r++) {
+    pts[r] = [];
+    for (let c = 0; c < MESH_COLS; c++) {
+      const bx = c * cellW;
+      const by = r * cellH;
+      const wave = Math.sin(bx * FREQ + t * SPEED) * Math.cos(by * FREQ * 1.3 + t * SPEED * 0.7)
+                 + Math.sin(bx * FREQ * 0.6 - by * FREQ * 0.8 + t * SPEED * 1.1) * 0.5;
+      pts[r][c] = { x: bx + wave * AMP * 0.5, y: by + wave * AMP };
+    }
+  }
+
+  ctx.lineWidth = 0.6;
+
+  // horizontal lines
+  for (let r = 0; r < MESH_ROWS; r++) {
+    for (let c = 0; c < MESH_COLS - 1; c++) {
+      const p0 = pts[r][c], p1 = pts[r][c+1];
+      const mid = (p0.y + p1.y) / 2;
+      const norm = Math.min(1, Math.abs(mid / H - 0.5) * 2);
+      const a = 0.06 + norm * 0.12;
+      ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
+      ctx.strokeStyle = `rgba(34,197,94,${a})`; ctx.stroke();
+    }
+  }
+
+  // vertical lines
+  for (let c = 0; c < MESH_COLS; c++) {
+    for (let r = 0; r < MESH_ROWS - 1; r++) {
+      const p0 = pts[r][c], p1 = pts[r+1][c];
+      const a = 0.05 + 0.08 * Math.abs(Math.sin(c * 0.4 + t * SPEED * 2));
+      ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
+      ctx.strokeStyle = `rgba(6,182,212,${a})`; ctx.stroke();
+    }
+  }
+
+  // nodes at intersections — vary with displacement
+  for (let r = 0; r < MESH_ROWS; r++) {
+    for (let c = 0; c < MESH_COLS; c++) {
+      const {x,y} = pts[r][c];
+      const bx = c * cellW, by = r * cellH;
+      const disp = Math.sqrt((x-bx)**2 + (y-by)**2) / AMP;
+      ctx.beginPath(); ctx.arc(x, y, 0.9 + disp*1.5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(34,197,94,${0.12 + disp*0.35})`; ctx.fill();
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. HEX PULSE
+// ─────────────────────────────────────────────────────────────────────────────
+const HEX_SIZE = 42;
+const HEX_H    = HEX_SIZE * Math.sqrt(3);
+let hexCells = [], hexPulses = [];
+
+function buildHex() {
+  hexCells = [];
+  const cols = Math.ceil(W / (HEX_SIZE * 1.5)) + 2;
+  const rows = Math.ceil(H / HEX_H) + 2;
+  for (let q = -1; q < cols; q++) {
+    for (let r = -1; r < rows; r++) {
+      const x = HEX_SIZE * 1.5 * q;
+      const y = HEX_H * (r + (q % 2) * 0.5);
+      hexCells.push({ x, y, id: `${q},${r}` });
+    }
+  }
+}
+buildHex();
+window.addEventListener('resize', buildHex);
+
+// spawn pulses on a timer
+let nextHexPulse = 0;
+function tickHexPulses(t) {
+  if (t > nextHexPulse) {
+    const cell = hexCells[Math.floor(Math.random() * hexCells.length)];
+    const colors = [[34,197,94],[6,182,212],[168,85,247]];
+    const col    = colors[Math.floor(Math.random() * (Math.random() > 0.25 ? 1 : colors.length))];
+    hexPulses.push({ x: cell.x, y: cell.y, alpha: 0, phase: 0, color: col,
+                     speed: 0.008 + Math.random() * 0.006 });
+    nextHexPulse = t + 180 + Math.random() * 220;
+  }
+  for (let i = hexPulses.length - 1; i >= 0; i--) {
+    const p = hexPulses[i];
+    p.phase += p.speed;
+    p.alpha  = Math.sin(p.phase) * 0.55;
+    if (p.phase >= Math.PI) hexPulses.splice(i, 1);
+  }
+}
+
+function hexPath(cx, cy, size) {
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i - Math.PI / 6;
+    const px = cx + size * Math.cos(a);
+    const py = cy + size * Math.sin(a);
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+}
+
+function drawHex(t) {
+  tickHexPulses(t);
+
+  // build pulse lookup
+  const pulseMap = new Map();
+  for (const p of hexPulses) {
+    const key = `${Math.round(p.x)},${Math.round(p.y)}`;
+    pulseMap.set(key, p);
+  }
+
+  for (const cell of hexCells) {
+    const key  = `${Math.round(cell.x)},${Math.round(cell.y)}`;
+    const pulse = pulseMap.get(key);
+    const a     = pulse ? pulse.alpha : 0;
+    const [r,g,b] = pulse ? pulse.color : [34,197,94];
+
+    // fill
+    if (a > 0.01) {
+      hexPath(cell.x, cell.y, HEX_SIZE - 1);
+      ctx.fillStyle = `rgba(${r},${g},${b},${a * 0.12})`;
+      ctx.fill();
+    }
+
+    // outline
+    hexPath(cell.x, cell.y, HEX_SIZE - 1);
+    ctx.strokeStyle = `rgba(${r},${g},${b},${0.06 + a * 0.35})`;
+    ctx.lineWidth   = 0.6 + a * 0.8;
+    ctx.stroke();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. TOPOGRAPHIC (marching squares on layered sine field)
+// ─────────────────────────────────────────────────────────────────────────────
+const TOPO_RES = 6; // sample every N px
+
+function field(x, y, t) {
+  const s = 0.003;
+  return Math.sin(x*s*1.1   + t*0.00025) * Math.cos(y*s       + t*0.00018)
+       + Math.sin(x*s*0.5   - t*0.00015) * Math.sin(y*s*1.4   + t*0.00022)
+       + Math.cos(x*s*0.8   + y*s*0.7   + t*0.00012) * 0.6
+       + Math.sin(x*s*0.25  - y*s*0.35  - t*0.00008) * 0.4;
+}
+
+// marching squares lookup
+const MS_EDGES = [
+  [],           // 0000
+  [[3,0]],      // 0001
+  [[1,2]],      // 0010
+  [[3,1]],      // 0011 → same as [[3,2]] but top edge
+  [[0,1]],      // 0100
+  [[0,3],[1,2]],// 0101 ambiguous — pick one
+  [[0,2]],      // 0110
+  [[0,3]],      // 0111
+  [[0,3]],      // 1000
+  [[0,2]],      // 1001
+  [[1,3],[0,2]],// 1010 ambiguous
+  [[0,1]],      // 1011
+  [[3,1]],      // 1100
+  [[1,2]],      // 1101
+  [[3,0]],      // 1110
+  [],           // 1111
+];
+
+function edgePt(c, r, edge, res, v00,v10,v01,v11, threshold) {
+  const x = c * res, y = r * res;
+  // edge: 0=top,1=right,2=bottom,3=left
+  const lerp = (a,b,va,vb) => a + (b-a)*(threshold-va)/(vb-va);
+  switch(edge) {
+    case 0: return [lerp(x,x+res,v00,v10), y];
+    case 1: return [x+res, lerp(y,y+res,v10,v11)];
+    case 2: return [lerp(x,x+res,v01,v11), y+res];
+    case 3: return [x, lerp(y,y+res,v00,v01)];
+  }
+}
+
+function drawTopo(t) {
+  const cols = Math.ceil(W / TOPO_RES) + 1;
+  const rows = Math.ceil(H / TOPO_RES) + 1;
+
+  // sample grid
+  const F = [];
+  for (let r = 0; r < rows; r++) {
+    F[r] = [];
+    for (let c = 0; c < cols; c++) {
+      F[r][c] = field(c * TOPO_RES, r * TOPO_RES, t);
+    }
+  }
+
+  const levels = [-1.2,-0.8,-0.4,0,0.4,0.8,1.2];
+
+  for (let li = 0; li < levels.length; li++) {
+    const threshold = levels[li];
+    const frac = li / (levels.length - 1);
+    // colour: green at mid levels, cyan at extremes
+    const green = Math.round(180 + 17 * Math.cos(frac * Math.PI));
+    const blue  = Math.round(80  + 30 * Math.sin(frac * Math.PI));
+    const alpha = 0.08 + 0.06 * Math.sin(frac * Math.PI);
+
+    ctx.strokeStyle = `rgba(34,${green},${blue},${alpha})`;
+    ctx.lineWidth   = 0.7;
+
+    for (let r = 0; r < rows - 1; r++) {
+      for (let c = 0; c < cols - 1; c++) {
+        const v00 = F[r][c],   v10 = F[r][c+1];
+        const v01 = F[r+1][c], v11 = F[r+1][c+1];
+
+        const idx = ((v00 >= threshold) ? 8 : 0)
+                  | ((v10 >= threshold) ? 4 : 0)
+                  | ((v11 >= threshold) ? 2 : 0)
+                  | ((v01 >= threshold) ? 1 : 0);
+
+        const segs = MS_EDGES[idx];
+        for (const [ea, eb] of segs) {
+          const pa = edgePt(c,r,ea,TOPO_RES,v00,v10,v01,v11,threshold);
+          const pb = edgePt(c,r,eb,TOPO_RES,v00,v10,v01,v11,threshold);
+          if (!pa || !pb) continue;
+          ctx.beginPath(); ctx.moveTo(pa[0],pa[1]); ctx.lineTo(pb[0],pb[1]); ctx.stroke();
+        }
+      }
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function frame(t) {
+  ctx.clearRect(0, 0, W, H);
+
+  if      (mode === 'wave') drawMeshWave(t);
+  else if (mode === 'hex')  drawHex(t);
+  else if (mode === 'topo') drawTopo(t);
+
+  vignette();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
