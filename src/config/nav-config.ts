@@ -17,27 +17,6 @@ export const publicNavItems: NavItem[] = [
     items: []
   },
   {
-    title: 'MCP Sentinel',
-    url: '/mcp',
-    icon: 'shield',
-    isActive: false,
-    items: []
-  },
-  {
-    title: 'Training',
-    url: '/training',
-    icon: 'brain',
-    isActive: false,
-    items: []
-  },
-  {
-    title: 'Chat',
-    url: '/chat',
-    icon: 'messageCircle',
-    isActive: false,
-    items: []
-  },
-  {
     title: 'Projects',
     url: '/projects',
     icon: 'folder',
