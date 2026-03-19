@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Accordion,
@@ -16,7 +17,10 @@ import {
   IconBrain,
   IconArrowRight,
   IconArrowLeft,
-  IconCheck
+  IconCheck,
+  IconInfoCircle,
+  IconEye,
+  IconEyeOff
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { GridBackground } from '@/components/ui/grid-background';
@@ -40,6 +44,12 @@ const steps = [
     label: 'Config',
     title: 'Configure Pipeline',
     description: 'Set chunk size, prompt style, and model target.'
+  },
+  {
+    id: 'keys',
+    label: 'API Keys',
+    title: 'Credentials',
+    description: 'Provide API keys or run in demo mode.'
   },
   {
     id: 'preview',
@@ -135,6 +145,23 @@ const faqItems = [
 export function TrainingContent() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedMode, setSelectedMode] = useState('repo');
+
+  // API keys state
+  const [huggingFaceToken, setHuggingFaceToken] = useState('');
+  const [bringOwnKey, setBringOwnKey] = useState(false);
+  const [openaiKey, setOpenaiKey] = useState('');
+  const [anthropicKey, setAnthropicKey] = useState('');
+  const [googleKey, setGoogleKey] = useState('');
+  const [showHfToken, setShowHfToken] = useState(false);
+  const [showOpenai, setShowOpenai] = useState(false);
+  const [showAnthropic, setShowAnthropic] = useState(false);
+  const [showGoogle, setShowGoogle] = useState(false);
+  const [submittedWithKeys, setSubmittedWithKeys] = useState<boolean | null>(
+    null
+  );
+
+  const useDemoMode =
+    !huggingFaceToken && !openaiKey && !anthropicKey && !googleKey;
 
   return (
     <div className='flex flex-col'>
@@ -286,8 +313,137 @@ export function TrainingContent() {
               </div>
             )}
 
-            {/* Preview (step 3) */}
+            {/* API Keys (step 3) */}
             {currentStep === 3 && (
+              <div className='space-y-4'>
+                {useDemoMode && (
+                  <div className='flex items-start gap-2 rounded-lg border border-blue-500/20 bg-blue-500/5 p-3 text-sm text-blue-300'>
+                    <IconInfoCircle className='mt-0.5 h-4 w-4 shrink-0' />
+                    <span>
+                      Using demo mode — outputs are simulated. Provide a
+                      HuggingFace token to run real training jobs.
+                    </span>
+                  </div>
+                )}
+
+                {/* HuggingFace token */}
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-white'>
+                    HuggingFace Token
+                  </label>
+                  <div className='flex gap-2'>
+                    <Input
+                      type={showHfToken ? 'text' : 'password'}
+                      value={huggingFaceToken}
+                      onChange={(e) => setHuggingFaceToken(e.target.value)}
+                      placeholder='hf_…'
+                      className='border-white/[0.08] bg-white/[0.04] text-white placeholder:text-[#52525b]'
+                    />
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon'
+                      onClick={() => setShowHfToken((v) => !v)}
+                      className='shrink-0 text-[#71717a] hover:text-white'
+                      aria-label='Toggle token visibility'
+                    >
+                      {showHfToken ? (
+                        <IconEyeOff className='h-4 w-4' />
+                      ) : (
+                        <IconEye className='h-4 w-4' />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Bring your own key toggle */}
+                <div className='flex items-center gap-3'>
+                  <button
+                    type='button'
+                    onClick={() => setBringOwnKey((v) => !v)}
+                    className={cn(
+                      'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors',
+                      bringOwnKey ? 'bg-[#a855f7]' : 'bg-white/10'
+                    )}
+                    aria-checked={bringOwnKey}
+                    role='switch'
+                  >
+                    <span
+                      className={cn(
+                        'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                        bringOwnKey ? 'translate-x-4' : 'translate-x-0'
+                      )}
+                    />
+                  </button>
+                  <span className='text-sm text-[#71717a]'>
+                    Bring your own LLM key
+                  </span>
+                </div>
+
+                {bringOwnKey && (
+                  <div className='space-y-3 rounded-lg border border-white/[0.07] bg-white/[0.02] p-4'>
+                    {[
+                      {
+                        label: 'OpenAI API Key',
+                        value: openaiKey,
+                        setter: setOpenaiKey,
+                        show: showOpenai,
+                        setShow: setShowOpenai,
+                        placeholder: 'sk-…'
+                      },
+                      {
+                        label: 'Anthropic API Key',
+                        value: anthropicKey,
+                        setter: setAnthropicKey,
+                        show: showAnthropic,
+                        setShow: setShowAnthropic,
+                        placeholder: 'sk-ant-…'
+                      },
+                      {
+                        label: 'Google API Key',
+                        value: googleKey,
+                        setter: setGoogleKey,
+                        show: showGoogle,
+                        setShow: setShowGoogle,
+                        placeholder: 'AIza…'
+                      }
+                    ].map((field) => (
+                      <div key={field.label} className='space-y-1'>
+                        <label className='text-xs text-[#71717a]'>
+                          {field.label}
+                        </label>
+                        <div className='flex gap-2'>
+                          <Input
+                            type={field.show ? 'text' : 'password'}
+                            value={field.value}
+                            onChange={(e) => field.setter(e.target.value)}
+                            placeholder={field.placeholder}
+                            className='border-white/[0.08] bg-white/[0.04] text-white placeholder:text-[#52525b]'
+                          />
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => field.setShow((v) => !v)}
+                            className='shrink-0 text-[#71717a] hover:text-white'
+                            aria-label={`Toggle ${field.label} visibility`}
+                          >
+                            {field.show ? (
+                              <IconEyeOff className='h-4 w-4' />
+                            ) : (
+                              <IconEye className='h-4 w-4' />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Preview (step 4) */}
+            {currentStep === 4 && (
               <CodeBlock
                 code={sampleJsonl}
                 language='json'
@@ -295,18 +451,46 @@ export function TrainingContent() {
               />
             )}
 
-            {/* Train (step 4) */}
-            {currentStep === 4 && (
+            {/* Train (step 5) */}
+            {currentStep === 5 && (
               <div className='space-y-4 text-center'>
                 <IconBrain className='mx-auto h-16 w-16 text-[#a855f7]' />
                 <p className='font-medium text-white'>Ready to fine-tune</p>
-                <p className='text-sm text-[#71717a]'>
-                  Dataset validated with 847 training examples. Estimated
-                  training time: ~45 minutes on A100.
-                </p>
-                <Button size='lg' disabled>
-                  Start Training (Demo)
+                {useDemoMode ? (
+                  <p className='text-sm text-[#71717a]'>
+                    Running in demo mode — outputs will be simulated.
+                  </p>
+                ) : (
+                  <p className='text-sm text-[#71717a]'>
+                    Dataset validated with 847 training examples. Estimated
+                    training time: ~45 minutes on A100.
+                  </p>
+                )}
+                <Button
+                  size='lg'
+                  disabled={submittedWithKeys !== null}
+                  onClick={() => {
+                    setSubmittedWithKeys(!useDemoMode);
+                  }}
+                >
+                  {submittedWithKeys !== null
+                    ? useDemoMode
+                      ? 'Demo job queued'
+                      : 'Training job submitted'
+                    : useDemoMode
+                      ? 'Start Demo Training'
+                      : 'Start Training'}
                 </Button>
+                {submittedWithKeys === true && (
+                  <p className='text-sm text-[#22c55e]'>
+                    Training job submitted using your keys.
+                  </p>
+                )}
+                {submittedWithKeys === false && (
+                  <p className='text-sm text-blue-300'>
+                    Demo job queued — outputs are simulated.
+                  </p>
+                )}
               </div>
             )}
 

@@ -1,13 +1,25 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
 import { chunkText, retrieveChunks } from '@/lib/chat/rag';
+import { getOrCreateCompanyForUser } from '@/lib/company';
+import {
+  checkAndConsumeQuota,
+  DemoExpiredError,
+  QuotaExhaustedError
+} from '@/lib/demo-quota';
 
-const c1 = new OpenAI({
-  baseURL: 'https://api.thesys.dev/v1/embed/',
-  apiKey: process.env.THESYS_API_KEY
-});
+function getC1Client(): OpenAI {
+  const apiKey = process.env.THESYS_API_KEY;
+  if (!apiKey) {
+    throw new Error('THESYS_API_KEY is not configured');
+  }
+  return new OpenAI({
+    baseURL: 'https://api.thesys.dev/v1/embed/',
+    apiKey
+  });
+}
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -25,6 +37,24 @@ export async function POST(req: Request) {
       { error: `Rate limit exceeded (${userId ? '50' : '2'}/hr)` },
       { status: 429 }
     );
+  }
+
+  // Quota check for signed-in users
+  if (userId) {
+    try {
+      const user = await currentUser();
+      if (user) {
+        const company = await getOrCreateCompanyForUser(user);
+        await checkAndConsumeQuota(company.companyId, 'rag', userId);
+      }
+    } catch (err) {
+      if (err instanceof DemoExpiredError) {
+        return NextResponse.json({ code: 'DEMO_EXPIRED' }, { status: 403 });
+      }
+      if (err instanceof QuotaExhaustedError) {
+        return NextResponse.json({ code: 'QUOTA_EXHAUSTED' }, { status: 403 });
+      }
+    }
   }
 
   const body = await req.json();
@@ -51,7 +81,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const stream = await c1.chat.completions.create({
+  const stream = await getC1Client().chat.completions.create({
     model: 'c1-nightly',
     messages: [
       {

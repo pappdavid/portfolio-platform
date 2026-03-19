@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeBlock } from '@/components/shared/code-block';
@@ -12,6 +13,7 @@ type Project = {
   title: string;
   description: string;
   tags: string[];
+  detailUrl: string;
   tabs: {
     overview: string;
     code: { snippet: string; language: string; filename: string };
@@ -26,6 +28,7 @@ const projects: Project[] = [
     description:
       'A proxy layer for Model Context Protocol that logs, guards, and audits every agent tool call in real time.',
     tags: ['TypeScript', 'MCP', 'Supabase', 'Security'],
+    detailUrl: '/projects/mcp-sentinel',
     tabs: {
       overview:
         'MCP Sentinel sits between AI agents and their tools. It validates inputs against guard rules (injection detection, PII scanning, cost limits), logs every event to Supabase with RLS, and surfaces anomalies in a dashboard. Designed for teams running LLM agents in production who need compliance and visibility.',
@@ -72,6 +75,7 @@ async function runGuards(event: MCPEvent): Promise<GuardResult> {
     description:
       'Automated pipeline to convert codebases into fine-tuning datasets. Supports LoRA adapters for any compatible model.',
     tags: ['Python', 'LLM', 'Fine-tuning', 'LoRA'],
+    detailUrl: '/projects/training',
     tabs: {
       overview:
         'The training pipeline parses Git repositories, chunks code by semantic boundaries, and generates instruction-response pairs using a configurable prompt template. Output is OpenAI-compatible JSONL ready for fine-tuning with any LoRA framework. Includes validation, deduplication, and quality scoring.',
@@ -111,6 +115,7 @@ class SemanticChunker:
     description:
       'Retrieval-augmented chat interface with document upload and Three.js visualization for spatial data.',
     tags: ['Next.js', 'Three.js', 'OpenAI', 'Supabase'],
+    detailUrl: '/projects/rag-chat',
     tabs: {
       overview:
         'Users upload PDFs or text, which are chunked and embedded into a Supabase vector store. Queries retrieve relevant context and feed it to the LLM along with the conversation. When responses contain spatial or structural data, they render in an interactive Three.js viewer alongside the chat.',
@@ -150,6 +155,7 @@ async function retrieve(query: string, topK = 5) {
     description:
       'This site itself. A Next.js 16 dashboard with multi-theme system, RBAC navigation, and Clerk auth.',
     tags: ['Next.js 16', 'shadcn/ui', 'Clerk', 'Tailwind v4'],
+    detailUrl: '/projects/portfolio',
     tabs: {
       overview:
         'Forked from next-shadcn-dashboard-starter and reconfigured as a portfolio platform. Features six OKLCH themes, client-side RBAC navigation filtering, parallel dashboard routes, and Supabase backend. The public-facing pages use Aceternity effects for visual polish.',
@@ -216,28 +222,35 @@ export function ProjectsContent() {
         <div className='mx-auto max-w-6xl px-4'>
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
             {projects.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setActiveProject(p.id)}
-                className={cn(
-                  'rounded-xl border p-5 text-left transition-all',
-                  activeProject === p.id
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'hover:border-foreground/20'
-                )}
-              >
-                <h3 className='text-foreground font-semibold'>{p.title}</h3>
-                <p className='text-muted-foreground mt-2 text-sm leading-relaxed'>
-                  {p.description}
-                </p>
-                <div className='mt-3 flex flex-wrap gap-1'>
-                  {p.tags.map((tag) => (
-                    <Badge key={tag} variant='outline' className='text-xs'>
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </button>
+              <div key={p.id} className='group relative'>
+                <button
+                  onClick={() => setActiveProject(p.id)}
+                  className={cn(
+                    'w-full rounded-xl border p-5 text-left transition-all',
+                    activeProject === p.id
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'hover:border-foreground/20'
+                  )}
+                >
+                  <h3 className='text-foreground font-semibold'>{p.title}</h3>
+                  <p className='text-muted-foreground mt-2 text-sm leading-relaxed'>
+                    {p.description}
+                  </p>
+                  <div className='mt-3 flex flex-wrap gap-1'>
+                    {p.tags.map((tag) => (
+                      <Badge key={tag} variant='outline' className='text-xs'>
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </button>
+                <Link
+                  href={p.detailUrl}
+                  className='text-primary mt-2 block text-center text-xs underline-offset-2 hover:underline'
+                >
+                  View detail →
+                </Link>
+              </div>
             ))}
           </div>
         </div>
