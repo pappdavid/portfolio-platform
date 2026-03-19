@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { GridBackground } from '@/components/ui/grid-background';
+import { BackgroundBeams } from '@/components/ui/background-beams';
 import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 import { AMASection } from '@/components/ama/AMASection';
 
@@ -772,7 +772,7 @@ const philosophy = [
 export function LandingContent() {
   return (
     <div className='relative text-white'>
-      <GridBackground />
+      <BackgroundBeams className='opacity-40' />
 
       {/* Hero */}
       <section className='relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28'>
@@ -810,20 +810,6 @@ export function LandingContent() {
             >
               View Dashboard
             </Link>
-            <a
-              href='mailto:david@example.com'
-              className='inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-px hover:bg-white/90'
-            >
-              Contact me
-            </a>
-            <a
-              href='https://calendly.com/david-papp'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
-            >
-              Book a call
-            </a>
           </div>
         </div>
         <div className='flex justify-center'>
