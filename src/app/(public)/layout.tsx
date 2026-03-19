@@ -7,10 +7,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className='bg-[#060608]'>
       <PublicHeader />
-      <main className='min-h-[calc(100dvh-3.5rem)]'>{children}</main>
+      <main className='relative min-h-[calc(100dvh-3.5rem)]'>{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }
