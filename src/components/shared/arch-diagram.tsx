@@ -59,6 +59,8 @@ const colorMap = {
   }
 };
 
+const PRO_OPTIONS = { hideAttribution: true };
+
 type ArchDiagramProps = {
   nodes: ArchNode[];
   edges: ArchEdge[];
@@ -106,10 +108,7 @@ export function ArchDiagram({ nodes, edges, height = 420 }: ArchDiagramProps) {
         target: e.to,
         label: e.label,
         animated: true,
-        style: {
-          strokeDasharray: '5 3',
-          stroke: 'rgba(255,255,255,0.25)'
-        }
+        style: { stroke: 'rgba(255,255,255,0.25)' }
       })),
     [edges]
   );
@@ -135,7 +134,7 @@ export function ArchDiagram({ nodes, edges, height = 420 }: ArchDiagramProps) {
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
         fitView
-        proOptions={{ hideAttribution: true }}
+        proOptions={PRO_OPTIONS}
       >
         <Background color='rgba(255,255,255,0.04)' gap={24} />
       </ReactFlow>
