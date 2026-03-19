@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BackgroundBeams } from '@/components/ui/background-beams';
+import { MeshWave } from '@/components/ui/mesh-wave';
 import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 import { AMASection } from '@/components/ama/AMASection';
 
@@ -712,20 +712,6 @@ function ChatIllus() {
 }
 
 /* ── Data ───────────────────────────────────────────── */
-const stats = [
-  {
-    metric: '40%',
-    label: 'fewer support calls',
-    detail: 'via structured guard rails'
-  },
-  {
-    metric: 'Zero',
-    label: 'injection incidents',
-    detail: 'with input validation layer'
-  },
-  { metric: '3×', label: 'product launches led', detail: 'end-to-end delivery' }
-];
-
 const pillars = [
   {
     title: 'MCP Sentinel',
@@ -772,9 +758,7 @@ const philosophy = [
 export function LandingContent() {
   return (
     <div className='relative text-white'>
-      <div className='pointer-events-none fixed inset-0 z-0'>
-        <BackgroundBeams className='opacity-50' />
-      </div>
+      <MeshWave />
 
       {/* Hero */}
       <section className='relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28'>
@@ -783,56 +767,36 @@ export function LandingContent() {
             AI Engineering · Production-Grade
           </MonoEyebrow>
           <h1 className='mb-5 bg-gradient-to-br from-white to-white/50 bg-clip-text text-5xl leading-[1.07] font-extrabold tracking-[-0.04em] text-transparent md:text-6xl'>
-            Build AI products
+            I build production-grade
             <br />
-            that ship.
+            LLM systems.
           </h1>
           <p className='mb-10 max-w-md text-base leading-relaxed text-[#71717a]'>
-            Agent observability, fine-tuning pipelines, and RAG chat — built
-            with cost discipline, security-first, and zero over-engineering.
+            Agent observability, fine-tuning pipelines, and retrieval
+            infrastructure — built cost-aware, security-first, and without
+            over-engineering.
           </p>
           <div className='flex flex-wrap gap-3'>
             <a
-              href='mailto:hello@davidpapp.dev'
+              href='mailto:contact@davidpapp.dev'
               className='inline-flex items-center gap-2 rounded-lg bg-[#22c55e] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all hover:-translate-y-px hover:shadow-[0_0_32px_rgba(34,197,94,0.5)]'
             >
               Email me about your AI role
             </a>
             <a
-              href='https://cal.com/davidpapp/intro'
+              href='https://calendly.com/david-webinform/30min'
               target='_blank'
               rel='noopener noreferrer'
               className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
             >
               Book a 20-min call
             </a>
-            <Link
-              href='/dashboard/overview'
-              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-[#71717a] backdrop-blur-sm transition-colors hover:bg-white/[0.08] hover:text-white'
-            >
-              View Dashboard
-            </Link>
           </div>
         </div>
         <div className='flex justify-center'>
           <HeroDiagram />
         </div>
       </section>
-
-      {/* Stats */}
-      <div className='relative z-10 border-y border-white/[0.07] bg-white/[0.015]'>
-        <div className='mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 py-10 sm:grid-cols-3'>
-          {stats.map((s) => (
-            <div key={s.label} className='text-center'>
-              <p className='bg-gradient-to-r from-[#22c55e] to-[#06b6d4] bg-clip-text font-mono text-4xl font-bold text-transparent'>
-                {s.metric}
-              </p>
-              <p className='mt-1.5 text-sm font-medium text-white'>{s.label}</p>
-              <p className='mt-0.5 text-xs text-[#52525b]'>{s.detail}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Pillars */}
       <section className='relative z-10 mx-auto max-w-6xl px-6 py-20'>
@@ -883,9 +847,7 @@ export function LandingContent() {
             <span className='text-[#c084fc]'>import</span>
             <span className='text-[#d1d5db]'>{' { MCPSentinel } '}</span>
             <span className='text-[#c084fc]'>from</span>
-            <span className='text-[#86efac]'>
-              {" '@your-org/mcp-sentinel'"}
-            </span>
+            <span className='text-[#86efac]'>{"'./sentinel'"}</span>
             <span className='text-[#d1d5db]'>{';'}</span>
             {'\n\n'}
             <span className='text-[#c084fc]'>const</span>
@@ -902,7 +864,7 @@ export function LandingContent() {
             <span className='text-[#d1d5db]'>{'] });'}</span>
             {'\n\n'}
             <span className='text-[#4b5563]'>
-              {'// Zero changes to your existing tools'}
+              {'// Reference impl — github.com/pappdavid/mcp-sentinel'}
             </span>
             {'\n'}
             <span className='text-[#c084fc]'>const</span>
