@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { GridBackground } from '@/components/ui/grid-background';
 import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
+import { AMASection } from '@/components/ama/AMASection';
 
 /* ── SVG: Hero architecture diagram ─────────────────── */
 function HeroDiagram() {
@@ -789,15 +790,23 @@ export function LandingContent() {
             with cost discipline, security-first, and zero over-engineering.
           </p>
           <div className='flex flex-wrap gap-3'>
-            <Link
-              href='/mcp'
+            <a
+              href='mailto:hello@davidpapp.dev'
               className='inline-flex items-center gap-2 rounded-lg bg-[#22c55e] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all hover:-translate-y-px hover:shadow-[0_0_32px_rgba(34,197,94,0.5)]'
             >
-              Explore MCP Sentinel →
-            </Link>
+              Email me about your AI role
+            </a>
+            <a
+              href='https://cal.com/davidpapp/intro'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
+            >
+              Book a 20-min call
+            </a>
             <Link
               href='/dashboard/overview'
-              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
+              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-[#71717a] backdrop-blur-sm transition-colors hover:bg-white/[0.08] hover:text-white'
             >
               View Dashboard
             </Link>
@@ -950,6 +959,8 @@ export function LandingContent() {
           </div>
         </div>
       </div>
+
+      <AMASection />
     </div>
   );
 }

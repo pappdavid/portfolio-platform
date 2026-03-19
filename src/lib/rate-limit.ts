@@ -47,3 +47,9 @@ export const chatAuthRateLimit = createLimiter(
 );
 export const mcpRateLimit = createLimiter(100, '1 m', 'ratelimit:mcp');
 export const trainingRateLimit = createLimiter(5, '1 h', 'ratelimit:training');
+export const amaPublicRateLimit = createLimiter(
+  5,
+  '1 h',
+  'ratelimit:ama:public'
+);
+export const amaAuthRateLimit = createLimiter(20, '1 h', 'ratelimit:ama:auth');
