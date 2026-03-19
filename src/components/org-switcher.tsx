@@ -20,7 +20,6 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar';
-import { useEffect } from 'react';
 
 export function OrgSwitcher() {
   const { isMobile, state } = useSidebar();
@@ -33,13 +32,6 @@ export function OrgSwitcher() {
   });
 
   const { orgId } = useAuth();
-
-  useEffect(() => {
-    console.log('revalidating memberships');
-    if (userMemberships?.revalidate) {
-      void userMemberships.revalidate();
-    }
-  }, [orgId]);
 
   // Get the currently active organization
   const activeOrganization = userMemberships?.data?.find(
@@ -92,7 +84,7 @@ export function OrgSwitcher() {
         <SidebarMenuItem>
           <SidebarMenuButton
             size='lg'
-            onClick={() => router.push('/dashboard/workspaces')}
+            onClick={() => router.push('/dashboard/profile')}
             className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
           >
             <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg'>
@@ -224,7 +216,7 @@ export function OrgSwitcher() {
             <DropdownMenuItem
               className='gap-2 p-2'
               onClick={() => {
-                router.push('/dashboard/workspaces');
+                router.push('/dashboard/profile');
               }}
             >
               <div className='flex size-6 items-center justify-center rounded-md border bg-transparent'>

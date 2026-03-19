@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeBlock } from '@/components/shared/code-block';
 import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
@@ -275,6 +276,32 @@ export function ProjectsContent() {
               </div>
             </TabsContent>
           </Tabs>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className='py-20'>
+        <div className='mx-auto max-w-4xl px-4 text-center'>
+          <h2 className='text-foreground text-2xl font-bold tracking-tight sm:text-3xl'>
+            Interested in something similar?
+          </h2>
+          <p className='text-muted-foreground mt-4 text-lg'>
+            Available for AI engineering roles and short consulting engagements.
+          </p>
+          <div className='mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row'>
+            <Button size='lg' asChild>
+              <a href='mailto:hello@davidpapp.dev'>Email me</a>
+            </Button>
+            <Button size='lg' variant='outline' asChild>
+              <a
+                href='https://cal.com/davidpapp/intro'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Book a call
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
     </div>

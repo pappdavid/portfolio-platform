@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import {
   IconBrandGithub,
   IconBrandLinkedin,
-  IconFileText
+  IconFileText,
+  IconMail,
+  IconCalendar
 } from '@tabler/icons-react';
 
 export const metadata: Metadata = {
@@ -82,34 +84,84 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Links */}
+      {/* Tech Stack */}
       <section className='py-16'>
         <div className='mx-auto max-w-3xl px-4'>
-          <h2 className='text-foreground mb-6 text-2xl font-bold'>Links</h2>
+          <h2 className='text-foreground mb-6 text-2xl font-bold'>Stack</h2>
+          <div className='flex flex-wrap gap-2'>
+            {[
+              'TypeScript',
+              'Python',
+              'Next.js',
+              'React',
+              'Supabase',
+              'PostgreSQL',
+              'OpenAI API',
+              'Tailwind CSS',
+              'Clerk',
+              'Upstash',
+              'Vercel',
+              'Node.js'
+            ].map((tech) => (
+              <Badge key={tech} variant='secondary'>
+                {tech}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Get in Touch */}
+      <section className='bg-muted/30 py-16'>
+        <div className='mx-auto max-w-3xl px-4'>
+          <h2 className='text-foreground mb-2 text-2xl font-bold'>
+            Got an AI role or project in mind?
+          </h2>
+          <p className='text-muted-foreground mb-8 text-lg'>
+            I&apos;m open to full-time roles and short engagements.
+          </p>
           <div className='flex flex-wrap gap-4'>
+            <Button asChild size='lg'>
+              <a href='mailto:hello@davidpapp.dev'>
+                <IconMail className='mr-2 h-5 w-5' />
+                Email me about a role
+              </a>
+            </Button>
             <Button asChild variant='outline' size='lg'>
+              <a
+                href='https://cal.com/davidpapp/intro'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                <IconCalendar className='mr-2 h-5 w-5' />
+                Book a 20-min intro call
+              </a>
+            </Button>
+          </div>
+          <div className='mt-8 flex flex-wrap gap-2'>
+            <Button asChild variant='ghost' size='sm'>
               <a
                 href='https://github.com/davidpapp'
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <IconBrandGithub className='mr-2 h-5 w-5' />
+                <IconBrandGithub className='mr-2 h-4 w-4' />
                 GitHub
               </a>
             </Button>
-            <Button asChild variant='outline' size='lg'>
+            <Button asChild variant='ghost' size='sm'>
               <a
                 href='https://linkedin.com/in/davidpapp'
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <IconBrandLinkedin className='mr-2 h-5 w-5' />
+                <IconBrandLinkedin className='mr-2 h-4 w-4' />
                 LinkedIn
               </a>
             </Button>
-            <Button asChild variant='outline' size='lg'>
+            <Button asChild variant='ghost' size='sm'>
               <a href='/cv.pdf' target='_blank' rel='noopener noreferrer'>
-                <IconFileText className='mr-2 h-5 w-5' />
+                <IconFileText className='mr-2 h-4 w-4' />
                 CV (PDF)
               </a>
             </Button>
