@@ -772,7 +772,9 @@ const philosophy = [
 export function LandingContent() {
   return (
     <div className='relative text-white'>
-      <BackgroundBeams className='opacity-40' />
+      <div className='pointer-events-none fixed inset-0 z-0'>
+        <BackgroundBeams className='opacity-50' />
+      </div>
 
       {/* Hero */}
       <section className='relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28'>
