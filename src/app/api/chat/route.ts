@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { chatRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
+import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
 import { chunkText, retrieveChunks } from '@/lib/chat/rag';
 
 const c1 = new OpenAI({
@@ -18,11 +18,11 @@ export async function POST(req: Request) {
   const { userId } = await auth();
   const identifier = userId || req.headers.get('x-forwarded-for') || 'anon';
 
-  const limiter = userId ? chatAuthRateLimit : chatRateLimit;
+  const limiter = userId ? chatAuthRateLimit : chatPublicRateLimit;
   const { success } = await limiter.limit(identifier);
   if (!success) {
     return NextResponse.json(
-      { error: `Rate limit exceeded (${userId ? '50' : '10'}/hr)` },
+      { error: `Rate limit exceeded (${userId ? '50' : '2'}/hr)` },
       { status: 429 }
     );
   }

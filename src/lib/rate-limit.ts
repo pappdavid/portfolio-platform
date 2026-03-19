@@ -36,6 +36,11 @@ function createLimiter(
 }
 
 export const chatRateLimit = createLimiter(10, '1 h', 'ratelimit:chat');
+export const chatPublicRateLimit = createLimiter(
+  2,
+  '1 h',
+  'ratelimit:chat:public'
+);
 export const chatAuthRateLimit = createLimiter(
   50,
   '1 h',
