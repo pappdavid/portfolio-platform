@@ -7,9 +7,9 @@ interface MonoEyebrowProps {
 }
 
 const colorMap = {
-  green: 'border-[#22c55e]/30 bg-[#22c55e]/8 text-[#22c55e]',
-  purple: 'border-[#a855f7]/30 bg-[#a855f7]/8 text-[#a855f7]',
-  orange: 'border-[#f97316]/30 bg-[#f97316]/8 text-[#f97316]'
+  green: 'border-[#22c55e]/30 bg-[rgba(34,197,94,0.08)] text-[#22c55e]',
+  purple: 'border-[#a855f7]/30 bg-[rgba(168,85,247,0.08)] text-[#a855f7]',
+  orange: 'border-[#f97316]/30 bg-[rgba(249,115,22,0.08)] text-[#f97316]'
 };
 
 export function MonoEyebrow({

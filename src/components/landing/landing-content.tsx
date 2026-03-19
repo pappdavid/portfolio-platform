@@ -779,15 +779,7 @@ export function LandingContent() {
           <MonoEyebrow color='green' className='mb-7'>
             AI Engineering · Production-Grade
           </MonoEyebrow>
-          <h1
-            className='mb-5 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em] md:text-6xl'
-            style={{
-              background:
-                'linear-gradient(160deg,#fff 0%,rgba(255,255,255,0.5) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}
-          >
+          <h1 className='mb-5 bg-gradient-to-br from-white to-white/50 bg-clip-text text-5xl leading-[1.07] font-extrabold tracking-[-0.04em] text-transparent md:text-6xl'>
             Build AI products
             <br />
             that ship.
@@ -821,14 +813,7 @@ export function LandingContent() {
         <div className='mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 py-10 sm:grid-cols-3'>
           {stats.map((s) => (
             <div key={s.label} className='text-center'>
-              <p
-                className='font-mono text-4xl font-bold'
-                style={{
-                  background: 'linear-gradient(90deg,#22c55e,#06b6d4)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
-              >
+              <p className='bg-gradient-to-r from-[#22c55e] to-[#06b6d4] bg-clip-text font-mono text-4xl font-bold text-transparent'>
                 {s.metric}
               </p>
               <p className='mt-1.5 text-sm font-medium text-white'>{s.label}</p>
@@ -851,6 +836,7 @@ export function LandingContent() {
             <Link
               key={p.title}
               href={p.href}
+              aria-label={`${p.title} — ${p.link}`}
               className='group relative overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.14]'
             >
               <div className='mb-5'>
