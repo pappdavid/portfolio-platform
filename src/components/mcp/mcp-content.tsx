@@ -21,6 +21,8 @@ import {
   IconAlertTriangle,
   IconArrowRight
 } from '@tabler/icons-react';
+import { GridBackground } from '@/components/ui/grid-background';
+import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 
 const quickstartCode = `import { MCPSentinel } from '@your-org/mcp-sentinel';
 
@@ -162,54 +164,70 @@ export function McpContent() {
   return (
     <div className='flex flex-col'>
       {/* Hero */}
-      <section className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <Badge variant='secondary' className='mb-4'>
-            Agent Observability
-          </Badge>
-          <h1 className='text-foreground text-4xl font-bold tracking-tight sm:text-5xl'>
-            MCP Sentinel
-          </h1>
-          <p className='text-muted-foreground mt-4 max-w-2xl text-lg leading-relaxed'>
-            Drop-in observability for agent tool calls. Every MCP interaction is
-            logged, guarded, and auditable — without changing your tool
-            implementations.
-          </p>
-          <div className='mt-8 flex gap-4'>
-            <Button asChild size='lg'>
-              <Link href='/dashboard/mcp'>
-                Open Dashboard
-                <IconArrowRight className='ml-2 h-4 w-4' />
-              </Link>
-            </Button>
-            <Button variant='outline' size='lg' asChild>
-              <a href='#quickstart'>Quickstart</a>
-            </Button>
-          </div>
+      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
+        <GridBackground />
+        <MonoEyebrow color='green' className='mb-6'>
+          Agent Observability
+        </MonoEyebrow>
+        <h1
+          className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
+          style={{
+            background:
+              'linear-gradient(160deg,#fff 0%,rgba(255,255,255,0.5) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}
+        >
+          MCP Sentinel
+        </h1>
+        <p className='mb-8 max-w-2xl text-base leading-relaxed text-[#71717a]'>
+          Drop-in observability for agent tool calls. Every MCP interaction is
+          logged, guarded, and auditable — without changing your tool
+          implementations.
+        </p>
+        <div className='flex gap-4'>
+          <Button
+            asChild
+            size='lg'
+            className='bg-[#22c55e] text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:bg-[#16a34a]'
+          >
+            <Link href='/dashboard/mcp'>
+              Open Dashboard
+              <IconArrowRight className='ml-2 h-4 w-4' />
+            </Link>
+          </Button>
+          <Button
+            variant='outline'
+            size='lg'
+            asChild
+            className='border-white/[0.08] bg-white/[0.04] text-white hover:bg-white/[0.08]'
+          >
+            <a href='#quickstart'>Quickstart</a>
+          </Button>
         </div>
       </section>
 
       {/* What / Who / Why */}
-      <section className='bg-muted/30 py-16'>
+      <section className='border-y border-white/[0.07] bg-white/[0.015] py-16'>
         <div className='mx-auto grid max-w-4xl grid-cols-1 gap-8 px-4 md:grid-cols-3'>
           <div>
-            <h3 className='text-foreground mb-2 font-semibold'>What</h3>
-            <p className='text-muted-foreground text-sm leading-relaxed'>
+            <h3 className='mb-2 font-semibold text-white'>What</h3>
+            <p className='text-sm leading-relaxed text-[#71717a]'>
               A proxy layer between AI agents and their tools. Logs every call,
               applies guard rails, and surfaces anomalies in a real-time
               dashboard.
             </p>
           </div>
           <div>
-            <h3 className='text-foreground mb-2 font-semibold'>Who</h3>
-            <p className='text-muted-foreground text-sm leading-relaxed'>
+            <h3 className='mb-2 font-semibold text-white'>Who</h3>
+            <p className='text-sm leading-relaxed text-[#71717a]'>
               Teams deploying LLM agents in production who need visibility into
               tool usage, cost tracking, and security boundaries.
             </p>
           </div>
           <div>
-            <h3 className='text-foreground mb-2 font-semibold'>Why</h3>
-            <p className='text-muted-foreground text-sm leading-relaxed'>
+            <h3 className='mb-2 font-semibold text-white'>Why</h3>
+            <p className='text-sm leading-relaxed text-[#71717a]'>
               Agents call tools autonomously. Without observability, you cannot
               audit decisions, detect misuse, or enforce compliance.
             </p>
@@ -220,9 +238,7 @@ export function McpContent() {
       {/* Quickstart */}
       <section id='quickstart' className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
-            Quickstart
-          </h2>
+          <h2 className='mb-8 text-2xl font-bold text-white'>Quickstart</h2>
           <CodeBlock
             code={quickstartCode}
             language='typescript'
@@ -232,9 +248,9 @@ export function McpContent() {
       </section>
 
       {/* Integration Guide */}
-      <section className='bg-muted/30 py-20'>
+      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
+          <h2 className='mb-8 text-2xl font-bold text-white'>
             Integration Guide
           </h2>
           <Tabs defaultValue='claude'>
@@ -267,12 +283,17 @@ export function McpContent() {
       {/* Live Demo */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-2 text-2xl font-bold'>Live Demo</h2>
-          <p className='text-muted-foreground mb-8'>
+          <h2 className='mb-2 text-2xl font-bold text-white'>Live Demo</h2>
+          <p className='mb-8 text-[#71717a]'>
             Run a sample workflow to see how Sentinel logs and guards tool
             calls.
           </p>
-          <Button onClick={runDemo} disabled={loading} size='lg'>
+          <Button
+            onClick={runDemo}
+            disabled={loading}
+            size='lg'
+            className='bg-[#22c55e] text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:bg-[#16a34a]'
+          >
             <IconPlayerPlay className='mr-2 h-4 w-4' />
             {loading ? 'Running...' : 'Run Sample Workflow'}
           </Button>
@@ -282,9 +303,9 @@ export function McpContent() {
               {events.map((event) => (
                 <div
                   key={event.id}
-                  className='animate-in fade-in slide-in-from-left-2 flex items-center gap-4 rounded-lg border p-4'
+                  className='animate-in fade-in slide-in-from-left-2 flex items-center gap-4 rounded-lg border border-white/[0.07] bg-white/[0.04] p-4 font-mono'
                 >
-                  <span className='text-muted-foreground font-mono text-xs'>
+                  <span className='font-mono text-xs text-[#52525b]'>
                     {event.timestamp}
                   </span>
                   <Badge
@@ -295,7 +316,13 @@ export function McpContent() {
                           ? 'secondary'
                           : 'destructive'
                     }
-                    className='w-20 justify-center'
+                    className={
+                      event.status === 'allowed'
+                        ? 'w-20 justify-center border-[rgba(34,197,94,0.3)] bg-[rgba(34,197,94,0.08)] text-[#22c55e]'
+                        : event.status === 'blocked'
+                          ? 'w-20 justify-center border-red-500/30 bg-red-500/[0.08] text-red-400'
+                          : 'w-20 justify-center'
+                    }
                   >
                     {event.status === 'allowed' && (
                       <IconCheck className='mr-1 h-3 w-3' />
@@ -308,10 +335,10 @@ export function McpContent() {
                     )}
                     {event.status}
                   </Badge>
-                  <span className='text-foreground font-mono text-sm'>
+                  <span className='font-mono text-sm text-white'>
                     {event.tool}
                   </span>
-                  <span className='text-muted-foreground ml-auto flex items-center text-xs'>
+                  <span className='ml-auto flex items-center text-xs text-[#52525b]'>
                     <IconClock className='mr-1 h-3 w-3' />
                     {event.latency}
                   </span>
@@ -323,12 +350,10 @@ export function McpContent() {
       </section>
 
       {/* Architecture */}
-      <section className='bg-muted/30 py-20'>
+      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
-            Architecture
-          </h2>
-          <div className='bg-background rounded-xl border p-6'>
+          <h2 className='mb-8 text-2xl font-bold text-white'>Architecture</h2>
+          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
             <MermaidDiagram chart={architectureChart} />
           </div>
         </div>
@@ -337,34 +362,32 @@ export function McpContent() {
       {/* Guard Flow */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>
-            Guard Flow
-          </h2>
-          <div className='bg-background rounded-xl border p-6'>
+          <h2 className='mb-8 text-2xl font-bold text-white'>Guard Flow</h2>
+          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
             <MermaidDiagram chart={guardFlowChart} />
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className='bg-muted/30 py-16'>
+      <section className='border-y border-white/[0.07] bg-white/[0.015] py-16'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-4 text-2xl font-bold'>
+          <h2 className='mb-4 text-2xl font-bold text-white'>
             Pricing &amp; Limits
           </h2>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-            <div className='bg-background rounded-xl border p-6'>
-              <h3 className='text-foreground mb-2 font-semibold'>Free Tier</h3>
-              <ul className='text-muted-foreground space-y-2 text-sm'>
+            <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+              <h3 className='mb-2 font-semibold text-white'>Free Tier</h3>
+              <ul className='space-y-2 text-sm text-[#71717a]'>
                 <li>100 events/minute rate limit</li>
                 <li>7-day event retention</li>
                 <li>3 guard rules</li>
                 <li>1 API key</li>
               </ul>
             </div>
-            <div className='bg-background rounded-xl border p-6'>
-              <h3 className='text-foreground mb-2 font-semibold'>Pro</h3>
-              <ul className='text-muted-foreground space-y-2 text-sm'>
+            <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+              <h3 className='mb-2 font-semibold text-white'>Pro</h3>
+              <ul className='space-y-2 text-sm text-[#71717a]'>
                 <li>Unlimited events</li>
                 <li>90-day retention</li>
                 <li>Unlimited guard rules</li>
@@ -378,7 +401,7 @@ export function McpContent() {
       {/* FAQ */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='text-foreground mb-8 text-2xl font-bold'>FAQ</h2>
+          <h2 className='mb-8 text-2xl font-bold text-white'>FAQ</h2>
           <Accordion type='single' collapsible className='w-full'>
             {faqItems.map((item, i) => (
               <AccordionItem key={i} value={`faq-${i}`}>
