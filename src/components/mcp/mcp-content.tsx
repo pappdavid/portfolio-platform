@@ -318,7 +318,7 @@ export function McpContent() {
                     }
                     className={
                       event.status === 'allowed'
-                        ? 'w-20 justify-center border-[#22c55e]/30 bg-[#22c55e]/[0.08] text-[#22c55e]'
+                        ? 'w-20 justify-center border-[rgba(34,197,94,0.3)] bg-[rgba(34,197,94,0.08)] text-[#22c55e]'
                         : event.status === 'blocked'
                           ? 'w-20 justify-center border-red-500/30 bg-red-500/[0.08] text-red-400'
                           : 'w-20 justify-center'
