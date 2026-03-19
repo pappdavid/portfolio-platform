@@ -29,7 +29,6 @@
     "@crayonai/react-core": "^0.7.7",
     "@crayonai/react-ui": "^0.9.16",
     "@crayonai/stream": "^0.6.4",
-
     "@hookform/resolvers": "^5.2.1",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@radix-ui/react-accordion": "^1.2.3",
@@ -62,7 +61,6 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
-
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tabler/icons-react": "^3.40.0",
@@ -71,6 +69,7 @@
     "@thesysai/genui-sdk": "^0.8.5",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.36.3",
+    "@xyflow/react": "^12.10.1",
     "ai": "^6.0.116",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
