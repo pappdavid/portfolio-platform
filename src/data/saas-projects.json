@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "slug": "deprecation-clock",
+    "name": "deprecation-clock",
+    "description": "",
+    "url": "https://deprecation-clock.vercel.app",
+    "screenshotPath": "/saas-screenshots/deprecation-clock.png",
+    "updatedAt": "2026-03-20T11:32:54.369Z"
+  },
+  {
+    "slug": "tech-debt-ledger",
+    "name": "tech-debt-ledger",
+    "description": "📊 TechDebtLedger — Track technical debt as a financial number. Give your CTO a number to show the CFO.",
+    "url": "https://tech-debt-ledger.vercel.app",
+    "screenshotPath": "/saas-screenshots/tech-debt-ledger.png",
+    "updatedAt": "2026-03-20T11:32:55.533Z"
+  },
+  {
+    "slug": "proposal-spy",
+    "name": "proposal-spy",
+    "description": "🔍 ProposalSpy — You lost 7 deals to Competitor X. Here's exactly why. AI-powered lost deal analysis.",
+    "url": "https://proposal-spy.vercel.app",
+    "screenshotPath": "/saas-screenshots/proposal-spy.png",
+    "updatedAt": "2026-03-20T11:32:56.660Z"
+  },
+  {
+    "slug": "cloud-shame",
+    "name": "cloud-shame",
+    "description": "☁️ CloudShame — Your cloud bill is trying to tell you something. AI-powered AWS/GCP/Azure waste analysis.",
+    "url": "https://cloud-shame.vercel.app",
+    "screenshotPath": "/saas-screenshots/cloud-shame.png",
+    "updatedAt": "2026-03-20T11:32:57.980Z"
+  },
+  {
+    "slug": "velocity-truth",
+    "name": "velocity-truth",
+    "description": "⚡ VelocityTruth — DORA metrics without the consultancy invoice. Honest engineering velocity for EMs.",
+    "url": "https://velocity-truth.vercel.app",
+    "screenshotPath": "/saas-screenshots/velocity-truth.png",
+    "updatedAt": "2026-03-20T11:32:59.078Z"
+  },
+  {
+    "slug": "churn-autopsy",
+    "name": "churn-autopsy",
+    "description": "🔬 ChurnAutopsy — Not just that they churned. Why they churned. AI-powered churn analysis for B2B SaaS.",
+    "url": "https://churn-autopsy.vercel.app",
+    "screenshotPath": "/saas-screenshots/churn-autopsy.png",
+    "updatedAt": "2026-03-20T11:33:00.216Z"
+  },
+  {
+    "slug": "meeting-receipt",
+    "name": "meeting-receipt",
+    "description": "🧾 MeetingReceipt — AI that sends a receipt after every meeting with duration, attendees, estimated salary cost, and a snarky summary.",
+    "url": "https://meeting-receipt.vercel.app",
+    "screenshotPath": "/saas-screenshots/meeting-receipt.png",
+    "updatedAt": "2026-03-20T11:33:01.542Z"
+  },
+  {
+    "slug": "standup-liar",
+    "name": "standup-liar",
+    "description": "🤥 StandupLiar — What did you actually do yesterday? AI generates your standup from real GitHub activity.",
+    "url": "https://standup-liar.vercel.app",
+    "screenshotPath": "/saas-screenshots/standup-liar.png",
+    "updatedAt": "2026-03-20T11:33:02.696Z"
+  }
+]
