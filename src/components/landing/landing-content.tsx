@@ -764,24 +764,29 @@ export function LandingContent() {
       <section className='relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-28'>
         <div>
           <MonoEyebrow color='green' className='mb-7'>
-            AI Engineering · Production-Grade
+            AI Engineering Student · VU Amsterdam
           </MonoEyebrow>
           <h1 className='mb-5 bg-gradient-to-br from-white to-white/50 bg-clip-text text-5xl leading-[1.07] font-extrabold tracking-[-0.04em] text-transparent md:text-6xl'>
-            I build production-grade
-            <br />
-            LLM systems.
+            David Papp —<br />
+            AI Engineering Student
           </h1>
+          <p className='mb-4 max-w-md text-base leading-relaxed text-[#71717a]'>
+            2nd-year BSc Artificial Intelligence at VU Amsterdam. I build
+            production-quality LLM tools: agent observability, fine-tuning
+            pipelines, and retrieval systems.
+          </p>
           <p className='mb-10 max-w-md text-base leading-relaxed text-[#71717a]'>
-            Agent observability, fine-tuning pipelines, and retrieval
-            infrastructure — built cost-aware, security-first, and without
-            over-engineering.
+            Recently consulted for an AI-first startup to cut LLM API costs by
+            ~40% and harden safety controls against prompt injection. Looking
+            for junior AI/automation engineer or data science roles in the
+            Netherlands.
           </p>
           <div className='flex flex-wrap gap-3'>
             <a
               href='mailto:contact@davidpapp.dev'
               className='inline-flex items-center gap-2 rounded-lg bg-[#22c55e] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all hover:-translate-y-px hover:shadow-[0_0_32px_rgba(34,197,94,0.5)]'
             >
-              Email me about your AI role
+              Email me
             </a>
             <a
               href='https://calendly.com/david-webinform/30min'
@@ -790,6 +795,14 @@ export function LandingContent() {
               className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
             >
               Book a 20-min call
+            </a>
+            <a
+              href='/cv.pdf'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/[0.08]'
+            >
+              Download CV
             </a>
           </div>
         </div>
@@ -804,7 +817,7 @@ export function LandingContent() {
           Three Pillars
         </h2>
         <p className='mb-12 text-center text-[#71717a]'>
-          Each product solves a real problem in the AI engineering stack.
+          Each project tackles a real problem in the AI engineering stack.
         </p>
         <div className='grid grid-cols-1 gap-5 md:grid-cols-3'>
           {pillars.map((p) => (
@@ -834,6 +847,17 @@ export function LandingContent() {
         <h2 className='mb-5 text-xl font-bold tracking-[-0.02em]'>
           Quickstart in 3 lines
         </h2>
+        <p className='mb-4 text-sm text-[#52525b]'>
+          Reference implementation — this is the API surface I designed for MCP
+          Sentinel. See the{' '}
+          <a
+            href='/projects/mcp-sentinel'
+            className='text-[#22c55e] hover:underline'
+          >
+            architecture section
+          </a>{' '}
+          for how it works under the hood.
+        </p>
         <div className='overflow-hidden rounded-xl border border-white/[0.09] bg-[#0a0a0c] shadow-[0_0_60px_rgba(0,0,0,0.7)]'>
           <div className='flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.03] px-4 py-3'>
             <span className='h-2.5 w-2.5 rounded-full bg-[#ff5f57]' />
