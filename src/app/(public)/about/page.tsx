@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +12,8 @@ import {
 
 export const metadata: Metadata = {
   title: 'About — David Papp',
-  description: 'AI Engineer building production LLM systems.'
+  description:
+    'AI engineering student at VU Amsterdam, building production-quality tools for the LLM stack.'
 };
 
 export default function AboutPage() {
@@ -27,78 +29,94 @@ export default function AboutPage() {
             David Papp
           </h1>
           <p className='text-muted-foreground mt-6 text-lg leading-relaxed'>
-            AI engineer building production-grade tools for teams that ship LLM
-            products. I focus on the infrastructure between models and users —
-            observability, guard rails, fine-tuning pipelines, and retrieval
-            systems.
-          </p>
-          <p className='text-muted-foreground mt-4 text-lg leading-relaxed'>
-            Previously led three product launches end-to-end. I care about cost
-            discipline, security by default, and shipping the simplest thing
-            that works.
+            AI engineering student at VU Amsterdam, building production-quality
+            tools for the LLM stack. I focus on the infrastructure between
+            models and users — observability, guard rails, fine-tuning
+            pipelines, and retrieval systems.
           </p>
         </div>
       </section>
 
-      {/* Target Roles */}
+      {/* Background */}
       <section className='bg-muted/30 py-16'>
         <div className='mx-auto max-w-3xl px-4'>
-          <h2 className='text-foreground mb-6 text-2xl font-bold'>What I Do</h2>
-          <div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
-            {[
-              {
-                title: 'AI Engineering',
-                description:
-                  'Building and deploying LLM-powered products — from prompt engineering to model fine-tuning to production infrastructure.'
-              },
-              {
-                title: 'Platform Development',
-                description:
-                  'Full-stack TypeScript/Python with Next.js, Supabase, and cloud-native tooling. Emphasis on developer experience.'
-              },
-              {
-                title: 'Technical Leadership',
-                description:
-                  'Scoping work, unblocking teams, and making architecture decisions that balance speed with maintainability.'
-              },
-              {
-                title: 'Consulting',
-                description:
-                  'Available for short engagements: AI strategy review, architecture audit, and prototype-to-production handoff.'
-              }
-            ].map((item) => (
-              <div
-                key={item.title}
-                className='bg-background rounded-xl border p-6'
-              >
-                <h3 className='text-foreground mb-2 font-semibold'>
-                  {item.title}
+          <h2 className='text-foreground mb-6 text-2xl font-bold'>
+            Background
+          </h2>
+          <p className='text-muted-foreground mb-4 text-base leading-relaxed'>
+            I consulted for an AI-first startup where I restructured their LLM
+            backend to cut unnecessary OpenAI API calls by ~40% and closed a
+            prompt injection vulnerability in their moderation layer. I
+            consistently take the technical lead role in hackathon and
+            rapid-build teams of 4–5 people.
+          </p>
+          <p className='text-muted-foreground text-base leading-relaxed'>
+            Before university, I worked as a Project Assistant at 4iG (Budapest)
+            on two large public-sector IT projects, and taught programming at
+            Logiscool.
+          </p>
+        </div>
+      </section>
+
+      {/* Education */}
+      <section className='py-16'>
+        <div className='mx-auto max-w-3xl px-4'>
+          <h2 className='text-foreground mb-6 text-2xl font-bold'>Education</h2>
+          <div className='space-y-6'>
+            <div className='bg-background rounded-xl border p-6'>
+              <div className='mb-1 flex items-start justify-between gap-4'>
+                <h3 className='text-foreground font-semibold'>
+                  BSc Artificial Intelligence — Vrije Universiteit Amsterdam
                 </h3>
-                <p className='text-muted-foreground text-sm leading-relaxed'>
-                  {item.description}
-                </p>
+                <span className='text-muted-foreground shrink-0 text-sm'>
+                  Sep 2023 – Expected 2026
+                </span>
               </div>
-            ))}
+              <p className='text-muted-foreground text-sm leading-relaxed'>
+                Machine Learning · Deep Learning · NLP · Computer Vision · Data
+                Mining · Algorithms &amp; Complexity · Statistics
+              </p>
+            </div>
+            <div className='bg-background rounded-xl border p-6'>
+              <div className='mb-1 flex items-start justify-between gap-4'>
+                <h3 className='text-foreground font-semibold'>
+                  Advanced Studies in Computer Science — Milestone Institute,
+                  Budapest
+                </h3>
+                <span className='text-muted-foreground shrink-0 text-sm'>
+                  2019–2023
+                </span>
+              </div>
+              <p className='text-muted-foreground text-sm leading-relaxed'>
+                Led the Computer Sciences Society.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Skills */}
-      <section className='py-16'>
+      <section className='bg-muted/30 py-16'>
         <div className='mx-auto max-w-3xl px-4'>
           <h2 className='text-foreground mb-6 text-2xl font-bold'>Skills</h2>
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
             {[
               {
-                group: 'LLM Application Layer',
+                group: 'AI & LLM Tooling',
                 level: 'Daily use',
                 levelColor: 'text-[#22c55e]',
                 context:
-                  'Prompt engineering, structured outputs, tool calling, and guard rail design.',
+                  'Prompt engineering, structured outputs, tool calling, guard rail design.',
+                evidence: [
+                  { label: 'MCP Sentinel', href: '/projects/mcp-sentinel' },
+                  { label: 'RAG Chat', href: '/projects/rag-chat' }
+                ],
                 tags: [
                   'OpenAI API',
                   'Anthropic API',
                   'LangChain',
+                  'CrewAI',
+                  'HuggingFace',
                   'Structured Outputs'
                 ]
               },
@@ -107,7 +125,8 @@ export default function AboutPage() {
                 level: 'Active',
                 levelColor: 'text-[#06b6d4]',
                 context:
-                  'Document chunking, embedding pipelines, vector search, and reranking.',
+                  'Embedding pipelines, vector search (pgvector), cross-encoder reranking, citation enforcement.',
+                evidence: [{ label: 'RAG Chat', href: '/projects/rag-chat' }],
                 tags: [
                   'pgvector',
                   'Supabase',
@@ -116,28 +135,63 @@ export default function AboutPage() {
                 ]
               },
               {
-                group: 'Agentic Systems',
+                group: 'Agentic Systems & Security',
                 level: 'Daily use',
                 levelColor: 'text-[#22c55e]',
                 context:
-                  'MCP protocol, injection detection, observability middleware, and cost guards.',
-                tags: ['MCP', 'Guard Rails', 'Event Logging', 'HMAC Signing']
+                  'MCP protocol, injection detection, PII scanning, moderation hardening, cost-based rate limiting.',
+                evidence: [
+                  { label: 'MCP Sentinel', href: '/projects/mcp-sentinel' },
+                  { label: 'Startup consulting', href: '/about' }
+                ],
+                tags: ['MCP', 'Guard Rails', 'HMAC Signing', 'Event Logging']
               },
               {
-                group: 'Full-Stack Engineering',
-                level: 'Daily use',
-                levelColor: 'text-[#22c55e]',
-                context:
-                  'End-to-end TypeScript/Python products with auth, DB, and deployment.',
-                tags: ['Next.js', 'TypeScript', 'Supabase', 'Clerk', 'Vercel']
-              },
-              {
-                group: 'Model Training & Infra',
+                group: 'Backend & Data',
                 level: 'Active',
                 levelColor: 'text-[#06b6d4]',
                 context:
-                  'LoRA fine-tuning, JSONL dataset prep, eval loops, and job management.',
-                tags: ['LoRA', 'JSONL', 'Python', 'Docker', 'HuggingFace']
+                  'Full-stack TypeScript/Python. Auth, database, rate limiting, and deployment.',
+                evidence: [{ label: 'All projects', href: '/projects' }],
+                tags: [
+                  'Python',
+                  'Django',
+                  'TypeScript',
+                  'Next.js',
+                  'PostgreSQL',
+                  'Supabase',
+                  'AWS Lambda',
+                  'DynamoDB',
+                  'Docker',
+                  'Kafka (basic)'
+                ]
+              },
+              {
+                group: 'Frontend & Infra',
+                level: 'Working',
+                levelColor: 'text-[#f59e0b]',
+                context:
+                  'Built this portfolio platform end-to-end: auth (Clerk), database (Supabase + RLS), rate limiting (Upstash), and deployment (Vercel).',
+                evidence: [
+                  { label: 'This platform', href: '/projects/portfolio' }
+                ],
+                tags: ['React', 'Tailwind', 'Vercel', 'Cloudflare', 'Clerk']
+              },
+              {
+                group: 'Model Training',
+                level: 'Active',
+                levelColor: 'text-[#06b6d4]',
+                context:
+                  'Built the dataset-to-LoRA pipeline: codebase ingestion, AST-aware chunking, JSONL formatting, and fine-tune job management.',
+                evidence: [
+                  { label: 'Training Pipeline', href: '/projects/training' }
+                ],
+                tags: [
+                  'LoRA / PEFT',
+                  'JSONL',
+                  'AST Chunking',
+                  'HuggingFace Hub'
+                ]
               }
             ].map((item) => (
               <div
@@ -152,8 +206,24 @@ export default function AboutPage() {
                     {item.level}
                   </span>
                 </div>
-                <p className='text-muted-foreground mb-3 text-xs leading-relaxed'>
+                <p className='text-muted-foreground mb-2 text-xs leading-relaxed'>
                   {item.context}
+                </p>
+                <p className='mb-3 text-xs'>
+                  <span className='text-muted-foreground'>See: </span>
+                  {item.evidence.map((ev, i) => (
+                    <span key={ev.href}>
+                      {i > 0 && (
+                        <span className='text-muted-foreground'>, </span>
+                      )}
+                      <Link
+                        href={ev.href}
+                        className='text-[#22c55e] hover:underline'
+                      >
+                        {ev.label}
+                      </Link>
+                    </span>
+                  ))}
                 </p>
                 <div className='flex flex-wrap gap-1.5'>
                   {item.tags.map((tag) => (
@@ -168,20 +238,22 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Get in Touch */}
-      <section className='bg-muted/30 py-16'>
+      {/* Availability */}
+      <section className='py-16'>
         <div className='mx-auto max-w-3xl px-4'>
-          <h2 className='text-foreground mb-2 text-2xl font-bold'>
-            Got an AI role or project in mind?
+          <h2 className='text-foreground mb-4 text-2xl font-bold'>
+            Availability
           </h2>
-          <p className='text-muted-foreground mb-8 text-lg'>
-            I&apos;m open to full-time roles and short engagements.
+          <p className='text-muted-foreground mb-8 text-base leading-relaxed'>
+            Based in Rotterdam, Netherlands. Available for part-time roles
+            during studies, full-time from mid-2026. Open to: junior
+            AI/automation engineer, full-stack AI, and data science roles.
           </p>
           <div className='flex flex-wrap gap-4'>
             <Button asChild size='lg'>
               <a href='mailto:contact@davidpapp.dev'>
                 <IconMail className='mr-2 h-5 w-5' />
-                Email me about a role
+                Email me
               </a>
             </Button>
             <Button asChild variant='outline' size='lg'>
@@ -209,7 +281,7 @@ export default function AboutPage() {
                 rel='noopener noreferrer'
               >
                 <IconBrandGithub className='mr-2 h-4 w-4' />
-                GitHub
+                github.com/pappdavid
               </a>
             </Button>
             <Button asChild variant='ghost' size='sm'>
@@ -219,7 +291,7 @@ export default function AboutPage() {
                 rel='noopener noreferrer'
               >
                 <IconBrandLinkedin className='mr-2 h-4 w-4' />
-                LinkedIn
+                linkedin.com/in/dávid-papp
               </a>
             </Button>
             <Button asChild variant='ghost' size='sm'>
