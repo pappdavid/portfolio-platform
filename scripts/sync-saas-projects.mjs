@@ -91,9 +91,11 @@ async function main() {
 
   const orgProjects = allProjects.filter((p) => {
     const repo = p.link?.repo || '';
-    return repo.startsWith(`${GH_ORG}/`) || p.link?.org === GH_ORG;
+    const isOrgRepo = repo.startsWith(`${GH_ORG}/`) || p.link?.org === GH_ORG;
+    const isProdDeployed = p.targets?.production?.readyState === 'READY';
+    return isOrgRepo && isProdDeployed;
   });
-  console.log(`Filtered to ${orgProjects.length} projects from ${GH_ORG} org`);
+  console.log(`Filtered to ${orgProjects.length} production-deployed projects from ${GH_ORG} org`);
 
   const screenshotsDir = join(ROOT, 'public', 'saas-screenshots');
   mkdirSync(screenshotsDir, { recursive: true });
