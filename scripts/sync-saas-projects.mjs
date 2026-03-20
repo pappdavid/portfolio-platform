@@ -21,6 +21,7 @@ const ROOT = join(__dirname, '..');
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
 const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID || 'team_ZhpfIRsiAC6e9byWX1PtUELx';
 const GH_PAT = process.env.GH_PAT;
+const GH_ORG = process.env.GH_ORG || 'code-shame';
 
 if (!VERCEL_TOKEN) throw new Error('VERCEL_TOKEN is required');
 
@@ -86,7 +87,13 @@ function getProductionUrl(project) {
 async function main() {
   console.log('Fetching Vercel projects…');
   const allProjects = await fetchAllProjects();
-  console.log(`Found ${allProjects.length} projects`);
+  console.log(`Found ${allProjects.length} total projects`);
+
+  const orgProjects = allProjects.filter((p) => {
+    const repo = p.link?.repo || '';
+    return repo.startsWith(`${GH_ORG}/`) || p.link?.org === GH_ORG;
+  });
+  console.log(`Filtered to ${orgProjects.length} projects from ${GH_ORG} org`);
 
   const screenshotsDir = join(ROOT, 'public', 'saas-screenshots');
   mkdirSync(screenshotsDir, { recursive: true });
@@ -94,7 +101,7 @@ async function main() {
   const browser = await chromium.launch();
   const results = [];
 
-  for (const project of allProjects) {
+  for (const project of orgProjects) {
     const url = getProductionUrl(project);
     if (!url) {
       console.log(`  [skip] ${project.name} — no production alias`);
