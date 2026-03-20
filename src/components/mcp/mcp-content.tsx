@@ -664,7 +664,7 @@ export function McpContent() {
       <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
         <div className='mx-auto max-w-4xl px-4'>
           <h2 className='mb-8 text-2xl font-bold text-white'>Architecture</h2>
-          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+          <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
             <McpArchSvg />
           </div>
         </div>
@@ -674,7 +674,7 @@ export function McpContent() {
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
           <h2 className='mb-8 text-2xl font-bold text-white'>Guard Flow</h2>
-          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+          <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
             <GuardFlowSvg />
           </div>
         </div>
