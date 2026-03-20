@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,12 @@ import {
   IconCalendar
 } from '@tabler/icons-react';
 
-export const metadata: Metadata = {
-  title: 'About — David Papp',
+export const metadata = generatePageMetadata({
+  title: 'About',
   description:
-    'AI engineering student at VU Amsterdam, building production-quality tools for the LLM stack.'
-};
+    'AI engineering student at VU Amsterdam, building production-quality tools for the LLM stack.',
+  slug: 'about'
+});
 
 export default function AboutPage() {
   return (
