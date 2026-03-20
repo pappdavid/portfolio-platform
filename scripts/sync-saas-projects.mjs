@@ -52,6 +52,11 @@ async function fetchAllProjects() {
   return projects;
 }
 
+async function fetchProject(id) {
+  const data = await vercelGet(`/v9/projects/${id}`);
+  return data;
+}
+
 // --- GitHub API helper ---
 
 async function fetchGithubRepoDescription(repoId) {
@@ -95,13 +100,17 @@ async function main() {
   const allProjects = await fetchAllProjects();
   console.log(`Found ${allProjects.length} total projects`);
 
-  const orgProjects = allProjects.filter((p) => {
+  const orgProjectStubs = allProjects.filter((p) => {
     const repo = p.link?.repo || '';
     const isOrgRepo = repo.startsWith(`${GH_ORG}/`) || p.link?.org === GH_ORG;
     const isProdDeployed = p.targets?.production?.readyState === 'READY';
     return isOrgRepo && isProdDeployed;
   });
-  console.log(`Filtered to ${orgProjects.length} production-deployed projects from ${GH_ORG} org`);
+  console.log(`Found ${orgProjectStubs.length} production-deployed projects from ${GH_ORG} org, fetching full data…`);
+
+  // Fetch each project individually — list API omits alias/url from targets
+  const orgProjects = await Promise.all(orgProjectStubs.map((p) => fetchProject(p.id)));
+  console.log(`Fetched full data for ${orgProjects.length} projects`);
 
   const screenshotsDir = join(ROOT, 'public', 'saas-screenshots');
   mkdirSync(screenshotsDir, { recursive: true });
