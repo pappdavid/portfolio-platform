@@ -128,6 +128,11 @@ export default function RagChatDetailPage() {
           Retrieval-augmented chat interface with document upload and Three.js
           visualization for spatial data responses.
         </p>
+        <p className='text-muted-foreground mb-4 text-sm'>
+          <span className='text-foreground font-medium'>My role:</span> Solo
+          project — exploring retrieval-augmented generation with conditional 3D
+          rendering.
+        </p>
         <div className='flex flex-wrap gap-3'>
           <Button asChild>
             <Link href='/chat'>View live demo</Link>

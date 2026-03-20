@@ -134,6 +134,10 @@ export default function McpSentinelDetailPage() {
           A proxy layer for Model Context Protocol that logs, guards, and audits
           every agent tool call in real time.
         </p>
+        <p className='text-muted-foreground mb-4 text-sm'>
+          <span className='text-foreground font-medium'>My role:</span> Solo
+          project — designed and built to explore agent observability patterns.
+        </p>
         <div className='flex flex-wrap gap-3'>
           <Button asChild>
             <Link href='/mcp'>View live demo</Link>

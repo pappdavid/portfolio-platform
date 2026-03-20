@@ -136,6 +136,11 @@ export default function TrainingDetailPage() {
           Automated pipeline to convert codebases into fine-tuning datasets.
           Supports LoRA adapters for any compatible model.
         </p>
+        <p className='text-muted-foreground mb-4 text-sm'>
+          <span className='text-foreground font-medium'>My role:</span> Solo
+          project — built to solve the codebase-to-fine-tuning data quality
+          problem.
+        </p>
         <div className='flex flex-wrap gap-3'>
           <Button asChild>
             <Link href='/training'>View live demo</Link>
