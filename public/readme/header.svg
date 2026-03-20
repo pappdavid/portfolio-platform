@@ -1,0 +1,64 @@
+<svg width="800" height="160" viewBox="0 0 800 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes shimmer {
+      0% { stop-color: #ffffff; }
+      50% { stop-color: #a1a1aa; }
+      100% { stop-color: #ffffff; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    @keyframes flow {
+      0% { stroke-dashoffset: 20; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace; }
+    .shimmer-stop-1 { animation: shimmer 3s ease-in-out infinite; }
+    .shimmer-stop-2 { animation: shimmer 3s ease-in-out infinite 1.5s; }
+    .subtitle { animation: pulse 3s ease-in-out infinite; }
+    .dash { animation: flow 1.5s linear infinite; }
+  </style>
+
+  <defs>
+    <linearGradient id="bggrad" x1="0" y1="0" x2="800" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="titlegrad" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" class="shimmer-stop-1"/>
+      <stop offset="50%" stop-color="#d4d4d8" class="shimmer-stop-2"/>
+      <stop offset="100%" stop-color="#ffffff" class="shimmer-stop-1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="160" rx="12" fill="#0a0a0a"/>
+  <rect width="800" height="160" rx="12" fill="url(#bggrad)" opacity="0.4"/>
+
+  <!-- Top decorative line -->
+  <line x1="40" y1="28" x2="760" y2="28" stroke="#22c55e" stroke-width="0.5" stroke-opacity="0.3"/>
+
+  <!-- Main title -->
+  <text x="400" y="82" text-anchor="middle" fill="url(#titlegrad)"
+    font-size="40" font-weight="700" letter-spacing="-1.5" class="title">
+    David Papp
+  </text>
+
+  <!-- Subtitle -->
+  <text x="400" y="112" text-anchor="middle" fill="#22c55e"
+    font-size="14" font-weight="400" letter-spacing="0.5" class="title subtitle">
+    AI Engineering Student · VU Amsterdam
+  </text>
+
+  <!-- Animated dashed separator -->
+  <line x1="40" y1="132" x2="760" y2="132"
+    stroke="#22c55e" stroke-width="1" stroke-opacity="0.25"
+    stroke-dasharray="6 4" class="dash"/>
+
+  <!-- Bottom label -->
+  <text x="400" y="150" text-anchor="middle" fill="#3f3f46"
+    font-size="10" font-weight="400" letter-spacing="2" class="title">
+    PORTFOLIO PLATFORM
+  </text>
+</svg>
