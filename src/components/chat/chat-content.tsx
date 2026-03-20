@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
 import { GridBackground } from '@/components/ui/grid-background';
 import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 import {
@@ -38,18 +37,6 @@ export type UploadedFile = {
   status: 'processing' | 'ready';
 };
 
-const architectureChart = `graph LR
-  A[Upload PDF/Text] --> B[Chunker]
-  B --> C[Embeddings]
-  C --> D[Vector Store]
-  E[User Query] --> F[Retriever]
-  D --> F
-  F --> G[LLM + Context]
-  G --> H[Response]
-  H --> I{3D Content?}
-  I -->|Yes| J[Three.js Viewer]
-  I -->|No| K[Text Response]`;
-
 const INITIAL_MESSAGES: ChatMessage[] = [
   {
     role: 'user',
@@ -66,6 +53,273 @@ function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function ChatArchSvg() {
+  return (
+    <svg
+      viewBox='0 0 780 130'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+      className='w-full'
+      aria-label='Chat RAG architecture: upload and embed documents into vector store; user query retrieved, reranked, sent to LLM, response optionally rendered in Three.js'
+    >
+      {/* Ingestion row */}
+      <rect
+        x='0'
+        y='5'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(249,115,22,0.06)'
+        stroke='rgba(249,115,22,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='50'
+        y='27'
+        textAnchor='middle'
+        fill='#f97316'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Upload
+      </text>
+      <path
+        d='M102 23 L112 23'
+        stroke='rgba(249,115,22,0.5)'
+        strokeWidth='1.5'
+      />
+      <polygon points='112,19.5 116,23 112,26.5' fill='rgba(249,115,22,0.7)' />
+      <rect
+        x='118'
+        y='5'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(249,115,22,0.06)'
+        stroke='rgba(249,115,22,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='168'
+        y='27'
+        textAnchor='middle'
+        fill='#f97316'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Chunker
+      </text>
+      <path
+        d='M220 23 L230 23'
+        stroke='rgba(249,115,22,0.5)'
+        strokeWidth='1.5'
+      />
+      <polygon points='230,19.5 234,23 230,26.5' fill='rgba(249,115,22,0.7)' />
+      <rect
+        x='236'
+        y='5'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(249,115,22,0.06)'
+        stroke='rgba(249,115,22,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='286'
+        y='27'
+        textAnchor='middle'
+        fill='#f97316'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Embeddings
+      </text>
+      <path
+        d='M338 23 L348 23'
+        stroke='rgba(249,115,22,0.5)'
+        strokeWidth='1.5'
+      />
+      <polygon points='348,19.5 352,23 348,26.5' fill='rgba(249,115,22,0.7)' />
+      <rect
+        x='354'
+        y='5'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(6,182,212,0.06)'
+        stroke='rgba(6,182,212,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='404'
+        y='27'
+        textAnchor='middle'
+        fill='#06b6d4'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Vector Store
+      </text>
+      {/* Query row */}
+      <rect
+        x='0'
+        y='89'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(255,255,255,0.04)'
+        stroke='rgba(255,255,255,0.09)'
+        strokeWidth='1'
+      />
+      <text
+        x='50'
+        y='111'
+        textAnchor='middle'
+        fill='#a1a1aa'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        User Query
+      </text>
+      <path
+        d='M102 107 L112 107'
+        stroke='rgba(168,85,247,0.5)'
+        strokeWidth='1.5'
+      />
+      <polygon
+        points='112,103.5 116,107 112,110.5'
+        fill='rgba(168,85,247,0.7)'
+      />
+      <rect
+        x='118'
+        y='89'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(249,115,22,0.06)'
+        stroke='rgba(249,115,22,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='168'
+        y='111'
+        textAnchor='middle'
+        fill='#f97316'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Retriever
+      </text>
+      <path
+        d='M220 107 L230 107'
+        stroke='rgba(168,85,247,0.5)'
+        strokeWidth='1.5'
+      />
+      <polygon
+        points='230,103.5 234,107 230,110.5'
+        fill='rgba(168,85,247,0.7)'
+      />
+      <rect
+        x='236'
+        y='89'
+        width='110'
+        height='36'
+        rx='7'
+        fill='rgba(168,85,247,0.06)'
+        stroke='rgba(168,85,247,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='291'
+        y='111'
+        textAnchor='middle'
+        fill='#a855f7'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        LLM + Context
+      </text>
+      <path
+        d='M348 107 L358 107'
+        stroke='rgba(168,85,247,0.5)'
+        strokeWidth='1.5'
+      />
+      <polygon
+        points='358,103.5 362,107 358,110.5'
+        fill='rgba(168,85,247,0.7)'
+      />
+      <rect
+        x='364'
+        y='89'
+        width='100'
+        height='36'
+        rx='7'
+        fill='rgba(168,85,247,0.06)'
+        stroke='rgba(168,85,247,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='414'
+        y='111'
+        textAnchor='middle'
+        fill='#a855f7'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Response
+      </text>
+      <path
+        d='M466 107 L476 107'
+        stroke='rgba(249,115,22,0.5)'
+        strokeWidth='1.5'
+        strokeDasharray='3 2'
+      />
+      <polygon
+        points='476,103.5 480,107 476,110.5'
+        fill='rgba(249,115,22,0.7)'
+      />
+      <rect
+        x='482'
+        y='89'
+        width='130'
+        height='36'
+        rx='7'
+        fill='rgba(249,115,22,0.06)'
+        stroke='rgba(249,115,22,0.2)'
+        strokeWidth='1.5'
+      />
+      <text
+        x='547'
+        y='104'
+        textAnchor='middle'
+        fill='#f97316'
+        fontSize='10'
+        fontFamily='monospace'
+      >
+        Three.js
+      </text>
+      <text
+        x='547'
+        y='118'
+        textAnchor='middle'
+        fill='#52525b'
+        fontSize='8'
+        fontFamily='monospace'
+      >
+        (if spatial data)
+      </text>
+      {/* Vector store feeds retriever */}
+      <path
+        d='M404 41 L404 65 L168 65 L168 89'
+        stroke='rgba(6,182,212,0.3)'
+        strokeWidth='1.5'
+        strokeDasharray='4 3'
+      />
+    </svg>
+  );
 }
 
 export function ChatContent() {
@@ -569,8 +823,8 @@ export function ChatContent() {
         <h2 className='mb-8 text-2xl font-bold tracking-[-0.02em]'>
           Architecture
         </h2>
-        <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
-          <MermaidDiagram chart={architectureChart} />
+        <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+          <ChatArchSvg />
         </div>
       </section>
     </div>
