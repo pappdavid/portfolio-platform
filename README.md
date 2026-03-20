@@ -62,12 +62,12 @@ The platform is structured around three independent layers:
 - **Static pages** — Privacy Policy, Terms of Service, Security, Brand
 
 ### Dashboard (auth required)
-- **Overview** — analytics cards and charts using parallel routes (`@area_stats`, `@bar_stats`, `@pie_stats`, `@sales`) for independent loading and error isolation
+- **Overview** — real stats cards (MCP calls, datasets, active API keys) from Supabase + parallel route charts (`@area_stats`, `@bar_stats`, `@pie_stats`) with independent loading and error isolation
 - **MCP dashboard** — create/revoke API keys, inspect live event log with guard outcomes
 - **Training dashboard** — upload datasets, trigger LoRA fine-tune jobs, monitor job status
 - **Referrals** — generate referral links, track click events, view conversion data
 - **Profile** — full Clerk account management (passwordless, social logins, passkeys)
-- **Settings** — theme selection, preferences
+- **Admin** — internal panel showing company usage stats, demo quotas, event breakdowns (Supabase-backed)
 - **RBAC navigation** — sidebar items filtered by Clerk organisation role (admin/member/viewer)
 - **KBar** — `⌘K` command palette for keyboard navigation
 
@@ -167,14 +167,15 @@ src/app/
 │       └── portfolio/page.tsx      # Project detail → /projects/portfolio
 ├── dashboard/                      # Protected by Clerk (proxy.ts)
 │   ├── layout.tsx                  # Sidebar + KBar + InfoSidebar shell
-│   ├── overview/                   # Parallel routes
+│   ├── overview/                   # Parallel routes — real Supabase stats
 │   │   ├── @area_stats/            # Independent loading slot
 │   │   ├── @bar_stats/
-│   │   ├── @pie_stats/
-│   │   └── @sales/
+│   │   └── @pie_stats/
 │   ├── mcp/page.tsx                # API keys + event log
 │   ├── training/page.tsx           # Datasets + training jobs
-│   └── referrals/page.tsx          # Referral link tracking
+│   ├── referrals/page.tsx          # Referral link tracking
+│   ├── profile/[[...profile]]/     # Clerk account management
+│   └── admin/page.tsx              # Admin panel (Supabase company stats)
 ├── auth/
 │   ├── sign-in/[[...sign-in]]/     # Clerk sign-in (catch-all)
 │   └── sign-up/[[...sign-up]]/     # Clerk sign-up (catch-all)
@@ -327,19 +328,37 @@ src/
 │   ├── shared/             # arch-diagram, code-block, mermaid-diagram
 │   └── themes/             # Theme config and switcher
 ├── features/
-│   ├── auth/               # Sign-in/sign-up views, interactive grid
-│   ├── mcp/                # MCP dashboard feature (keys, events)
-│   ├── training/           # Training dashboard feature
-│   └── referrals/          # Referral dashboard feature
+│   ├── auth/               # Sign-in/sign-up views, interactive grid background
+│   ├── mcp-dashboard/      # MCP dashboard feature (API keys, event log)
+│   ├── training-dashboard/ # Training dashboard (datasets, jobs)
+│   ├── referrals/          # Referral dashboard feature
+│   ├── overview/           # Dashboard overview graphs (area, bar, pie + skeletons)
+│   └── profile/            # Profile view page (Clerk UI)
 ├── lib/
 │   ├── supabase/
 │   │   ├── client.ts       # Browser Supabase client
-│   │   └── server.ts       # Server Supabase client (service role)
+│   │   ├── server.ts       # Server Supabase client (service role)
+│   │   └── admin.ts        # Supabase admin client (full access for API routes)
+│   ├── ama/corpus.ts       # AMA corpus data
+│   ├── chat/rag.ts         # RAG pipeline logic
+│   ├── mcp/                # MCP server and tools definitions
+│   ├── training/parser.ts  # Codebase AST parser for fine-tune dataset
 │   ├── rate-limit.ts       # Upstash sliding-window factory functions
+│   ├── company.ts          # Company/demo-quota helpers
+│   ├── demo-quota.ts       # Demo quota enforcement
+│   ├── metadata.ts         # Shared Next.js metadata factory
+│   ├── format.ts           # Date/number formatting utilities
+│   ├── parsers.ts          # URL/filter parsers
+│   ├── data-table.ts       # Data table column/filter helpers
 │   └── utils.ts            # cn() and shared utilities
 ├── hooks/
 │   ├── use-nav.ts          # useFilteredNavItems — RBAC navigation filtering
-│   └── use-theme.ts        # Theme persistence hook
+│   ├── use-breadcrumbs.tsx # Breadcrumb generation from pathname
+│   ├── use-callback-ref.ts # Stable callback ref utility
+│   ├── use-debounce.tsx    # Debounce value hook
+│   ├── use-debounced-callback.ts # Debounced callback hook
+│   ├── use-media-query.ts  # CSS media query hook
+│   └── use-mobile.tsx      # Mobile breakpoint detection
 ├── config/
 │   ├── nav-config.ts       # publicNavItems + navItems (dashboard sidebar)
 │   └── font.config.ts      # Font configuration
