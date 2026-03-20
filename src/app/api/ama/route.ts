@@ -5,11 +5,6 @@ import { amaPublicRateLimit, amaAuthRateLimit } from '@/lib/rate-limit';
 import { amaCorpus } from '@/lib/ama/corpus';
 import { chunkText, retrieveChunks } from '@/lib/chat/rag';
 
-const c1 = new OpenAI({
-  baseURL: 'https://api.thesys.dev/v1/embed/',
-  apiKey: process.env.THESYS_API_KEY
-});
-
 const AVAILABLE_LINKS = [
   { label: 'MCP Sentinel demo', url: '/mcp' },
   { label: 'Training Pipeline demo', url: '/training' },
@@ -56,6 +51,11 @@ export async function POST(req: Request) {
   const relevant = retrieveChunks(question, chunks, 3);
   const context =
     relevant.length > 0 ? relevant.join('\n\n') : amaCorpus.slice(0, 1500);
+
+  const c1 = new OpenAI({
+    baseURL: 'https://api.thesys.dev/v1/embed/',
+    apiKey: process.env.THESYS_API_KEY
+  });
 
   try {
     const completion = await c1.chat.completions.create({

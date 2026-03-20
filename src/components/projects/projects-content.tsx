@@ -201,9 +201,16 @@ export function ProjectsContent() {
   const project = projects.find((p) => p.id === activeProject)!;
 
   return (
-    <div className='flex flex-col'>
+    <div className='relative flex flex-col'>
+      <div
+        className='pointer-events-none absolute inset-0 z-0'
+        style={{
+          backgroundImage:
+            'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(6,182,212,0.10) 0%, transparent 60%)'
+        }}
+      />
       {/* Hero */}
-      <section className='py-20'>
+      <section className='relative z-10 py-20'>
         <div className='mx-auto max-w-4xl px-4'>
           <Badge variant='secondary' className='mb-4'>
             Showcase

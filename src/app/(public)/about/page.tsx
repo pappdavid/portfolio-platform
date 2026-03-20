@@ -19,9 +19,16 @@ export const metadata = generatePageMetadata({
 
 export default function AboutPage() {
   return (
-    <div className='flex flex-col'>
+    <div className='relative flex flex-col'>
+      <div
+        className='pointer-events-none absolute inset-0 z-0'
+        style={{
+          backgroundImage:
+            'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(249,115,22,0.09) 0%, transparent 60%)'
+        }}
+      />
       {/* Bio */}
-      <section className='py-20'>
+      <section className='relative z-10 py-20'>
         <div className='mx-auto max-w-3xl px-4'>
           <Badge variant='secondary' className='mb-4'>
             About
