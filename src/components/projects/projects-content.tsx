@@ -206,10 +206,10 @@ export function ProjectsContent() {
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
           <Badge variant='secondary' className='mb-4'>
-            Engineering Portfolio
+            Showcase
           </Badge>
           <h1 className='text-foreground text-4xl font-bold tracking-tight sm:text-5xl'>
-            Projects
+            Showcase
           </h1>
           <p className='text-muted-foreground mt-4 max-w-2xl text-lg leading-relaxed'>
             A selection of AI engineering projects spanning observability,

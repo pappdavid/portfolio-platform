@@ -17,8 +17,15 @@ export const publicNavItems: NavItem[] = [
     items: []
   },
   {
-    title: 'Projects',
+    title: 'Showcase',
     url: '/projects',
+    icon: 'folder',
+    isActive: false,
+    items: []
+  },
+  {
+    title: 'SaaS Projects',
+    url: '/saas-projects',
     icon: 'folder',
     isActive: false,
     items: []
