@@ -53,8 +53,20 @@ async function fetchAllProjects() {
 }
 
 async function fetchProject(id) {
-  const data = await vercelGet(`/v9/projects/${id}`);
-  return data;
+  return vercelGet(`/v9/projects/${id}`);
+}
+
+async function fetchProductionDeploymentUrl(projectId) {
+  try {
+    const data = await vercelGet(
+      `/v6/deployments?projectId=${projectId}&target=production&state=READY&limit=1`
+    );
+    const deployment = data.deployments?.[0];
+    if (!deployment?.url) return null;
+    return `https://${deployment.url}`;
+  } catch {
+    return null;
+  }
 }
 
 // --- GitHub API helper ---
@@ -119,9 +131,13 @@ async function main() {
   const results = [];
 
   for (const project of orgProjects) {
-    const url = getProductionUrl(project);
+    // Try parsed aliases first, fall back to deployments API
+    let url = getProductionUrl(project);
     if (!url) {
-      console.log(`  [skip] ${project.name} — no production alias`);
+      url = await fetchProductionDeploymentUrl(project.id);
+    }
+    if (!url) {
+      console.log(`  [skip] ${project.name} — no production URL found`);
       continue;
     }
 
