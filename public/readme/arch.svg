@@ -1,0 +1,74 @@
+<svg width="800" height="200" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes flow {
+      0% { stroke-dashoffset: 20; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .arrow { animation: flow 1.8s linear infinite; }
+    .arrow2 { animation: flow 1.8s linear infinite 0.6s; }
+    .arrow3 { animation: flow 1.8s linear infinite 1.2s; }
+    .label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace; }
+  </style>
+
+  <!-- Background -->
+  <rect width="800" height="200" rx="12" fill="#0a0a0a"/>
+
+  <!-- Row labels -->
+  <text x="16" y="72" fill="#3f3f46" font-size="9" class="label" letter-spacing="1">UI</text>
+  <text x="16" y="112" fill="#3f3f46" font-size="9" class="label" letter-spacing="1">AUTH</text>
+  <text x="16" y="152" fill="#3f3f46" font-size="9" class="label" letter-spacing="1">DATA</text>
+
+  <!-- Row 1: UI layer (purple) -->
+  <rect x="40" y="52" width="160" height="36" rx="7" fill="rgba(168,85,247,0.07)" stroke="rgba(168,85,247,0.25)" stroke-width="1.5"/>
+  <text x="120" y="74" text-anchor="middle" fill="#a855f7" font-size="11" class="label">Next.js App Router</text>
+
+  <path d="M202 70 L228 70" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3" class="arrow"/>
+  <polygon points="228,66.5 235,70 228,73.5" fill="#a855f7"/>
+
+  <rect x="237" y="52" width="180" height="36" rx="7" fill="rgba(168,85,247,0.07)" stroke="rgba(168,85,247,0.25)" stroke-width="1.5"/>
+  <text x="327" y="74" text-anchor="middle" fill="#a855f7" font-size="11" class="label">shadcn/ui + Tailwind v4</text>
+
+  <path d="M419 70 L445 70" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3" class="arrow"/>
+  <polygon points="445,66.5 452,70 445,73.5" fill="#a855f7"/>
+
+  <rect x="454" y="52" width="120" height="36" rx="7" fill="rgba(168,85,247,0.07)" stroke="rgba(168,85,247,0.25)" stroke-width="1.5"/>
+  <text x="514" y="74" text-anchor="middle" fill="#a855f7" font-size="11" class="label">6 Themes</text>
+
+  <!-- Row 2: Auth layer (green) -->
+  <rect x="40" y="94" width="160" height="36" rx="7" fill="rgba(34,197,94,0.07)" stroke="rgba(34,197,94,0.25)" stroke-width="1.5"/>
+  <text x="120" y="116" text-anchor="middle" fill="#22c55e" font-size="11" class="label">Clerk Auth</text>
+
+  <path d="M202 112 L228 112" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5 3" class="arrow2"/>
+  <polygon points="228,108.5 235,112 228,115.5" fill="#22c55e"/>
+
+  <rect x="237" y="94" width="180" height="36" rx="7" fill="rgba(34,197,94,0.07)" stroke="rgba(34,197,94,0.25)" stroke-width="1.5"/>
+  <text x="327" y="116" text-anchor="middle" fill="#22c55e" font-size="11" class="label">Dashboard + RBAC Nav</text>
+
+  <path d="M419 112 L445 112" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5 3" class="arrow2"/>
+  <polygon points="445,108.5 452,112 445,115.5" fill="#22c55e"/>
+
+  <rect x="454" y="94" width="120" height="36" rx="7" fill="rgba(34,197,94,0.07)" stroke="rgba(34,197,94,0.25)" stroke-width="1.5"/>
+  <text x="514" y="116" text-anchor="middle" fill="#22c55e" font-size="11" class="label">Referrals</text>
+
+  <!-- Row 3: Data layer (cyan) -->
+  <rect x="40" y="136" width="160" height="36" rx="7" fill="rgba(6,182,212,0.07)" stroke="rgba(6,182,212,0.25)" stroke-width="1.5"/>
+  <text x="120" y="158" text-anchor="middle" fill="#06b6d4" font-size="11" class="label">Supabase + pgvector</text>
+
+  <path d="M202 154 L228 154" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="5 3" class="arrow3"/>
+  <polygon points="228,150.5 235,154 228,157.5" fill="#06b6d4"/>
+
+  <rect x="237" y="136" width="180" height="36" rx="7" fill="rgba(6,182,212,0.07)" stroke="rgba(6,182,212,0.25)" stroke-width="1.5"/>
+  <text x="327" y="158" text-anchor="middle" fill="#06b6d4" font-size="11" class="label">Upstash Rate Limiting</text>
+
+  <path d="M419 154 L445 154" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="5 3" class="arrow3"/>
+  <polygon points="445,150.5 452,154 445,157.5" fill="#06b6d4"/>
+
+  <rect x="454" y="136" width="120" height="36" rx="7" fill="rgba(6,182,212,0.07)" stroke="rgba(6,182,212,0.25)" stroke-width="1.5"/>
+  <text x="514" y="158" text-anchor="middle" fill="#06b6d4" font-size="11" class="label">Vercel Edge</text>
+
+  <!-- Right side vertical connector + labels -->
+  <line x1="636" y1="60" x2="636" y2="164" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="650" y="72" fill="#3f3f46" font-size="9" class="label">UI layer</text>
+  <text x="650" y="114" fill="#3f3f46" font-size="9" class="label">Auth layer</text>
+  <text x="650" y="156" fill="#3f3f46" font-size="9" class="label">Data layer</text>
+</svg>
