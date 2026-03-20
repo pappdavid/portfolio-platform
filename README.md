@@ -317,13 +317,17 @@ src/
 ├── app/                    # Next.js App Router (see Route Structure above)
 ├── components/
 │   ├── ui/                 # shadcn/ui primitives (do not modify directly)
-│   ├── layout/             # Sidebar, header, providers, info-sidebar
-│   ├── landing/            # Landing page sections
+│   ├── layout/             # Sidebar, header, providers, info-sidebar, footer
+│   ├── landing/            # Landing page sections and hero
 │   ├── mcp/                # MCP product page components
 │   ├── training/           # Training product page components
 │   ├── chat/               # Chat product page components
+│   ├── projects/           # Projects index page component
+│   ├── ama/                # AMA section component
+│   ├── shared/             # arch-diagram, code-block, mermaid-diagram
 │   └── themes/             # Theme config and switcher
 ├── features/
+│   ├── auth/               # Sign-in/sign-up views, interactive grid
 │   ├── mcp/                # MCP dashboard feature (keys, events)
 │   ├── training/           # Training dashboard feature
 │   └── referrals/          # Referral dashboard feature
