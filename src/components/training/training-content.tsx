@@ -5,14 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
 import { CodeBlock } from '@/components/shared/code-block';
-import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
 import {
   IconBrain,
   IconArrowRight,
@@ -87,15 +80,6 @@ const sampleJsonl = `{"messages":[{"role":"system","content":"You are a helpful 
 {"messages":[{"role":"system","content":"You are a helpful code assistant."},{"role":"user","content":"How do I protect a route with Clerk?"},{"role":"assistant","content":"Use clerkMiddleware in proxy.ts:\\n\\nimport { clerkMiddleware } from '@clerk/nextjs/server';\\nexport default clerkMiddleware();"}]}
 {"messages":[{"role":"system","content":"You are a helpful code assistant."},{"role":"user","content":"How do I add rate limiting?"},{"role":"assistant","content":"Use @upstash/ratelimit with a sliding window:\\n\\nimport { Ratelimit } from '@upstash/ratelimit';\\nconst limiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, '1h') });"}]}`;
 
-const architectureChart = `graph LR
-  A[Repository] --> B[Parser]
-  B --> C[Chunker]
-  C --> D[Prompt Generator]
-  D --> E[JSONL Dataset]
-  E --> F[Validation]
-  F --> G[Fine-tune API]
-  G --> H[LoRA Adapter]`;
-
 const parserCode = `# Parse a Python repository into chunks
 from training_pipeline import RepoParser
 
@@ -123,24 +107,105 @@ generator = PromptGenerator(
 dataset = generator.generate(chunks)
 dataset.save("output.jsonl")`;
 
-const faqItems = [
-  {
-    q: 'What models can I fine-tune?',
-    a: 'The pipeline generates OpenAI-compatible JSONL. You can use it with OpenAI fine-tuning, Hugging Face Transformers, or any LoRA-compatible framework like Unsloth or axolotl.'
-  },
-  {
-    q: 'How much data do I need?',
-    a: 'For LoRA fine-tuning, 500-2000 high-quality examples typically produce good results. The pipeline can generate synthetic pairs from even small codebases.'
-  },
-  {
-    q: 'Does my code leave my infrastructure?',
-    a: 'Parsing and chunking run locally. The prompt generation step can use a local model (Ollama) or a cloud API — your choice. Training runs wherever you configure it.'
-  },
-  {
-    q: 'Can I customize the prompt format?',
-    a: 'Yes. The prompt generator supports multiple styles (Q&A, completion, multi-turn chat) and accepts custom system prompts and templates.'
-  }
-];
+function TrainingArchSvg() {
+  const nodes = [
+    {
+      label: 'Git Repo',
+      color: 'rgba(255,255,255,0.04)',
+      stroke: 'rgba(255,255,255,0.09)',
+      text: '#a1a1aa'
+    },
+    {
+      label: 'Parser',
+      color: 'rgba(168,85,247,0.06)',
+      stroke: 'rgba(168,85,247,0.2)',
+      text: '#a855f7'
+    },
+    {
+      label: 'Chunker',
+      color: 'rgba(168,85,247,0.06)',
+      stroke: 'rgba(168,85,247,0.2)',
+      text: '#a855f7'
+    },
+    {
+      label: 'Prompt Gen',
+      color: 'rgba(168,85,247,0.06)',
+      stroke: 'rgba(168,85,247,0.2)',
+      text: '#a855f7'
+    },
+    {
+      label: 'JSONL',
+      color: 'rgba(6,182,212,0.06)',
+      stroke: 'rgba(6,182,212,0.2)',
+      text: '#06b6d4'
+    },
+    {
+      label: 'Validation',
+      color: 'rgba(6,182,212,0.06)',
+      stroke: 'rgba(6,182,212,0.2)',
+      text: '#06b6d4'
+    },
+    {
+      label: 'Fine-tune API',
+      color: 'rgba(6,182,212,0.06)',
+      stroke: 'rgba(6,182,212,0.2)',
+      text: '#06b6d4'
+    },
+    {
+      label: 'LoRA Adapter',
+      color: 'rgba(6,182,212,0.06)',
+      stroke: 'rgba(6,182,212,0.2)',
+      text: '#06b6d4'
+    }
+  ];
+  return (
+    <svg
+      viewBox='0 0 880 80'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+      className='w-full'
+      aria-label='Training pipeline: Git Repo to Parser to Chunker to Prompt Generator to JSONL to Validation to Fine-tune API to LoRA Adapter'
+    >
+      {nodes.map((node, i) => (
+        <g key={node.label}>
+          <rect
+            x={i * 110}
+            y='20'
+            width='100'
+            height='40'
+            rx='7'
+            fill={node.color}
+            stroke={node.stroke}
+            strokeWidth='1.5'
+          />
+          <text
+            x={i * 110 + 50}
+            y='45'
+            textAnchor='middle'
+            fill={node.text}
+            fontSize='10'
+            fontFamily='monospace'
+          >
+            {node.label}
+          </text>
+          {i < nodes.length - 1 && (
+            <>
+              <path
+                d={`M${i * 110 + 102} 40 L${i * 110 + 108} 40`}
+                stroke='rgba(255,255,255,0.15)'
+                strokeWidth='1.5'
+              />
+              <polygon
+                points={`${i * 110 + 108},36.5 ${i * 110 + 112},40 ${i * 110 + 108},43.5`}
+                fill='rgba(255,255,255,0.2)'
+              />
+            </>
+          )}
+        </g>
+      ))}
+    </svg>
+  );
+}
 
 export function TrainingContent() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -522,8 +587,8 @@ export function TrainingContent() {
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
           <h2 className='mb-8 text-2xl font-bold text-white'>Architecture</h2>
-          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
-            <MermaidDiagram chart={architectureChart} />
+          <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+            <TrainingArchSvg />
           </div>
         </div>
       </section>
@@ -552,23 +617,6 @@ export function TrainingContent() {
               />
             </TabsContent>
           </Tabs>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>FAQ</h2>
-          <Accordion type='single' collapsible className='w-full'>
-            {faqItems.map((item, i) => (
-              <AccordionItem key={item.q} value={`faq-${i}`}>
-                <AccordionTrigger>{item.q}</AccordionTrigger>
-                <AccordionContent className='text-[#71717a]'>
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         </div>
       </section>
     </div>
