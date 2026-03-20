@@ -74,12 +74,18 @@ async function fetchGithubRepoDescription(repoId) {
 // --- Production URL from Vercel project ---
 
 function getProductionUrl(project) {
-  // Prefer aliases with target === 'production', else first alias
-  const aliases = project.alias || [];
-  const prod = aliases.find((a) => a.target === 'production');
-  const domain = prod?.domain || aliases[0]?.domain;
-  if (!domain) return null;
-  return `https://${domain}`;
+  // targets.production is the active production deployment object
+  const prod = project.targets?.production;
+  if (!prod) return null;
+
+  // prod.alias is an array of domain strings
+  const aliases = prod.alias || [];
+  if (aliases.length > 0) return `https://${aliases[0]}`;
+
+  // Fall back to the raw deployment URL
+  if (prod.url) return `https://${prod.url}`;
+
+  return null;
 }
 
 // --- Main ---
