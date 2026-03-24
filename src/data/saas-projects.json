@@ -3,9 +3,9 @@
     "slug": "deprecation-clock",
     "name": "deprecation-clock",
     "description": "",
-    "url": "https://deprecation-clock.vercel.app",
+    "url": "https://www.dependencylens.com",
     "screenshotPath": "/saas-screenshots/deprecation-clock.png",
-    "updatedAt": "2026-03-23T03:59:04.468Z"
+    "updatedAt": "2026-03-24T03:52:26.604Z"
   },
   {
     "slug": "tech-debt-ledger",
@@ -13,7 +13,7 @@
     "description": "📊 TechDebtLedger — Track technical debt as a financial number. Give your CTO a number to show the CFO.",
     "url": "https://tech-debt-ledger.vercel.app",
     "screenshotPath": "/saas-screenshots/tech-debt-ledger.png",
-    "updatedAt": "2026-03-23T03:59:06.141Z"
+    "updatedAt": "2026-03-24T03:52:28.441Z"
   },
   {
     "slug": "proposal-spy",
@@ -21,7 +21,7 @@
     "description": "🔍 ProposalSpy — You lost 7 deals to Competitor X. Here's exactly why. AI-powered lost deal analysis.",
     "url": "https://proposal-spy.vercel.app",
     "screenshotPath": "/saas-screenshots/proposal-spy.png",
-    "updatedAt": "2026-03-23T03:59:07.939Z"
+    "updatedAt": "2026-03-24T03:52:30.213Z"
   },
   {
     "slug": "cloud-shame",
@@ -29,7 +29,7 @@
     "description": "☁️ CloudShame — Your cloud bill is trying to tell you something. AI-powered AWS/GCP/Azure waste analysis.",
     "url": "https://cloud-shame.vercel.app",
     "screenshotPath": "/saas-screenshots/cloud-shame.png",
-    "updatedAt": "2026-03-23T03:59:09.797Z"
+    "updatedAt": "2026-03-24T03:52:31.974Z"
   },
   {
     "slug": "velocity-truth",
@@ -37,7 +37,7 @@
     "description": "⚡ VelocityTruth — DORA metrics without the consultancy invoice. Honest engineering velocity for EMs.",
     "url": "https://velocity-truth.vercel.app",
     "screenshotPath": "/saas-screenshots/velocity-truth.png",
-    "updatedAt": "2026-03-23T03:59:11.838Z"
+    "updatedAt": "2026-03-24T03:52:33.828Z"
   },
   {
     "slug": "churn-autopsy",
@@ -45,7 +45,7 @@
     "description": "🔬 ChurnAutopsy — Not just that they churned. Why they churned. AI-powered churn analysis for B2B SaaS.",
     "url": "https://churn-autopsy.vercel.app",
     "screenshotPath": "/saas-screenshots/churn-autopsy.png",
-    "updatedAt": "2026-03-23T03:59:14.169Z"
+    "updatedAt": "2026-03-24T03:52:36.400Z"
   },
   {
     "slug": "meeting-receipt",
@@ -53,7 +53,7 @@
     "description": "🧾 MeetingReceipt — AI that sends a receipt after every meeting with duration, attendees, estimated salary cost, and a snarky summary.",
     "url": "https://meeting-receipt.vercel.app",
     "screenshotPath": "/saas-screenshots/meeting-receipt.png",
-    "updatedAt": "2026-03-23T03:59:15.993Z"
+    "updatedAt": "2026-03-24T03:52:38.274Z"
   },
   {
     "slug": "standup-liar",
@@ -61,6 +61,6 @@
     "description": "🤥 StandupLiar — What did you actually do yesterday? AI generates your standup from real GitHub activity.",
     "url": "https://standup-liar.vercel.app",
     "screenshotPath": "/saas-screenshots/standup-liar.png",
-    "updatedAt": "2026-03-23T03:59:17.763Z"
+    "updatedAt": "2026-03-24T03:52:39.856Z"
   }
 ]
