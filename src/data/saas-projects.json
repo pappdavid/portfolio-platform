@@ -1,11 +1,11 @@
 [
   {
-    "slug": "deprecation-clock",
-    "name": "deprecation-clock",
-    "description": "",
-    "url": "https://www.dependencylens.com",
-    "screenshotPath": "/saas-screenshots/deprecation-clock.png",
-    "updatedAt": "2026-03-31T04:02:32.694Z"
+    "slug": "churn-autopsy",
+    "name": "churn-autopsy",
+    "description": "🔬 ChurnAutopsy — Not just that they churned. Why they churned. AI-powered churn analysis for B2B SaaS.",
+    "url": "https://churn-autopsy.vercel.app",
+    "screenshotPath": "/saas-screenshots/churn-autopsy.png",
+    "updatedAt": "2026-04-01T04:07:59.430Z"
   },
   {
     "slug": "tech-debt-ledger",
@@ -13,15 +13,7 @@
     "description": "📊 TechDebtLedger — Track technical debt as a financial number. Give your CTO a number to show the CFO.",
     "url": "https://tech-debt-ledger.vercel.app",
     "screenshotPath": "/saas-screenshots/tech-debt-ledger.png",
-    "updatedAt": "2026-03-31T04:02:34.883Z"
-  },
-  {
-    "slug": "proposal-spy",
-    "name": "proposal-spy",
-    "description": "🔍 ProposalSpy — You lost 7 deals to Competitor X. Here's exactly why. AI-powered lost deal analysis.",
-    "url": "https://proposal-spy.vercel.app",
-    "screenshotPath": "/saas-screenshots/proposal-spy.png",
-    "updatedAt": "2026-03-31T04:02:36.686Z"
+    "updatedAt": "2026-04-01T04:08:01.917Z"
   },
   {
     "slug": "cloud-shame",
@@ -29,23 +21,15 @@
     "description": "☁️ CloudShame — Your cloud bill is trying to tell you something. AI-powered AWS/GCP/Azure waste analysis.",
     "url": "https://cloud-shame.vercel.app",
     "screenshotPath": "/saas-screenshots/cloud-shame.png",
-    "updatedAt": "2026-03-31T04:02:38.910Z"
+    "updatedAt": "2026-04-01T04:08:04.511Z"
   },
   {
-    "slug": "velocity-truth",
-    "name": "velocity-truth",
-    "description": "⚡ VelocityTruth — DORA metrics without the consultancy invoice. Honest engineering velocity for EMs.",
-    "url": "https://velocity-truth.vercel.app",
-    "screenshotPath": "/saas-screenshots/velocity-truth.png",
-    "updatedAt": "2026-03-31T04:02:41.432Z"
-  },
-  {
-    "slug": "churn-autopsy",
-    "name": "churn-autopsy",
-    "description": "🔬 ChurnAutopsy — Not just that they churned. Why they churned. AI-powered churn analysis for B2B SaaS.",
-    "url": "https://churn-autopsy.vercel.app",
-    "screenshotPath": "/saas-screenshots/churn-autopsy.png",
-    "updatedAt": "2026-03-31T04:02:44.489Z"
+    "slug": "proposal-spy",
+    "name": "proposal-spy",
+    "description": "🔍 ProposalSpy — You lost 7 deals to Competitor X. Here's exactly why. AI-powered lost deal analysis.",
+    "url": "https://proposal-spy.vercel.app",
+    "screenshotPath": "/saas-screenshots/proposal-spy.png",
+    "updatedAt": "2026-04-01T04:08:07.482Z"
   },
   {
     "slug": "meeting-receipt",
@@ -53,7 +37,7 @@
     "description": "🧾 MeetingReceipt — AI that sends a receipt after every meeting with duration, attendees, estimated salary cost, and a snarky summary.",
     "url": "https://meeting-receipt.vercel.app",
     "screenshotPath": "/saas-screenshots/meeting-receipt.png",
-    "updatedAt": "2026-03-31T04:02:46.329Z"
+    "updatedAt": "2026-04-01T04:08:09.467Z"
   },
   {
     "slug": "standup-liar",
@@ -61,6 +45,22 @@
     "description": "🤥 StandupLiar — What did you actually do yesterday? AI generates your standup from real GitHub activity.",
     "url": "https://standup-liar.vercel.app",
     "screenshotPath": "/saas-screenshots/standup-liar.png",
-    "updatedAt": "2026-03-31T04:02:48.319Z"
+    "updatedAt": "2026-04-01T04:08:11.567Z"
+  },
+  {
+    "slug": "deprecation-clock",
+    "name": "deprecation-clock",
+    "description": "",
+    "url": "https://www.dependencylens.com",
+    "screenshotPath": "/saas-screenshots/deprecation-clock.png",
+    "updatedAt": "2026-04-01T04:08:14.376Z"
+  },
+  {
+    "slug": "velocity-truth",
+    "name": "velocity-truth",
+    "description": "⚡ VelocityTruth — DORA metrics without the consultancy invoice. Honest engineering velocity for EMs.",
+    "url": "https://velocity-truth.vercel.app",
+    "screenshotPath": "/saas-screenshots/velocity-truth.png",
+    "updatedAt": "2026-04-01T04:08:16.687Z"
   }
 ]
