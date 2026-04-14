@@ -5,7 +5,7 @@
     "description": "🔬 ChurnAutopsy — Not just that they churned. Why they churned. AI-powered churn analysis for B2B SaaS.",
     "url": "https://churn-autopsy.vercel.app",
     "screenshotPath": "/saas-screenshots/churn-autopsy.png",
-    "updatedAt": "2026-04-13T04:11:32.531Z"
+    "updatedAt": "2026-04-14T04:06:33.573Z"
   },
   {
     "slug": "tech-debt-ledger",
@@ -13,7 +13,7 @@
     "description": "📊 TechDebtLedger — Track technical debt as a financial number. Give your CTO a number to show the CFO.",
     "url": "https://tech-debt-ledger.vercel.app",
     "screenshotPath": "/saas-screenshots/tech-debt-ledger.png",
-    "updatedAt": "2026-04-13T04:11:34.384Z"
+    "updatedAt": "2026-04-14T04:06:36.025Z"
   },
   {
     "slug": "cloud-shame",
@@ -21,7 +21,7 @@
     "description": "☁️ CloudShame — Your cloud bill is trying to tell you something. AI-powered AWS/GCP/Azure waste analysis.",
     "url": "https://cloud-shame.vercel.app",
     "screenshotPath": "/saas-screenshots/cloud-shame.png",
-    "updatedAt": "2026-04-13T04:11:36.353Z"
+    "updatedAt": "2026-04-14T04:06:38.578Z"
   },
   {
     "slug": "proposal-spy",
@@ -29,7 +29,7 @@
     "description": "🔍 ProposalSpy — You lost 7 deals to Competitor X. Here's exactly why. AI-powered lost deal analysis.",
     "url": "https://proposal-spy.vercel.app",
     "screenshotPath": "/saas-screenshots/proposal-spy.png",
-    "updatedAt": "2026-04-13T04:11:38.227Z"
+    "updatedAt": "2026-04-14T04:06:40.469Z"
   },
   {
     "slug": "meeting-receipt",
@@ -37,7 +37,7 @@
     "description": "🧾 MeetingReceipt — AI that sends a receipt after every meeting with duration, attendees, estimated salary cost, and a snarky summary.",
     "url": "https://meeting-receipt.vercel.app",
     "screenshotPath": "/saas-screenshots/meeting-receipt.png",
-    "updatedAt": "2026-04-13T04:11:40.090Z"
+    "updatedAt": "2026-04-14T04:06:42.311Z"
   },
   {
     "slug": "standup-liar",
@@ -45,7 +45,7 @@
     "description": "🤥 StandupLiar — What did you actually do yesterday? AI generates your standup from real GitHub activity.",
     "url": "https://standup-liar.vercel.app",
     "screenshotPath": "/saas-screenshots/standup-liar.png",
-    "updatedAt": "2026-04-13T04:11:41.609Z"
+    "updatedAt": "2026-04-14T04:06:44.130Z"
   },
   {
     "slug": "deprecation-clock",
@@ -53,7 +53,7 @@
     "description": "",
     "url": "https://www.dependencylens.com",
     "screenshotPath": "/saas-screenshots/deprecation-clock.png",
-    "updatedAt": "2026-04-13T04:11:44.471Z"
+    "updatedAt": "2026-04-14T04:06:46.112Z"
   },
   {
     "slug": "velocity-truth",
@@ -61,6 +61,6 @@
     "description": "⚡ VelocityTruth — DORA metrics without the consultancy invoice. Honest engineering velocity for EMs.",
     "url": "https://velocity-truth.vercel.app",
     "screenshotPath": "/saas-screenshots/velocity-truth.png",
-    "updatedAt": "2026-04-13T04:11:46.560Z"
+    "updatedAt": "2026-04-14T04:06:48.111Z"
   }
 ]
