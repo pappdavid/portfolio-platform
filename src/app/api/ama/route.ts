@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
   try {
     const completion = await c1.chat.completions.create({
-      model: 'c1-nightly',
+      model: 'c1/anthropic/claude-sonnet-4.6/v-20260331',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         {

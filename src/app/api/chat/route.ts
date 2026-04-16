@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   }
 
   const stream = await getC1Client().chat.completions.create({
-    model: 'c1-nightly',
+    model: 'c1/anthropic/claude-sonnet-4.6/v-20260331',
     messages: [
       {
         role: 'system',
