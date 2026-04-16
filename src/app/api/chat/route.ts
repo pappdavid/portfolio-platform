@@ -10,15 +10,8 @@ import {
   QuotaExhaustedError
 } from '@/lib/demo-quota';
 
-function getC1Client(): OpenAI {
-  const apiKey = process.env.THESYS_API_KEY;
-  if (!apiKey) {
-    throw new Error('THESYS_API_KEY is not configured');
-  }
-  return new OpenAI({
-    baseURL: 'https://api.thesys.dev/v1/embed/',
-    apiKey
-  });
+function getOpenAIClient(): OpenAI {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 }
 
 interface ChatMessage {
@@ -81,14 +74,10 @@ export async function POST(req: Request) {
     }
   }
 
-  const stream = await getC1Client().chat.completions.create({
-    model: 'c1/anthropic/claude-sonnet-4.6/v-20260331',
+  const stream = await getOpenAIClient().chat.completions.create({
+    model: 'gpt-4o-mini',
     messages: [
-      {
-        role: 'system',
-        content:
-          'You are a helpful AI assistant. When asked about 3D objects, respond with JSON: { "objects": [{ "type": "box"|"sphere"|"cylinder", "position": [x,y,z], "size": [w,h,d], "color": "#hex" }] }'
-      },
+      { role: 'system', content: 'You are a helpful AI assistant.' },
       ...messages.slice(0, -1),
       { role: 'user', content: augmentedContent }
     ],
