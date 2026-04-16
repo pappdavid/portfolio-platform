@@ -52,14 +52,11 @@ export async function POST(req: Request) {
   const context =
     relevant.length > 0 ? relevant.join('\n\n') : amaCorpus.slice(0, 1500);
 
-  const c1 = new OpenAI({
-    baseURL: 'https://api.thesys.dev/v1/embed/',
-    apiKey: process.env.THESYS_API_KEY
-  });
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
-    const completion = await c1.chat.completions.create({
-      model: 'c1/anthropic/claude-sonnet-4.6/v-20260331',
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         {
@@ -67,31 +64,19 @@ export async function POST(req: Request) {
           content: `Context:\n${context}\n\nQuestion: ${question}`
         }
       ],
-      stream: false
+      response_format: { type: 'json_object' }
     });
 
     const raw = completion.choices[0]?.message?.content ?? '';
-    console.log('AMA raw response:', raw.slice(0, 500));
 
-    // Parse JSON response
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return NextResponse.json({ answer: raw, links: [] });
-    }
-
-    try {
-      const parsed = JSON.parse(jsonMatch[0]) as {
-        answer: string;
-        links: Array<{ label: string; url: string }>;
-      };
-      return NextResponse.json({
-        answer: parsed.answer ?? '',
-        links: parsed.links ?? []
-      });
-    } catch {
-      // JSON parse failed — return raw content
-      return NextResponse.json({ answer: raw, links: [] });
-    }
+    const parsed = JSON.parse(raw) as {
+      answer: string;
+      links: Array<{ label: string; url: string }>;
+    };
+    return NextResponse.json({
+      answer: parsed.answer ?? '',
+      links: parsed.links ?? []
+    });
   } catch (err) {
     console.error('AMA error:', err);
     return NextResponse.json(
