@@ -27,12 +27,22 @@ function createLimiter(
   prefix: string
 ) {
   if (!redis) return passthrough;
-  return new Ratelimit({
+  const limiter = new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(window, duration),
     analytics: true,
     prefix
   });
+  return {
+    limit: async (identifier: string): Promise<RateLimitResult> => {
+      try {
+        return await limiter.limit(identifier);
+      } catch {
+        // Redis unreachable — degrade gracefully, allow request through
+        return { success: true, limit: 0, remaining: 0 };
+      }
+    }
+  };
 }
 
 export const chatPublicRateLimit = createLimiter(
