@@ -71,6 +71,7 @@ export async function POST(req: Request) {
     });
 
     const raw = completion.choices[0]?.message?.content ?? '';
+    console.log('AMA raw response:', raw.slice(0, 500));
 
     // Parse JSON response
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
@@ -78,14 +79,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ answer: raw, links: [] });
     }
 
-    const parsed = JSON.parse(jsonMatch[0]) as {
-      answer: string;
-      links: Array<{ label: string; url: string }>;
-    };
-    return NextResponse.json({
-      answer: parsed.answer ?? '',
-      links: parsed.links ?? []
-    });
+    try {
+      const parsed = JSON.parse(jsonMatch[0]) as {
+        answer: string;
+        links: Array<{ label: string; url: string }>;
+      };
+      return NextResponse.json({
+        answer: parsed.answer ?? '',
+        links: parsed.links ?? []
+      });
+    } catch {
+      // JSON parse failed — return raw content
+      return NextResponse.json({ answer: raw, links: [] });
+    }
   } catch (err) {
     console.error('AMA error:', err);
     return NextResponse.json(
