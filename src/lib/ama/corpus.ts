@@ -3,7 +3,7 @@ export const amaCorpus: string = `
 AI engineer building production-grade tools for teams that ship LLM products. Focus areas: agent observability, guard rails, fine-tuning pipelines, and retrieval systems. Previously led three product launches end-to-end. Values: cost discipline, security by default, shipping the simplest thing that works.
 
 Open to: full-time AI engineering roles, platform engineering, technical leadership, consulting engagements.
-Contact: hello@davidpapp.dev | Book a call: https://cal.com/davidpapp/intro
+Contact: contact@davidpapp.dev | Book a call: https://calendly.com/david-webinform/30min
 LinkedIn: https://linkedin.com/in/davidpapp | GitHub: https://github.com/davidpapp
 
 # MCP Sentinel

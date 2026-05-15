@@ -126,11 +126,11 @@ export function SaasProjectsContent() {
           </p>
           <div className='mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row'>
             <Button size='lg' asChild>
-              <a href='mailto:hello@davidpapp.dev'>Email me</a>
+              <a href='mailto:contact@davidpapp.dev'>Email me</a>
             </Button>
             <Button size='lg' variant='outline' asChild>
               <a
-                href='https://cal.com/davidpapp/intro'
+                href='https://calendly.com/david-webinform/30min'
                 target='_blank'
                 rel='noopener noreferrer'
               >

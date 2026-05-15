@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false }
 };
 
-const ADMIN_EMAILS = ['david@example.com'];
+const ADMIN_EMAILS = ['contact@davidpapp.dev'];
 
 async function getAdminData() {
   const [companiesRes, quotasRes, eventsRes] = await Promise.all([
