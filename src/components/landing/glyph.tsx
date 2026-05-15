@@ -1,5 +1,11 @@
+export type GlyphKind =
+  | 'hex' | 'shield' | 'layers' | 'orbit' | 'mail' | 'cal' | 'doc'
+  | 'download' | 'github' | 'linkedin' | 'cost' | 'terminal' | 'gauge'
+  | 'trend-down' | 'shield-check' | 'cube' | 'role' | 'edu' | 'pin'
+  | 'code' | 'briefcase' | 'target' | 'link' | 'info' | 'lock' | 'eye' | 'wave';
+
 interface GlyphProps {
-  kind: string;
+  kind: GlyphKind;
   size?: number;
   color?: string;
 }

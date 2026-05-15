@@ -1,5 +1,6 @@
 import { PublicHeader } from '@/components/layout/public-header';
 import { Footer } from '@/components/layout/footer';
+import '@/styles/themes/davidpapp.css';
 
 export default function PublicLayout({
   children
