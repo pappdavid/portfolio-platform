@@ -2,12 +2,8 @@ import * as THREE from 'three';
 import type { ModuleId, SceneHandle } from './types';
 
 const EMERALD = new THREE.Color('#22c55e');
-const EMERALD_DIM = new THREE.Color('#0e7c3a');
-const INK = new THREE.Color('#f5f3ee');
-
-// Suppress unused var warnings — kept for reference parity with design
-void EMERALD_DIM;
-void INK;
+const _EMERALD_DIM = new THREE.Color('#0e7c3a');
+const _INK = new THREE.Color('#f5f3ee');
 
 function makeRenderer(canvas: HTMLCanvasElement): THREE.WebGLRenderer {
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -208,7 +204,7 @@ function buildHaze(): HazeParts {
     geo,
     new THREE.PointsMaterial({ color: 0xb8b3a8, size: 0.018, transparent: true, opacity: 0.4, sizeAttenuation: true })
   );
-  (particles as unknown as THREE.Points & { userData: { speeds: Float32Array } }).userData.speeds = speeds;
+  particles.userData['speeds'] = speeds;
   group.add(particles);
 
   return { group, particles };
@@ -251,7 +247,6 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   fit(renderer, camera, canvas);
 
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-  let scrollY = 0, targetScroll = 0;
   let raf: number;
   const start = performance.now();
 
@@ -266,14 +261,10 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   };
   window.addEventListener('mousemove', onMove);
 
-  const onScroll = () => { targetScroll = window.scrollY; };
-  window.addEventListener('scroll', onScroll, { passive: true });
-
   function tick(): void {
     const t = (performance.now() - start) / 1000;
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
-    scrollY += (targetScroll - scrollY) * 0.08;
 
     core.group.rotation.y = t * 0.04 + mouse.x * 0.12;
     core.group.rotation.x = mouse.y * 0.06 + Math.sin(t * 0.10) * 0.04;
@@ -321,7 +312,7 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
     });
 
     const dp = (haze.particles.geometry.attributes['position'] as THREE.BufferAttribute).array as Float32Array;
-    const sp = (haze.particles as unknown as THREE.Points & { userData: { speeds: Float32Array } }).userData.speeds;
+    const sp = haze.particles.userData['speeds'] as Float32Array;
     for (let i = 0; i < sp.length; i++) {
       dp[i * 3 + 1] -= sp[i];
       if (dp[i * 3 + 1] < -4) dp[i * 3 + 1] = 4;
@@ -368,7 +359,15 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('scroll', onScroll);
+      scene.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (mesh.geometry) mesh.geometry.dispose();
+        const mat = mesh.material;
+        if (mat) {
+          if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+          else (mat as THREE.Material).dispose();
+        }
+      });
       renderer.dispose();
     },
   };

@@ -29,12 +29,17 @@ export const ThreeCanvas = forwardRef<ThreeCanvasRef, { className?: string }>(
       const canvas = canvasRef.current;
       if (!canvas) return;
 
+      let cancelled = false;
+      let sceneInstance: SceneHandle | null = null;
+      let labelRaf: number;
+
       // Dynamic import keeps Three.js out of the SSR bundle
       import('@/lib/scene/scene').then(({ mountScene }) => {
+        if (cancelled) return;
         const scene = mountScene(canvas);
+        sceneInstance = scene;
         sceneRef.current = scene;
 
-        let raf: number;
         const updateLabels = () => {
           const positions = scene.getModuleScreenPositions();
           const container = labelsRef.current;
@@ -43,21 +48,23 @@ export const ThreeCanvas = forwardRef<ThreeCanvasRef, { className?: string }>(
               const el = container.querySelector<HTMLElement>(`[data-module="${id}"]`);
               if (el && positions[id]) {
                 const p = positions[id];
-                el.style.transform = `translate(${p.x}px, ${p.y}px)`;
+                el.style.transform = `translate(calc(${p.x}px - 50%), calc(${p.y}px - 50%))`;
                 el.style.opacity = String(0.5 + p.focus * 0.5);
                 el.style.display = p.inFront ? 'block' : 'none';
               }
             });
           }
-          raf = requestAnimationFrame(updateLabels);
+          labelRaf = requestAnimationFrame(updateLabels);
         };
-        raf = requestAnimationFrame(updateLabels);
-
-        return () => {
-          cancelAnimationFrame(raf);
-          scene.destroy();
-        };
+        labelRaf = requestAnimationFrame(updateLabels);
       });
+
+      return () => {
+        cancelled = true;
+        cancelAnimationFrame(labelRaf);
+        sceneInstance?.destroy();
+        sceneRef.current = null;
+      };
     }, []);
 
     return (
@@ -75,7 +82,6 @@ export const ThreeCanvas = forwardRef<ThreeCanvasRef, { className?: string }>(
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                transform: 'translate(-50%, -50%)',
                 fontFamily: 'var(--font-dp-mono), monospace',
                 fontSize: 10,
                 color: 'var(--accent)',
