@@ -67,147 +67,296 @@ function OrbitIcon() {
   );
 }
 
-// Two-row architecture SVG, matches reference modules/chat.html
+// Two-lane architecture diagram: INGESTION pipeline lives above, QUERY pipeline
+// below. The two are linked by an explicit "retrieve" connector from pgvector
+// store into the query path between Top-k and Rerank — that's the data flow
+// the prose calls out, and showing it lifts the diagram from "static boxes"
+// to "the loop that makes RAG RAG".
 function ArchitectureSvg() {
+  const BOX_W = 116;
+  const BOX_H = 38;
+  const BOX_R = 8;
+  const GAP = 18; // horizontal gap between adjacent boxes
+  const STEP = BOX_W + GAP; // pitch of one stage
+
+  // Lane Y baselines
+  const INGEST_Y = 50;
+  const QUERY_Y = 160;
+  const LABEL_OFFSET = -16; // lane label sits this far above the row
+
+  const muted = {
+    fill: 'rgba(255,255,255,0.04)',
+    stroke: 'rgba(255,255,255,0.12)',
+    text: '#a8a39a'
+  };
+  const accent = {
+    fill: 'rgba(34,197,94,0.06)',
+    stroke: 'rgba(34,197,94,0.28)',
+    text: '#22c55e'
+  };
+
+  const ingestion = [
+    { label: 'Upload', tone: accent },
+    { label: 'Chunker', tone: accent },
+    { label: 'Embeddings', tone: accent },
+    { label: 'pgvector store', tone: muted }
+  ];
+
+  const query = [
+    { label: 'User query', tone: muted },
+    { label: 'Top-k', tone: muted },
+    { label: 'Rerank (bge)', tone: muted },
+    { label: 'LLM', tone: muted },
+    { label: 'Streaming', tone: accent }
+  ];
+
+  // Stretch pgvector store and User query to fill their lanes evenly. Compute
+  // viewBox width from whichever lane is longer plus the 3D renderer column.
+  const queryWidth = query.length * STEP;
+  const rendererW = 168;
+  const rendererGap = 24;
+  const totalW = queryWidth + rendererGap + rendererW;
+
+  // The retrieve connector goes from the bottom-center of `pgvector store`
+  // (last node in ingestion) down and left into the top of `Rerank (bge)`
+  // (index 2 in query). Use a smooth cubic curve to avoid the harsh L shape.
+  const pgIdx = ingestion.length - 1;
+  const pgX = pgIdx * STEP + BOX_W / 2;
+  const pgY = INGEST_Y + BOX_H;
+  const rerankIdx = 2;
+  const rerankX = rerankIdx * STEP + BOX_W / 2;
+  const rerankY = QUERY_Y;
+
   return (
     <svg
-      viewBox='0 0 980 200'
+      viewBox={`-8 -28 ${totalW + 16} 264`}
       width='100%'
-      height='200'
       role='img'
-      aria-label='RAG architecture: ingestion pipeline (upload, chunker, embeddings into pgvector store) and query pipeline (user query, top-k, rerank, LLM, streaming, optional 3D renderer)'
+      aria-label='RAG architecture: ingestion pipeline (upload, chunker, embeddings) writes into pgvector store; query pipeline (user query, top-k, rerank, LLM, streaming) retrieves from that store, then hands a typed payload to a deterministic 3D renderer'
     >
-      {/* Ingestion lane */}
+      <defs>
+        <marker
+          id='arrow-accent'
+          viewBox='0 0 10 10'
+          refX='9'
+          refY='5'
+          markerWidth='6'
+          markerHeight='6'
+          orient='auto-start-reverse'
+        >
+          <path d='M0,1 L9,5 L0,9 z' fill='#22c55e' />
+        </marker>
+        <marker
+          id='arrow-muted'
+          viewBox='0 0 10 10'
+          refX='9'
+          refY='5'
+          markerWidth='6'
+          markerHeight='6'
+          orient='auto-start-reverse'
+        >
+          <path d='M0,1 L9,5 L0,9 z' fill='rgba(255,255,255,0.35)' />
+        </marker>
+      </defs>
+
+      {/* Ingestion lane label */}
       <text
-        x='0'
-        y='20'
+        x={0}
+        y={INGEST_Y + LABEL_OFFSET}
         fill='#a8a39a'
         fontFamily='JetBrains Mono'
-        fontSize='11'
+        fontSize='10.5'
+        letterSpacing='0.18em'
       >
-        INGESTION →
-      </text>
-      {[
-        { x: 0, label: 'Upload' },
-        { x: 140, label: 'Chunker' },
-        { x: 280, label: 'Embeddings' }
-      ].map((node) => (
-        <g key={node.label}>
-          <rect
-            x={node.x}
-            y='34'
-            width='120'
-            height='36'
-            rx='6'
-            fill='rgba(34,197,94,0.06)'
-            stroke='rgba(34,197,94,0.25)'
-          />
-          <text
-            x={node.x + 60}
-            y='56'
-            textAnchor='middle'
-            fill='#22c55e'
-            fontFamily='JetBrains Mono'
-            fontSize='11'
-          >
-            {node.label}
-          </text>
-        </g>
-      ))}
-      <rect
-        x='420'
-        y='34'
-        width='160'
-        height='36'
-        rx='6'
-        fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.12)'
-      />
-      <text
-        x='500'
-        y='56'
-        textAnchor='middle'
-        fill='#a8a39a'
-        fontFamily='JetBrains Mono'
-        fontSize='11'
-      >
-        pgvector store
+        INGESTION
       </text>
 
-      {/* Query lane */}
-      <text
-        x='0'
-        y='110'
-        fill='#a8a39a'
-        fontFamily='JetBrains Mono'
-        fontSize='11'
-      >
-        QUERY →
-      </text>
-      {[
-        { x: 0, label: 'User query', highlight: false },
-        { x: 140, label: 'Top-k', highlight: false },
-        { x: 280, label: 'Rerank (bge)', highlight: false },
-        { x: 420, label: 'LLM', highlight: false },
-        { x: 560, label: 'Streaming', highlight: true }
-      ].map((node) => (
-        <g key={node.label}>
-          <rect
-            x={node.x}
-            y='124'
-            width='120'
-            height='36'
-            rx='6'
-            fill={
-              node.highlight ? 'rgba(34,197,94,0.06)' : 'rgba(255,255,255,0.04)'
-            }
-            stroke={
-              node.highlight ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.12)'
-            }
+      {/* Ingestion arrows (drawn first so boxes layer on top) */}
+      {ingestion.slice(0, -1).map((_, i) => {
+        const x1 = i * STEP + BOX_W;
+        const x2 = (i + 1) * STEP;
+        const y = INGEST_Y + BOX_H / 2;
+        return (
+          <line
+            key={`ing-arrow-${i}`}
+            x1={x1 + 2}
+            y1={y}
+            x2={x2 - 2}
+            y2={y}
+            stroke='#22c55e'
+            strokeWidth='1.25'
+            strokeDasharray='3 3'
+            markerEnd='url(#arrow-accent)'
           />
-          <text
-            x={node.x + 60}
-            y='146'
-            textAnchor='middle'
-            fill={node.highlight ? '#22c55e' : '#a8a39a'}
-            fontFamily='JetBrains Mono'
-            fontSize='11'
-          >
-            {node.label}
-          </text>
-        </g>
-      ))}
+        );
+      })}
 
-      {/* 3D Renderer block */}
-      <rect
-        x='700'
-        y='104'
-        width='160'
-        height='76'
-        rx='10'
-        fill='rgba(34,197,94,0.05)'
-        stroke='rgba(34,197,94,0.3)'
+      {/* Ingestion boxes */}
+      {ingestion.map((node, i) => {
+        const x = i * STEP;
+        return (
+          <g key={`ing-${node.label}`}>
+            <rect
+              x={x}
+              y={INGEST_Y}
+              width={BOX_W}
+              height={BOX_H}
+              rx={BOX_R}
+              fill={node.tone.fill}
+              stroke={node.tone.stroke}
+            />
+            <text
+              x={x + BOX_W / 2}
+              y={INGEST_Y + BOX_H / 2 + 4}
+              textAnchor='middle'
+              fill={node.tone.text}
+              fontFamily='JetBrains Mono'
+              fontSize='11'
+            >
+              {node.label}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Cross-lane retrieve connector: pgvector store -> Rerank (bge) */}
+      <path
+        d={`M ${pgX} ${pgY} C ${pgX} ${pgY + 40}, ${rerankX} ${rerankY - 40}, ${rerankX} ${rerankY}`}
+        fill='none'
+        stroke='rgba(34,197,94,0.55)'
+        strokeWidth='1.25'
+        strokeDasharray='3 3'
+        markerEnd='url(#arrow-accent)'
       />
       <text
-        x='780'
-        y='138'
+        x={(pgX + rerankX) / 2 - 4}
+        y={(pgY + rerankY) / 2 + 4}
         textAnchor='middle'
         fill='#22c55e'
         fontFamily='JetBrains Mono'
-        fontSize='11'
+        fontSize='9.5'
+        letterSpacing='0.12em'
       >
-        3D Renderer
+        retrieve
       </text>
+
+      {/* Query lane label */}
       <text
-        x='780'
-        y='156'
-        textAnchor='middle'
+        x={0}
+        y={QUERY_Y + LABEL_OFFSET}
         fill='#a8a39a'
         fontFamily='JetBrains Mono'
-        fontSize='9.5'
+        fontSize='10.5'
+        letterSpacing='0.18em'
       >
-        Three.js · deterministic
+        QUERY
       </text>
+
+      {/* Query arrows */}
+      {query.slice(0, -1).map((node, i) => {
+        const x1 = i * STEP + BOX_W;
+        const x2 = (i + 1) * STEP;
+        const y = QUERY_Y + BOX_H / 2;
+        const isAccent = query[i + 1].tone === accent;
+        return (
+          <line
+            key={`q-arrow-${i}`}
+            x1={x1 + 2}
+            y1={y}
+            x2={x2 - 2}
+            y2={y}
+            stroke={isAccent ? '#22c55e' : 'rgba(255,255,255,0.35)'}
+            strokeWidth='1.25'
+            strokeDasharray='3 3'
+            markerEnd={isAccent ? 'url(#arrow-accent)' : 'url(#arrow-muted)'}
+          />
+        );
+      })}
+
+      {/* Query boxes */}
+      {query.map((node, i) => {
+        const x = i * STEP;
+        return (
+          <g key={`q-${node.label}`}>
+            <rect
+              x={x}
+              y={QUERY_Y}
+              width={BOX_W}
+              height={BOX_H}
+              rx={BOX_R}
+              fill={node.tone.fill}
+              stroke={node.tone.stroke}
+            />
+            <text
+              x={x + BOX_W / 2}
+              y={QUERY_Y + BOX_H / 2 + 4}
+              textAnchor='middle'
+              fill={node.tone.text}
+              fontFamily='JetBrains Mono'
+              fontSize='11'
+            >
+              {node.label}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Streaming -> 3D Renderer arrow */}
+      <line
+        x1={queryWidth - GAP + 2}
+        y1={QUERY_Y + BOX_H / 2}
+        x2={queryWidth + rendererGap - 2}
+        y2={QUERY_Y + BOX_H / 2}
+        stroke='#22c55e'
+        strokeWidth='1.25'
+        strokeDasharray='3 3'
+        markerEnd='url(#arrow-accent)'
+      />
+
+      {/* 3D Renderer terminal block — slightly taller to flag "this is the
+          output", with a payload tag underneath like a small spec sheet */}
+      <g>
+        <rect
+          x={queryWidth + rendererGap}
+          y={QUERY_Y - 22}
+          width={rendererW}
+          height={BOX_H + 44}
+          rx={10}
+          fill='rgba(34,197,94,0.05)'
+          stroke='rgba(34,197,94,0.32)'
+        />
+        <text
+          x={queryWidth + rendererGap + rendererW / 2}
+          y={QUERY_Y + 4}
+          textAnchor='middle'
+          fill='#22c55e'
+          fontFamily='JetBrains Mono'
+          fontSize='12'
+        >
+          3D Renderer
+        </text>
+        <text
+          x={queryWidth + rendererGap + rendererW / 2}
+          y={QUERY_Y + 22}
+          textAnchor='middle'
+          fill='#a8a39a'
+          fontFamily='JetBrains Mono'
+          fontSize='9.5'
+        >
+          Three.js · deterministic
+        </text>
+        <text
+          x={queryWidth + rendererGap + rendererW / 2}
+          y={QUERY_Y + 44}
+          textAnchor='middle'
+          fill='#6a6457'
+          fontFamily='JetBrains Mono'
+          fontSize='9'
+          letterSpacing='0.1em'
+        >
+          ↳ typed payload
+        </text>
+      </g>
     </svg>
   );
 }
