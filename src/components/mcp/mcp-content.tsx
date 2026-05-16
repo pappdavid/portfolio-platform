@@ -525,16 +525,14 @@ export function McpContent() {
         </MonoEyebrow>
         <h1
           className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
-          style={{
-            background:
-              'linear-gradient(160deg,#fff 0%,rgba(255,255,255,0.5) 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}
+          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
         >
           MCP Sentinel
         </h1>
-        <p className='mb-8 max-w-2xl text-base leading-relaxed text-[#71717a]'>
+        <p
+          className='mb-8 max-w-2xl text-base leading-relaxed'
+          style={{ color: 'var(--ink-2)' }}
+        >
           Drop-in observability for agent tool calls. Every MCP interaction is
           logged, guarded, and auditable — without changing your tool
           implementations.
@@ -544,7 +542,11 @@ export function McpContent() {
             variant='outline'
             size='lg'
             asChild
-            className='border-white/[0.08] bg-white/[0.04] text-white hover:bg-white/[0.08]'
+            style={{
+              background: 'var(--bg-2)',
+              color: 'var(--ink-0)',
+              borderColor: 'var(--border-muted)'
+            }}
           >
             <a href='#quickstart'>Quickstart</a>
           </Button>
@@ -552,26 +554,56 @@ export function McpContent() {
       </section>
 
       {/* What / Who / Why */}
-      <section className='border-y border-white/[0.07] bg-white/[0.015] py-16'>
+      <section
+        className='border-y py-16'
+        style={{
+          borderColor: 'var(--border-subtle)',
+          background: 'var(--bg-1)'
+        }}
+      >
         <div className='mx-auto grid max-w-4xl grid-cols-1 gap-8 px-4 md:grid-cols-3'>
           <div>
-            <h3 className='mb-2 font-semibold text-white'>What</h3>
-            <p className='text-sm leading-relaxed text-[#71717a]'>
+            <h3
+              className='mb-2 font-semibold'
+              style={{ color: 'var(--ink-0)' }}
+            >
+              What
+            </h3>
+            <p
+              className='text-sm leading-relaxed'
+              style={{ color: 'var(--ink-2)' }}
+            >
               A proxy layer between AI agents and their tools. Logs every call,
               applies guard rails, and surfaces anomalies in a real-time
               dashboard.
             </p>
           </div>
           <div>
-            <h3 className='mb-2 font-semibold text-white'>Who</h3>
-            <p className='text-sm leading-relaxed text-[#71717a]'>
+            <h3
+              className='mb-2 font-semibold'
+              style={{ color: 'var(--ink-0)' }}
+            >
+              Who
+            </h3>
+            <p
+              className='text-sm leading-relaxed'
+              style={{ color: 'var(--ink-2)' }}
+            >
               Teams deploying LLM agents in production who need visibility into
               tool usage, cost tracking, and security boundaries.
             </p>
           </div>
           <div>
-            <h3 className='mb-2 font-semibold text-white'>Why</h3>
-            <p className='text-sm leading-relaxed text-[#71717a]'>
+            <h3
+              className='mb-2 font-semibold'
+              style={{ color: 'var(--ink-0)' }}
+            >
+              Why
+            </h3>
+            <p
+              className='text-sm leading-relaxed'
+              style={{ color: 'var(--ink-2)' }}
+            >
               Agents call tools autonomously. Without observability, you cannot
               audit decisions, detect misuse, or enforce compliance.
             </p>
@@ -582,7 +614,12 @@ export function McpContent() {
       {/* Quickstart */}
       <section id='quickstart' className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>Quickstart</h2>
+          <h2
+            className='mb-8 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
+            Quickstart
+          </h2>
           <CodeBlock
             code={quickstartCode}
             language='typescript'
@@ -594,8 +631,13 @@ export function McpContent() {
       {/* Live Demo */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-2 text-2xl font-bold text-white'>Live Demo</h2>
-          <p className='mb-8 text-[#71717a]'>
+          <h2
+            className='mb-2 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
+            Live Demo
+          </h2>
+          <p className='mb-8' style={{ color: 'var(--ink-2)' }}>
             Run a sample workflow to see how Sentinel logs and guards tool
             calls.
           </p>
@@ -603,7 +645,11 @@ export function McpContent() {
             onClick={runDemo}
             disabled={loading}
             size='lg'
-            className='bg-[#22c55e] text-black shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:bg-[#16a34a]'
+            style={{
+              background: 'var(--accent)',
+              color: 'var(--bg-0)',
+              boxShadow: '0 0 20px rgba(34,197,94,0.3)'
+            }}
           >
             <IconPlayerPlay className='mr-2 h-4 w-4' />
             {loading ? 'Running...' : 'Run Sample Workflow'}
@@ -614,9 +660,19 @@ export function McpContent() {
               {events.map((event) => (
                 <div
                   key={event.id}
-                  className='animate-in fade-in slide-in-from-left-2 flex items-center gap-4 rounded-lg border border-white/[0.07] bg-white/[0.04] p-4 font-mono'
+                  className='animate-in fade-in slide-in-from-left-2 flex items-center gap-4 rounded-lg p-4'
+                  style={{
+                    border: '1px solid var(--border-subtle)',
+                    background: 'var(--bg-2)'
+                  }}
                 >
-                  <span className='font-mono text-xs text-[#52525b]'>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-dp-mono)',
+                      fontSize: 12,
+                      color: 'var(--ink-3)'
+                    }}
+                  >
                     {event.timestamp}
                   </span>
                   <Badge
@@ -646,10 +702,23 @@ export function McpContent() {
                     )}
                     {event.status}
                   </Badge>
-                  <span className='font-mono text-sm text-white'>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-dp-mono)',
+                      fontSize: 14,
+                      color: 'var(--ink-0)'
+                    }}
+                  >
                     {event.tool}
                   </span>
-                  <span className='ml-auto flex items-center text-xs text-[#52525b]'>
+                  <span
+                    className='ml-auto flex items-center'
+                    style={{
+                      fontFamily: 'var(--font-dp-mono)',
+                      fontSize: 12,
+                      color: 'var(--ink-3)'
+                    }}
+                  >
                     <IconClock className='mr-1 h-3 w-3' />
                     {event.latency}
                   </span>
@@ -661,10 +730,27 @@ export function McpContent() {
       </section>
 
       {/* Architecture */}
-      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
+      <section
+        className='border-y py-20'
+        style={{
+          borderColor: 'var(--border-subtle)',
+          background: 'var(--bg-1)'
+        }}
+      >
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>Architecture</h2>
-          <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+          <h2
+            className='mb-8 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
+            Architecture
+          </h2>
+          <div
+            className='overflow-x-auto rounded-xl p-6'
+            style={{
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-2)'
+            }}
+          >
             <McpArchSvg />
           </div>
         </div>
@@ -673,8 +759,19 @@ export function McpContent() {
       {/* Guard Flow */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>Guard Flow</h2>
-          <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+          <h2
+            className='mb-8 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
+            Guard Flow
+          </h2>
+          <div
+            className='overflow-x-auto rounded-xl p-6'
+            style={{
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-2)'
+            }}
+          >
             <GuardFlowSvg />
           </div>
         </div>
@@ -683,12 +780,25 @@ export function McpContent() {
       {/* Demo limits */}
       <section className='py-16'>
         <div className='mx-auto max-w-4xl px-4'>
-          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
-            <p className='font-mono text-xs text-[#52525b]'>
+          <div
+            className='rounded-xl p-6'
+            style={{
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-2)'
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-dp-mono)',
+                fontSize: 12,
+                color: 'var(--ink-3)'
+              }}
+            >
               Demo is rate-limited to 100 events/minute with mock data.{' '}
               <a
                 href='mailto:contact@davidpapp.dev'
-                className='text-[#22c55e] hover:underline'
+                style={{ color: 'var(--accent-bright)' }}
+                className='hover:underline'
               >
                 Contact me
               </a>{' '}

@@ -532,7 +532,7 @@ export function ChatContent() {
   };
 
   return (
-    <div className='relative text-white'>
+    <div className='relative' style={{ color: 'var(--ink-0)' }}>
       <GridBackground />
 
       {/* Hero */}
@@ -540,10 +540,16 @@ export function ChatContent() {
         <MonoEyebrow color='orange' className='mb-6'>
           Retrieval-Augmented Generation
         </MonoEyebrow>
-        <h1 className='mb-4 bg-gradient-to-br from-white to-white/50 bg-clip-text text-5xl leading-[1.07] font-extrabold tracking-[-0.04em] text-transparent'>
+        <h1
+          className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
+          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+        >
           RAG + 3D Chat
         </h1>
-        <p className='max-w-2xl text-base leading-relaxed text-[#71717a]'>
+        <p
+          className='max-w-2xl text-base leading-relaxed'
+          style={{ color: 'var(--ink-2)' }}
+        >
           Upload documents, ask questions, get answers grounded in your data.
           When responses include spatial data, they render in an interactive 3D
           viewer.
@@ -551,7 +557,13 @@ export function ChatContent() {
       </section>
 
       {/* Chat Interface */}
-      <section className='relative z-10 border-y border-white/[0.07] bg-white/[0.015] py-12'>
+      <section
+        className='relative z-10 border-y py-12'
+        style={{
+          borderColor: 'var(--border-subtle)',
+          background: 'var(--bg-1)'
+        }}
+      >
         <div className='mx-auto max-w-6xl px-6'>
           <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
             {/* Chat panel */}
@@ -559,12 +571,20 @@ export function ChatContent() {
               {/* Repo URL Input */}
               <div className='flex gap-2'>
                 <div className='relative flex-1'>
-                  <IconBrandGithub className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#71717a]' />
+                  <IconBrandGithub
+                    className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2'
+                    style={{ color: 'var(--ink-3)' }}
+                  />
                   <Input
                     value={repoUrl}
                     onChange={(e) => setRepoUrl(e.target.value)}
                     placeholder='Paste a GitHub/GitLab repo URL…'
-                    className='border-white/[0.08] bg-white/[0.04] pl-9 text-white placeholder:text-[#52525b] focus-visible:ring-[#22c55e]/30'
+                    className='pl-9 focus-visible:ring-[#22c55e]/30'
+                    style={{
+                      background: 'var(--bg-2)',
+                      color: 'var(--ink-0)',
+                      borderColor: 'var(--border-muted)'
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleCloneRepo();
                     }}
@@ -576,7 +596,12 @@ export function ChatContent() {
                   disabled={!repoUrl.trim() || cloning}
                   variant='outline'
                   size='sm'
-                  className='shrink-0 border-white/[0.08] bg-white/[0.04] text-white hover:bg-white/[0.08]'
+                  className='shrink-0'
+                  style={{
+                    background: 'var(--bg-2)',
+                    color: 'var(--ink-0)',
+                    borderColor: 'var(--border-muted)'
+                  }}
                 >
                   {cloning ? (
                     <IconLoader2 className='h-4 w-4 animate-spin' />
@@ -588,8 +613,20 @@ export function ChatContent() {
 
               {/* Clone status & code chunks */}
               {cloneStatus && (
-                <div className='rounded-lg border border-white/[0.07] bg-white/[0.03] p-3'>
-                  <div className='mb-2 flex items-center gap-2 text-xs text-[#22c55e]'>
+                <div
+                  className='rounded-lg p-3'
+                  style={{
+                    border: '1px solid var(--border-subtle)',
+                    background: 'var(--bg-2)'
+                  }}
+                >
+                  <div
+                    className='mb-2 flex items-center gap-2 text-xs'
+                    style={{
+                      fontFamily: 'var(--font-dp-mono)',
+                      color: 'var(--accent-bright)'
+                    }}
+                  >
                     {cloning ? (
                       <IconLoader2 className='h-3 w-3 animate-spin' />
                     ) : (
@@ -603,13 +640,16 @@ export function ChatContent() {
                         <Badge
                           key={chunk.id}
                           variant='outline'
-                          className='gap-1 border-[#22c55e]/20 bg-[#22c55e]/5 text-xs text-[#22c55e]'
+                          className='gap-1 text-xs'
+                          style={{
+                            borderColor: 'var(--accent-line)',
+                            background: 'var(--accent-soft)',
+                            color: 'var(--accent-bright)'
+                          }}
                         >
                           <IconCode className='h-3 w-3' />
                           {chunk.filename}
-                          <span className='text-[#22c55e]/60'>
-                            {chunk.tokens}t
-                          </span>
+                          <span style={{ opacity: 0.6 }}>{chunk.tokens}t</span>
                         </Badge>
                       ))}
                     </div>
@@ -630,7 +670,11 @@ export function ChatContent() {
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-white/[0.1] p-4 text-sm text-[#71717a] transition-colors hover:border-white/20 hover:text-white'
+                  className='flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-sm transition-colors'
+                  style={{
+                    borderColor: 'var(--border-muted)',
+                    color: 'var(--ink-2)'
+                  }}
                 >
                   <IconUpload className='h-4 w-4' />
                   Drop PDFs, text, or markdown here
@@ -641,7 +685,11 @@ export function ChatContent() {
                     {uploadedFiles.map((f) => (
                       <div
                         key={f.id}
-                        className='flex items-center gap-2 rounded-md border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-xs'
+                        className='flex items-center gap-2 rounded-md px-3 py-2 text-xs'
+                        style={{
+                          border: '1px solid var(--border-subtle)',
+                          background: 'var(--bg-2)'
+                        }}
                       >
                         <input
                           type='checkbox'
@@ -650,11 +698,22 @@ export function ChatContent() {
                           className='accent-[#22c55e]'
                           aria-label={`Include ${f.name}`}
                         />
-                        <IconFile className='h-3.5 w-3.5 shrink-0 text-[#71717a]' />
-                        <span className='flex-1 truncate text-[#d1d5db]'>
+                        <IconFile
+                          className='h-3.5 w-3.5 shrink-0'
+                          style={{ color: 'var(--ink-3)' }}
+                        />
+                        <span
+                          className='flex-1 truncate'
+                          style={{ color: 'var(--ink-1)' }}
+                        >
                           {f.name}
                         </span>
-                        <span className='text-[#52525b]'>
+                        <span
+                          style={{
+                            fontFamily: 'var(--font-dp-mono)',
+                            color: 'var(--ink-3)'
+                          }}
+                        >
                           {formatBytes(f.size)}
                         </span>
                         <Badge
@@ -670,7 +729,7 @@ export function ChatContent() {
                         </Badge>
                         <button
                           onClick={() => removeFile(f.id)}
-                          className='text-[#52525b] hover:text-white'
+                          style={{ color: 'var(--ink-3)' }}
                           aria-label={`Remove ${f.name}`}
                         >
                           <IconX className='h-3.5 w-3.5' />
@@ -683,7 +742,11 @@ export function ChatContent() {
 
               {/* Messages */}
               <div
-                className='max-h-[480px] min-h-[320px] flex-1 space-y-4 overflow-y-auto rounded-xl border border-white/[0.07] bg-white/[0.03] p-4'
+                className='max-h-[480px] min-h-[320px] flex-1 space-y-4 overflow-y-auto rounded-xl p-4'
+                style={{
+                  border: '1px solid var(--border-subtle)',
+                  background: 'var(--bg-2)'
+                }}
                 aria-live='polite'
                 aria-label='Chat messages'
               >
@@ -696,12 +759,20 @@ export function ChatContent() {
                     )}
                   >
                     <div
-                      className={cn(
-                        'max-w-[80%] rounded-lg px-4 py-3 text-sm',
+                      className='max-w-[80%] rounded-lg px-4 py-3 text-sm'
+                      style={
                         msg.role === 'user'
-                          ? 'border border-[#22c55e]/20 bg-[#22c55e]/20 text-white'
-                          : 'border border-white/[0.07] bg-white/[0.06] text-[#d1d5db]'
-                      )}
+                          ? {
+                              background: 'var(--accent-soft)',
+                              border: '1px solid var(--accent-line)',
+                              color: 'var(--ink-0)'
+                            }
+                          : {
+                              background: 'var(--bg-3)',
+                              border: '1px solid var(--border-subtle)',
+                              color: 'var(--ink-1)'
+                            }
+                      }
                     >
                       <p className='whitespace-pre-wrap'>{msg.content}</p>
                     </div>
@@ -710,9 +781,16 @@ export function ChatContent() {
                 {isStreaming &&
                   messages[messages.length - 1]?.content === '' && (
                     <div className='flex justify-start'>
-                      <div className='rounded-lg border border-white/[0.07] bg-white/[0.06] px-4 py-3'>
+                      <div
+                        className='rounded-lg px-4 py-3'
+                        style={{
+                          border: '1px solid var(--border-subtle)',
+                          background: 'var(--bg-3)'
+                        }}
+                      >
                         <IconLoader2
-                          className='h-4 w-4 animate-spin text-[#71717a]'
+                          className='h-4 w-4 animate-spin'
+                          style={{ color: 'var(--ink-3)' }}
                           aria-label='Generating response'
                         />
                       </div>
@@ -732,7 +810,12 @@ export function ChatContent() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder='Ask about your documents...'
-                  className='min-h-[44px] resize-none border-white/[0.08] bg-white/[0.04] text-white placeholder:text-[#52525b] focus-visible:ring-[#22c55e]/30'
+                  className='min-h-[44px] resize-none focus-visible:ring-[#22c55e]/30'
+                  style={{
+                    background: 'var(--bg-2)',
+                    color: 'var(--ink-0)',
+                    borderColor: 'var(--border-muted)'
+                  }}
                   rows={1}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -745,7 +828,8 @@ export function ChatContent() {
                   onClick={handleSend}
                   disabled={isStreaming || !input.trim()}
                   size='icon'
-                  className='shrink-0 bg-[#22c55e] text-black hover:bg-[#16a34a] disabled:opacity-40'
+                  className='shrink-0 disabled:opacity-40'
+                  style={{ background: 'var(--accent)', color: 'var(--bg-0)' }}
                   aria-label='Send message'
                 >
                   {isStreaming ? (
@@ -759,15 +843,32 @@ export function ChatContent() {
                 </Button>
               </div>
 
-              <p className='text-xs text-[#52525b]'>
+              <p
+                style={{
+                  fontFamily: 'var(--font-dp-mono)',
+                  fontSize: 11,
+                  color: 'var(--ink-3)'
+                }}
+              >
                 Rate limited: 2 messages/hour (guest) · 50/hour (signed in)
               </p>
             </div>
 
             {/* 3D Viewer */}
             <div className='flex flex-col'>
-              <h3 className='mb-2 text-sm font-medium text-white'>3D Viewer</h3>
-              <div className='flex min-h-[300px] flex-1 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03]'>
+              <h3
+                className='mb-2 text-sm font-medium'
+                style={{ color: 'var(--ink-0)' }}
+              >
+                3D Viewer
+              </h3>
+              <div
+                className='flex min-h-[300px] flex-1 items-center justify-center rounded-xl'
+                style={{
+                  background: 'var(--bg-1)',
+                  border: '1px solid var(--accent-line)'
+                }}
+              >
                 <div className='text-center'>
                   <svg
                     viewBox='0 0 64 64'
@@ -808,7 +909,13 @@ export function ChatContent() {
                       opacity='0.5'
                     />
                   </svg>
-                  <p className='text-xs text-[#52525b]'>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-dp-mono)',
+                      fontSize: 11,
+                      color: 'var(--ink-3)'
+                    }}
+                  >
                     Renders when response includes 3D data
                   </p>
                 </div>
@@ -820,10 +927,19 @@ export function ChatContent() {
 
       {/* Architecture */}
       <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <h2 className='mb-8 text-2xl font-bold tracking-[-0.02em]'>
+        <h2
+          className='mb-8 text-2xl font-bold tracking-[-0.02em]'
+          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+        >
           Architecture
         </h2>
-        <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+        <div
+          className='overflow-x-auto rounded-xl p-6'
+          style={{
+            border: '1px solid var(--border-subtle)',
+            background: 'var(--bg-2)'
+          }}
+        >
           <ChatArchSvg />
         </div>
       </section>
