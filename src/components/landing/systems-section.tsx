@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { RefObject } from 'react';
 import { Dossier } from '@/components/landing/dossier';
 import { Glyph } from '@/components/landing/glyph';
@@ -47,6 +47,15 @@ interface SystemsSectionProps {
 
 export function SystemsSection({ canvasRef }: SystemsSectionProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { ref.current?.classList.add('is-visible'); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
 
   const handleHover = (id: string) => {
     setActiveModule(id);
@@ -59,7 +68,7 @@ export function SystemsSection({ canvasRef }: SystemsSectionProps) {
 
   return (
     <section id="modules" className="py-32" style={{ background: 'var(--bg-0)' }}>
-      <div className="dp-wrap">
+      <div ref={ref} className="dp-wrap dp-animate">
         <div className="dp-eyebrow">// 02 — SYSTEMS</div>
         <h2 className="t-h2" style={{ color: 'var(--ink-0)', marginBottom: 56 }}>
           Three production<br />AI systems.

@@ -1,8 +1,25 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Glyph } from '@/components/landing/glyph';
 
 export function Chrome2() {
+  const [activeSection, setActiveSection] = useState('');
+
+  useEffect(() => {
+    const sections = document.querySelectorAll('section[id]');
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: '-40% 0px -50% 0px' }
+    );
+    sections.forEach((s) => obs.observe(s));
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50"
@@ -35,13 +52,24 @@ export function Chrome2() {
         >
           {['Proof', 'Systems', 'Principles', 'Assistant', 'Contact'].map((label, i) => {
             const hrefs = ['#proof', '#modules', '#laws', '#assistant', '#contact'];
+            const sectionId = hrefs[i].slice(1);
+            const isActive = activeSection === sectionId;
             return (
               <a
                 key={label}
                 href={hrefs[i]}
-                style={{ padding: '5px 14px', borderRadius: 999, fontSize: 13, fontFamily: 'var(--font-dp-sans)', color: 'var(--ink-2)', textDecoration: 'none', transition: 'color 0.15s' }}
+                style={{
+                  padding: '5px 14px',
+                  borderRadius: 999,
+                  fontSize: 13,
+                  fontFamily: 'var(--font-dp-sans)',
+                  color: isActive ? 'var(--ink-0)' : 'var(--ink-2)',
+                  background: isActive ? 'rgba(243,239,229,0.07)' : 'transparent',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s, background 0.15s'
+                }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--ink-0)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--ink-2)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = isActive ? 'var(--ink-0)' : 'var(--ink-2)'; }}
               >
                 {label}
               </a>

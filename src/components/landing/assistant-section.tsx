@@ -1,3 +1,6 @@
+'use client';
+
+import { useRef, useEffect } from 'react';
 import { Glyph } from '@/components/landing/glyph';
 import type { GlyphKind } from '@/components/landing/glyph';
 
@@ -15,9 +18,19 @@ const EXAMPLE_QS = [
 ];
 
 export function AssistantSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { ref.current?.classList.add('is-visible'); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section id="assistant" className="py-32" style={{ background: 'var(--bg-1)' }}>
-      <div className="dp-wrap">
+      <div ref={ref} className="dp-wrap dp-animate">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           {/* Left */}
           <div>

@@ -1,3 +1,6 @@
+'use client';
+
+import { useRef, useEffect } from 'react';
 import { Glyph } from '@/components/landing/glyph';
 import type { GlyphKind } from '@/components/landing/glyph';
 
@@ -10,9 +13,19 @@ const CHANNELS: { kind: GlyphKind; name: string; sub: string; href: string; cta:
 ];
 
 export function ContactSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { ref.current?.classList.add('is-visible'); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section id="contact" className="py-32" style={{ background: 'var(--bg-0)' }}>
-      <div className="dp-wrap">
+      <div ref={ref} className="dp-wrap dp-animate">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           {/* Left */}
           <div>

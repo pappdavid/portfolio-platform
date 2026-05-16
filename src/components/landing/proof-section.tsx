@@ -1,3 +1,6 @@
+'use client';
+
+import { useRef, useEffect } from 'react';
 import { Glyph } from '@/components/landing/glyph';
 import type { GlyphKind } from '@/components/landing/glyph';
 
@@ -9,9 +12,19 @@ const PROOF: { metric: string; label: string; context: string; glyph: GlyphKind;
 ];
 
 export function ProofSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { ref.current?.classList.add('is-visible'); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section id="proof" className="py-32" style={{ background: 'var(--bg-1)' }}>
-      <div className="dp-wrap">
+      <div ref={ref} className="dp-wrap dp-animate">
         <div className="dp-eyebrow">// 01 — PROOF OF WORK</div>
         <h2 className="t-h2" style={{ color: 'var(--ink-0)', marginBottom: 48 }}>
           The numbers<br />behind the build.
