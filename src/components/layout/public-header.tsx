@@ -8,11 +8,15 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { IconMenu2 } from '@tabler/icons-react';
 import { publicNavItems } from '@/config/nav-config';
 
+// Routes that own their own header chrome (landing scrollspy, module deep-dive
+// pages). PublicHeader stays hidden on these to avoid stacking two navs.
+const HIDDEN_ROUTES = new Set(['/', '/mcp', '/training', '/chat']);
+
 export function PublicHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname === '/') return null;
+  if (HIDDEN_ROUTES.has(pathname)) return null;
 
   return (
     <header className='sticky top-0 z-50 border-b border-white/[0.07] bg-[#060608]/90 backdrop-blur-sm'>
