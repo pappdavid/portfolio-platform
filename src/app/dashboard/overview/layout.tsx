@@ -105,20 +105,20 @@ export default async function OverViewLayout({
           </Card>
           <Card className='@container/card'>
             <CardHeader>
-              <CardDescription>Chat Messages</CardDescription>
+              <CardDescription>Chat Sessions</CardDescription>
               <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                0
+                —
               </CardTitle>
               <CardAction>
                 <Badge variant='outline'>
                   <IconMessageCircle className='size-3.5' />
-                  RAG
+                  Coming Soon
                 </Badge>
               </CardAction>
             </CardHeader>
             <CardFooter className='flex-col items-start gap-1.5 text-sm'>
               <div className='text-muted-foreground'>
-                Ephemeral unless saved
+                Persistent chat history not yet enabled
               </div>
             </CardFooter>
           </Card>

@@ -12,11 +12,13 @@ import {
   IconCheck,
   IconInfoCircle,
   IconEye,
-  IconEyeOff
+  IconEyeOff,
+  IconLoader2
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { GridBackground } from '@/components/ui/grid-background';
 import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
+import { toast } from 'sonner';
 
 const steps = [
   {
@@ -209,6 +211,11 @@ function TrainingArchSvg() {
 export function TrainingContent() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedMode, setSelectedMode] = useState('repo');
+  const [repoUrl, setRepoUrl] = useState('');
+  const [startingTraining, setStartingTraining] = useState(false);
+
+  const GITHUB_URL_RE = /^https:\/\/github\.com\/[^/]+\/[^/]+$/;
+  const repoUrlValid = GITHUB_URL_RE.test(repoUrl.trim());
 
   // API keys state
   const [huggingFaceToken, setHuggingFaceToken] = useState('');
@@ -384,37 +391,41 @@ export function TrainingContent() {
             {/* Input (step 1) */}
             {currentStep === 1 && (
               <div className='space-y-4'>
-                <div
-                  className='rounded-lg p-4'
-                  style={{ border: '1px solid var(--border-subtle)' }}
-                >
-                  <p className='text-sm font-medium' style={{ color: 'var(--ink-0)' }}>
-                    Source:{' '}
-                    <span style={{ color: 'var(--accent-bright)' }}>
-                      {selectedMode}
-                    </span>
-                  </p>
-                  <p
-                    className='mt-2 text-sm'
-                    style={{ color: 'var(--ink-2)' }}
+                <div>
+                  <label
+                    className='mb-1.5 block text-sm font-medium'
+                    style={{ color: 'var(--ink-0)' }}
                   >
-                    {selectedMode === 'repo'
-                      ? 'Enter a Git repository URL or local path. The parser will extract .py, .ts, .tsx, .md files.'
-                      : selectedMode === 'docs'
-                        ? 'Upload markdown files or point to a documentation directory.'
-                        : 'Paste code or text directly into the input area.'}
-                  </p>
-                </div>
-                <div
-                  className='flex h-32 items-center justify-center rounded-lg border-2 border-dashed'
-                  style={{
-                    borderColor: 'var(--border-muted)',
-                    background: 'var(--bg-1)'
-                  }}
-                >
-                  <span className='text-sm' style={{ color: 'var(--ink-2)' }}>
-                    Input area (configured in dashboard)
-                  </span>
+                    GitHub Repository URL
+                  </label>
+                  <Input
+                    value={repoUrl}
+                    onChange={(e) => setRepoUrl(e.target.value)}
+                    placeholder='https://github.com/user/repo'
+                    style={{
+                      background: 'var(--bg-3)',
+                      color: 'var(--ink-0)',
+                      borderColor: repoUrl && !repoUrlValid
+                        ? 'var(--accent-line)'
+                        : 'var(--border-muted)'
+                    }}
+                  />
+                  {repoUrl && !repoUrlValid && (
+                    <p
+                      className='mt-1 text-xs'
+                      style={{ color: 'var(--accent-bright)' }}
+                    >
+                      Must be a valid GitHub URL: https://github.com/user/repo
+                    </p>
+                  )}
+                  {repoUrlValid && (
+                    <p
+                      className='mt-1 text-xs'
+                      style={{ color: 'var(--accent-bright)' }}
+                    >
+                      ✓ Valid URL
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -641,18 +652,42 @@ export function TrainingContent() {
                 )}
                 <Button
                   size='lg'
-                  disabled={submittedWithKeys !== null}
-                  onClick={() => {
-                    setSubmittedWithKeys(!useDemoMode);
+                  disabled={submittedWithKeys !== null || startingTraining}
+                  onClick={async () => {
+                    setStartingTraining(true);
+                    try {
+                      const res = await fetch('/api/training/start', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({})
+                      });
+                      const json = await res.json();
+                      if (!res.ok) throw new Error(json.error ?? 'Failed');
+                      setSubmittedWithKeys(!useDemoMode);
+                      toast.success(
+                        useDemoMode ? 'Demo job queued' : 'Training job submitted'
+                      );
+                    } catch (err) {
+                      toast.error(
+                        err instanceof Error ? err.message : 'Failed to start training'
+                      );
+                    } finally {
+                      setStartingTraining(false);
+                    }
                   }}
                 >
-                  {submittedWithKeys !== null
-                    ? useDemoMode
-                      ? 'Demo job queued'
-                      : 'Training job submitted'
-                    : useDemoMode
-                      ? 'Start Demo Training'
-                      : 'Start Training'}
+                  {startingTraining ? (
+                    <>
+                      <IconLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                      Starting…
+                    </>
+                  ) : submittedWithKeys !== null ? (
+                    useDemoMode ? 'Demo job queued' : 'Training job submitted'
+                  ) : useDemoMode ? (
+                    'Start Demo Training'
+                  ) : (
+                    'Start Training'
+                  )}
                 </Button>
                 {submittedWithKeys === true && (
                   <p
@@ -684,7 +719,10 @@ export function TrainingContent() {
                 onClick={() =>
                   setCurrentStep(Math.min(steps.length - 1, currentStep + 1))
                 }
-                disabled={currentStep === steps.length - 1}
+                disabled={
+                  currentStep === steps.length - 1 ||
+                  (currentStep === 1 && !repoUrlValid)
+                }
               >
                 Next
                 <IconArrowRight className='ml-2 h-4 w-4' />

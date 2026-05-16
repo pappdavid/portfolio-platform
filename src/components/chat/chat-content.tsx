@@ -35,6 +35,7 @@ export type UploadedFile = {
   size: number;
   include: boolean;
   status: 'processing' | 'ready';
+  content?: string;
 };
 
 const INITIAL_MESSAGES: ChatMessage[] = [
@@ -398,18 +399,18 @@ export function ChatContent() {
     setError(null);
 
     try {
-      const includedFiles = uploadedFiles
-        .filter((f) => f.include && f.status === 'ready')
-        .map((f) => f.name)
-        .join(', ');
+      const includedFileContent = uploadedFiles
+        .filter((f) => f.include && f.status === 'ready' && f.content)
+        .map((f) => `### ${f.name}\n${f.content}`)
+        .join('\n\n');
 
       const codeContext =
         codeChunks.length > 0
           ? `Code context from repo:\n${codeChunks.map((c) => `${c.filename}: ${c.summary}`).join('\n')}`
           : undefined;
 
-      const fileContext = includedFiles
-        ? `Uploaded files in context: ${includedFiles}`
+      const fileContext = includedFileContent
+        ? `Uploaded file contents:\n\n${includedFileContent}`
         : undefined;
 
       const context =
@@ -506,16 +507,25 @@ export function ChatContent() {
 
     setUploadedFiles((prev) => [...prev, ...newFiles]);
 
-    // Simulate processing
     newFiles.forEach((uf) => {
-      setTimeout(
-        () => {
-          setUploadedFiles((prev) =>
-            prev.map((f) => (f.id === uf.id ? { ...f, status: 'ready' } : f))
-          );
-        },
-        800 + Math.random() * 700
-      );
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content =
+          typeof event.target?.result === 'string'
+            ? event.target.result.slice(0, 8000)
+            : undefined;
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === uf.id ? { ...f, status: 'ready', content } : f
+          )
+        );
+      };
+      reader.onerror = () => {
+        setUploadedFiles((prev) =>
+          prev.map((f) => (f.id === uf.id ? { ...f, status: 'ready' } : f))
+        );
+      };
+      reader.readAsText(uf.file);
     });
 
     e.target.value = '';
