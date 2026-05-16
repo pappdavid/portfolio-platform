@@ -63,7 +63,11 @@ export function ProofSection() {
   }, []);
 
   return (
-    <section id='proof' className='py-32' style={{ background: 'var(--bg-1)' }}>
+    <section
+      id='proof'
+      className='py-32'
+      style={{ background: 'rgba(19, 18, 16, 0.72)' }}
+    >
       <div ref={ref} className='dp-wrap dp-animate'>
         <div className='dp-eyebrow'>{'// 01 — PROOF OF WORK'}</div>
         <h2

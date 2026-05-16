@@ -230,7 +230,7 @@ export function SystemsSection({ canvasRef }: SystemsSectionProps) {
     <section
       id='modules'
       className='py-32'
-      style={{ background: 'var(--bg-0)' }}
+      style={{ background: 'rgba(12, 11, 9, 0.62)' }}
     >
       <div ref={ref} className='dp-wrap dp-animate'>
         <div
