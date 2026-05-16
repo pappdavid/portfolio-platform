@@ -165,7 +165,7 @@ export function Chrome2() {
               </SheetDescription>
               <nav className='mt-8 flex flex-col gap-1'>
                 <div className='dp-eyebrow' style={{ marginBottom: 8 }}>
-                  // SECTIONS
+                  {'// SECTIONS'}
                 </div>
                 {SECTION_LINKS.map(({ label, href, id }) => (
                   <a
@@ -192,7 +192,7 @@ export function Chrome2() {
                   className='dp-eyebrow'
                   style={{ marginTop: 16, marginBottom: 8 }}
                 >
-                  // MORE
+                  {'// MORE'}
                 </div>
                 {publicNavItems.map((item) => (
                   <Link
