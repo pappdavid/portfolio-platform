@@ -26,6 +26,7 @@ import {
   IconClock
 } from '@tabler/icons-react';
 import { toast } from 'sonner';
+import { createClient } from '@/lib/supabase/client';
 
 interface Dataset {
   id: string;
@@ -153,7 +154,21 @@ export function TrainingDashboardContent() {
                     </TableCell>
                     <TableCell>
                       {ds.storage_path && (
-                        <Button variant='ghost' size='sm'>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          onClick={async () => {
+                            const supabase = createClient();
+                            const { data, error } = await supabase.storage
+                              .from('datasets')
+                              .createSignedUrl(ds.storage_path!, 60);
+                            if (error) {
+                              toast.error('Download failed');
+                            } else {
+                              window.open(data.signedUrl, '_blank');
+                            }
+                          }}
+                        >
                           <IconDownload className='size-4' />
                         </Button>
                       )}

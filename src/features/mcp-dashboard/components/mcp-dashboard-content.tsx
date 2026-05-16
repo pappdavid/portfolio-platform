@@ -80,7 +80,7 @@ export function McpDashboardContent() {
     try {
       const [keysRes, eventsRes] = await Promise.all([
         fetch('/api/mcp/keys'),
-        fetch('/api/mcp/events')
+        fetch(`/api/mcp/events?days=${retention}`)
       ]);
       if (keysRes.ok) {
         const data = await keysRes.json();
@@ -95,7 +95,7 @@ export function McpDashboardContent() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [retention]);
 
   useEffect(() => {
     fetchData();

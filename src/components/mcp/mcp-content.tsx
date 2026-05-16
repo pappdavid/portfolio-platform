@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CodeBlock } from '@/components/shared/code-block';
@@ -34,29 +34,6 @@ type MockEvent = {
   timestamp: string;
 };
 
-function generateMockEvents(): MockEvent[] {
-  const tools = [
-    'file_read',
-    'web_search',
-    'code_execute',
-    'db_query',
-    'send_email'
-  ];
-  const statuses: MockEvent['status'][] = [
-    'allowed',
-    'allowed',
-    'allowed',
-    'warning',
-    'blocked'
-  ];
-  return tools.map((tool, i) => ({
-    id: `evt_${Math.random().toString(36).slice(2, 8)}`,
-    tool,
-    status: statuses[i],
-    latency: `${Math.floor(Math.random() * 20 + 3)}ms`,
-    timestamp: new Date(Date.now() - i * 2000).toISOString().slice(11, 19)
-  }));
-}
 
 function McpArchSvg() {
   return (
@@ -499,20 +476,55 @@ function GuardFlowSvg() {
 export function McpContent() {
   const [events, setEvents] = useState<MockEvent[]>([]);
   const [loading, setLoading] = useState(false);
+  const [demoActive, setDemoActive] = useState(false);
 
-  const runDemo = () => {
+  useEffect(() => {
+    if (!demoActive) return;
     setLoading(true);
     setEvents([]);
-    const mockEvents = generateMockEvents();
-    mockEvents.forEach((event, i) => {
-      setTimeout(
-        () => {
-          setEvents((prev) => [...prev, event]);
-          if (i === mockEvents.length - 1) setLoading(false);
-        },
-        (i + 1) * 600
-      );
-    });
+
+    const sse = new EventSource('/api/mcp/demo');
+    let count = 0;
+
+    sse.onmessage = (e) => {
+      try {
+        const raw = JSON.parse(e.data) as {
+          id: string;
+          tool_name: string;
+          action: string;
+          latency_ms: number;
+          created_at: string;
+        };
+        const event: MockEvent = {
+          id: raw.id,
+          tool: raw.tool_name,
+          status: raw.action as MockEvent['status'],
+          latency: `${raw.latency_ms}ms`,
+          timestamp: raw.created_at.slice(11, 19)
+        };
+        setEvents((prev) => [...prev, event].slice(0, 50));
+        count++;
+        if (count >= 5) {
+          setLoading(false);
+          sse.close();
+        }
+      } catch {
+        // ignore malformed event
+      }
+    };
+
+    sse.onerror = () => {
+      setLoading(false);
+      sse.close();
+    };
+
+    return () => sse.close();
+  }, [demoActive]);
+
+  const runDemo = () => {
+    setDemoActive(false);
+    // toggle off then on to re-trigger effect
+    setTimeout(() => setDemoActive(true), 0);
   };
 
   return (
