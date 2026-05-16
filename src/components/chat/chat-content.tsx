@@ -1,12 +1,6 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { GridBackground } from '@/components/ui/grid-background';
-import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 import {
   IconUpload,
   IconSend,
@@ -17,7 +11,6 @@ import {
   IconCheck,
   IconCode
 } from '@tabler/icons-react';
-import { cn } from '@/lib/utils';
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -41,12 +34,12 @@ export type UploadedFile = {
 const INITIAL_MESSAGES: ChatMessage[] = [
   {
     role: 'user',
-    content: 'What authentication pattern does this project use?'
+    content: 'What auth pattern does this project use?'
   },
   {
     role: 'assistant',
     content:
-      'Based on the codebase, this project uses **Clerk** for authentication. The middleware is configured in `proxy.ts` (Next.js 16 pattern) which protects `/dashboard(.*)` routes via `clerkMiddleware`.\n\nKey files:\n- `src/proxy.ts` — middleware configuration\n- `src/components/layout/providers.tsx` — ClerkProvider wrapper\n- `src/app/auth/` — sign-in/sign-up routes'
+      'This project uses **Clerk**. The middleware is configured in `proxy.ts` (Next.js 16 pattern), protecting `/dashboard(.*)` via `clerkMiddleware`.\n\nsrc/proxy.ts:12  ·  providers.tsx:8'
   }
 ];
 
@@ -56,270 +49,234 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function ChatArchSvg() {
+// Hero icon — orbit/atom (reference modules/chat.html line 25)
+function OrbitIcon() {
   return (
     <svg
-      viewBox='0 0 780 130'
+      width='22'
+      height='22'
+      viewBox='0 0 24 24'
       fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-      className='w-full'
-      aria-label='Chat RAG architecture: upload and embed documents into vector store; user query retrieved, reranked, sent to LLM, response optionally rendered in Three.js'
+      stroke='currentColor'
+      strokeWidth='1.5'
     >
-      {/* Ingestion row */}
-      <rect
-        x='0'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='50'
-        y='27'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Upload
-      </text>
-      <path
-        d='M102 23 L112 23'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon points='112,19.5 116,23 112,26.5' fill='rgba(249,115,22,0.7)' />
-      <rect
-        x='118'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='168'
-        y='27'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Chunker
-      </text>
-      <path
-        d='M220 23 L230 23'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon points='230,19.5 234,23 230,26.5' fill='rgba(249,115,22,0.7)' />
-      <rect
-        x='236'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='286'
-        y='27'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Embeddings
-      </text>
-      <path
-        d='M338 23 L348 23'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon points='348,19.5 352,23 348,26.5' fill='rgba(249,115,22,0.7)' />
-      <rect
-        x='354'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(6,182,212,0.06)'
-        stroke='rgba(6,182,212,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='404'
-        y='27'
-        textAnchor='middle'
-        fill='#06b6d4'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Vector Store
-      </text>
-      {/* Query row */}
-      <rect
-        x='0'
-        y='89'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.09)'
-        strokeWidth='1'
-      />
-      <text
-        x='50'
-        y='111'
-        textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        User Query
-      </text>
-      <path
-        d='M102 107 L112 107'
-        stroke='rgba(168,85,247,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon
-        points='112,103.5 116,107 112,110.5'
-        fill='rgba(168,85,247,0.7)'
-      />
-      <rect
-        x='118'
-        y='89'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='168'
-        y='111'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Retriever
-      </text>
-      <path
-        d='M220 107 L230 107'
-        stroke='rgba(168,85,247,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon
-        points='230,103.5 234,107 230,110.5'
-        fill='rgba(168,85,247,0.7)'
-      />
-      <rect
-        x='236'
-        y='89'
-        width='110'
-        height='36'
-        rx='7'
-        fill='rgba(168,85,247,0.06)'
-        stroke='rgba(168,85,247,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='291'
-        y='111'
-        textAnchor='middle'
-        fill='#a855f7'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        LLM + Context
-      </text>
-      <path
-        d='M348 107 L358 107'
-        stroke='rgba(168,85,247,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon
-        points='358,103.5 362,107 358,110.5'
-        fill='rgba(168,85,247,0.7)'
-      />
-      <rect
-        x='364'
-        y='89'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(168,85,247,0.06)'
-        stroke='rgba(168,85,247,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='414'
-        y='111'
-        textAnchor='middle'
-        fill='#a855f7'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Response
-      </text>
-      <path
-        d='M466 107 L476 107'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-        strokeDasharray='3 2'
-      />
-      <polygon
-        points='476,103.5 480,107 476,110.5'
-        fill='rgba(249,115,22,0.7)'
-      />
-      <rect
-        x='482'
-        y='89'
-        width='130'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='547'
-        y='104'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Three.js
-      </text>
-      <text
-        x='547'
-        y='118'
-        textAnchor='middle'
-        fill='#52525b'
-        fontSize='8'
-        fontFamily='monospace'
-      >
-        (if spatial data)
-      </text>
-      {/* Vector store feeds retriever */}
-      <path
-        d='M404 41 L404 65 L168 65 L168 89'
-        stroke='rgba(6,182,212,0.3)'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
+      <ellipse cx='12' cy='12' rx='9' ry='4' />
+      <ellipse cx='12' cy='12' rx='9' ry='4' transform='rotate(60 12 12)' />
+      <circle cx='12' cy='12' r='2' fill='currentColor' />
     </svg>
+  );
+}
+
+// Two-row architecture SVG, matches reference modules/chat.html
+function ArchitectureSvg() {
+  return (
+    <svg
+      viewBox='0 0 980 200'
+      width='100%'
+      height='200'
+      role='img'
+      aria-label='RAG architecture: ingestion pipeline (upload, chunker, embeddings into pgvector store) and query pipeline (user query, top-k, rerank, LLM, streaming, optional 3D renderer)'
+    >
+      {/* Ingestion lane */}
+      <text
+        x='0'
+        y='20'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='11'
+      >
+        INGESTION →
+      </text>
+      {[
+        { x: 0, label: 'Upload' },
+        { x: 140, label: 'Chunker' },
+        { x: 280, label: 'Embeddings' }
+      ].map((node) => (
+        <g key={node.label}>
+          <rect
+            x={node.x}
+            y='34'
+            width='120'
+            height='36'
+            rx='6'
+            fill='rgba(34,197,94,0.06)'
+            stroke='rgba(34,197,94,0.25)'
+          />
+          <text
+            x={node.x + 60}
+            y='56'
+            textAnchor='middle'
+            fill='#22c55e'
+            fontFamily='JetBrains Mono'
+            fontSize='11'
+          >
+            {node.label}
+          </text>
+        </g>
+      ))}
+      <rect
+        x='420'
+        y='34'
+        width='160'
+        height='36'
+        rx='6'
+        fill='rgba(255,255,255,0.04)'
+        stroke='rgba(255,255,255,0.12)'
+      />
+      <text
+        x='500'
+        y='56'
+        textAnchor='middle'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='11'
+      >
+        pgvector store
+      </text>
+
+      {/* Query lane */}
+      <text
+        x='0'
+        y='110'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='11'
+      >
+        QUERY →
+      </text>
+      {[
+        { x: 0, label: 'User query', highlight: false },
+        { x: 140, label: 'Top-k', highlight: false },
+        { x: 280, label: 'Rerank (bge)', highlight: false },
+        { x: 420, label: 'LLM', highlight: false },
+        { x: 560, label: 'Streaming', highlight: true }
+      ].map((node) => (
+        <g key={node.label}>
+          <rect
+            x={node.x}
+            y='124'
+            width='120'
+            height='36'
+            rx='6'
+            fill={
+              node.highlight ? 'rgba(34,197,94,0.06)' : 'rgba(255,255,255,0.04)'
+            }
+            stroke={
+              node.highlight ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.12)'
+            }
+          />
+          <text
+            x={node.x + 60}
+            y='146'
+            textAnchor='middle'
+            fill={node.highlight ? '#22c55e' : '#a8a39a'}
+            fontFamily='JetBrains Mono'
+            fontSize='11'
+          >
+            {node.label}
+          </text>
+        </g>
+      ))}
+
+      {/* 3D Renderer block */}
+      <rect
+        x='700'
+        y='104'
+        width='160'
+        height='76'
+        rx='10'
+        fill='rgba(34,197,94,0.05)'
+        stroke='rgba(34,197,94,0.3)'
+      />
+      <text
+        x='780'
+        y='138'
+        textAnchor='middle'
+        fill='#22c55e'
+        fontFamily='JetBrains Mono'
+        fontSize='11'
+      >
+        3D Renderer
+      </text>
+      <text
+        x='780'
+        y='156'
+        textAnchor='middle'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='9.5'
+      >
+        Three.js · deterministic
+      </text>
+    </svg>
+  );
+}
+
+function DodecahedronPreview() {
+  return (
+    <div
+      style={{
+        position: 'relative',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: 12,
+        aspectRatio: '16/10',
+        background:
+          'radial-gradient(ellipse at 50% 60%, rgba(34,197,94,0.10), transparent 60%), var(--bg-1)',
+        display: 'grid',
+        placeItems: 'center',
+        overflow: 'hidden'
+      }}
+    >
+      <svg viewBox='0 0 200 120' width='60%' aria-hidden='true'>
+        <polygon
+          points='100,16 156,46 156,90 100,120 44,90 44,46'
+          fill='rgba(34,197,94,0.08)'
+          stroke='#22c55e'
+          strokeWidth='1.5'
+        />
+        <line
+          x1='100'
+          y1='16'
+          x2='100'
+          y2='68'
+          stroke='#22c55e'
+          strokeWidth='1'
+          opacity='0.5'
+        />
+        <line
+          x1='44'
+          y1='46'
+          x2='100'
+          y2='68'
+          stroke='#22c55e'
+          strokeWidth='1'
+          opacity='0.5'
+        />
+        <line
+          x1='156'
+          y1='46'
+          x2='100'
+          y2='68'
+          stroke='#22c55e'
+          strokeWidth='1'
+          opacity='0.5'
+        />
+        <circle cx='100' cy='68' r='3' fill='#22c55e' />
+      </svg>
+      <span
+        style={{
+          position: 'absolute',
+          bottom: 12,
+          left: 14,
+          fontFamily: 'var(--font-dp-mono), monospace',
+          fontSize: 11,
+          letterSpacing: '0.08em',
+          color: 'var(--accent)'
+        }}
+      >
+        RENDERED · 3D PAYLOAD v0.3
+      </span>
+    </div>
   );
 }
 
@@ -330,7 +287,6 @@ export function ChatContent() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Repo URL state
   const [repoUrl, setRepoUrl] = useState('');
   const [cloning, setCloning] = useState(false);
   const [cloneStatus, setCloneStatus] = useState<string | null>(null);
@@ -364,13 +320,13 @@ export function ChatContent() {
       setCodeChunks([
         {
           id: '1',
-          filename: `src/agent/pipeline.ts`,
+          filename: 'src/agent/pipeline.ts',
           summary: 'Main agent execution pipeline with guard middleware',
           tokens: 512
         },
         {
           id: '2',
-          filename: `src/guards/injection.ts`,
+          filename: 'src/guards/injection.ts',
           summary: 'Prompt injection detection and sanitization',
           tokens: 348
         },
@@ -542,320 +498,487 @@ export function ChatContent() {
   };
 
   return (
-    <div className='relative' style={{ color: 'var(--ink-0)' }}>
-      <GridBackground />
+    <div style={{ background: 'var(--bg-0)' }}>
+      <main className='mod-wrap' style={{ paddingBottom: 0 }}>
+        {/* Hero */}
+        <section style={{ padding: '80px 0 64px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              marginBottom: 24
+            }}
+          >
+            <div className='mod-icon'>
+              <OrbitIcon />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <span className='mod-eyebrow'>
+                <span className='mod-dot' />
+                <span className='mod-dash' />
+                <span>MODULE 03 / RETRIEVAL</span>
+              </span>
+              <h1
+                style={{
+                  margin: 0,
+                  fontFamily: 'var(--font-dp-sans), Inter Tight, sans-serif',
+                  fontSize: 'clamp(40px, 5vw, 64px)',
+                  fontWeight: 600,
+                  letterSpacing: '-0.04em',
+                  lineHeight: 0.96,
+                  color: 'var(--ink-0)'
+                }}
+              >
+                RAG + 3D Chat
+              </h1>
+            </div>
+          </div>
 
-      {/* Hero */}
-      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <MonoEyebrow color='orange' className='mb-6'>
-          Retrieval-Augmented Generation
-        </MonoEyebrow>
-        <h1
-          className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
-          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-        >
-          RAG + 3D Chat
-        </h1>
-        <p
-          className='max-w-2xl text-base leading-relaxed'
-          style={{ color: 'var(--ink-2)' }}
-        >
-          Upload documents, ask questions, get answers grounded in your data.
-          When responses include spatial data, they render in an interactive 3D
-          viewer.
-        </p>
-      </section>
+          <p
+            style={{
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: 'var(--ink-2)',
+              maxWidth: 720,
+              margin: 0
+            }}
+          >
+            Chat with your docs. When the answer is a structure, render it
+            inline in Three.js with citations pointing back to source chunks.
+            Top-k → rerank → cite, kept stupid-simple.
+          </p>
 
-      {/* Chat Interface */}
-      <section
-        className='relative z-10 border-y py-12'
-        style={{
-          borderColor: 'var(--border-subtle)',
-          background: 'var(--bg-1)'
-        }}
-      >
-        <div className='mx-auto max-w-6xl px-6'>
-          <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-            {/* Chat panel */}
-            <div className='flex flex-col gap-4 lg:col-span-2'>
-              {/* Repo URL Input */}
-              <div className='flex gap-2'>
-                <div className='relative flex-1'>
-                  <IconBrandGithub
-                    className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2'
-                    style={{ color: 'var(--ink-3)' }}
-                  />
-                  <Input
-                    value={repoUrl}
-                    onChange={(e) => setRepoUrl(e.target.value)}
-                    placeholder='Paste a GitHub/GitLab repo URL…'
-                    className='pl-9 focus-visible:ring-[#22c55e]/30'
-                    style={{
-                      background: 'var(--bg-2)',
-                      color: 'var(--ink-0)',
-                      borderColor: 'var(--border-muted)'
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleCloneRepo();
-                    }}
-                    disabled={cloning}
-                  />
-                </div>
-                <Button
-                  onClick={handleCloneRepo}
-                  disabled={!repoUrl.trim() || cloning}
-                  variant='outline'
-                  size='sm'
-                  className='shrink-0'
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              marginTop: 28,
+              flexWrap: 'wrap'
+            }}
+          >
+            <span className='mod-status'>
+              <span className='mod-status-dot' />
+              pgvector + bge-reranker
+            </span>
+            <span className='mod-status'>
+              <span className='mod-status-dot' />
+              Streaming SSE
+            </span>
+            <span className='mod-status'>
+              <span className='mod-status-dot' />
+              3D outputs deterministic from trace
+            </span>
+          </div>
+        </section>
+
+        {/* // 01 Architecture */}
+        <section style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>// 01</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>Architecture</span>
+          </div>
+          <div className='mod-card' style={{ padding: 24 }}>
+            <ArchitectureSvg />
+          </div>
+        </section>
+
+        {/* // 02 Try it — interactive chat, preserved */}
+        <section style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>// 02</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>Try it</span>
+          </div>
+
+          {/* Repo + upload toolbar */}
+          <div
+            style={{
+              display: 'grid',
+              gap: 12,
+              gridTemplateColumns: '1fr',
+              marginBottom: 16
+            }}
+          >
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ position: 'relative', flex: 1 }}>
+                <IconBrandGithub
+                  className='h-4 w-4'
                   style={{
-                    background: 'var(--bg-2)',
+                    position: 'absolute',
+                    top: '50%',
+                    left: 12,
+                    transform: 'translateY(-50%)',
+                    color: 'var(--ink-3)'
+                  }}
+                />
+                <input
+                  type='url'
+                  value={repoUrl}
+                  onChange={(e) => setRepoUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCloneRepo();
+                  }}
+                  placeholder='Paste a GitHub/GitLab repo URL…'
+                  disabled={cloning}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px 10px 36px',
+                    borderRadius: 8,
+                    fontFamily: 'var(--font-dp-mono), monospace',
+                    fontSize: 13,
                     color: 'var(--ink-0)',
-                    borderColor: 'var(--border-muted)'
+                    background: 'var(--bg-2)',
+                    border: '1px solid var(--border-muted)',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+              <button
+                type='button'
+                onClick={handleCloneRepo}
+                disabled={!repoUrl.trim() || cloning}
+                className='dp-btn dp-btn-ghost'
+                style={{
+                  padding: '8px 16px',
+                  fontSize: 13,
+                  opacity: !repoUrl.trim() || cloning ? 0.5 : 1,
+                  cursor: !repoUrl.trim() || cloning ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {cloning ? (
+                  <IconLoader2 className='h-4 w-4 animate-spin' />
+                ) : (
+                  'Load'
+                )}
+              </button>
+            </div>
+
+            {cloneStatus && (
+              <div
+                className='mod-card'
+                style={{ padding: 12, background: 'var(--bg-2)' }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    fontFamily: 'var(--font-dp-mono), monospace',
+                    fontSize: 11,
+                    color: 'var(--accent-bright)',
+                    marginBottom: codeChunks.length > 0 ? 10 : 0
                   }}
                 >
                   {cloning ? (
-                    <IconLoader2 className='h-4 w-4 animate-spin' />
+                    <IconLoader2 className='h-3 w-3 animate-spin' />
                   ) : (
-                    'Load'
+                    <IconCheck className='h-3 w-3' />
                   )}
-                </Button>
-              </div>
-
-              {/* Clone status & code chunks */}
-              {cloneStatus && (
-                <div
-                  className='rounded-lg p-3'
-                  style={{
-                    border: '1px solid var(--border-subtle)',
-                    background: 'var(--bg-2)'
-                  }}
-                >
+                  {cloneStatus}
+                </div>
+                {codeChunks.length > 0 && (
                   <div
-                    className='mb-2 flex items-center gap-2 text-xs'
                     style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      color: 'var(--accent-bright)'
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 6
                     }}
                   >
-                    {cloning ? (
-                      <IconLoader2 className='h-3 w-3 animate-spin' />
-                    ) : (
-                      <IconCheck className='h-3 w-3' />
-                    )}
-                    {cloneStatus}
-                  </div>
-                  {codeChunks.length > 0 && (
-                    <div className='flex flex-wrap gap-1.5'>
-                      {codeChunks.map((chunk) => (
-                        <Badge
-                          key={chunk.id}
-                          variant='outline'
-                          className='gap-1 text-xs'
-                          style={{
-                            borderColor: 'var(--accent-line)',
-                            background: 'var(--accent-soft)',
-                            color: 'var(--accent-bright)'
-                          }}
-                        >
-                          <IconCode className='h-3 w-3' />
-                          {chunk.filename}
-                          <span style={{ opacity: 0.6 }}>{chunk.tokens}t</span>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* File Upload */}
-              <div>
-                <input
-                  ref={fileInputRef}
-                  type='file'
-                  multiple
-                  accept='.pdf,.txt,.md,.csv'
-                  className='hidden'
-                  onChange={handleFileChange}
-                  aria-label='Upload files'
-                />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-sm transition-colors'
-                  style={{
-                    borderColor: 'var(--border-muted)',
-                    color: 'var(--ink-2)'
-                  }}
-                >
-                  <IconUpload className='h-4 w-4' />
-                  Drop PDFs, text, or markdown here
-                </button>
-
-                {uploadedFiles.length > 0 && (
-                  <div className='mt-2 flex flex-col gap-1.5'>
-                    {uploadedFiles.map((f) => (
-                      <div
-                        key={f.id}
-                        className='flex items-center gap-2 rounded-md px-3 py-2 text-xs'
+                    {codeChunks.map((chunk) => (
+                      <span
+                        key={chunk.id}
                         style={{
-                          border: '1px solid var(--border-subtle)',
-                          background: 'var(--bg-2)'
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          padding: '4px 10px',
+                          borderRadius: 999,
+                          background: 'var(--accent-soft)',
+                          border: '1px solid var(--accent-line)',
+                          fontFamily: 'var(--font-dp-mono), monospace',
+                          fontSize: 11,
+                          color: 'var(--accent-bright)'
                         }}
                       >
-                        <input
-                          type='checkbox'
-                          checked={f.include}
-                          onChange={() => toggleFileInclude(f.id)}
-                          className='accent-[#22c55e]'
-                          aria-label={`Include ${f.name}`}
-                        />
-                        <IconFile
-                          className='h-3.5 w-3.5 shrink-0'
-                          style={{ color: 'var(--ink-3)' }}
-                        />
-                        <span
-                          className='flex-1 truncate'
-                          style={{ color: 'var(--ink-1)' }}
-                        >
-                          {f.name}
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: 'var(--font-dp-mono)',
-                            color: 'var(--ink-3)'
-                          }}
-                        >
-                          {formatBytes(f.size)}
-                        </span>
-                        <Badge
-                          variant='outline'
-                          className={cn(
-                            'px-1.5 py-0 text-[10px]',
-                            f.status === 'processing'
-                              ? 'border-yellow-500/30 text-yellow-400'
-                              : 'border-[#22c55e]/30 text-[#22c55e]'
-                          )}
-                        >
-                          {f.status}
-                        </Badge>
-                        <button
-                          onClick={() => removeFile(f.id)}
-                          style={{ color: 'var(--ink-3)' }}
-                          aria-label={`Remove ${f.name}`}
-                        >
-                          <IconX className='h-3.5 w-3.5' />
-                        </button>
-                      </div>
+                        <IconCode className='h-3 w-3' />
+                        {chunk.filename}
+                        <span style={{ opacity: 0.6 }}>{chunk.tokens}t</span>
+                      </span>
                     ))}
                   </div>
                 )}
               </div>
+            )}
 
-              {/* Messages */}
-              <div
-                className='max-h-[480px] min-h-[320px] flex-1 space-y-4 overflow-y-auto rounded-xl p-4'
+            <div>
+              <input
+                ref={fileInputRef}
+                type='file'
+                multiple
+                accept='.pdf,.txt,.md,.csv'
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                aria-label='Upload files'
+              />
+              <button
+                type='button'
+                onClick={() => fileInputRef.current?.click()}
                 style={{
-                  border: '1px solid var(--border-subtle)',
-                  background: 'var(--bg-2)'
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  padding: 14,
+                  borderRadius: 10,
+                  border: '1px dashed var(--border-muted)',
+                  background: 'transparent',
+                  fontSize: 13,
+                  color: 'var(--ink-2)',
+                  cursor: 'pointer'
                 }}
+              >
+                <IconUpload className='h-4 w-4' />
+                Drop PDFs, text, or markdown here
+              </button>
+
+              {uploadedFiles.length > 0 && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 6
+                  }}
+                >
+                  {uploadedFiles.map((f) => (
+                    <div
+                      key={f.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '8px 12px',
+                        borderRadius: 8,
+                        border: '1px solid var(--border-subtle)',
+                        background: 'var(--bg-2)',
+                        fontSize: 12
+                      }}
+                    >
+                      <input
+                        type='checkbox'
+                        checked={f.include}
+                        onChange={() => toggleFileInclude(f.id)}
+                        aria-label={`Include ${f.name}`}
+                        style={{ accentColor: 'var(--accent)' }}
+                      />
+                      <IconFile
+                        className='h-3.5 w-3.5'
+                        style={{ color: 'var(--ink-3)', flexShrink: 0 }}
+                      />
+                      <span
+                        style={{
+                          flex: 1,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          color: 'var(--ink-1)'
+                        }}
+                      >
+                        {f.name}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-dp-mono), monospace',
+                          color: 'var(--ink-3)'
+                        }}
+                      >
+                        {formatBytes(f.size)}
+                      </span>
+                      <span
+                        style={{
+                          padding: '1px 6px',
+                          borderRadius: 4,
+                          border: `1px solid ${f.status === 'processing' ? 'rgba(245,158,11,0.3)' : 'var(--accent-line)'}`,
+                          fontSize: 10,
+                          color:
+                            f.status === 'processing'
+                              ? '#f59e0b'
+                              : 'var(--accent-bright)'
+                        }}
+                      >
+                        {f.status}
+                      </span>
+                      <button
+                        type='button'
+                        onClick={() => removeFile(f.id)}
+                        aria-label={`Remove ${f.name}`}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 4,
+                          cursor: 'pointer',
+                          color: 'var(--ink-3)'
+                        }}
+                      >
+                        <IconX className='h-3.5 w-3.5' />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Chat + retrieval trace 2-pane */}
+          <div
+            style={{
+              display: 'grid',
+              gap: 1,
+              gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
+              background: 'var(--border-subtle)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: 14,
+              overflow: 'hidden'
+            }}
+          >
+            {/* Chat pane */}
+            <div style={{ background: 'var(--bg-1)', padding: 22 }}>
+              <div
+                style={{
+                  fontFamily: 'var(--font-dp-mono), monospace',
+                  fontSize: 11,
+                  letterSpacing: '0.16em',
+                  color: 'var(--ink-3)',
+                  textTransform: 'uppercase',
+                  marginBottom: 14
+                }}
+              >
+                CHAT
+              </div>
+              <div
                 aria-live='polite'
                 aria-label='Chat messages'
+                style={{
+                  maxHeight: 360,
+                  minHeight: 240,
+                  overflowY: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
+                  marginBottom: 14
+                }}
               >
                 {messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={cn(
-                      'flex',
-                      msg.role === 'user' ? 'justify-end' : 'justify-start'
-                    )}
-                  >
-                    <div
-                      className='max-w-[80%] rounded-lg px-4 py-3 text-sm'
-                      style={
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 10,
+                      fontSize: 13.5,
+                      lineHeight: 1.55,
+                      whiteSpace: 'pre-wrap',
+                      color: 'var(--ink-1)',
+                      background:
                         msg.role === 'user'
-                          ? {
-                              background: 'var(--accent-soft)',
-                              border: '1px solid var(--accent-line)',
-                              color: 'var(--ink-0)'
-                            }
-                          : {
-                              background: 'var(--bg-3)',
-                              border: '1px solid var(--border-subtle)',
-                              color: 'var(--ink-1)'
-                            }
-                      }
-                    >
-                      <p className='whitespace-pre-wrap'>{msg.content}</p>
-                    </div>
+                          ? 'rgba(255,255,255,0.04)'
+                          : 'rgba(34,197,94,0.05)',
+                      border:
+                        msg.role === 'user'
+                          ? '1px solid var(--border-subtle)'
+                          : '1px solid var(--accent-line)'
+                    }}
+                  >
+                    {msg.content}
                   </div>
                 ))}
                 {isStreaming &&
                   messages[messages.length - 1]?.content === '' && (
-                    <div className='flex justify-start'>
-                      <div
-                        className='rounded-lg px-4 py-3'
-                        style={{
-                          border: '1px solid var(--border-subtle)',
-                          background: 'var(--bg-3)'
-                        }}
-                      >
-                        <IconLoader2
-                          className='h-4 w-4 animate-spin'
-                          style={{ color: 'var(--ink-3)' }}
-                          aria-label='Generating response'
-                        />
-                      </div>
+                    <div
+                      style={{
+                        padding: '10px 14px',
+                        borderRadius: 10,
+                        background: 'rgba(34,197,94,0.05)',
+                        border: '1px solid var(--accent-line)',
+                        width: 'fit-content'
+                      }}
+                    >
+                      <IconLoader2
+                        className='h-4 w-4 animate-spin'
+                        style={{ color: 'var(--accent)' }}
+                        aria-label='Generating response'
+                      />
                     </div>
                   )}
                 {error && (
-                  <p className='text-center text-xs text-red-400' role='alert'>
+                  <p
+                    role='alert'
+                    style={{
+                      margin: 0,
+                      textAlign: 'center',
+                      fontSize: 12,
+                      color: '#ef4444'
+                    }}
+                  >
                     {error}
                   </p>
                 )}
                 <div ref={messagesEndRef} />
               </div>
-
-              {/* Input */}
-              <div className='flex gap-2'>
-                <Textarea
+              <div style={{ display: 'flex', gap: 8 }}>
+                <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder='Ask about your documents...'
-                  className='min-h-[44px] resize-none focus-visible:ring-[#22c55e]/30'
-                  style={{
-                    background: 'var(--bg-2)',
-                    color: 'var(--ink-0)',
-                    borderColor: 'var(--border-muted)'
-                  }}
-                  rows={1}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       handleSend();
                     }
                   }}
+                  placeholder='Ask about your documents…'
+                  rows={1}
+                  style={{
+                    flex: 1,
+                    minHeight: 44,
+                    resize: 'none',
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    fontFamily: 'var(--font-dp-sans), Inter Tight, sans-serif',
+                    fontSize: 13.5,
+                    color: 'var(--ink-0)',
+                    background: 'var(--bg-2)',
+                    border: '1px solid var(--border-muted)',
+                    outline: 'none'
+                  }}
                 />
-                <Button
+                <button
+                  type='button'
                   onClick={handleSend}
                   disabled={isStreaming || !input.trim()}
-                  size='icon'
-                  className='shrink-0 disabled:opacity-40'
-                  style={{ background: 'var(--accent)', color: 'var(--bg-0)' }}
                   aria-label='Send message'
+                  className='dp-btn dp-btn-primary'
+                  style={{
+                    padding: 12,
+                    minWidth: 44,
+                    justifyContent: 'center',
+                    opacity: isStreaming || !input.trim() ? 0.5 : 1,
+                    cursor:
+                      isStreaming || !input.trim() ? 'not-allowed' : 'pointer'
+                  }}
                 >
                   {isStreaming ? (
-                    <IconLoader2
-                      className='h-4 w-4 animate-spin'
-                      aria-hidden='true'
-                    />
+                    <IconLoader2 className='h-4 w-4 animate-spin' />
                   ) : (
-                    <IconSend className='h-4 w-4' aria-hidden='true' />
+                    <IconSend className='h-4 w-4' />
                   )}
-                </Button>
+                </button>
               </div>
-
               <p
                 style={{
-                  fontFamily: 'var(--font-dp-mono)',
+                  margin: '10px 0 0',
+                  fontFamily: 'var(--font-dp-mono), monospace',
                   fontSize: 11,
                   color: 'var(--ink-3)'
                 }}
@@ -864,95 +987,119 @@ export function ChatContent() {
               </p>
             </div>
 
-            {/* 3D Viewer */}
-            <div className='flex flex-col'>
-              <h3
-                className='mb-2 text-sm font-medium'
-                style={{ color: 'var(--ink-0)' }}
-              >
-                3D Viewer
-              </h3>
+            {/* Retrieval trace pane */}
+            <div style={{ background: 'var(--bg-1)', padding: 22 }}>
               <div
-                className='flex min-h-[300px] flex-1 items-center justify-center rounded-xl'
                 style={{
-                  background: 'var(--bg-1)',
-                  border: '1px solid var(--accent-line)'
+                  fontFamily: 'var(--font-dp-mono), monospace',
+                  fontSize: 11,
+                  letterSpacing: '0.16em',
+                  color: 'var(--ink-3)',
+                  textTransform: 'uppercase',
+                  marginBottom: 14
                 }}
               >
-                <div className='text-center'>
-                  <svg
-                    viewBox='0 0 64 64'
-                    className='mx-auto mb-3 h-16 w-16 opacity-20'
-                    fill='none'
-                    aria-hidden='true'
-                  >
-                    <polygon
-                      points='32,4 60,18 60,46 32,60 4,46 4,18'
-                      stroke='#f97316'
-                      strokeWidth='2'
-                    />
-                    <line
-                      x1='32'
-                      y1='4'
-                      x2='32'
-                      y2='32'
-                      stroke='#f97316'
-                      strokeWidth='1'
-                      opacity='0.5'
-                    />
-                    <line
-                      x1='4'
-                      y1='18'
-                      x2='32'
-                      y2='32'
-                      stroke='#f97316'
-                      strokeWidth='1'
-                      opacity='0.5'
-                    />
-                    <line
-                      x1='60'
-                      y1='18'
-                      x2='32'
-                      y2='32'
-                      stroke='#f97316'
-                      strokeWidth='1'
-                      opacity='0.5'
-                    />
-                  </svg>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      fontSize: 11,
-                      color: 'var(--ink-3)'
-                    }}
-                  >
-                    Renders when response includes 3D data
-                  </p>
+                RETRIEVAL TRACE
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-dp-mono), monospace',
+                  fontSize: 11.5,
+                  lineHeight: 1.85,
+                  color: 'var(--ink-2)'
+                }}
+              >
+                <div>● top_k=8 · 23ms</div>
+                <div>● rerank → 3 chunks kept</div>
+                <div style={{ paddingLeft: 14, color: 'var(--ink-3)' }}>
+                  ↳ src/proxy.ts:1-22 (0.91)
                 </div>
+                <div style={{ paddingLeft: 14, color: 'var(--ink-3)' }}>
+                  ↳ providers.tsx:1-18 (0.84)
+                </div>
+                <div style={{ paddingLeft: 14, color: 'var(--ink-3)' }}>
+                  ↳ auth/layout.tsx:1-30 (0.71)
+                </div>
+                <div>● gen → 412 tokens · 1.2s</div>
+                <div style={{ color: 'var(--accent)' }}>● streamed · cited</div>
+              </div>
+
+              <div style={{ marginTop: 22 }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-dp-mono), monospace',
+                    fontSize: 11,
+                    letterSpacing: '0.16em',
+                    color: 'var(--ink-3)',
+                    textTransform: 'uppercase',
+                    marginBottom: 10
+                  }}
+                >
+                  3D VIEWER
+                </div>
+                <DodecahedronPreview />
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Architecture */}
-      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <h2
-          className='mb-8 text-2xl font-bold tracking-[-0.02em]'
-          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-        >
-          Architecture
-        </h2>
-        <div
-          className='overflow-x-auto rounded-xl p-6'
-          style={{
-            border: '1px solid var(--border-subtle)',
-            background: 'var(--bg-2)'
-          }}
-        >
-          <ChatArchSvg />
-        </div>
-      </section>
+        {/* // 03 3D outputs */}
+        <section style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>// 03</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>3D outputs</span>
+          </div>
+          <div
+            className='mod-card'
+            style={{
+              padding: 28,
+              display: 'grid',
+              gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.4fr)',
+              gap: 28,
+              alignItems: 'center'
+            }}
+          >
+            <div>
+              <p
+                style={{
+                  margin: '0 0 14px',
+                  color: 'var(--ink-1)',
+                  fontSize: 16,
+                  lineHeight: 1.6
+                }}
+              >
+                When a question implies structure — an org graph, a network, a
+                3D scene — the model emits a typed payload alongside the prose.
+                The renderer is deterministic from that payload, so the same
+                trace renders the same scene.
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  color: 'var(--ink-3)',
+                  fontSize: 13.5,
+                  lineHeight: 1.6
+                }}
+              >
+                No image hallucination. No prompt-to-Three.js gymnastics. Just a
+                small schema and a viewer.
+              </p>
+            </div>
+            <DodecahedronPreview />
+          </div>
+        </section>
+
+        {/* Footer: prev/next module */}
+        <nav className='mod-foot'>
+          <a href='/mcp' className='is-next'>
+            → First module: MCP Sentinel
+          </a>
+          <a href='/' className='is-back'>
+            ← Back to homepage
+          </a>
+        </nav>
+      </main>
     </div>
   );
 }
