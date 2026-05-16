@@ -63,6 +63,123 @@ const WHY_LORA = [
   }
 ];
 
+// Pipeline diagram — SVG with arrows between every adjacent stage so the
+// data flow is explicit rather than just a row of labelled boxes. Highlighted
+// stages (parser, chunker, prompt_gen, lora_adapter) wear the accent treatment.
+function PipelineSvg() {
+  const BOX_W = 116;
+  const BOX_H = 38;
+  const BOX_R = 8;
+  const GAP = 18;
+  const STEP = BOX_W + GAP;
+  const Y = 36;
+  const totalW = PIPELINE.length * STEP - GAP;
+
+  return (
+    <svg
+      viewBox={`-4 0 ${totalW + 8} 90`}
+      width='100%'
+      role='img'
+      aria-label={`Training pipeline: ${PIPELINE.map((p) => p.label).join(' → ')}`}
+    >
+      <defs>
+        <marker
+          id='train-arrow-accent'
+          viewBox='0 0 10 10'
+          refX='9'
+          refY='5'
+          markerWidth='6'
+          markerHeight='6'
+          orient='auto-start-reverse'
+        >
+          <path d='M0,1 L9,5 L0,9 z' fill='#22c55e' />
+        </marker>
+        <marker
+          id='train-arrow-muted'
+          viewBox='0 0 10 10'
+          refX='9'
+          refY='5'
+          markerWidth='6'
+          markerHeight='6'
+          orient='auto-start-reverse'
+        >
+          <path d='M0,1 L9,5 L0,9 z' fill='rgba(255,255,255,0.35)' />
+        </marker>
+      </defs>
+
+      {/* Arrows between adjacent stages */}
+      {PIPELINE.slice(0, -1).map((_, i) => {
+        const x1 = i * STEP + BOX_W;
+        const x2 = (i + 1) * STEP;
+        const accent = PIPELINE[i + 1].highlight;
+        return (
+          <line
+            key={`p-arrow-${i}`}
+            x1={x1 + 2}
+            y1={Y + BOX_H / 2}
+            x2={x2 - 2}
+            y2={Y + BOX_H / 2}
+            stroke={accent ? '#22c55e' : 'rgba(255,255,255,0.35)'}
+            strokeWidth='1.25'
+            strokeDasharray='3 3'
+            markerEnd={
+              accent ? 'url(#train-arrow-accent)' : 'url(#train-arrow-muted)'
+            }
+          />
+        );
+      })}
+
+      {/* Stage boxes */}
+      {PIPELINE.map((stage, i) => {
+        const x = i * STEP;
+        return (
+          <g key={stage.label}>
+            <rect
+              x={x}
+              y={Y}
+              width={BOX_W}
+              height={BOX_H}
+              rx={BOX_R}
+              fill={
+                stage.highlight
+                  ? 'rgba(34,197,94,0.06)'
+                  : 'rgba(255,255,255,0.04)'
+              }
+              stroke={
+                stage.highlight
+                  ? 'rgba(34,197,94,0.28)'
+                  : 'rgba(255,255,255,0.12)'
+              }
+            />
+            <text
+              x={x + BOX_W / 2}
+              y={Y + BOX_H / 2 + 4}
+              textAnchor='middle'
+              fill={stage.highlight ? '#22c55e' : '#a8a39a'}
+              fontFamily='JetBrains Mono'
+              fontSize='11'
+            >
+              {stage.label}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Pipeline label */}
+      <text
+        x={0}
+        y={20}
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='10.5'
+        letterSpacing='0.18em'
+      >
+        DATASET PIPELINE
+      </text>
+    </svg>
+  );
+}
+
 // Hero icon — stacked-layers from the reference (modules/training.html line 24)
 function LayersIcon() {
   return (
@@ -257,30 +374,10 @@ export function TrainingContent() {
             style={{
               background: 'var(--bg-1)',
               padding: 24,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-              gap: 8
+              overflowX: 'auto'
             }}
           >
-            {PIPELINE.map((stage) => (
-              <div
-                key={stage.label}
-                style={{
-                  padding: '14px 12px',
-                  borderRadius: 10,
-                  textAlign: 'center',
-                  fontFamily: 'var(--font-dp-mono), monospace',
-                  fontSize: 11,
-                  background: stage.highlight
-                    ? 'rgba(34,197,94,0.06)'
-                    : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${stage.highlight ? 'var(--accent-line)' : 'var(--border-subtle)'}`,
-                  color: stage.highlight ? 'var(--accent)' : 'var(--ink-2)'
-                }}
-              >
-                {stage.label}
-              </div>
-            ))}
+            <PipelineSvg />
           </div>
         </section>
 
@@ -292,74 +389,127 @@ export function TrainingContent() {
             <span className='mod-section-label'>Six-step wizard</span>
           </div>
 
-          {/* Step chips */}
+          {/* Stepper with progress track behind the nodes */}
           <div
+            role='tablist'
+            aria-label='Training pipeline steps'
             style={{
+              position: 'relative',
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-              gap: 12,
-              marginBottom: 20
+              gridTemplateColumns: `repeat(${STEPS.length}, minmax(0, 1fr))`,
+              gap: 0,
+              marginBottom: 24,
+              paddingTop: 4,
+              paddingBottom: 4
             }}
           >
+            {/* Track: a full-width muted line that the accent track sits on
+                top of, both centered on the node row. */}
+            <div
+              aria-hidden='true'
+              style={{
+                position: 'absolute',
+                top: 20,
+                left: `calc(100% / ${STEPS.length} / 2)`,
+                right: `calc(100% / ${STEPS.length} / 2)`,
+                height: 2,
+                background: 'var(--border-subtle)',
+                borderRadius: 1
+              }}
+            />
+            <div
+              aria-hidden='true'
+              style={{
+                position: 'absolute',
+                top: 20,
+                left: `calc(100% / ${STEPS.length} / 2)`,
+                width:
+                  currentStep === 0
+                    ? 0
+                    : `calc((100% - 100% / ${STEPS.length}) * ${currentStep} / ${STEPS.length - 1})`,
+                height: 2,
+                background: 'var(--accent)',
+                borderRadius: 1,
+                transition: 'width 0.25s ease'
+              }}
+            />
+
             {STEPS.map((step, i) => {
               const isDone = i < currentStep;
               const isCurrent = i === currentStep;
+              const nodeBg = isCurrent
+                ? 'var(--accent)'
+                : isDone
+                  ? 'var(--accent)'
+                  : 'var(--bg-2)';
+              const nodeBorder = isCurrent
+                ? 'var(--accent)'
+                : isDone
+                  ? 'var(--accent)'
+                  : 'var(--border-muted)';
+              const nodeFg = isCurrent
+                ? 'var(--bg-0)'
+                : isDone
+                  ? 'var(--bg-0)'
+                  : 'var(--ink-3)';
+
               return (
                 <button
                   key={step.id}
                   type='button'
-                  onClick={() => setCurrentStep(i)}
+                  role='tab'
+                  aria-selected={isCurrent}
                   aria-current={isCurrent ? 'step' : undefined}
+                  onClick={() => setCurrentStep(i)}
                   style={{
-                    textAlign: 'left',
-                    padding: 16,
-                    borderRadius: 10,
-                    cursor: 'pointer',
-                    background: isCurrent
-                      ? 'var(--accent-soft)'
-                      : 'var(--bg-2)',
-                    border: `1px solid ${
-                      isCurrent ? 'var(--accent-line)' : 'var(--border-subtle)'
-                    }`,
-                    transition: 'background 0.15s, border-color 0.15s'
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 10,
+                    background: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer'
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      display: 'flex',
+                      position: 'relative',
+                      zIndex: 1,
+                      width: 36,
+                      height: 36,
+                      borderRadius: '50%',
+                      display: 'inline-flex',
                       alignItems: 'center',
-                      gap: 8,
+                      justifyContent: 'center',
+                      background: nodeBg,
+                      border: `1px solid ${nodeBorder}`,
                       fontFamily: 'var(--font-dp-mono), monospace',
-                      fontSize: 11,
-                      letterSpacing: '0.16em',
-                      color:
-                        isDone || isCurrent ? 'var(--accent)' : 'var(--ink-3)',
-                      marginBottom: 8
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: nodeFg,
+                      transition:
+                        'background 0.2s ease, border-color 0.2s ease, color 0.2s ease'
                     }}
                   >
-                    {isDone && <IconCheck className='h-3 w-3' />}
-                    <span>STEP {i + 1}</span>
-                  </div>
-                  <div
+                    {isDone ? <IconCheck className='h-4 w-4' /> : i + 1}
+                  </span>
+                  <span
                     style={{
-                      fontSize: 14,
-                      fontWeight: 500,
-                      color: 'var(--ink-0)',
-                      marginBottom: 4
+                      fontFamily: 'var(--font-dp-mono), monospace',
+                      fontSize: 10.5,
+                      letterSpacing: '0.16em',
+                      textTransform: 'uppercase',
+                      color: isCurrent
+                        ? 'var(--ink-0)'
+                        : isDone
+                          ? 'var(--ink-1)'
+                          : 'var(--ink-3)'
                     }}
                   >
                     {step.label}
-                  </div>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: 12.5,
-                      color: 'var(--ink-3)',
-                      lineHeight: 1.5
-                    }}
-                  >
-                    {step.detail}
-                  </p>
+                  </span>
                 </button>
               );
             })}
