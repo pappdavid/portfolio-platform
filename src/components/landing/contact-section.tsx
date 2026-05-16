@@ -70,7 +70,7 @@ export function ContactSection() {
     <section
       id='contact'
       className='py-32'
-      style={{ background: 'var(--bg-0)' }}
+      style={{ background: 'rgba(12, 11, 9, 0.62)' }}
     >
       <div ref={ref} className='dp-wrap dp-animate'>
         <div className='grid grid-cols-1 items-start gap-20 lg:grid-cols-2'>
