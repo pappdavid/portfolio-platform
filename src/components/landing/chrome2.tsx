@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { IconMenu2 } from '@tabler/icons-react';
 
 import { Glyph } from '@/components/landing/glyph';
@@ -25,6 +25,27 @@ const SECTION_LINKS = [
 export function Chrome2() {
   const [activeSection, setActiveSection] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+
+  function handleSectionLinkClick(
+    event: MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) {
+    event.preventDefault();
+    setMenuOpen(false);
+
+    window.requestAnimationFrame(() => {
+      const target = document.querySelector(href);
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
+      target?.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start'
+      });
+      window.history.pushState(null, '', href);
+    });
+  }
 
   useEffect(() => {
     const sections = document.querySelectorAll('section[id]');
@@ -150,7 +171,7 @@ export function Chrome2() {
                   <a
                     key={href}
                     href={href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={(event) => handleSectionLinkClick(event, href)}
                     style={{
                       padding: '10px 12px',
                       minHeight: 44,
