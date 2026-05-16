@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { RefObject } from 'react';
 import { Dossier } from '@/components/landing/dossier';
 import { Glyph } from '@/components/landing/glyph';
 import { GlyphKind } from '@/components/landing/glyph';
@@ -41,7 +42,7 @@ const LAWS: { n: string; title: string; law: string; desc: string; glyph: GlyphK
 ];
 
 interface SystemsSectionProps {
-  canvasRef?: React.RefObject<ThreeCanvasRef | null>;
+  canvasRef?: RefObject<ThreeCanvasRef | null>;
 }
 
 export function SystemsSection({ canvasRef }: SystemsSectionProps) {

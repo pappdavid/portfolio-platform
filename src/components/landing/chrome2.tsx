@@ -1,3 +1,5 @@
+'use client';
+
 import { Glyph } from '@/components/landing/glyph';
 
 export function Chrome2() {

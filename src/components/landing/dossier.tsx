@@ -1,3 +1,5 @@
+'use client';
+
 import { Glyph } from '@/components/landing/glyph';
 import { GlyphKind } from '@/components/landing/glyph';
 
