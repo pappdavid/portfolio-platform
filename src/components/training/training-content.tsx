@@ -116,21 +116,21 @@ function TrainingArchSvg() {
     },
     {
       label: 'Parser',
-      color: 'rgba(168,85,247,0.06)',
-      stroke: 'rgba(168,85,247,0.2)',
-      text: '#a855f7'
+      color: 'rgba(34,197,94,0.06)',
+      stroke: 'rgba(34,197,94,0.2)',
+      text: '#22c55e'
     },
     {
       label: 'Chunker',
-      color: 'rgba(168,85,247,0.06)',
-      stroke: 'rgba(168,85,247,0.2)',
-      text: '#a855f7'
+      color: 'rgba(34,197,94,0.06)',
+      stroke: 'rgba(34,197,94,0.2)',
+      text: '#22c55e'
     },
     {
       label: 'Prompt Gen',
-      color: 'rgba(168,85,247,0.06)',
-      stroke: 'rgba(168,85,247,0.2)',
-      text: '#a855f7'
+      color: 'rgba(34,197,94,0.06)',
+      stroke: 'rgba(34,197,94,0.2)',
+      text: '#22c55e'
     },
     {
       label: 'JSONL',
@@ -237,25 +237,32 @@ export function TrainingContent() {
         </MonoEyebrow>
         <h1
           className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
-          style={{
-            background:
-              'linear-gradient(160deg,#fff 0%,rgba(255,255,255,0.5) 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}
+          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
         >
           Custom Training
         </h1>
-        <p className='mb-8 max-w-2xl text-base leading-relaxed text-[#71717a]'>
+        <p
+          className='mb-8 max-w-2xl text-base leading-relaxed'
+          style={{ color: 'var(--ink-2)' }}
+        >
           Turn your codebase into a fine-tuned model. Automated parsing, dataset
           generation, and training — all in your infrastructure.
         </p>
       </section>
 
       {/* Stepper Wizard */}
-      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
+      <section
+        className='border-y py-20'
+        style={{
+          borderColor: 'var(--border-subtle)',
+          background: 'var(--bg-1)'
+        }}
+      >
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>
+          <h2
+            className='mb-8 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
             Pipeline Walkthrough
           </h2>
 
@@ -268,13 +275,28 @@ export function TrainingContent() {
                   aria-label={`Go to step ${i + 1}`}
                   aria-current={i === currentStep ? 'step' : undefined}
                   className={cn(
-                    'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors',
-                    i < currentStep
-                      ? 'border-[#a855f7] bg-[#a855f7] text-black'
-                      : i === currentStep
-                        ? 'border-[#a855f7] text-[#a855f7]'
-                        : 'border-white/20 text-[#52525b]'
+                    'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors'
                   )}
+                  style={
+                    i < currentStep
+                      ? {
+                          borderColor: 'var(--accent)',
+                          background: 'var(--accent)',
+                          color: 'var(--bg-0)',
+                          fontFamily: 'var(--font-dp-mono)'
+                        }
+                      : i === currentStep
+                        ? {
+                            borderColor: 'var(--accent)',
+                            color: 'var(--accent)',
+                            fontFamily: 'var(--font-dp-mono)'
+                          }
+                        : {
+                            borderColor: 'var(--border-muted)',
+                            color: 'var(--ink-3)',
+                            fontFamily: 'var(--font-dp-mono)'
+                          }
+                  }
                 >
                   {i < currentStep ? (
                     <IconCheck aria-hidden='true' className='h-4 w-4' />
@@ -284,10 +306,13 @@ export function TrainingContent() {
                 </button>
                 {i < steps.length - 1 && (
                   <div
-                    className={cn(
-                      'mx-2 h-0.5 flex-1',
-                      i < currentStep ? 'bg-[#a855f7]' : 'bg-white/10'
-                    )}
+                    className='mx-2 h-0.5 flex-1'
+                    style={{
+                      background:
+                        i < currentStep
+                          ? 'var(--accent)'
+                          : 'var(--border-subtle)'
+                    }}
                   />
                 )}
               </div>
@@ -295,14 +320,26 @@ export function TrainingContent() {
           </div>
 
           {/* Step content */}
-          <div className='rounded-xl border border-white/[0.07] bg-white/[0.04] p-8 backdrop-blur-sm'>
-            <p className='mb-1 text-sm text-[#71717a]'>
+          <div
+            className='rounded-xl p-8 backdrop-blur-sm'
+            style={{
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-2)'
+            }}
+          >
+            <p
+              className='mb-1 text-sm'
+              style={{ color: 'var(--ink-2)' }}
+            >
               Step {currentStep + 1} of {steps.length}
             </p>
-            <h3 className='mb-2 text-xl font-semibold text-white'>
+            <h3
+              className='mb-2 text-xl font-semibold'
+              style={{ color: 'var(--ink-0)' }}
+            >
               {steps[currentStep].title}
             </h3>
-            <p className='mb-6 text-[#71717a]'>
+            <p className='mb-6' style={{ color: 'var(--ink-2)' }}>
               {steps[currentStep].description}
             </p>
 
@@ -314,14 +351,29 @@ export function TrainingContent() {
                     key={mode.id}
                     onClick={() => setSelectedMode(mode.id)}
                     className={cn(
-                      'rounded-lg border p-4 text-left transition-colors',
-                      selectedMode === mode.id
-                        ? 'border-[#a855f7] bg-[rgba(168,85,247,0.05)] text-white'
-                        : 'border-white/[0.07] text-[#71717a] hover:border-white/20'
+                      'rounded-lg border p-4 text-left transition-colors'
                     )}
+                    style={
+                      selectedMode === mode.id
+                        ? {
+                            borderColor: 'var(--accent)',
+                            background: 'var(--accent-soft)'
+                          }
+                        : {
+                            borderColor: 'var(--border-subtle)'
+                          }
+                    }
                   >
-                    <h4 className='font-medium text-white'>{mode.title}</h4>
-                    <p className='mt-1 text-sm text-[#71717a]'>
+                    <h4
+                      className='font-medium'
+                      style={{ color: 'var(--ink-0)' }}
+                    >
+                      {mode.title}
+                    </h4>
+                    <p
+                      className='mt-1 text-sm'
+                      style={{ color: 'var(--ink-2)' }}
+                    >
                       {mode.description}
                     </p>
                   </button>
@@ -332,12 +384,20 @@ export function TrainingContent() {
             {/* Input (step 1) */}
             {currentStep === 1 && (
               <div className='space-y-4'>
-                <div className='rounded-lg border border-white/[0.07] p-4'>
-                  <p className='text-sm font-medium text-white'>
+                <div
+                  className='rounded-lg p-4'
+                  style={{ border: '1px solid var(--border-subtle)' }}
+                >
+                  <p className='text-sm font-medium' style={{ color: 'var(--ink-0)' }}>
                     Source:{' '}
-                    <span className='text-[#a855f7]'>{selectedMode}</span>
+                    <span style={{ color: 'var(--accent-bright)' }}>
+                      {selectedMode}
+                    </span>
                   </p>
-                  <p className='mt-2 text-sm text-[#71717a]'>
+                  <p
+                    className='mt-2 text-sm'
+                    style={{ color: 'var(--ink-2)' }}
+                  >
                     {selectedMode === 'repo'
                       ? 'Enter a Git repository URL or local path. The parser will extract .py, .ts, .tsx, .md files.'
                       : selectedMode === 'docs'
@@ -345,8 +405,14 @@ export function TrainingContent() {
                         : 'Paste code or text directly into the input area.'}
                   </p>
                 </div>
-                <div className='flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-white/10 bg-white/[0.015]'>
-                  <span className='text-sm text-[#71717a]'>
+                <div
+                  className='flex h-32 items-center justify-center rounded-lg border-2 border-dashed'
+                  style={{
+                    borderColor: 'var(--border-muted)',
+                    background: 'var(--bg-1)'
+                  }}
+                >
+                  <span className='text-sm' style={{ color: 'var(--ink-2)' }}>
                     Input area (configured in dashboard)
                   </span>
                 </div>
@@ -366,10 +432,22 @@ export function TrainingContent() {
                 ].map((config) => (
                   <div
                     key={config.label}
-                    className='rounded-lg border border-white/[0.07] p-3'
+                    className='rounded-lg p-3'
+                    style={{ border: '1px solid var(--border-subtle)' }}
                   >
-                    <p className='text-xs text-[#52525b]'>{config.label}</p>
-                    <p className='text-sm font-medium text-white'>
+                    <p
+                      className='text-xs'
+                      style={{
+                        fontFamily: 'var(--font-dp-mono)',
+                        color: 'var(--ink-3)'
+                      }}
+                    >
+                      {config.label}
+                    </p>
+                    <p
+                      className='text-sm font-medium'
+                      style={{ color: 'var(--ink-0)' }}
+                    >
                       {config.value}
                     </p>
                   </div>
@@ -392,7 +470,10 @@ export function TrainingContent() {
 
                 {/* HuggingFace token */}
                 <div className='space-y-1.5'>
-                  <label className='text-sm font-medium text-white'>
+                  <label
+                    className='text-sm font-medium'
+                    style={{ color: 'var(--ink-0)' }}
+                  >
                     HuggingFace Token
                   </label>
                   <div className='flex gap-2'>
@@ -401,14 +482,19 @@ export function TrainingContent() {
                       value={huggingFaceToken}
                       onChange={(e) => setHuggingFaceToken(e.target.value)}
                       placeholder='hf_…'
-                      className='border-white/[0.08] bg-white/[0.04] text-white placeholder:text-[#52525b]'
+                      style={{
+                        background: 'var(--bg-3)',
+                        color: 'var(--ink-0)',
+                        borderColor: 'var(--border-muted)'
+                      }}
                     />
                     <Button
                       type='button'
                       variant='ghost'
                       size='icon'
                       onClick={() => setShowHfToken((v) => !v)}
-                      className='shrink-0 text-[#71717a] hover:text-white'
+                      className='shrink-0'
+                      style={{ color: 'var(--ink-2)' }}
                       aria-label='Toggle token visibility'
                     >
                       {showHfToken ? (
@@ -426,9 +512,13 @@ export function TrainingContent() {
                     type='button'
                     onClick={() => setBringOwnKey((v) => !v)}
                     className={cn(
-                      'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors',
-                      bringOwnKey ? 'bg-[#a855f7]' : 'bg-white/10'
+                      'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors'
                     )}
+                    style={{
+                      background: bringOwnKey
+                        ? 'var(--accent)'
+                        : 'var(--border-subtle)'
+                    }}
                     aria-checked={bringOwnKey}
                     role='switch'
                   >
@@ -439,13 +529,19 @@ export function TrainingContent() {
                       )}
                     />
                   </button>
-                  <span className='text-sm text-[#71717a]'>
+                  <span className='text-sm' style={{ color: 'var(--ink-2)' }}>
                     Bring your own LLM key
                   </span>
                 </div>
 
                 {bringOwnKey && (
-                  <div className='space-y-3 rounded-lg border border-white/[0.07] bg-white/[0.02] p-4'>
+                  <div
+                    className='space-y-3 rounded-lg p-4'
+                    style={{
+                      border: '1px solid var(--border-subtle)',
+                      background: 'var(--bg-3)'
+                    }}
+                  >
                     {[
                       {
                         label: 'OpenAI API Key',
@@ -473,7 +569,10 @@ export function TrainingContent() {
                       }
                     ].map((field) => (
                       <div key={field.label} className='space-y-1'>
-                        <label className='text-xs text-[#71717a]'>
+                        <label
+                          className='text-xs'
+                          style={{ color: 'var(--ink-2)' }}
+                        >
                           {field.label}
                         </label>
                         <div className='flex gap-2'>
@@ -482,14 +581,19 @@ export function TrainingContent() {
                             value={field.value}
                             onChange={(e) => field.setter(e.target.value)}
                             placeholder={field.placeholder}
-                            className='border-white/[0.08] bg-white/[0.04] text-white placeholder:text-[#52525b]'
+                            style={{
+                              background: 'var(--bg-2)',
+                              color: 'var(--ink-0)',
+                              borderColor: 'var(--border-muted)'
+                            }}
                           />
                           <Button
                             type='button'
                             variant='ghost'
                             size='icon'
                             onClick={() => field.setShow((v) => !v)}
-                            className='shrink-0 text-[#71717a] hover:text-white'
+                            className='shrink-0'
+                            style={{ color: 'var(--ink-2)' }}
                             aria-label={`Toggle ${field.label} visibility`}
                           >
                             {field.show ? (
@@ -518,14 +622,19 @@ export function TrainingContent() {
             {/* Train (step 5) */}
             {currentStep === 5 && (
               <div className='space-y-4 text-center'>
-                <IconBrain className='mx-auto h-16 w-16 text-[#a855f7]' />
-                <p className='font-medium text-white'>Ready to fine-tune</p>
+                <IconBrain
+                  className='mx-auto h-16 w-16'
+                  style={{ color: 'var(--accent)' }}
+                />
+                <p className='font-medium' style={{ color: 'var(--ink-0)' }}>
+                  Ready to fine-tune
+                </p>
                 {useDemoMode ? (
-                  <p className='text-sm text-[#71717a]'>
+                  <p className='text-sm' style={{ color: 'var(--ink-2)' }}>
                     Running in demo mode — outputs will be simulated.
                   </p>
                 ) : (
-                  <p className='text-sm text-[#71717a]'>
+                  <p className='text-sm' style={{ color: 'var(--ink-2)' }}>
                     Dataset validated with 847 training examples. Estimated
                     training time: ~45 minutes on A100.
                   </p>
@@ -546,7 +655,10 @@ export function TrainingContent() {
                       : 'Start Training'}
                 </Button>
                 {submittedWithKeys === true && (
-                  <p className='text-sm text-[#22c55e]'>
+                  <p
+                    className='text-sm'
+                    style={{ color: 'var(--accent-bright)' }}
+                  >
                     Training job submitted using your keys.
                   </p>
                 )}
@@ -585,17 +697,39 @@ export function TrainingContent() {
       {/* Architecture */}
       <section className='py-20'>
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>Architecture</h2>
-          <div className='overflow-x-auto rounded-xl border border-white/[0.07] bg-white/[0.04] p-6'>
+          <h2
+            className='mb-8 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
+            Architecture
+          </h2>
+          <div
+            className='overflow-x-auto rounded-xl p-6'
+            style={{
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-2)'
+            }}
+          >
             <TrainingArchSvg />
           </div>
         </div>
       </section>
 
       {/* Code Snippets */}
-      <section className='border-y border-white/[0.07] bg-white/[0.015] py-20'>
+      <section
+        className='border-y py-20'
+        style={{
+          borderColor: 'var(--border-subtle)',
+          background: 'var(--bg-1)'
+        }}
+      >
         <div className='mx-auto max-w-4xl px-4'>
-          <h2 className='mb-8 text-2xl font-bold text-white'>Code Examples</h2>
+          <h2
+            className='mb-8 text-2xl font-bold'
+            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+          >
+            Code Examples
+          </h2>
           <Tabs defaultValue='parser'>
             <TabsList>
               <TabsTrigger value='parser'>Parser</TabsTrigger>
