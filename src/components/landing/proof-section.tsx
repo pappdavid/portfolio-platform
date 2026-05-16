@@ -1,7 +1,5 @@
-'use client';
-
 import { Glyph } from '@/components/landing/glyph';
-import { GlyphKind } from '@/components/landing/glyph';
+import type { GlyphKind } from '@/components/landing/glyph';
 
 const PROOF: { metric: string; label: string; context: string; glyph: GlyphKind; sys: string; tags: string }[] = [
   { metric: '~40%',      label: 'LLM API cost reduction',    context: 'AI-first startup consulting engagement',      glyph: 'cube',   sys: 'MCP Sentinel',       tags: 'obs · guardrails' },

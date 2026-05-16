@@ -22,8 +22,10 @@ interface DossierProps {
   onLeave?: () => void;
 }
 
-const GRID_CELLS: { key: string; field: keyof DossierModule; glyph: GlyphKind }[] = [
-  { key: 'Problem', field: 'problem', glyph: 'role' },
+type StringDossierField = 'problem' | 'solution' | 'outcome';
+
+const GRID_CELLS: { key: string; field: StringDossierField; glyph: GlyphKind }[] = [
+  { key: 'Problem', field: 'problem',  glyph: 'role' },
   { key: 'Built',   field: 'solution', glyph: 'cal' },
   { key: 'Outcome', field: 'outcome',  glyph: 'wave' },
 ];
@@ -62,7 +64,7 @@ export function Dossier({ m, isActive, onHover, onLeave }: DossierProps) {
             <div className="flex items-center gap-1.5 mb-1" style={{ fontFamily: 'var(--font-dp-mono)', fontSize: 10, color: 'var(--ink-3)' }}>
               <Glyph kind={glyph} size={11} color="var(--ink-3)" /> {key}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--ink-1)', lineHeight: 1.5 }}>{m[field] as string}</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-1)', lineHeight: 1.5 }}>{m[field]}</div>
           </div>
         ))}
         <div className="col-span-2">

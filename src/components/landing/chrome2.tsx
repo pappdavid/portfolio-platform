@@ -40,8 +40,8 @@ export function Chrome2() {
                 key={label}
                 href={hrefs[i]}
                 style={{ padding: '5px 14px', borderRadius: 999, fontSize: 13, fontFamily: 'var(--font-dp-sans)', color: 'var(--ink-2)', textDecoration: 'none', transition: 'color 0.15s' }}
-                onMouseEnter={(e) => { (e.target as HTMLElement).style.color = 'var(--ink-0)'; }}
-                onMouseLeave={(e) => { (e.target as HTMLElement).style.color = 'var(--ink-2)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--ink-0)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--ink-2)'; }}
               >
                 {label}
               </a>

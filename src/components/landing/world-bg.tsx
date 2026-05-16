@@ -8,15 +8,20 @@ export function WorldBg() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    let raf: number;
-    const tick = () => {
-      const y = window.scrollY;
-      const drift = Math.min(y * 0.06, 80);
-      el.style.setProperty('--world-shift', drift + 'px');
-      raf = requestAnimationFrame(tick);
+    let raf: number | null = null;
+    const onScroll = () => {
+      if (raf !== null) return;
+      raf = requestAnimationFrame(() => {
+        const drift = Math.min(window.scrollY * 0.06, 80);
+        el.style.setProperty('--world-shift', drift + 'px');
+        raf = null;
+      });
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf !== null) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -83,14 +88,6 @@ export function WorldBg() {
         }}
       />
 
-      <style>{`
-        @keyframes floatDust {
-          0%   { transform: translateY(0);    opacity: 0; }
-          20%  { opacity: 0.4; }
-          80%  { opacity: 0.4; }
-          100% { transform: translateY(-30px); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

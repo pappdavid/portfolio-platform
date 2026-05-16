@@ -12,7 +12,7 @@ import { FooterSig } from '@/components/landing/footer-sig';
 import type { ThreeCanvasRef } from '@/components/landing/three-canvas';
 
 export function LandingContent() {
-  const canvasRef = useRef<ThreeCanvasRef>(null);
+  const canvasRef = useRef<ThreeCanvasRef | null>(null);
 
   return (
     <div style={{ background: 'var(--bg-0)', minHeight: '100vh' }}>

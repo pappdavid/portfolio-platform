@@ -110,6 +110,13 @@
   margin-bottom: 20px;
 }
 
+@keyframes floatDust {
+  0%   { transform: translateY(0);     opacity: 0; }
+  20%  { opacity: 0.4; }
+  80%  { opacity: 0.4; }
+  100% { transform: translateY(-30px); opacity: 0; }
+}
+
 @keyframes dpFadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
