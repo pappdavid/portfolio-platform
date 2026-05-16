@@ -29,6 +29,144 @@ const EXAMPLE_QS = [
   'What roles are you open to?'
 ];
 
+// Context cards that float around the assistant panel — each is a topic the
+// assistant can answer about, pulled from the systems on the page. The
+// dashed connector + dot suggest the assistant has retrieval over these
+// chunks rather than a generic LLM stream.
+const CONSTELLATION = [
+  {
+    side: 'left' as const,
+    top: '4%',
+    name: 'MCP Sentinel',
+    tag: 'project',
+    glyph: 'cube' as const
+  },
+  {
+    side: 'left' as const,
+    top: '42%',
+    name: 'RAG Pipelines',
+    tag: 'stack',
+    glyph: 'cube' as const
+  },
+  {
+    side: 'left' as const,
+    top: '78%',
+    name: 'Guardrails',
+    tag: 'pattern',
+    glyph: 'shield' as const
+  },
+  {
+    side: 'right' as const,
+    top: '4%',
+    name: 'Automation',
+    tag: 'project',
+    glyph: 'wave' as const
+  },
+  {
+    side: 'right' as const,
+    top: '42%',
+    name: 'Observability',
+    tag: 'stack',
+    glyph: 'target' as const
+  },
+  {
+    side: 'right' as const,
+    top: '78%',
+    name: 'Injection Guards',
+    tag: 'pattern',
+    glyph: 'shield-check' as const
+  }
+];
+
+function ConstellationCard({
+  side,
+  top,
+  name,
+  tag,
+  glyph
+}: (typeof CONSTELLATION)[number]) {
+  const isLeft = side === 'left';
+  return (
+    <div
+      aria-hidden='true'
+      style={
+        {
+          position: 'absolute',
+          top,
+          [isLeft ? 'right' : 'left']: 'calc(100% + 20px)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          padding: '8px 12px',
+          borderRadius: 10,
+          background: 'rgba(12,11,9,0.85)',
+          border: '1px solid var(--border-subtle)',
+          backdropFilter: 'blur(6px)',
+          whiteSpace: 'nowrap'
+        } as React.CSSProperties
+      }
+    >
+      <Glyph kind={glyph} size={14} color='var(--accent)' />
+      <div
+        style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}
+      >
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 500,
+            color: 'var(--ink-0)'
+          }}
+        >
+          {name}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-dp-mono), monospace',
+            fontSize: 9.5,
+            letterSpacing: '0.08em',
+            color: 'var(--ink-3)'
+          }}
+        >
+          {tag}
+        </span>
+      </div>
+      {/* Dot at the end nearest the panel — visual anchor for the line */}
+      <span
+        aria-hidden='true'
+        style={
+          {
+            position: 'absolute',
+            top: '50%',
+            [isLeft ? 'right' : 'left']: -4,
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: 'var(--accent)',
+            transform: 'translateY(-50%)',
+            boxShadow: '0 0 6px rgba(34,197,94,0.7)'
+          } as React.CSSProperties
+        }
+      />
+      {/* Dashed connector line out to the panel edge */}
+      <span
+        aria-hidden='true'
+        style={
+          {
+            position: 'absolute',
+            top: '50%',
+            [isLeft ? 'right' : 'left']: -20,
+            width: 16,
+            height: 1,
+            background:
+              'repeating-linear-gradient(to right, var(--accent-line) 0 4px, transparent 4px 7px)',
+            transform: 'translateY(-50%)'
+          } as React.CSSProperties
+        }
+      />
+    </div>
+  );
+}
+
 export function AssistantSection() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -114,14 +252,26 @@ export function AssistantSection() {
             </div>
           </div>
 
-          {/* Right — mock panel */}
+          {/* Right — mock panel surrounded by a constellation of context cards
+              that suggest the assistant is grounded in the systems on this
+              page rather than streaming from a generic LLM. */}
           <div
-            className='cornermark flex flex-col gap-4 rounded-2xl p-6'
+            className='cornermark relative flex flex-col gap-4 rounded-2xl p-6'
             style={{
               background: 'var(--bg-2)',
               border: '1px solid var(--border-subtle)'
             }}
           >
+            {/* Floating constellation — hidden below lg where the panel
+                takes the full width and we can't afford the lateral space */}
+            <div
+              aria-hidden='true'
+              className='pointer-events-none absolute inset-0 hidden xl:block'
+            >
+              {CONSTELLATION.map((c) => (
+                <ConstellationCard key={`${c.side}-${c.name}`} {...c} />
+              ))}
+            </div>
             <span className='cm-tl' />
             <span className='cm-tr' />
             <span className='cm-bl' />

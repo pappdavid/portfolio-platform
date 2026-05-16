@@ -93,6 +93,113 @@ interface SystemsSectionProps {
   canvasRef?: RefObject<ThreeCanvasRef | null>;
 }
 
+// Small decorative SVG that echoes the hero scene — central hex with three
+// elliptical orbits and cube-glyph nodes. Sits in the section header on
+// desktop and reinforces the "every dossier is a node on the same operator"
+// metaphor without spinning up a second WebGL context.
+function SystemsOrnament() {
+  return (
+    <svg
+      viewBox='0 0 220 160'
+      width='220'
+      height='160'
+      aria-hidden='true'
+      style={{ overflow: 'visible' }}
+    >
+      <defs>
+        <radialGradient id='sys-hex-glow' cx='50%' cy='50%' r='50%'>
+          <stop offset='0%' stopColor='#22c55e' stopOpacity='0.75' />
+          <stop offset='100%' stopColor='#22c55e' stopOpacity='0' />
+        </radialGradient>
+      </defs>
+
+      {/* Three elliptical orbits, sized + tilted distinctly */}
+      <ellipse
+        cx='110'
+        cy='80'
+        rx='100'
+        ry='28'
+        fill='none'
+        stroke='#22c55e'
+        strokeWidth='0.8'
+        strokeOpacity='0.35'
+        strokeDasharray='2 3'
+      />
+      <ellipse
+        cx='110'
+        cy='80'
+        rx='86'
+        ry='44'
+        fill='none'
+        stroke='#22c55e'
+        strokeWidth='0.8'
+        strokeOpacity='0.28'
+        strokeDasharray='2 3'
+        transform='rotate(20 110 80)'
+      />
+      <ellipse
+        cx='110'
+        cy='80'
+        rx='74'
+        ry='58'
+        fill='none'
+        stroke='#22c55e'
+        strokeWidth='0.8'
+        strokeOpacity='0.22'
+        strokeDasharray='2 3'
+        transform='rotate(-15 110 80)'
+      />
+
+      {/* Glow disc behind the hex */}
+      <circle cx='110' cy='80' r='30' fill='url(#sys-hex-glow)' />
+
+      {/* Central hexagon — outer outline + inner solid */}
+      <polygon
+        points='110,52 130,66 130,94 110,108 90,94 90,66'
+        fill='none'
+        stroke='#22c55e'
+        strokeWidth='1.4'
+        strokeOpacity='0.85'
+      />
+      <polygon
+        points='110,62 124,72 124,88 110,98 96,88 96,72'
+        fill='rgba(34,197,94,0.15)'
+        stroke='#22c55e'
+        strokeWidth='1'
+        strokeOpacity='0.55'
+      />
+      <circle cx='110' cy='80' r='3' fill='#a8f5c4' />
+
+      {/* Three orbiting nodes at varied positions */}
+      {[
+        { x: 200, y: 60 },
+        { x: 18, y: 108 },
+        { x: 178, y: 124 }
+      ].map((p, i) => (
+        <g key={i}>
+          <circle
+            cx={p.x}
+            cy={p.y}
+            r='9'
+            fill='rgba(12,11,9,0.85)'
+            stroke='#22c55e'
+            strokeWidth='1'
+            strokeOpacity='0.7'
+          />
+          <path
+            d={`M${p.x} ${p.y - 4} L${p.x + 3.5} ${p.y - 1.5} L${p.x + 3.5} ${p.y + 2.5} L${p.x} ${p.y + 5} L${p.x - 3.5} ${p.y + 2.5} L${p.x - 3.5} ${p.y - 1.5} Z`}
+            fill='none'
+            stroke='#22c55e'
+            strokeWidth='0.8'
+            strokeOpacity='0.85'
+          />
+          <circle cx={p.x} cy={p.y} r='1.4' fill='#22c55e' />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 export function SystemsSection({ canvasRef }: SystemsSectionProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -126,15 +233,43 @@ export function SystemsSection({ canvasRef }: SystemsSectionProps) {
       style={{ background: 'var(--bg-0)' }}
     >
       <div ref={ref} className='dp-wrap dp-animate'>
-        <div className='dp-eyebrow'>{'// 02 — SYSTEMS'}</div>
-        <h2
-          className='t-h2'
-          style={{ color: 'var(--ink-0)', marginBottom: 56 }}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1fr) auto',
+            gap: 32,
+            alignItems: 'start',
+            marginBottom: 56
+          }}
         >
-          Three production
-          <br />
-          AI systems.
-        </h2>
+          <div>
+            <div className='dp-eyebrow'>{'// 02 — SYSTEMS'}</div>
+            <h2 className='t-h2' style={{ color: 'var(--ink-0)', margin: 0 }}>
+              Three production
+              <br />
+              AI systems.
+            </h2>
+            <p
+              style={{
+                marginTop: 16,
+                marginBottom: 0,
+                fontFamily: 'var(--font-dp-mono), monospace',
+                fontSize: 12,
+                color: 'var(--ink-3)',
+                maxWidth: 420,
+                lineHeight: 1.6
+              }}
+            >
+              Each module orbits the operator core.{' '}
+              <span style={{ color: 'var(--ink-2)' }}>
+                Hover a node or open a dossier to explore.
+              </span>
+            </p>
+          </div>
+          <div className='hidden md:block'>
+            <SystemsOrnament />
+          </div>
+        </div>
 
         <div className='grid grid-cols-1 gap-5 lg:grid-cols-3'>
           {MODULES.map((m) => (
