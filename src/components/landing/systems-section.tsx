@@ -121,7 +121,7 @@ export function SystemsSection({ canvasRef }: SystemsSectionProps) {
 
   return (
     <section
-      id='modules'
+      id='systems'
       className='py-32'
       style={{ background: 'var(--bg-0)' }}
     >
@@ -150,7 +150,7 @@ export function SystemsSection({ canvasRef }: SystemsSectionProps) {
 
         {/* Laws panel */}
         <div
-          id='laws'
+          id='principles'
           className='cornermark mt-20 rounded-2xl p-10'
           style={{
             background: 'var(--bg-2)',

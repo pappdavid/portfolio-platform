@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
-const footerLinks = [{ title: 'About', href: '/about' }];
+const footerLinks: Array<{ title: string; href: string }> = [];
 
 const socialLinks = [
   { title: 'GitHub', href: 'https://github.com/pappdavid' },
-  { title: 'LinkedIn', href: 'https://www.linkedin.com/in/dávid-papp' }
+  { title: 'LinkedIn', href: 'https://www.linkedin.com/in/d%C3%A1vid-papp' }
 ];
 
 export function Footer() {

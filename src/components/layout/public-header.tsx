@@ -42,12 +42,12 @@ export function PublicHeader() {
               {item.title}
             </Link>
           ))}
-          <a
-            href='mailto:contact@davidpapp.dev'
+          <Link
+            href='/#contact'
             className='ml-2 rounded-lg border border-white/10 bg-white/[0.08] px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-white/[0.12]'
           >
             Contact
-          </a>
+          </Link>
         </nav>
 
         {/* Mobile nav */}
@@ -75,13 +75,13 @@ export function PublicHeader() {
                   {item.title}
                 </Link>
               ))}
-              <a
-                href='mailto:contact@davidpapp.dev'
+              <Link
+                href='/#contact'
                 onClick={() => setOpen(false)}
                 className='mt-4 rounded-lg bg-[#22c55e] px-4 py-2 text-center text-sm font-semibold text-black'
               >
                 Contact
-              </a>
+              </Link>
             </nav>
           </SheetContent>
         </Sheet>
