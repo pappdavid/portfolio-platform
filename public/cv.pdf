@@ -1,21 +1,375 @@
 %PDF-1.4
+%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<</Type /Catalog /Pages 2 0 R>>
+<<
+/F1 2 0 R /F2 3 0 R
+>>
 endobj
 2 0 obj
-<</Type /Pages /Kids [3 0 R] /Count 1>>
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
 endobj
 3 0 obj
-<</Type /Page /Parent 2 0 R /MediaBox [0 0 612 792]>>
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/Contents 8 0 R /MediaBox [ 0 0 612 792 ] /Parent 7 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+5 0 obj
+<<
+/PageMode /UseNone /Pages 7 0 R /Type /Catalog
+>>
+endobj
+6 0 obj
+<<
+/Author (\(anonymous\)) /CreationDate (D:20260517175451+02'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260517175451+02'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
+>>
+endobj
+7 0 obj
+<<
+/Count 1 /Kids [ 4 0 R ] /Type /Pages
+>>
+endobj
+8 0 obj
+<<
+/Length 6997
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 45.6 725.6 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 4 Tm /F2 24 Tf 28 TL (David Papp) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 707.6 cm
+q
+.215686 .254902 .317647 rg
+BT 1 0 0 1 0 3.5 Tm /F1 10.5 Tf 14 TL (AI Engineering Student | Junior AI / Automation Engineer | Rotterdam, Netherlands) Tj T* ET
+Q
+Q
+q
+1 0 0 1 100.8 677.6 cm
+q
+.92549 .992157 .960784 rg
+n 0 20 410.4 -20 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 5 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (contact@davidpapp.dev) Tj T* ET
+Q
+Q
+q
+1 0 0 1 117.6 5 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (davidpapp.dev) Tj T* ET
+Q
+Q
+q
+1 0 0 1 193.2 5 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (github.com/pappdavid) Tj T* ET
+Q
+Q
+q
+1 0 0 1 297.6 5 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (linkedin.com/in/david-papp) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.733333 .968627 .815686 RG
+.4 w
+n 0 20 m 410.4 20 l S
+n 0 0 m 410.4 0 l S
+n 0 0 m 0 20 l S
+n 410.4 0 m 410.4 20 l S
+.25 w
+n 111.6 0 m 111.6 20 l S
+n 187.2 0 m 187.2 20 l S
+n 291.6 0 m 291.6 20 l S
+Q
+Q
+Q
+q
+1 0 0 1 45.6 671.6 cm
+Q
+q
+1 0 0 1 45.6 649.6 cm
+q
+.015686 .470588 .341176 rg
+BT 1 0 0 1 0 3 Tm /F2 9 Tf 12 TL (Summary) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 611 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 25.2 Tm /F1 8.4 Tf 11.2 TL (AI engineering student at Vrije Universiteit Amsterdam building production-focused LLM systems: agent observability, guardrails, fine-tuning) Tj T* (pipelines, and retrieval interfaces. Recently cut LLM API usage by approximately 40% in a consulting engagement and hardened) Tj T* (prompt-injection controls around tool and moderation boundaries.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 589 cm
+q
+.015686 .470588 .341176 rg
+BT 1 0 0 1 0 3 Tm /F2 9 Tf 12 TL (Selected Systems) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 573 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 2.4 Tm /F2 8.6 Tf 11 TL (MCP Sentinel) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 549.6 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 14 Tm /F1 8.4 Tf 11.2 TL (Drop-in observability and guardrails for MCP tool calls. Logs every event, applies injection, PII, cost, and rate-limit checks, and keeps p99) Tj T* (overhead below 12ms in the portfolio case study.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 534.6 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 2.4 Tm /F2 8.6 Tf 11 TL (Custom Training Pipeline) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 511.2 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 14 Tm /F1 8.4 Tf 11.2 TL (Repo/documentation ingestion pipeline that chunks source material, generates instruction-response pairs, validates JSONL, and prepares) Tj T* (data for LoRA-style fine-tuning handoff.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 496.2 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 2.4 Tm /F2 8.6 Tf 11 TL (RAG + 3D Chat) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 472.8 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 14 Tm /F1 8.4 Tf 11.2 TL (Retrieval-augmented chat interface with document/repo inputs, source-grounded answers, and deterministic Three.js scene rendering for) Tj T* (spatial outputs.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 450.8 cm
+q
+.015686 .470588 .341176 rg
+BT 1 0 0 1 0 3 Tm /F2 9 Tf 12 TL (Experience) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 434.8 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 2.4 Tm /F2 8.6 Tf 11 TL (AI Startup Consulting - LLM Backend and Safety) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 411.4 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 14 Tm /F1 8.4 Tf 11.2 TL (Restructured LLM backend call paths to reduce unnecessary API usage by approximately 40%. Closed a prompt-injection vulnerability in a) Tj T* (moderation layer and documented operational guardrails.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 396.4 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 2.4 Tm /F2 8.6 Tf 11 TL (Project Assistant - 4iG, Budapest) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 384.2 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 2.8 Tm /F1 8.4 Tf 11.2 TL (Supported two large public-sector IT projects before university, working across coordination, documentation, and delivery support.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 369.2 cm
+q
+.066667 .094118 .152941 rg
+BT 1 0 0 1 0 2.4 Tm /F2 8.6 Tf 11 TL (Programming Instructor - Logiscool) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 357 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 2.8 Tm /F1 8.4 Tf 11.2 TL (Taught programming fundamentals and supported student learning through practical coding exercises.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 335 cm
+q
+.015686 .470588 .341176 rg
+BT 1 0 0 1 0 3 Tm /F2 9 Tf 12 TL (Education) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 318.8 cm
+q
+BT 1 0 0 1 0 2.8 Tm 11.2 TL /F2 8.4 Tf .121569 .160784 .215686 rg (BSc Artificial Intelligence - Vrije Universiteit Amsterdam) Tj /F1 8.4 Tf ( | Sep 2023 - expected 2026) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 303.6 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 2.8 Tm /F1 8.4 Tf 11.2 TL (Coursework includes machine learning, deep learning, NLP, computer vision, data mining, algorithms, complexity, and statistics.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 288.4 cm
+q
+BT 1 0 0 1 0 2.8 Tm 11.2 TL /F2 8.4 Tf .121569 .160784 .215686 rg (Advanced Studies in Computer Science - Milestone Institute, Budapest) Tj /F1 8.4 Tf ( | 2019 - 2023) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 273.2 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 2.8 Tm /F1 8.4 Tf 11.2 TL (Led the Computer Sciences Society.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 251.2 cm
+q
+.015686 .470588 .341176 rg
+BT 1 0 0 1 0 3 Tm /F2 9 Tf 12 TL (Technical Skills) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.8 190.2 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 44 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F2 7.6 Tf 10 TL (AI / LLM) Tj T* ET
+Q
+Q
+q
+1 0 0 1 72 44 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (OpenAI API, tool calling, structured outputs, guardrails, prompt-injection defense) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 30 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F2 7.6 Tf 10 TL (RAG / Data) Tj T* ET
+Q
+Q
+q
+1 0 0 1 72 30 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (Supabase/Postgres, pgvector, embeddings, retrieval, reranking, citation enforcement) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 16 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F2 7.6 Tf 10 TL (Full Stack) Tj T* ET
+Q
+Q
+q
+1 0 0 1 72 16 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (TypeScript, Python, Next.js, React, Tailwind CSS, Node.js, Vercel) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 2 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F2 7.6 Tf 10 TL (Infra) Tj T* ET
+Q
+Q
+q
+1 0 0 1 72 2 cm
+q
+.294118 .333333 .388235 rg
+BT 1 0 0 1 0 2.4 Tm /F1 7.6 Tf 10 TL (Clerk, Upstash Redis, HMAC signing, RLS policies, monitoring, rate limiting) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 45.6 168.2 cm
+q
+.015686 .470588 .341176 rg
+BT 1 0 0 1 0 3 Tm /F2 9 Tf 12 TL (Availability) Tj T* ET
+Q
+Q
+q
+1 0 0 1 45.6 140.8 cm
+q
+.121569 .160784 .215686 rg
+BT 1 0 0 1 0 14 Tm /F1 8.4 Tf 11.2 TL (Open to junior AI / automation engineer, full-stack AI, and data science roles in the Netherlands. Available for part-time roles during studies) Tj T* (and full-time from mid-2026.) Tj T* ET
+Q
+Q
+ 
+endstream
 endobj
 xref
-0 4
+0 9
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
+0000000061 00000 n 
+0000000102 00000 n 
+0000000209 00000 n 
+0000000321 00000 n 
+0000000514 00000 n 
+0000000582 00000 n 
+0000000862 00000 n 
+0000000921 00000 n 
 trailer
-<</Size 4 /Root 1 0 R>>
+<<
+/ID 
+[<cfde0d284d3f2bb9a70672b1ac7c71ce><cfde0d284d3f2bb9a70672b1ac7c71ce>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 6 0 R
+/Root 5 0 R
+/Size 9
+>>
 startxref
-190
+7969
 %%EOF

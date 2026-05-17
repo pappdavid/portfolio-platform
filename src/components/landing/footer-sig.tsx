@@ -152,8 +152,8 @@ export function FooterSig() {
             {[
               ['github.com/pappdavid', 'https://github.com/pappdavid'],
               [
-                'linkedin.com/in/pappdavid',
-                'https://www.linkedin.com/in/pappdavid'
+                'linkedin.com/in/dávid-papp',
+                'https://www.linkedin.com/in/d%C3%A1vid-papp'
               ]
             ].map(([label, href]) => (
               <a

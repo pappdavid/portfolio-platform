@@ -31,13 +31,6 @@ export const publicNavItems: NavItem[] = [
     items: []
   },
   {
-    title: 'About',
-    url: '/about',
-    icon: 'user',
-    isActive: false,
-    items: []
-  },
-  {
     title: 'Brand',
     url: '/brand',
     icon: 'palette',

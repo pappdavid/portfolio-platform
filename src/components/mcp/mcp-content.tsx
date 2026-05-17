@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 const quickstartLines: Array<Array<{ cls?: string; text: string }>> = [
@@ -349,6 +350,47 @@ const SEED_EVENTS: MockEvent[] = [
   }
 ];
 
+const DEMO_EVENTS: MockEvent[] = [
+  {
+    id: 'evt_a4f1',
+    tool: 'file_read',
+    status: 'allowed',
+    latency: '4ms',
+    timestamp: '14:22:08'
+  },
+  {
+    id: 'evt_c7e2',
+    tool: 'web_search',
+    status: 'allowed',
+    latency: '11ms',
+    timestamp: '14:22:09'
+  },
+  {
+    id: 'evt_5b90',
+    tool: 'code_execute',
+    status: 'allowed',
+    latency: '7ms',
+    timestamp: '14:22:10'
+  },
+  {
+    id: 'evt_1f3c',
+    tool: 'db_query',
+    status: 'warning',
+    latency: '9ms',
+    timestamp: '14:22:11'
+  },
+  {
+    id: 'evt_9d12',
+    tool: 'send_email',
+    status: 'blocked',
+    latency: '3ms',
+    timestamp: '14:22:12'
+  }
+];
+
+const STREAM_STEP_MS = 450;
+const STREAM_RESET_DELAY_MS = 900;
+
 const TRADEOFFS = [
   {
     kind: 'CHOSE' as const,
@@ -374,51 +416,34 @@ export function McpContent() {
 
   useEffect(() => {
     if (!demoActive) return;
+
     setLoading(true);
     setEvents([]);
 
-    const sse = new EventSource('/api/mcp/demo');
-    let count = 0;
-
-    sse.onmessage = (e) => {
-      try {
-        const raw = JSON.parse(e.data) as {
-          id: string;
-          tool_name: string;
-          action: string;
-          latency_ms: number;
-          created_at: string;
-        };
-        const event: MockEvent = {
-          id: raw.id,
-          tool: raw.tool_name,
-          status: raw.action as MockEvent['status'],
-          latency: `${raw.latency_ms}ms`,
-          timestamp: raw.created_at.slice(11, 19)
-        };
+    const eventTimers = DEMO_EVENTS.map((event, index) =>
+      window.setTimeout(() => {
         setEvents((prev) => [event, ...prev].slice(0, 8));
-        count++;
-        if (count >= 5) {
-          setLoading(false);
-          sse.close();
-        }
-      } catch {
-        // ignore malformed event
-      }
-    };
+      }, index * STREAM_STEP_MS)
+    );
 
-    sse.onerror = () => {
-      setLoading(false);
-      sse.close();
-    };
+    const resetTimer = window.setTimeout(
+      () => {
+        setEvents(SEED_EVENTS);
+        setLoading(false);
+        setDemoActive(false);
+      },
+      DEMO_EVENTS.length * STREAM_STEP_MS + STREAM_RESET_DELAY_MS
+    );
 
-    return () => sse.close();
+    return () => {
+      eventTimers.forEach((timer) => window.clearTimeout(timer));
+      window.clearTimeout(resetTimer);
+    };
   }, [demoActive]);
 
   const runDemo = () => {
-    setDemoActive(false);
-    // toggle off then on to re-trigger the effect
-    setTimeout(() => setDemoActive(true), 0);
+    if (loading) return;
+    setDemoActive(true);
   };
 
   return (
@@ -499,7 +524,7 @@ export function McpContent() {
         {/* // 01 Architecture */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 01</span>
+            <span className='mod-section-num'>{'// 01'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Architecture</span>
           </div>
@@ -518,7 +543,7 @@ export function McpContent() {
         {/* // 02 Live event stream */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 02</span>
+            <span className='mod-section-num'>{'// 02'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Live event stream</span>
           </div>
@@ -592,7 +617,7 @@ export function McpContent() {
         {/* // 03 Quickstart in 3 lines */}
         <section id='quickstart' style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 03</span>
+            <span className='mod-section-num'>{'// 03'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Quickstart in 3 lines</span>
           </div>
@@ -619,7 +644,7 @@ export function McpContent() {
         {/* // 04 Trade-offs */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 04</span>
+            <span className='mod-section-num'>{'// 04'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Trade-offs</span>
           </div>
@@ -645,12 +670,12 @@ export function McpContent() {
 
         {/* Footer: prev/next module */}
         <nav className='mod-foot'>
-          <a href='/training' className='is-next'>
+          <Link href='/training' className='is-next'>
             → Next module: Custom Training
-          </a>
-          <a href='/' className='is-back'>
+          </Link>
+          <Link href='/' className='is-back'>
             ← Back to homepage
-          </a>
+          </Link>
         </nav>
       </main>
     </div>

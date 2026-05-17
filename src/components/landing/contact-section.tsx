@@ -44,8 +44,8 @@ const CHANNELS: {
   {
     kind: 'linkedin',
     name: 'LinkedIn',
-    sub: 'linkedin.com/in/pappdavid',
-    href: 'https://www.linkedin.com/in/pappdavid',
+    sub: 'linkedin.com/in/dávid-papp',
+    href: 'https://www.linkedin.com/in/d%C3%A1vid-papp',
     cta: 'LINKEDIN →'
   }
 ];

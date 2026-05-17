@@ -16,8 +16,8 @@ import { publicNavItems } from '@/config/nav-config';
 
 const SECTION_LINKS = [
   { label: 'Proof', href: '#proof', id: 'proof' },
-  { label: 'Systems', href: '#modules', id: 'modules' },
-  { label: 'Principles', href: '#laws', id: 'laws' },
+  { label: 'Systems', href: '#systems', id: 'systems' },
+  { label: 'Principles', href: '#principles', id: 'principles' },
   { label: 'Assistant', href: '#assistant', id: 'assistant' },
   { label: 'Contact', href: '#contact', id: 'contact' }
 ];
@@ -137,13 +137,13 @@ export function Chrome2() {
         </div>
 
         <div className='flex items-center gap-2'>
-          <a
-            href='mailto:contact@davidpapp.dev'
+          <Link
+            href='/#contact'
             className='dp-btn dp-btn-ghost hidden md:inline-flex'
             style={{ padding: '7px 16px', fontSize: 13 }}
           >
             Let&apos;s connect <span aria-hidden>→</span>
-          </a>
+          </Link>
 
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild className='md:hidden'>
@@ -214,14 +214,14 @@ export function Chrome2() {
                   </Link>
                 ))}
 
-                <a
-                  href='mailto:contact@davidpapp.dev'
+                <Link
+                  href='/#contact'
                   onClick={() => setMenuOpen(false)}
                   className='dp-btn dp-btn-primary'
                   style={{ marginTop: 16, justifyContent: 'center' }}
                 >
                   Let&apos;s connect →
-                </a>
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
