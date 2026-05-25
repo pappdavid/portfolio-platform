@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeBlock } from '@/components/shared/code-block';
 import { MermaidDiagram } from '@/components/shared/mermaid-diagram';
+import {
+  D3IntegrationGraph,
+  type GraphData
+} from '@/components/shared/d3-integration-graph';
 import { cn } from '@/lib/utils';
 
 type Project = {
@@ -19,6 +23,7 @@ type Project = {
     overview: string;
     code: { snippet: string; language: string; filename: string };
     diagram: string;
+    graph: GraphData;
   };
 };
 
@@ -67,7 +72,33 @@ async function runGuards(event: MCPEvent): Promise<GuardResult> {
   G -->|No| I[Block + Alert]
   H --> J[Log Event]
   I --> J
-  J --> K[Dashboard]`
+  J --> K[Dashboard]`,
+      graph: {
+        nodes: [
+          { id: 'agent', label: 'AI Agent', type: 'external' },
+          { id: 'proxy', label: 'MCP Proxy', type: 'service' },
+          { id: 'rate', label: 'Rate Limiter', type: 'service' },
+          { id: 'injection', label: 'Injection Detector', type: 'service' },
+          { id: 'pii', label: 'PII Scanner', type: 'service' },
+          { id: 'cost', label: 'Cost Tracker', type: 'service' },
+          { id: 'tool', label: 'MCP Tool', type: 'external' },
+          { id: 'supabase', label: 'Supabase', type: 'model' },
+          { id: 'dashboard', label: 'Dashboard UI', type: 'component' },
+          { id: 'alerts', label: 'Alert System', type: 'route' }
+        ],
+        edges: [
+          { source: 'agent', target: 'proxy' },
+          { source: 'proxy', target: 'rate' },
+          { source: 'rate', target: 'injection' },
+          { source: 'injection', target: 'pii' },
+          { source: 'pii', target: 'cost' },
+          { source: 'cost', target: 'tool', label: 'allow' },
+          { source: 'cost', target: 'alerts', label: 'block' },
+          { source: 'tool', target: 'supabase' },
+          { source: 'alerts', target: 'supabase' },
+          { source: 'supabase', target: 'dashboard' }
+        ]
+      }
     }
   },
   {
@@ -107,7 +138,33 @@ class SemanticChunker:
   D --> E[Prompt Generator]
   E --> F[Quality Filter]
   F --> G[JSONL Output]
-  G --> H[Fine-tune API]`
+  G --> H[Fine-tune API]`,
+      graph: {
+        nodes: [
+          { id: 'git', label: 'Git Repo', type: 'external' },
+          { id: 'scanner', label: 'File Scanner', type: 'service' },
+          { id: 'ast', label: 'AST Parser', type: 'service' },
+          { id: 'chunker', label: 'Semantic Chunker', type: 'service' },
+          { id: 'prompt', label: 'Prompt Generator', type: 'service' },
+          { id: 'filter', label: 'Quality Filter', type: 'service' },
+          { id: 'jsonl', label: 'JSONL Output', type: 'model' },
+          { id: 'api', label: 'Fine-tune API', type: 'route' },
+          { id: 'lora', label: 'LoRA Adapter', type: 'external' },
+          { id: 'eval', label: 'Eval Suite', type: 'component' }
+        ],
+        edges: [
+          { source: 'git', target: 'scanner' },
+          { source: 'scanner', target: 'ast' },
+          { source: 'ast', target: 'chunker' },
+          { source: 'chunker', target: 'prompt' },
+          { source: 'prompt', target: 'filter' },
+          { source: 'filter', target: 'jsonl' },
+          { source: 'jsonl', target: 'api' },
+          { source: 'api', target: 'lora' },
+          { source: 'lora', target: 'eval' },
+          { source: 'eval', target: 'filter', label: 'feedback' }
+        ]
+      }
     }
   },
   {
@@ -147,7 +204,36 @@ async function retrieve(query: string, topK = 5) {
   E --> F[LLM Response]
   F --> G{Contains 3D?}
   G -->|Yes| H[Render Three.js]
-  G -->|No| I[Display Text]`
+  G -->|No| I[Display Text]`,
+      graph: {
+        nodes: [
+          { id: 'user', label: 'User', type: 'external' },
+          { id: 'chat', label: 'Chat UI', type: 'component' },
+          { id: 'embed', label: 'Embed Service', type: 'service' },
+          { id: 'vector', label: 'Vector Store', type: 'model' },
+          { id: 'openai', label: 'OpenAI API', type: 'external' },
+          { id: 'supabase', label: 'Supabase', type: 'model' },
+          { id: 'three', label: 'Three.js Viewer', type: 'component' },
+          { id: 'upload', label: 'Upload Route', type: 'route' },
+          { id: 'ingest', label: 'Doc Ingest', type: 'service' },
+          { id: 'ratelimit', label: 'Rate Limiter', type: 'service' }
+        ],
+        edges: [
+          { source: 'user', target: 'chat' },
+          { source: 'user', target: 'upload' },
+          { source: 'upload', target: 'ingest' },
+          { source: 'ingest', target: 'embed' },
+          { source: 'ingest', target: 'supabase' },
+          { source: 'chat', target: 'ratelimit' },
+          { source: 'ratelimit', target: 'embed' },
+          { source: 'embed', target: 'openai' },
+          { source: 'embed', target: 'vector' },
+          { source: 'vector', target: 'supabase' },
+          { source: 'supabase', target: 'chat' },
+          { source: 'openai', target: 'chat' },
+          { source: 'chat', target: 'three', label: '3D data' }
+        ]
+      }
     }
   },
   {
@@ -191,13 +277,40 @@ export function Providers({ children }) {
   D -->|Dashboard| F[Protected Shell]
   D -->|Auth| G[Sign In/Up]
   F --> H[Sidebar + Header]
-  H --> I[Page Content]`
+  H --> I[Page Content]`,
+      graph: {
+        nodes: [
+          { id: 'clerk', label: 'Clerk Auth', type: 'external' },
+          { id: 'proxy', label: 'Middleware', type: 'service' },
+          { id: 'layout', label: 'Root Layout', type: 'component' },
+          { id: 'theme', label: 'Theme System', type: 'service' },
+          { id: 'dashboard', label: 'Dashboard Shell', type: 'component' },
+          { id: 'public', label: 'Public Pages', type: 'component' },
+          { id: 'supabase', label: 'Supabase', type: 'model' },
+          { id: 'sidebar', label: 'App Sidebar', type: 'component' },
+          { id: 'kbar', label: 'KBar (CMD+K)', type: 'component' },
+          { id: 'api', label: 'API Routes', type: 'route' }
+        ],
+        edges: [
+          { source: 'clerk', target: 'proxy' },
+          { source: 'proxy', target: 'layout' },
+          { source: 'layout', target: 'theme' },
+          { source: 'layout', target: 'dashboard' },
+          { source: 'layout', target: 'public' },
+          { source: 'dashboard', target: 'sidebar' },
+          { source: 'dashboard', target: 'kbar' },
+          { source: 'dashboard', target: 'api' },
+          { source: 'api', target: 'supabase' },
+          { source: 'clerk', target: 'api', label: 'auth' }
+        ]
+      }
     }
   }
 ];
 
 export function ProjectsContent() {
   const [activeProject, setActiveProject] = useState(projects[0].id);
+  const [diagramView, setDiagramView] = useState<'flowchart' | 'graph'>('flowchart');
   const project = projects.find((p) => p.id === activeProject)!;
 
   return (
@@ -292,7 +405,29 @@ export function ProjectsContent() {
             </TabsContent>
             <TabsContent value='diagram' className='mt-4'>
               <div className='bg-background rounded-xl border p-6'>
-                <MermaidDiagram chart={project.tabs.diagram} />
+                {/* View toggle */}
+                <div className='mb-4 flex items-center gap-2'>
+                  <Button
+                    variant={diagramView === 'flowchart' ? 'default' : 'outline'}
+                    size='sm'
+                    onClick={() => setDiagramView('flowchart')}
+                  >
+                    Flowchart
+                  </Button>
+                  <Button
+                    variant={diagramView === 'graph' ? 'default' : 'outline'}
+                    size='sm'
+                    onClick={() => setDiagramView('graph')}
+                  >
+                    Integration Graph
+                  </Button>
+                </div>
+
+                {diagramView === 'flowchart' ? (
+                  <MermaidDiagram chart={project.tabs.diagram} />
+                ) : (
+                  <D3IntegrationGraph data={project.tabs.graph} />
+                )}
               </div>
             </TabsContent>
           </Tabs>
