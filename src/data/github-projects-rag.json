@@ -1,0 +1,112 @@
+[
+  {
+    "id": "agentsec",
+    "name": "AgentSec (agentsec-hook-pack)",
+    "description": "Runtime security and policy enforcement hooks for AI coding agents (Claude Code, Codex). Intercepts and classifies risky tool calls (destructive commands, file edits, secret access, production deploys) in real time before execution.",
+    "techStack": ["Node.js", "JavaScript (ESM)", "Git", "JSON Configuration", "Next.js (Dashboard endpoint)"],
+    "keyFeatures": [
+      "Zero-configuration quickstart: drop the hook .agentsec folder into any repository",
+      "Fast-path local check: allowed safe actions (ls, grep, pwd, npm test) pass instantly without network latency",
+      "Remote policy validation: risky actions are classified by a central policy engine",
+      "Human-in-the-loop approval: dangerous commands generate a persistent approval gate URL and wait for reviewer actions",
+      "Dual agent integration: supports Claude Code (settings.json PreToolUse hook) and OpenAI Codex (config.toml PreToolUse hook)"
+    ],
+    "architecture": "sequenceDiagram\n  participant Agent as AI Agent (Claude/Codex)\n  participant Hook as agentsec-hook.mjs\n  participant API as AgentSec API\n  participant Human as Human Reviewer\n  \n  Agent->>Hook: PreToolUse event (Bash / Edit / Write)\n  Hook->>Hook: Local safe-command check\n  alt Safe command (ls, grep)\n    Hook-->>Agent: allow (skip network)\n  else Risky command\n    Hook->>API: POST tool payload + agentId\n    API->>API: Risk classification\n    alt Policy Allow\n      API-->>Hook: decision: allow\n      Hook-->>Agent: allow\n    else Policy Review\n      API-->>Hook: decision: requires_approval\n      Hook-->>Agent: pause + show approval URL\n      Human->>API: Approve / Reject\n      Agent->>Hook: Retry after approval\n    else Policy Denied\n      API-->>Hook: decision: deny\n      Hook-->>Agent: block command execution\n    end\n  end",
+    "fileStructure": [
+      ".agentsec/hooks/agentsec-hook.mjs - Primary hook runtime execution script",
+      ".agentsec/config.json - Policy configuration (baseUrl, safeCommands, failClosedFor, mode: observe/enforce)",
+      ".claude/settings.agentsec.example.json - Claude Code hook registration preset",
+      ".codex/config.agentsec.example.toml - OpenAI Codex hook configuration template",
+      "docs/AGENTSEC_HOOK_PACK.md - Deployment and integration manuals"
+    ],
+    "details": "AgentSec guards against destructive bash commands (e.g. rm -rf, DROP TABLE, git push --force), unreviewed file writes (like .env edits, production settings), and secret keychain lookups. The config.json allows setting modes: 'observe' mode reports events without blocking, while 'enforce' mode blocks untrusted commands. Safe commands like 'pwd', 'npm test', 'npm run lint' bypass the server entirely to conserve network round-trips."
+  },
+  {
+    "id": "agent-cli-mcp-rust",
+    "name": "agent-cli-mcp-rust",
+    "description": "High-performance Model Context Protocol (MCP) server written in Rust that acts as a unified control plane orchestrating six different AI execution engines.",
+    "techStack": ["Rust", "Cargo", "MCP (2025-03-26 Protocol)", "JSON-RPC over stdio", "Process Pipetalks (std I/O)"],
+    "keyFeatures": [
+      "Unified interface: manages GitHub Copilot, Google Jules, Gemini, Codex, OpenCode, and Claude CLIs",
+      "Tool permission profiles: scopes command levels (e.g. copilot-file-edit, copilot-safe-dev, copilot-target-repo)",
+      "Directory isolation: strict allowedRoots check blocks executions outside specified development folders",
+      "Secret scrubbing: real-time regex scanner censors API keys, JWTs, Stripe tokens, and DB credentials from stdout",
+      "Mandatory deny overlay: hard-coded security layers block destructive calls like 'vercel deploy --prod' or force pushes"
+    ],
+    "architecture": "graph TD\n  CC[Claude Code] -->|JSON-RPC over stdio| MCP[MCP Transport]\n  MCP --> POL[Directory Policy]\n  MCP --> RED[Scrubber Engine]\n  MCP --> SES[Session Manager]\n  SES -->|pipes| Executors[Copilot CLI / Jules / Gemini]",
+    "fileStructure": [
+      "src/main.rs - Entry point, MCP transport, and stdio JSON-RPC loop",
+      "src/server.rs - Tool registration and handler mappings",
+      "src/policy.rs - Path validation and allowed roots checker",
+      "src/redact.rs - Regex secret scrubbing engine",
+      "src/executors/ - Submodules for each CLI (copilot.rs, jules.rs, gemini.rs)",
+      "config.json - Default server setup (allowedRoots, stateDir, defaultTimeoutMs)"
+    ],
+    "details": "The server exposes multiple MCP tools: 'agent_cli.overview' gives a session status board; 'agent_cli.capabilities' checks CLI versions and flags; 'agent_cli.run' triggers quick synchronous executions; 'agent_cli.start_run' and 'agent_cli.start_session' support long-running interactive tasks. Jules-specific tools ('jules.create_session', 'jules.approve_plan') provide fine-grained controls over remote Google AI development runs."
+  },
+  {
+    "id": "antigravity-skill-injector",
+    "name": "antigravity-skill-injector",
+    "description": "A dynamic skill loader for the Antigravity Desktop App. Solves system prompt context bloat by replacing full SKILL.md documents with 20-token stub files, loading the actual instructions dynamically on demand via a Rust MCP server.",
+    "techStack": ["Rust", "Python", "Bash", "MCP Protocol", "JSON-RPC"],
+    "keyFeatures": [
+      "Saves up to 97% conversation tokens by replacing multi-hundred-line skills with tiny 20-token stubs",
+      "Rust MCP Server: ultra-fast JSON-RPC stdio server that serves full skill contents instantly when requested",
+      "Python migration script: parses frontmatter of SKILL.md files and serializes them into a centralized JSON registry",
+      "Python stub generator: creates minimal stub files for the Antigravity desktop client UI",
+      "Bash installer: compiles Rust, migrates registry, creates stubs, and outputs config blocks in one command"
+    ],
+    "architecture": "graph LR\n  UI[Antigravity UI] -->|Renders stubs| Stub[skills/stub.md]\n  Agent[Agent Context] -->|needs skill| MCP[Rust MCP Server]\n  MCP -->|reads| Reg[skills_registry.json]\n  Reg -->|full payload| Agent",
+    "fileStructure": [
+      "src/mcp-server/ - Rust stdio MCP server compiling to skill-injector-mcp",
+      "scripts/migrate_skills.py - YAML frontmatter parser and JSON compiler",
+      "scripts/generate_stubs.py - Autogeneration script for token-saving stubs",
+      "install.sh - One-key setup script",
+      "skills_registry.json - Centralized skill instruction repository"
+    ],
+    "details": "When Antigravity starts a conversation, it originally reads all SKILL.md files recursively, costing thousands of wasted context tokens. With the injector, stubs are read in the UI so the agent knows the skill exists, but it only triggers the 'mcp.fetch_skill' tool when a relevant action is requested, dynamically expanding the needed skill in the window."
+  },
+  {
+    "id": "saas-core",
+    "name": "saas-core",
+    "description": "A highly scalable, production-ready SaaS template offering zero-config multi-tenant architecture, billing, usage limits, and background workflows.",
+    "techStack": ["Next.js (App Router)", "Prisma", "PostgreSQL (Supabase)", "Clerk / Auth.js (Dual Auth)", "Stripe", "Trigger.dev", "Upstash Redis", "Resend"],
+    "keyFeatures": [
+      "Dual auth runtime: seamless fallback or active selection between Clerk and Auth.js v5",
+      "Multi-tenant billing: Stripe subscriptions with usage-limit tracking and automatic pricing mapping",
+      "Background queuing: Trigger.dev background worker and cron job runners",
+      "Idempotent Bootstrapping: automated GitHub actions build/connect Vercel, Supabase, Redis, and Stripe on git push",
+      "GDPR compliance: self-serve user data export (/api/user/export) and user account deletion (/api/user/delete)"
+    ],
+    "architecture": "graph TD\n  Next[Next.js App Router] --> Prisma[Prisma ORM]\n  Prisma --> DB[(Supabase Postgres)]\n  Next --> Stripe[Stripe Billing]\n  Next --> Trigger[Trigger.dev Background Jobs]\n  Next --> Redis[(Upstash Redis Rate Limit)]",
+    "fileStructure": [
+      "src/app/(dashboard)/ - Authenticated workspaces and user settings routes",
+      "src/app/api/stripe/webhook - Stripe subscription state synchronizer",
+      "src/lib/plans.ts - Plan tiers, Stripe pricing IDs, and usage limit variables",
+      "src/lib/rate-limit.ts - Redis-backed B2C and organization rate gates",
+      "prisma/schema.prisma - Full database schema (User, Org, Sub, Notification, File, Audit)",
+      "scripts/bootstrap.ts - Idempotent resource orchestrator script"
+    ],
+    "details": "Customizing the SaaS is done via saas-core.config.json (toggle features like stripe, jobs, slack) and service-config.ts (branding name, tagline, color). Database schema migrations are handled via 'prisma migrate dev', and local development is bootstrapped via 'npm run bootstrap:local'."
+  },
+  {
+    "id": "thesys-c1-dashboard",
+    "name": "thesys-c1-dashboard",
+    "description": "A developer-focused dashboard for monitoring and managing AI agent sessions, with rich telemetry for Generative UI pipelines using the Thesys C1 framework.",
+    "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Recharts", "GitHub Actions CI/CD"],
+    "keyFeatures": [
+      "Real-time Generative UI telemetry: tracks agent execution steps, schema rendering, and interface states",
+      "Session dashboard: lists user sessions, tool outputs, and LLM raw logs",
+      "Automated CI/CD: seamless GitHub Actions pipelines pushing code quality and Vercel deployments",
+      "Prebuilt widgets: standard components for visualizing agent run performance, latency, and success counts"
+    ],
+    "architecture": "graph TD\n  Agent[AI Agent] -->|Generative UI events| Thesys[Thesys C1 API]\n  Thesys -->|Webhook| Dashboard[Next.js Developer Console]\n  Dashboard --> Recharts[Telemetry Visuals]",
+    "fileStructure": [
+      "src/app/dashboard/ - Layout, charts, and telemetry grids",
+      "src/components/telemetry/ - Recharts wraps and generative UI action steps cards",
+      "src/lib/thesys.ts - Webhook validator and Generative UI state mapper",
+      ".github/workflows/deploy.yml - Vercel automatic builder and deployment pipeline"
+    ],
+    "details": "Provides developers running generative UI agents in production with exact session replays, showing when UI elements were rendered, what JSON schemas were requested by the LLM, and how users interacted with the dynamic cards."
+  }
+]

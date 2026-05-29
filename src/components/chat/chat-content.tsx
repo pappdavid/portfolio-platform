@@ -1,34 +1,34 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { GridBackground } from '@/components/ui/grid-background';
-import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import {
-  IconUpload,
+  IconBrandGithub,
   IconSend,
   IconFile,
   IconX,
   IconLoader2,
-  IconBrandGithub,
   IconCheck,
-  IconCode
+  IconCode,
+  IconArrowLeft,
+  IconChevronRight
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
+// ============================================================
+// Types
+// ============================================================
+
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
-export type CodeChunk = {
+type CodeChunk = {
   id: string;
   filename: string;
   summary: string;
   tokens: number;
 };
 
-export type UploadedFile = {
+type UploadedFile = {
   id: string;
   file: File;
   name: string;
@@ -38,17 +38,107 @@ export type UploadedFile = {
   content?: string;
 };
 
-const INITIAL_MESSAGES: ChatMessage[] = [
-  {
-    role: 'user',
-    content: 'What authentication pattern does this project use?'
-  },
-  {
-    role: 'assistant',
-    content:
-      'Based on the codebase, this project uses **Clerk** for authentication. The middleware is configured in `proxy.ts` (Next.js 16 pattern) which protects `/dashboard(.*)` routes via `clerkMiddleware`.\n\nKey files:\n- `src/proxy.ts` — middleware configuration\n- `src/components/layout/providers.tsx` — ClerkProvider wrapper\n- `src/app/auth/` — sign-in/sign-up routes'
-  }
-];
+// ============================================================
+// Real Files Mapping for David's Public Repositories (High Fidelity!)
+// ============================================================
+
+const REPO_FILES: Record<string, CodeChunk[]> = {
+  'agentsec-hook-pack': [
+    {
+      id: '1',
+      filename: '.agentsec/hooks/agentsec-hook.mjs',
+      summary: 'Primary hook execution script and local policy checks',
+      tokens: 412
+    },
+    {
+      id: '2',
+      filename: '.agentsec/config.json',
+      summary: 'Local policy variables and safe bash commands list',
+      tokens: 184
+    },
+    {
+      id: '3',
+      filename: '.claude/settings.agentsec.example.json',
+      summary: 'Claude Code hook integration preset config',
+      tokens: 236
+    }
+  ],
+  'agent-cli-mcp-rust': [
+    {
+      id: '1',
+      filename: 'src/main.rs',
+      summary:
+        'Server startup, stdio JSON-RPC loop, and MCP transport configuration',
+      tokens: 580
+    },
+    {
+      id: '2',
+      filename: 'src/policy.rs',
+      summary: 'Directory allowedRoots validation and isolation layer',
+      tokens: 324
+    },
+    {
+      id: '3',
+      filename: 'src/redact.rs',
+      summary: 'Secret scanning and JWT/Stripe key scrubbing expressions',
+      tokens: 290
+    }
+  ],
+  'antigravity-skill-injector': [
+    {
+      id: '1',
+      filename: 'src/mcp-server/src/main.rs',
+      summary: 'Rust stdio server serving dynamic instructions',
+      tokens: 498
+    },
+    {
+      id: '2',
+      filename: 'scripts/migrate_skills.py',
+      summary: 'YAML parser to centralize skills inside registry',
+      tokens: 280
+    },
+    {
+      id: '3',
+      filename: 'skills_registry.json',
+      summary: 'Database compiler matching stubs to instruction blocks',
+      tokens: 194
+    }
+  ],
+  'saas-core': [
+    {
+      id: '1',
+      filename: 'prisma/schema.prisma',
+      summary: 'Database schema holding subs, billing, users and audit events',
+      tokens: 670
+    },
+    {
+      id: '2',
+      filename: 'src/lib/rate-limit.ts',
+      summary: 'Upstash Redis-backed B2C subscription limitation limits',
+      tokens: 310
+    },
+    {
+      id: '3',
+      filename: 'src/app/api/stripe/webhook/route.ts',
+      summary: 'Stripe transaction status parser and model toggler',
+      tokens: 420
+    }
+  ],
+  'thesys-c1-dashboard': [
+    {
+      id: '1',
+      filename: 'src/app/dashboard/page.tsx',
+      summary: 'Real-time charts, telemetry streams, and telemetry grid layout',
+      tokens: 532
+    },
+    {
+      id: '2',
+      filename: 'src/lib/thesys.ts',
+      summary: 'Thesys C1 webhook listener and state schema validation',
+      tokens: 340
+    }
+  ]
+};
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -56,281 +146,24 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function ChatArchSvg() {
-  return (
-    <svg
-      viewBox='0 0 780 130'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-      className='w-full'
-      aria-label='Chat RAG architecture: upload and embed documents into vector store; user query retrieved, reranked, sent to LLM, response optionally rendered in Three.js'
-    >
-      {/* Ingestion row */}
-      <rect
-        x='0'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='50'
-        y='27'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Upload
-      </text>
-      <path
-        d='M102 23 L112 23'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon points='112,19.5 116,23 112,26.5' fill='rgba(249,115,22,0.7)' />
-      <rect
-        x='118'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='168'
-        y='27'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Chunker
-      </text>
-      <path
-        d='M220 23 L230 23'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon points='230,19.5 234,23 230,26.5' fill='rgba(249,115,22,0.7)' />
-      <rect
-        x='236'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='286'
-        y='27'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Embeddings
-      </text>
-      <path
-        d='M338 23 L348 23'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon points='348,19.5 352,23 348,26.5' fill='rgba(249,115,22,0.7)' />
-      <rect
-        x='354'
-        y='5'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(6,182,212,0.06)'
-        stroke='rgba(6,182,212,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='404'
-        y='27'
-        textAnchor='middle'
-        fill='#06b6d4'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Vector Store
-      </text>
-      {/* Query row */}
-      <rect
-        x='0'
-        y='89'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.09)'
-        strokeWidth='1'
-      />
-      <text
-        x='50'
-        y='111'
-        textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        User Query
-      </text>
-      <path
-        d='M102 107 L112 107'
-        stroke='rgba(168,85,247,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon
-        points='112,103.5 116,107 112,110.5'
-        fill='rgba(168,85,247,0.7)'
-      />
-      <rect
-        x='118'
-        y='89'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='168'
-        y='111'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Retriever
-      </text>
-      <path
-        d='M220 107 L230 107'
-        stroke='rgba(168,85,247,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon
-        points='230,103.5 234,107 230,110.5'
-        fill='rgba(168,85,247,0.7)'
-      />
-      <rect
-        x='236'
-        y='89'
-        width='110'
-        height='36'
-        rx='7'
-        fill='rgba(168,85,247,0.06)'
-        stroke='rgba(168,85,247,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='291'
-        y='111'
-        textAnchor='middle'
-        fill='#a855f7'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        LLM + Context
-      </text>
-      <path
-        d='M348 107 L358 107'
-        stroke='rgba(168,85,247,0.5)'
-        strokeWidth='1.5'
-      />
-      <polygon
-        points='358,103.5 362,107 358,110.5'
-        fill='rgba(168,85,247,0.7)'
-      />
-      <rect
-        x='364'
-        y='89'
-        width='100'
-        height='36'
-        rx='7'
-        fill='rgba(168,85,247,0.06)'
-        stroke='rgba(168,85,247,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='414'
-        y='111'
-        textAnchor='middle'
-        fill='#a855f7'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Response
-      </text>
-      <path
-        d='M466 107 L476 107'
-        stroke='rgba(249,115,22,0.5)'
-        strokeWidth='1.5'
-        strokeDasharray='3 2'
-      />
-      <polygon
-        points='476,103.5 480,107 476,110.5'
-        fill='rgba(249,115,22,0.7)'
-      />
-      <rect
-        x='482'
-        y='89'
-        width='130'
-        height='36'
-        rx='7'
-        fill='rgba(249,115,22,0.06)'
-        stroke='rgba(249,115,22,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='547'
-        y='104'
-        textAnchor='middle'
-        fill='#f97316'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Three.js
-      </text>
-      <text
-        x='547'
-        y='118'
-        textAnchor='middle'
-        fill='#52525b'
-        fontSize='8'
-        fontFamily='monospace'
-      >
-        (if spatial data)
-      </text>
-      {/* Vector store feeds retriever */}
-      <path
-        d='M404 41 L404 65 L168 65 L168 89'
-        stroke='rgba(6,182,212,0.3)'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-    </svg>
-  );
-}
+// ============================================================
+// Dedicated RAG Chat Console
+// ============================================================
 
 export function ChatContent() {
-  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      role: 'assistant',
+      content:
+        "Dedicated RAG Chat Console ready. I have search access to all of David's public repositories. You can upload custom files, load specific GitHub repos into the context, or ask me detailed technical questions!"
+    }
+  ]);
   const [input, setInput] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Repo URL state
+  // GitHub Loading States
   const [repoUrl, setRepoUrl] = useState('');
   const [cloning, setCloning] = useState(false);
   const [cloneStatus, setCloneStatus] = useState<string | null>(null);
@@ -338,54 +171,57 @@ export function ChatContent() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(
-    null
-  );
 
-  useEffect(() => {
-    return () => {
-      readerRef.current?.cancel();
-    };
-  }, []);
-
+  // Auto-scroll chat body
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Load public GitHub projects dynamically (High fidelity!)
   const handleCloneRepo = useCallback(() => {
     const url = repoUrl.trim();
     if (!url || cloning) return;
+
     setCloning(true);
-    setCloneStatus('Cloning repo…');
+    setCloneStatus('indexing repository schema...');
     setCodeChunks([]);
 
+    // Extract repo slug
+    const parts = url.replace(/\/$/, '').split('/');
+    const repoSlug = parts[parts.length - 1]?.toLowerCase() || '';
+
     setTimeout(() => {
-      const repoName = url.split('/').slice(-1)[0] ?? 'repo';
-      setCodeChunks([
+      // Check if we have high-fidelity mock files for this project
+      let chunks: CodeChunk[] = [
         {
           id: '1',
-          filename: `src/agent/pipeline.ts`,
-          summary: 'Main agent execution pipeline with guard middleware',
-          tokens: 512
+          filename: 'README.md',
+          summary: 'Repository description and default instruction guide',
+          tokens: 150
         },
         {
           id: '2',
-          filename: `src/guards/injection.ts`,
-          summary: 'Prompt injection detection and sanitization',
-          tokens: 348
-        },
-        {
-          id: '3',
-          filename: `${repoName}/README.md`,
-          summary: 'Repository overview and setup instructions',
-          tokens: 224
+          filename: 'package.json',
+          summary: 'Project configurations and dependency listings',
+          tokens: 210
         }
-      ]);
+      ];
+
+      // Find matching project details
+      for (const key of Object.keys(REPO_FILES)) {
+        if (repoSlug.includes(key) || key.includes(repoSlug)) {
+          chunks = REPO_FILES[key];
+          break;
+        }
+      }
+
+      setCodeChunks(chunks);
       setCloning(false);
-      setCloneStatus('Repo loaded into context');
-    }, 1500);
+      setCloneStatus(`loaded context: ${repoSlug}`);
+    }, 1200);
   }, [repoUrl, cloning]);
 
+  // SSE Stream Sender
   const handleSend = useCallback(async () => {
     const trimmed = input.trim();
     if (!trimmed || isStreaming) return;
@@ -399,18 +235,20 @@ export function ChatContent() {
     setError(null);
 
     try {
+      // Collate uploaded file contexts
       const includedFileContent = uploadedFiles
         .filter((f) => f.include && f.status === 'ready' && f.content)
-        .map((f) => `### ${f.name}\n${f.content}`)
+        .map((f) => `### File: ${f.name}\n${f.content}`)
         .join('\n\n');
 
+      // Collate loaded GitHub files context
       const codeContext =
         codeChunks.length > 0
-          ? `Code context from repo:\n${codeChunks.map((c) => `${c.filename}: ${c.summary}`).join('\n')}`
+          ? `Local index repository files:\n${codeChunks.map((c) => `- ${c.filename}: ${c.summary}`).join('\n')}`
           : undefined;
 
       const fileContext = includedFileContent
-        ? `Uploaded file contents:\n\n${includedFileContent}`
+        ? `Uploaded files content:\n\n${includedFileContent}`
         : undefined;
 
       const context =
@@ -420,7 +258,7 @@ export function ChatContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMsg],
+          messages: messages.concat(userMsg),
           context
         })
       });
@@ -431,22 +269,8 @@ export function ChatContent() {
           updated[updated.length - 1] = {
             role: 'assistant',
             content:
-              'Rate limit reached (2 requests/hour for guests). Sign in for 50/hour.'
+              'Rate limit reached (2 queries/hour as guest). Please sign in for higher limits.'
           };
-          return updated;
-        });
-        return;
-      }
-
-      if (res.status === 403) {
-        const data = await res.json();
-        const msg =
-          data.code === 'DEMO_EXPIRED'
-            ? 'Demo expired — contact David for full access.'
-            : 'Demo quota exhausted — contact David for full access.';
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = { role: 'assistant', content: msg };
           return updated;
         });
         return;
@@ -457,7 +281,6 @@ export function ChatContent() {
       }
 
       const reader = res.body.getReader();
-      readerRef.current = reader;
       const decoder = new TextDecoder();
 
       while (true) {
@@ -472,22 +295,21 @@ export function ChatContent() {
             const { content } = JSON.parse(payload) as { content: string };
             setMessages((prev) => {
               const updated = [...prev];
-              updated[updated.length - 1] = {
-                role: 'assistant',
-                content: updated[updated.length - 1].content + content
-              };
+              const last = updated[updated.length - 1];
+              if (last && last.role === 'assistant') {
+                last.content += content;
+              }
               return updated;
             });
           } catch {
-            // malformed SSE chunk — skip
+            // skip malformed chunks
           }
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+      setError(err instanceof Error ? err.message : 'Connection failed');
       setMessages((prev) => prev.slice(0, -1));
     } finally {
-      readerRef.current = null;
       setIsStreaming(false);
     }
   }, [input, isStreaming, messages, uploadedFiles, codeChunks]);
@@ -542,417 +364,221 @@ export function ChatContent() {
   };
 
   return (
-    <div className='relative' style={{ color: 'var(--ink-0)' }}>
-      <GridBackground />
-
-      {/* Hero */}
-      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <MonoEyebrow color='orange' className='mb-6'>
-          Retrieval-Augmented Generation
-        </MonoEyebrow>
-        <h1
-          className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
-          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
+    <div
+      style={{
+        color: 'var(--text)',
+        fontFamily: 'var(--font-mono)',
+        minHeight: '100vh',
+        background: 'var(--bg)'
+      }}
+    >
+      {/* HEADER TITLE BAR */}
+      <div className='statusbar'>
+        <Link
+          href='/'
+          className='sb-accent flex items-center gap-2 hover:underline'
         >
-          RAG + 3D Chat
-        </h1>
-        <p
-          className='max-w-2xl text-base leading-relaxed'
-          style={{ color: 'var(--ink-2)' }}
-        >
-          Upload documents, ask questions, get answers grounded in your data.
-          When responses include spatial data, they render in an interactive 3D
-          viewer.
-        </p>
-      </section>
+          <IconArrowLeft className='h-4 w-4' />
+          <span>[portfolio]</span>
+        </Link>
+        <span className='sb-sep'>|</span>
+        <span className='sb-item'>
+          <span className='sb-k'>SESSION:</span>
+          <span className='sb-v'>rag_console</span>
+        </span>
+        <div className='sb-right'>
+          <span className='sb-dot' />
+          <span>ACTIVE_ROUTING</span>
+        </div>
+      </div>
 
-      {/* Chat Interface */}
-      <section
-        className='relative z-10 border-y py-12'
-        style={{
-          borderColor: 'var(--border-subtle)',
-          background: 'var(--bg-1)'
-        }}
-      >
-        <div className='mx-auto max-w-6xl px-6'>
-          <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-            {/* Chat panel */}
-            <div className='flex flex-col gap-4 lg:col-span-2'>
-              {/* Repo URL Input */}
-              <div className='flex gap-2'>
-                <div className='relative flex-1'>
-                  <IconBrandGithub
-                    className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2'
-                    style={{ color: 'var(--ink-3)' }}
-                  />
-                  <Input
-                    value={repoUrl}
-                    onChange={(e) => setRepoUrl(e.target.value)}
-                    placeholder='Paste a GitHub/GitLab repo URL…'
-                    className='pl-9 focus-visible:ring-[#22c55e]/30'
-                    style={{
-                      background: 'var(--bg-2)',
-                      color: 'var(--ink-0)',
-                      borderColor: 'var(--border-muted)'
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleCloneRepo();
-                    }}
-                    disabled={cloning}
-                  />
+      <div className='scroll-container'>
+        <div className='shell block'>
+          {/* Header Title */}
+          <div className='sec-head'>
+            <span className='sec-cmd'>cat /etc/chat_os</span>
+            <span className='sec-note'>CONSOLE</span>
+          </div>
+
+          <div className='mt-6 grid grid-cols-1 gap-6 lg:grid-cols-4'>
+            {/* LEFT SIDEBAR: Index context sources */}
+            <div className='flex flex-col gap-4 lg:col-span-1'>
+              <div
+                className='term-window flex flex-col gap-4 p-4'
+                style={{ background: 'var(--bg-raised)' }}
+              >
+                <div className='contact-label' style={{ fontSize: '10px' }}>
+                  CONTEXT SOURCES
                 </div>
-                <Button
-                  onClick={handleCloneRepo}
-                  disabled={!repoUrl.trim() || cloning}
-                  variant='outline'
-                  size='sm'
-                  className='shrink-0'
-                  style={{
-                    background: 'var(--bg-2)',
-                    color: 'var(--ink-0)',
-                    borderColor: 'var(--border-muted)'
-                  }}
-                >
-                  {cloning ? (
-                    <IconLoader2 className='h-4 w-4 animate-spin' />
-                  ) : (
-                    'Load'
-                  )}
-                </Button>
-              </div>
 
-              {/* Clone status & code chunks */}
-              {cloneStatus && (
-                <div
-                  className='rounded-lg p-3'
-                  style={{
-                    border: '1px solid var(--border-subtle)',
-                    background: 'var(--bg-2)'
-                  }}
-                >
-                  <div
-                    className='mb-2 flex items-center gap-2 text-xs'
-                    style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      color: 'var(--accent-bright)'
-                    }}
-                  >
-                    {cloning ? (
-                      <IconLoader2 className='h-3 w-3 animate-spin' />
-                    ) : (
-                      <IconCheck className='h-3 w-3' />
-                    )}
-                    {cloneStatus}
+                {/* Loader inputs */}
+                <div className='flex flex-col gap-2'>
+                  <div className='relative'>
+                    <IconBrandGithub
+                      className='absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2'
+                      style={{ color: 'var(--text-dim)' }}
+                    />
+                    <input
+                      value={repoUrl}
+                      onChange={(e) => setRepoUrl(e.target.value)}
+                      placeholder='pappdavid/saas-core...'
+                      className='w-full border border-[var(--border)] bg-[#070707] py-1.5 pr-2 pl-8 font-mono text-xs text-white focus:border-[var(--accent)] focus:outline-none'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleCloneRepo();
+                      }}
+                      disabled={cloning}
+                    />
                   </div>
-                  {codeChunks.length > 0 && (
-                    <div className='flex flex-wrap gap-1.5'>
-                      {codeChunks.map((chunk) => (
-                        <Badge
-                          key={chunk.id}
-                          variant='outline'
-                          className='gap-1 text-xs'
-                          style={{
-                            borderColor: 'var(--accent-line)',
-                            background: 'var(--accent-soft)',
-                            color: 'var(--accent-bright)'
-                          }}
-                        >
-                          <IconCode className='h-3 w-3' />
-                          {chunk.filename}
-                          <span style={{ opacity: 0.6 }}>{chunk.tokens}t</span>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
+                  <button
+                    onClick={handleCloneRepo}
+                    disabled={!repoUrl.trim() || cloning}
+                    className='w-full border border-[var(--accent)] bg-transparent py-1.5 text-center text-xs text-[var(--accent)] transition-all hover:bg-[var(--accent-faint)]'
+                  >
+                    {cloning ? 'indexing...' : '[load_repository]'}
+                  </button>
                 </div>
-              )}
 
-              {/* File Upload */}
-              <div>
-                <input
-                  ref={fileInputRef}
-                  type='file'
-                  multiple
-                  accept='.pdf,.txt,.md,.csv'
-                  className='hidden'
-                  onChange={handleFileChange}
-                  aria-label='Upload files'
-                />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-sm transition-colors'
-                  style={{
-                    borderColor: 'var(--border-muted)',
-                    color: 'var(--ink-2)'
-                  }}
-                >
-                  <IconUpload className='h-4 w-4' />
-                  Drop PDFs, text, or markdown here
-                </button>
+                {/* Index status */}
+                {cloneStatus && (
+                  <div className='rounded-sm border border-[var(--border)] bg-[#0d0d0d] p-2 text-xs'>
+                    <div className='mb-1 flex items-center gap-1.5 text-[var(--accent)]'>
+                      {cloning ? (
+                        <IconLoader2 className='h-3 w-3 animate-spin' />
+                      ) : (
+                        <IconCheck className='h-3.5 w-3.5' />
+                      )}
+                      <span>{cloneStatus}</span>
+                    </div>
+                    {codeChunks.length > 0 && (
+                      <div className='mt-2 flex flex-col gap-1.5'>
+                        {codeChunks.map((c) => (
+                          <div
+                            key={c.id}
+                            className='flex items-center gap-1 truncate text-[10px] text-[var(--text-dim)]'
+                          >
+                            <IconChevronRight className='h-3 w-3 shrink-0' />
+                            <span>{c.filename}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
+                {/* File Drop Area */}
+                <div className='relative rounded-sm border border-dashed border-[var(--border)] bg-[#080808] p-4 text-center'>
+                  <input
+                    ref={fileInputRef}
+                    type='file'
+                    multiple
+                    accept='.pdf,.txt,.md,.csv'
+                    className='hidden'
+                    onChange={handleFileChange}
+                    aria-label='Upload files'
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className='flex w-full cursor-pointer flex-col items-center gap-1.5 border-none bg-transparent text-[11px] text-[var(--text-dim)] transition-all hover:text-[var(--accent)]'
+                  >
+                    <IconFile className='h-5 w-5 opacity-40' />
+                    <span>Click to attach documents</span>
+                  </button>
+                </div>
+
+                {/* File list */}
                 {uploadedFiles.length > 0 && (
-                  <div className='mt-2 flex flex-col gap-1.5'>
+                  <div className='flex max-h-[160px] flex-col gap-1.5 overflow-y-auto pr-1'>
                     {uploadedFiles.map((f) => (
                       <div
                         key={f.id}
-                        className='flex items-center gap-2 rounded-md px-3 py-2 text-xs'
-                        style={{
-                          border: '1px solid var(--border-subtle)',
-                          background: 'var(--bg-2)'
-                        }}
+                        className='flex items-center gap-1.5 border border-[var(--border)] bg-[#0d0d0d] p-1.5 text-[10px]'
                       >
                         <input
                           type='checkbox'
                           checked={f.include}
                           onChange={() => toggleFileInclude(f.id)}
-                          className='accent-[#22c55e]'
+                          className='accent-[#00ff88]'
                           aria-label={`Include ${f.name}`}
                         />
-                        <IconFile
-                          className='h-3.5 w-3.5 shrink-0'
-                          style={{ color: 'var(--ink-3)' }}
-                        />
-                        <span
-                          className='flex-1 truncate'
-                          style={{ color: 'var(--ink-1)' }}
-                        >
+                        <span className='flex-1 truncate text-[var(--accent-muted)]'>
                           {f.name}
                         </span>
-                        <span
-                          style={{
-                            fontFamily: 'var(--font-dp-mono)',
-                            color: 'var(--ink-3)'
-                          }}
-                        >
-                          {formatBytes(f.size)}
-                        </span>
-                        <Badge
-                          variant='outline'
-                          className={cn(
-                            'px-1.5 py-0 text-[10px]',
-                            f.status === 'processing'
-                              ? 'border-yellow-500/30 text-yellow-400'
-                              : 'border-[#22c55e]/30 text-[#22c55e]'
-                          )}
-                        >
-                          {f.status}
-                        </Badge>
                         <button
                           onClick={() => removeFile(f.id)}
-                          style={{ color: 'var(--ink-3)' }}
-                          aria-label={`Remove ${f.name}`}
+                          className='border-none bg-transparent text-[var(--text-dim)] hover:text-white'
                         >
-                          <IconX className='h-3.5 w-3.5' />
+                          <IconX className='h-3 w-3' />
                         </button>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-
-              {/* Messages */}
-              <div
-                className='max-h-[480px] min-h-[320px] flex-1 space-y-4 overflow-y-auto rounded-xl p-4'
-                style={{
-                  border: '1px solid var(--border-subtle)',
-                  background: 'var(--bg-2)'
-                }}
-                aria-live='polite'
-                aria-label='Chat messages'
-              >
-                {messages.map((msg, i) => (
-                  <div
-                    key={i}
-                    className={cn(
-                      'flex',
-                      msg.role === 'user' ? 'justify-end' : 'justify-start'
-                    )}
-                  >
-                    <div
-                      className='max-w-[80%] rounded-lg px-4 py-3 text-sm'
-                      style={
-                        msg.role === 'user'
-                          ? {
-                              background: 'var(--accent-soft)',
-                              border: '1px solid var(--accent-line)',
-                              color: 'var(--ink-0)'
-                            }
-                          : {
-                              background: 'var(--bg-3)',
-                              border: '1px solid var(--border-subtle)',
-                              color: 'var(--ink-1)'
-                            }
-                      }
-                    >
-                      <p className='whitespace-pre-wrap'>{msg.content}</p>
-                    </div>
-                  </div>
-                ))}
-                {isStreaming &&
-                  messages[messages.length - 1]?.content === '' && (
-                    <div className='flex justify-start'>
-                      <div
-                        className='rounded-lg px-4 py-3'
-                        style={{
-                          border: '1px solid var(--border-subtle)',
-                          background: 'var(--bg-3)'
-                        }}
-                      >
-                        <IconLoader2
-                          className='h-4 w-4 animate-spin'
-                          style={{ color: 'var(--ink-3)' }}
-                          aria-label='Generating response'
-                        />
-                      </div>
-                    </div>
-                  )}
-                {error && (
-                  <p className='text-center text-xs text-red-400' role='alert'>
-                    {error}
-                  </p>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Input */}
-              <div className='flex gap-2'>
-                <Textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder='Ask about your documents...'
-                  className='min-h-[44px] resize-none focus-visible:ring-[#22c55e]/30'
-                  style={{
-                    background: 'var(--bg-2)',
-                    color: 'var(--ink-0)',
-                    borderColor: 'var(--border-muted)'
-                  }}
-                  rows={1}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSend();
-                    }
-                  }}
-                />
-                <Button
-                  onClick={handleSend}
-                  disabled={isStreaming || !input.trim()}
-                  size='icon'
-                  className='shrink-0 disabled:opacity-40'
-                  style={{ background: 'var(--accent)', color: 'var(--bg-0)' }}
-                  aria-label='Send message'
-                >
-                  {isStreaming ? (
-                    <IconLoader2
-                      className='h-4 w-4 animate-spin'
-                      aria-hidden='true'
-                    />
-                  ) : (
-                    <IconSend className='h-4 w-4' aria-hidden='true' />
-                  )}
-                </Button>
-              </div>
-
-              <p
-                style={{
-                  fontFamily: 'var(--font-dp-mono)',
-                  fontSize: 11,
-                  color: 'var(--ink-3)'
-                }}
-              >
-                Rate limited: 2 messages/hour (guest) · 50/hour (signed in)
-              </p>
             </div>
 
-            {/* 3D Viewer */}
-            <div className='flex flex-col'>
-              <h3
-                className='mb-2 text-sm font-medium'
-                style={{ color: 'var(--ink-0)' }}
-              >
-                3D Viewer
-              </h3>
-              <div
-                className='flex min-h-[300px] flex-1 items-center justify-center rounded-xl'
-                style={{
-                  background: 'var(--bg-1)',
-                  border: '1px solid var(--accent-line)'
-                }}
-              >
-                <div className='text-center'>
-                  <svg
-                    viewBox='0 0 64 64'
-                    className='mx-auto mb-3 h-16 w-16 opacity-20'
-                    fill='none'
-                    aria-hidden='true'
-                  >
-                    <polygon
-                      points='32,4 60,18 60,46 32,60 4,46 4,18'
-                      stroke='#f97316'
-                      strokeWidth='2'
-                    />
-                    <line
-                      x1='32'
-                      y1='4'
-                      x2='32'
-                      y2='32'
-                      stroke='#f97316'
-                      strokeWidth='1'
-                      opacity='0.5'
-                    />
-                    <line
-                      x1='4'
-                      y1='18'
-                      x2='32'
-                      y2='32'
-                      stroke='#f97316'
-                      strokeWidth='1'
-                      opacity='0.5'
-                    />
-                    <line
-                      x1='60'
-                      y1='18'
-                      x2='32'
-                      y2='32'
-                      stroke='#f97316'
-                      strokeWidth='1'
-                      opacity='0.5'
-                    />
-                  </svg>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      fontSize: 11,
-                      color: 'var(--ink-3)'
+            {/* RIGHT MAIN PANEL: Unified Chat Console */}
+            <div className='flex flex-col gap-4 lg:col-span-3'>
+              <div className='chat term-window flex min-h-[500px] flex-col'>
+                <div className='chat-titlebar'>
+                  <span className='chat-status'>
+                    <span className='sb-dot' /> zui@portfolio:
+                    interactive_session
+                  </span>
+                  <span className='chat-conv'>status: running</span>
+                </div>
+
+                {/* Message logs */}
+                <div className='chat-body flex-1' style={{ height: '380px' }}>
+                  {messages.map((m, i) => (
+                    <div key={i} className={cn('chat-msg', m.role)}>
+                      {m.role === 'assistant' && (
+                        <span className='msg-tag'>ASSISTANT</span>
+                      )}
+                      <span className='msg-text whitespace-pre-wrap'>
+                        {m.content}
+                      </span>
+                    </div>
+                  ))}
+                  {isStreaming &&
+                    messages[messages.length - 1]?.content === '' && (
+                      <div className='chat-msg bot typing'>
+                        <span className='msg-tag'>ASSISTANT</span>
+                        <span className='msg-text'>
+                          thinking<span className='ell'>...</span>
+                        </span>
+                      </div>
+                    )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Input form */}
+                <div className='chat-input border-t border-[var(--border)]'>
+                  <span className='chat-pre'>david@dev:~/assistant$</span>
+                  <input
+                    className='chat-field'
+                    placeholder='start typing here... (500 characters max)'
+                    value={input}
+                    maxLength={500}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSend();
                     }}
+                    spellCheck={false}
+                    disabled={isStreaming}
+                  />
+                  <button
+                    onClick={handleSend}
+                    className='send-btn'
+                    disabled={isStreaming || !input.trim()}
                   >
-                    Renders when response includes 3D data
-                  </p>
+                    [send]
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Architecture */}
-      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <h2
-          className='mb-8 text-2xl font-bold tracking-[-0.02em]'
-          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-        >
-          Architecture
-        </h2>
-        <div
-          className='overflow-x-auto rounded-xl p-6'
-          style={{
-            border: '1px solid var(--border-subtle)',
-            background: 'var(--bg-2)'
-          }}
-        >
-          <ChatArchSvg />
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
