@@ -366,10 +366,10 @@ export function ChatContent() {
   return (
     <div
       style={{
-        color: 'var(--text)',
-        fontFamily: 'var(--font-mono)',
+        color: 'var(--dp-text)',
+        fontFamily: 'var(--font-hud-mono)',
         minHeight: '100vh',
-        background: 'var(--bg)'
+        background: 'var(--dp-bg)'
       }}
     >
       {/* HEADER TITLE BAR */}
@@ -407,7 +407,7 @@ export function ChatContent() {
             <div className='flex flex-col gap-4 lg:col-span-1'>
               <div
                 className='term-window flex flex-col gap-4 p-4'
-                style={{ background: 'var(--bg-raised)' }}
+                style={{ background: 'var(--dp-bg-raised)' }}
               >
                 <div className='contact-label' style={{ fontSize: '10px' }}>
                   CONTEXT SOURCES
@@ -418,13 +418,13 @@ export function ChatContent() {
                   <div className='relative'>
                     <IconBrandGithub
                       className='absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2'
-                      style={{ color: 'var(--text-dim)' }}
+                      style={{ color: 'var(--dp-text-dim)' }}
                     />
                     <input
                       value={repoUrl}
                       onChange={(e) => setRepoUrl(e.target.value)}
-                      placeholder='pappdavid/joblaunch-agent...'
-                      className='w-full border border-[var(--border)] bg-[#070707] py-1.5 pr-2 pl-8 font-mono text-xs text-white focus:border-[var(--accent)] focus:outline-none'
+                      placeholder='pappdavid/saas-core...'
+                      className='w-full border border-[var(--dp-border)] bg-[#070707] py-1.5 pr-2 pl-8 font-mono text-xs text-white focus:border-[var(--dp-accent)] focus:outline-none'
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleCloneRepo();
                       }}
@@ -434,7 +434,7 @@ export function ChatContent() {
                   <button
                     onClick={handleCloneRepo}
                     disabled={!repoUrl.trim() || cloning}
-                    className='w-full border border-[var(--accent)] bg-transparent py-1.5 text-center text-xs text-[var(--accent)] transition-all hover:bg-[var(--accent-faint)]'
+                    className='w-full border border-[var(--dp-accent)] bg-transparent py-1.5 text-center text-xs text-[var(--dp-accent)] transition-all hover:bg-[var(--dp-accent-faint)]'
                   >
                     {cloning ? 'indexing...' : '[load_repository]'}
                   </button>
@@ -442,8 +442,8 @@ export function ChatContent() {
 
                 {/* Index status */}
                 {cloneStatus && (
-                  <div className='rounded-sm border border-[var(--border)] bg-[#0d0d0d] p-2 text-xs'>
-                    <div className='mb-1 flex items-center gap-1.5 text-[var(--accent)]'>
+                  <div className='rounded-sm border border-[var(--dp-border)] bg-[#0d0d0d] p-2 text-xs'>
+                    <div className='mb-1 flex items-center gap-1.5 text-[var(--dp-accent)]'>
                       {cloning ? (
                         <IconLoader2 className='h-3 w-3 animate-spin' />
                       ) : (
@@ -456,7 +456,7 @@ export function ChatContent() {
                         {codeChunks.map((c) => (
                           <div
                             key={c.id}
-                            className='flex items-center gap-1 truncate text-[10px] text-[var(--text-dim)]'
+                            className='flex items-center gap-1 truncate text-[10px] text-[var(--dp-text-dim)]'
                           >
                             <IconChevronRight className='h-3 w-3 shrink-0' />
                             <span>{c.filename}</span>
@@ -468,7 +468,7 @@ export function ChatContent() {
                 )}
 
                 {/* File Drop Area */}
-                <div className='relative rounded-sm border border-dashed border-[var(--border)] bg-[#080808] p-4 text-center'>
+                <div className='relative rounded-sm border border-dashed border-[var(--dp-border)] bg-[#080808] p-4 text-center'>
                   <input
                     ref={fileInputRef}
                     type='file'
@@ -480,7 +480,7 @@ export function ChatContent() {
                   />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className='flex w-full cursor-pointer flex-col items-center gap-1.5 border-none bg-transparent text-[11px] text-[var(--text-dim)] transition-all hover:text-[var(--accent)]'
+                    className='flex w-full cursor-pointer flex-col items-center gap-1.5 border-none bg-transparent text-[11px] text-[var(--dp-text-dim)] transition-all hover:text-[var(--dp-accent)]'
                   >
                     <IconFile className='h-5 w-5 opacity-40' />
                     <span>Click to attach documents</span>
@@ -493,7 +493,7 @@ export function ChatContent() {
                     {uploadedFiles.map((f) => (
                       <div
                         key={f.id}
-                        className='flex items-center gap-1.5 border border-[var(--border)] bg-[#0d0d0d] p-1.5 text-[10px]'
+                        className='flex items-center gap-1.5 border border-[var(--dp-border)] bg-[#0d0d0d] p-1.5 text-[10px]'
                       >
                         <input
                           type='checkbox'
@@ -502,12 +502,12 @@ export function ChatContent() {
                           className='accent-[#00ff88]'
                           aria-label={`Include ${f.name}`}
                         />
-                        <span className='flex-1 truncate text-[var(--accent-muted)]'>
+                        <span className='flex-1 truncate text-[var(--dp-accent-muted)]'>
                           {f.name}
                         </span>
                         <button
                           onClick={() => removeFile(f.id)}
-                          className='border-none bg-transparent text-[var(--text-dim)] hover:text-white'
+                          className='border-none bg-transparent text-[var(--dp-text-dim)] hover:text-white'
                         >
                           <IconX className='h-3 w-3' />
                         </button>
@@ -554,7 +554,7 @@ export function ChatContent() {
                 </div>
 
                 {/* Input form */}
-                <div className='chat-input border-t border-[var(--border)]'>
+                <div className='chat-input border-t border-[var(--dp-border)]'>
                   <span className='chat-pre'>david@dev:~/assistant$</span>
                   <input
                     className='chat-field'

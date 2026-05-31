@@ -171,12 +171,44 @@ export function LandingContent() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [commitCount, setCommitCount] = useState(1284);
+  const [themeProfile, setThemeProfile] = useState<string>('green');
+  const [latency, setLatency] = useState<string>('5.2ms');
+  const [memLoad, setMemLoad] = useState<string>('43.1%');
 
+  // Load and apply initial theme profile from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('theme-profile') || 'green';
+    setThemeProfile(saved);
+    document.documentElement.setAttribute('data-theme-profile', saved);
+  }, []);
+
+  const changeThemeProfile = useCallback((profile: string) => {
+    setThemeProfile(profile);
+    localStorage.setItem('theme-profile', profile);
+    document.documentElement.setAttribute('data-theme-profile', profile);
+  }, []);
+
+  // Telemetry fluctuation timers
   useEffect(() => {
     const cInterval = setInterval(() => {
       if (Math.random() < 0.35) setCommitCount((c) => c + 1);
     }, 2600);
-    return () => clearInterval(cInterval);
+
+    const lInterval = setInterval(() => {
+      const ms = (4.8 + Math.random() * 4.4).toFixed(1);
+      setLatency(`${ms}ms`);
+    }, 1100);
+
+    const mInterval = setInterval(() => {
+      const pct = (42.5 + Math.random() * 2.3).toFixed(1);
+      setMemLoad(`${pct}%`);
+    }, 1800);
+
+    return () => {
+      clearInterval(cInterval);
+      clearInterval(lInterval);
+      clearInterval(mInterval);
+    };
   }, []);
 
   // Handle smooth nav scroll
@@ -207,8 +239,26 @@ export function LandingContent() {
     return () => cont.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Custom Event Bus focusing dispatcher
+  const triggerFocus = useCallback((id: string | null) => {
+    let moduleId: string | null = null;
+    if (id) {
+      const u = id.toUpperCase();
+      if (u.includes('AGENTSEC') || u.includes('AGENT_CLI'))
+        moduleId = 'sentinel';
+      else if (u.includes('SKILL_INJ')) moduleId = 'training';
+      else if (u.includes('CHAT') || u.includes('CONTACT')) moduleId = 'chat';
+    }
+    const event = new CustomEvent('dp-portfolio-focus-module', {
+      detail: { moduleId }
+    });
+    window.dispatchEvent(event);
+  }, []);
+
   return (
-    <div style={{ color: 'var(--text)', fontFamily: 'var(--font-mono)' }}>
+    <div
+      style={{ color: 'var(--dp-text)', fontFamily: 'var(--font-hud-mono)' }}
+    >
       {/* 1. FIXED TOP STATUS BAR */}
       <div className='statusbar'>
         <div className='sb-scroll'>
@@ -233,11 +283,95 @@ export function LandingContent() {
           </span>
           <span className='sb-sep'>|</span>
           <span className='sb-item'>
+            <span className='sb-k'>LATENCY:</span>
+            <span className='sb-v sb-accent'>{latency}</span>
+          </span>
+          <span className='sb-sep'>|</span>
+          <span className='sb-item'>
+            <span className='sb-k'>MEM.LOAD:</span>
+            <span className='sb-v sb-accent'>{memLoad}</span>
+          </span>
+          <span className='sb-sep'>|</span>
+          <span className='sb-item'>
             <span className='sb-k'>STATUS:</span>
             <span className='sb-ok'>200</span>
           </span>
+          <span className='sb-sep'>|</span>
+          <button
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('dp-portfolio-warp'));
+            }}
+            className='shrink-0 cursor-pointer border border-[var(--dp-accent)] px-1.5 py-0.5 text-[9px] font-bold text-[var(--dp-accent)] hover:bg-[var(--dp-accent-faint)]'
+            style={{ borderRadius: 0 }}
+          >
+            🚀 HYPERDRIVE
+          </button>
         </div>
-        <div className='sb-right'>
+        <div
+          className='sb-right'
+          style={{ display: 'flex', alignItems: 'center', gap: 14 }}
+        >
+          {/* Dashboard Theme Selectors */}
+          <div
+            className='hidden items-center gap-1.5 sm:flex'
+            style={{
+              borderRight: '1px solid var(--dp-border)',
+              paddingRight: 12,
+              marginRight: 2
+            }}
+          >
+            <span className='sb-k' style={{ marginRight: 4 }}>
+              THEME:
+            </span>
+            <button
+              onClick={() => changeThemeProfile('green')}
+              className={cn(
+                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
+                themeProfile === 'green'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              🟢
+            </button>
+            <button
+              onClick={() => changeThemeProfile('cyan')}
+              className={cn(
+                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
+                themeProfile === 'cyan'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              🔵
+            </button>
+            <button
+              onClick={() => changeThemeProfile('amber')}
+              className={cn(
+                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
+                themeProfile === 'amber'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              🟡
+            </button>
+            <button
+              onClick={() => changeThemeProfile('pink')}
+              className={cn(
+                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
+                themeProfile === 'pink'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              🔴
+            </button>
+          </div>
           <span className='sb-dot' />
           <a
             href='https://github.com/pappdavid'
@@ -287,7 +421,7 @@ export function LandingContent() {
                 </div>
 
                 <h1 className='hero-name'>David&nbsp;Papp</h1>
-                <div className='hero-role'>AI Solution Developer</div>
+                <div className='hero-role'>Junior AI Solution Developer</div>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
                   <Typewriter text='Building AI-first solutions. One agent at a time.' />
@@ -297,30 +431,43 @@ export function LandingContent() {
                   <div
                     className='pill'
                     style={{
-                      color: 'var(--accent)',
-                      borderColor: 'var(--accent)'
+                      color: 'var(--dp-accent)',
+                      borderColor: 'var(--dp-accent)'
                     }}
                   >
                     <span
                       className='dot live'
-                      style={{ background: 'var(--accent)' }}
+                      style={{ background: 'var(--dp-accent)' }}
                     />
                     OPEN TO WORK
                   </div>
-                  <span className='loc'>{'// Amsterdam · Rotterdam, NL'}</span>
+                  <span className='loc'>{'// Rotterdam, NL'}</span>
                 </div>
 
                 <div className='cta-row'>
-                  <a href='/cv.pdf' download className='cta cta-primary'>
+                  <a
+                    href='/cv.pdf'
+                    download
+                    className='cta cta-primary glitch-hover'
+                  >
                     [view resume]
                   </a>
-                  <button onClick={() => nav('work')} className='cta'>
+                  <button
+                    onClick={() => nav('work')}
+                    className='cta glitch-hover'
+                  >
                     [projects]
                   </button>
-                  <button onClick={() => nav('skills')} className='cta'>
+                  <button
+                    onClick={() => nav('skills')}
+                    className='cta glitch-hover'
+                  >
                     [skills]
                   </button>
-                  <button onClick={() => nav('contact')} className='cta'>
+                  <button
+                    onClick={() => nav('contact')}
+                    className='cta glitch-hover'
+                  >
                     [contact]
                   </button>
                 </div>
@@ -392,7 +539,7 @@ export function LandingContent() {
           <div className='divider' />
 
           {/* ============ SECTION 2: WORK ============ */}
-          <WorkSection />
+          <WorkSection triggerFocus={triggerFocus} />
 
           <div className='divider' />
 
@@ -402,7 +549,11 @@ export function LandingContent() {
           <div className='divider' />
 
           {/* ============ SECTION 4: CONTACT / RAG CHAT ============ */}
-          <ContactSection nav={nav} />
+          <ContactSection
+            themeProfile={themeProfile}
+            changeThemeProfile={changeThemeProfile}
+            triggerFocus={triggerFocus}
+          />
 
           <div style={{ height: '48px' }} />
         </div>
@@ -413,25 +564,25 @@ export function LandingContent() {
         <div className='tab-prompt'>&gt;</div>
         <button
           onClick={() => nav('home')}
-          className={cn('tab', active === 'home' && 'active')}
+          className={cn('tab glitch-hover', active === 'home' && 'active')}
         >
           01._HOME
         </button>
         <button
           onClick={() => nav('work')}
-          className={cn('tab', active === 'work' && 'active')}
+          className={cn('tab glitch-hover', active === 'work' && 'active')}
         >
           02._PROJECTS
         </button>
         <button
           onClick={() => nav('skills')}
-          className={cn('tab', active === 'skills' && 'active')}
+          className={cn('tab glitch-hover', active === 'skills' && 'active')}
         >
           03._SKILLS
         </button>
         <button
           onClick={() => nav('contact')}
-          className={cn('tab', active === 'contact' && 'active')}
+          className={cn('tab glitch-hover', active === 'contact' && 'active')}
         >
           04._CONTACT
         </button>
@@ -444,13 +595,17 @@ export function LandingContent() {
 // Subcomponents
 // ============================================================
 
-function WorkSection() {
+interface WorkSectionProps {
+  triggerFocus: (id: string | null) => void;
+}
+
+function WorkSection({ triggerFocus }: WorkSectionProps) {
   const [hover, setHover] = useState(-1);
   const [open, setOpen] = useState(0); // pre-expanded AGENTSEC (flagship) by default
   const badgeColor = {
-    live: 'var(--accent)',
+    live: 'var(--dp-accent)',
     wip: 'var(--warn)',
-    archive: 'var(--text-dim)',
+    archive: 'var(--dp-text-dim)',
     private: 'var(--warn)'
   };
 
@@ -476,9 +631,19 @@ function WorkSection() {
           <div key={p.name} className='fs-cell'>
             <div
               className='fs-row'
-              onMouseEnter={() => setHover(i)}
-              onMouseLeave={() => setHover(-1)}
-              onClick={() => setOpen(open === i ? -1 : i)}
+              onMouseEnter={() => {
+                setHover(i);
+                triggerFocus(p.name);
+              }}
+              onMouseLeave={() => {
+                setHover(-1);
+                triggerFocus(null);
+              }}
+              onClick={() => {
+                const nextOpen = open === i ? -1 : i;
+                setOpen(nextOpen);
+                triggerFocus(nextOpen !== -1 ? p.name : null);
+              }}
             >
               <span className='c-name'>
                 <span className='caret'>
@@ -544,8 +709,8 @@ function WorkSection() {
                   {p.tech.map((t) => (
                     <span
                       key={t}
-                      className='border border-[var(--border)] px-2 py-0.5 text-[11px] text-[var(--accent-muted)]'
-                      style={{ background: 'var(--accent-faint)' }}
+                      className='border border-[var(--dp-border)] px-2 py-0.5 text-[11px] text-[var(--dp-accent-muted)]'
+                      style={{ background: 'var(--dp-accent-faint)' }}
                     >
                       {t}
                     </span>
@@ -617,15 +782,14 @@ function SkillsSection() {
         <div className='rs-divider'>
           {'// ACADEMIC & INDUSTRY TRUST ANCHORS'}
         </div>
-        <div className='mb-6 flex flex-wrap gap-4 text-xs font-semibold text-[var(--accent-muted)]'>
-          <span className='border border-[var(--border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
+        <div className='mb-6 flex flex-wrap gap-4 text-xs font-semibold text-[var(--dp-accent-muted)]'>
+          <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
             🏛️ VU AMSTERDAM (BSc AI Research)
           </span>
-          <span className='border border-[var(--border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
+          <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
             💻 WEBINFORM (AI Solution Delivery)
           </span>
         </div>
-
         <div className='rs-divider'>{'// EXPERIENCE'}</div>
 
         <div className='rs-row'>
@@ -813,7 +977,9 @@ function SkillsSection() {
 }
 
 interface ContactSectionProps {
-  nav: (id: string) => void;
+  themeProfile: string;
+  changeThemeProfile: (profile: string) => void;
+  triggerFocus: (id: string | null) => void;
 }
 
 type ChatMsg = {
@@ -823,7 +989,11 @@ type ChatMsg = {
   projectData?: Project;
 };
 
-function ContactSection({ nav }: ContactSectionProps) {
+function ContactSection({
+  themeProfile,
+  changeThemeProfile,
+  triggerFocus
+}: ContactSectionProps) {
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
@@ -987,20 +1157,75 @@ function ContactSection({ nav }: ContactSectionProps) {
           )}
         </div>
 
-        {/* Suggestion block */}
+        {/* Suggestion block & Theme Toggle */}
         <div
-          className='flex flex-wrap gap-1.5 border-t border-[var(--border)] px-4 py-2'
-          style={{ background: 'var(--bg-raised)' }}
+          className='flex flex-col gap-3 border-t border-[var(--dp-border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between'
+          style={{ background: 'var(--dp-bg-raised)' }}
         >
-          {SUGGESTIONS.map((s) => (
+          <div className='flex flex-wrap gap-1.5'>
+            {SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                onClick={() => handleSuggestion(s)}
+                className='cursor-pointer border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
+              >
+                &gt; {s}
+              </button>
+            ))}
+          </div>
+          <div className='flex shrink-0 items-center gap-1.5 border-t border-[var(--dp-border)] pt-2.5 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-3.5'>
+            <span className='text-[10px] font-bold tracking-wider text-[var(--dp-text-dim)]'>
+              SYS.THEME:
+            </span>
             <button
-              key={s}
-              onClick={() => handleSuggestion(s)}
-              className='border border-[var(--border)] bg-[#0d0d0d] px-2 py-1 text-[11px] text-[var(--accent-muted)] transition-all hover:border-[var(--accent)] hover:text-[var(--accent)]'
+              onClick={() => changeThemeProfile('green')}
+              className={cn(
+                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
+                themeProfile === 'green'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
             >
-              &gt; {s}
+              GREEN
             </button>
-          ))}
+            <button
+              onClick={() => changeThemeProfile('cyan')}
+              className={cn(
+                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
+                themeProfile === 'cyan'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              CYAN
+            </button>
+            <button
+              onClick={() => changeThemeProfile('amber')}
+              className={cn(
+                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
+                themeProfile === 'amber'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              AMBER
+            </button>
+            <button
+              onClick={() => changeThemeProfile('pink')}
+              className={cn(
+                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
+                themeProfile === 'pink'
+                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+              )}
+              style={{ borderRadius: 0 }}
+            >
+              PINK
+            </button>
+          </div>
         </div>
 
         <div className='chat-input'>
@@ -1011,6 +1236,8 @@ function ContactSection({ nav }: ContactSectionProps) {
             value={val}
             maxLength={500}
             onChange={(e) => setVal(e.target.value)}
+            onFocus={() => triggerFocus('chat')}
+            onBlur={() => triggerFocus(null)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') send(val);
             }}
