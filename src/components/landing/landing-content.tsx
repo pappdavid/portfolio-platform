@@ -2,14 +2,41 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import {
-  IconBrandGithub,
-  IconBrandLinkedin,
-  IconMail,
-  IconSend,
-  IconLoader2
-} from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+
+function Typewriter({
+  text,
+  speed = 26,
+  startDelay = 400
+}: {
+  text: string;
+  speed?: number;
+  startDelay?: number;
+}) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    setN(0);
+    let i = 0;
+    let t: ReturnType<typeof setInterval>;
+    const begin = setTimeout(() => {
+      t = setInterval(() => {
+        i++;
+        setN(i);
+        if (i >= text.length) clearInterval(t);
+      }, speed);
+    }, startDelay);
+    return () => {
+      clearTimeout(begin);
+      clearInterval(t);
+    };
+  }, [text, speed, startDelay]);
+  return (
+    <span>
+      {text.slice(0, n)}
+      <span className='cur' style={{ opacity: n < text.length ? 1 : undefined }} />
+    </span>
+  );
+}
 
 // ============================================================
 // Types & Constant Data
@@ -100,38 +127,13 @@ export function LandingContent() {
   const [active, setActive] = useState('home');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Time & Live Ticker States
-  const [uptime, setUptime] = useState('00:00:00');
-  const [commitCount, setCommitCount] = useState(2548);
+  const [commitCount, setCommitCount] = useState(1284);
 
   useEffect(() => {
-    // Uptime tick
-    const start = Date.now();
-    const tInterval = setInterval(() => {
-      const diff = Date.now() - start;
-      const hours = Math.floor(diff / 3600000)
-        .toString()
-        .padStart(2, '0');
-      const mins = Math.floor((diff % 3600000) / 60000)
-        .toString()
-        .padStart(2, '0');
-      const secs = Math.floor((diff % 60000) / 1000)
-        .toString()
-        .padStart(2, '0');
-      setUptime(`${hours}:${mins}:${secs}`);
-    }, 1000);
-
-    // Commit ticks
     const cInterval = setInterval(() => {
-      if (Math.random() > 0.6) {
-        setCommitCount((c) => c + 1);
-      }
-    }, 4000);
-
-    return () => {
-      clearInterval(tInterval);
-      clearInterval(cInterval);
-    };
+      if (Math.random() < 0.35) setCommitCount((c) => c + 1);
+    }, 2600);
+    return () => clearInterval(cInterval);
   }, []);
 
   // Handle smooth nav scroll
@@ -167,33 +169,34 @@ export function LandingContent() {
       {/* 1. FIXED TOP STATUS BAR */}
       <div className='statusbar'>
         <div className='sb-scroll'>
-          <span className='sb-accent'>SYS.OS v1.0.0</span>
-          <span className='sb-sep'>|</span>
           <span className='sb-item'>
-            <span className='sb-k'>UPTIME:</span>
-            <span className='sb-v'>{uptime}</span>
+            <span className='sb-k'>SYS.NAME:</span>
+            <span className='sb-accent'>PORTFOLIO_OS v1.0.0</span>
           </span>
           <span className='sb-sep'>|</span>
           <span className='sb-item'>
-            <span className='sb-k'>NODE:</span>
+            <span className='sb-k'>SYS.AUTH:</span>
+            <span className='sb-v'>GUEST_ACCESS_GRANTED</span>
+          </span>
+          <span className='sb-sep'>|</span>
+          <span className='sb-item'>
+            <span className='sb-k'>TERMINAL:</span>
+            <span className='sb-v'>TTY0</span>
+          </span>
+          <span className='sb-sep'>|</span>
+          <span className='sb-item'>
+            <span className='sb-k'>SYS.NODE:</span>
             <span className='sb-v'>davidpapp.dev</span>
           </span>
           <span className='sb-sep'>|</span>
           <span className='sb-item'>
-            <span className='sb-k'>AUTH:</span>
-            <span className='sb-v' style={{ color: 'var(--accent)' }}>
-              GUEST_ACCESS_GRANTED
-            </span>
-          </span>
-          <span className='sb-sep'>|</span>
-          <span className='sb-item'>
-            <span className='sb-k'>LATEST_COMMITS:</span>
-            <span className='sb-commits'>#{commitCount}</span>
+            <span className='sb-k'>STATUS:</span>
+            <span className='sb-ok'>200</span>
           </span>
         </div>
         <div className='sb-right'>
           <span className='sb-dot' />
-          <span>PORTFOLIO_READY</span>
+          <span className='sb-commits'>⎇ {commitCount.toLocaleString()} commits</span>
         </div>
       </div>
 
@@ -202,99 +205,92 @@ export function LandingContent() {
         <div className='shell'>
           {/* ============ SECTION 1: HOME ============ */}
           <section className='block' id='home'>
-            {/* JetBrains ASCII Wordmark */}
-            <pre className='ascii' aria-hidden='true'>
-              {`     _            _     _                              
-    | |          (_)   | |                             
-  __| | __ ___   ___  __| | _ __   __ _ _ __  _ __     
- / _\` |/ _\` \\ \\ / / |/ _\` || '_ \\ / _\` | '_ \\| '_ \\    
-| (_| | (_| |\\ V /| | (_| || |_) | (_| | |_) | |_) |   
- \\__,_|\\__,_| \\_/ |_|\\__,_|| .__/ \\__,_| .__/| .__/    
-                           | |        | |   | |        
-                           |_|        |_|   |_|        `}
-            </pre>
-
-            <div className='hero-cmd'>
-              <span className='prompt'>david@dev:~$ </span>whoami
-            </div>
-
-            <h1 className='hero-name'>David Papp</h1>
-            <div className='hero-role'>Junior AI Solution Developer</div>
-            <div className='hero-tag'>
-              <span className='prompt'>&gt; </span>Building AI-first solutions.{' '}
-              <span className='out'>One agent at a time.</span>
-              <span className='cur' />
-            </div>
-
-            <div className='hero-pill'>
-              <div
-                className='pill'
-                style={{ color: 'var(--accent)', borderColor: 'var(--accent)' }}
-              >
-                <span
-                  className='dot live'
-                  style={{ background: 'var(--accent)' }}
-                />
-                <span>● OPEN TO WORK</span>
+            <div className='term-window'>
+              <div className='term-titlebar'>
+                <span className='d r' />
+                <span className='d y' />
+                <span className='d g' />
+                <span className='term-title'>david@portfolio — ~/home</span>
+                <div className='float-widgets'>
+                  <span className='fw'>
+                    david@:~/auth$ <b>guest_access</b>
+                  </span>
+                  <span className='fw'>
+                    david@:~/build$ <b>shipping →</b>
+                  </span>
+                </div>
               </div>
-              <span className='loc'>Based in Rotterdam, NL</span>
-            </div>
 
-            <div className='cta-row'>
-              <button
-                onClick={() => nav('contact')}
-                className='cta cta-primary'
-              >
-                [contact_assistant]
-              </button>
-              <a
-                href='https://github.com/pappdavid'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='cta'
-              >
-                [github_profile]
-              </a>
-              <a
-                href='https://www.linkedin.com/in/d%C3%A1vid-papp'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='cta'
-              >
-                [linkedin_network]
-              </a>
-            </div>
+              <div className='term-body'>
+                <pre className='ascii' aria-hidden='true'>{`██████╗  █████╗ ██╗   ██╗██╗██████╗
+██╔══██╗██╔══██╗██║   ██║██║██╔══██╗
+██║  ██║███████║██║   ██║██║██║  ██║
+██║  ██║██╔══██║╚██╗ ██╔╝██║██║  ██║
+██████╔╝██║  ██║ ╚████╔╝ ██║██████╔╝
+╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═════╝ `}</pre>
 
-            <div className='statustxt'>
-              <div className='statustxt-cap'>status.txt</div>
-              <table className='meta-table'>
-                <tbody>
-                  <tr>
-                    <td className='mk'>STACK</td>
-                    <td className='ms'>:</td>
-                    <td className='mv'>
-                      python, fastapi, langchain, openai, next.js, typescript,
-                      mcp
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className='mk'>FOCUS</td>
-                    <td className='ms'>:</td>
-                    <td className='mv'>
-                      agentic pipelines, multi-agent frameworks, rag, custom
-                      tools
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className='mk'>MISSION</td>
-                    <td className='ms'>:</td>
-                    <td className='mv'>
-                      automating complex developer workflows and scaling secure
-                      AI layers
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                <div className='hero-cmd'>
+                  <span className='prompt'>david@dev:~$ </span>whoami
+                </div>
+
+                <h1 className='hero-name'>David&nbsp;Papp</h1>
+                <div className='hero-role'>Junior AI Solution Developer</div>
+                <div className='hero-tag'>
+                  <span className='prompt'>&gt; </span>
+                  <Typewriter text='Building AI-first solutions. One agent at a time.' />
+                </div>
+
+                <div className='hero-pill'>
+                  <div
+                    className='pill'
+                    style={{ color: 'var(--accent)', borderColor: 'var(--accent)' }}
+                  >
+                    <span className='dot live' style={{ background: 'var(--accent)' }} />
+                    OPEN TO WORK
+                  </div>
+                  <span className='loc'>// Rotterdam, NL</span>
+                </div>
+
+                <div className='cta-row'>
+                  <button onClick={() => nav('skills')} className='cta cta-primary'>
+                    [view resume]
+                  </button>
+                  <button onClick={() => nav('work')} className='cta'>
+                    [projects]
+                  </button>
+                  <button onClick={() => nav('skills')} className='cta'>
+                    [skills]
+                  </button>
+                  <button onClick={() => nav('contact')} className='cta'>
+                    [contact]
+                  </button>
+                </div>
+
+                <div className='statustxt'>
+                  <div className='statustxt-cap'>
+                    <span className='prompt'>david@dev:~$ </span>cat status.txt
+                  </div>
+                  <table className='meta-table'>
+                    <tbody>
+                      <tr>
+                        <td className='mk'>LOCATION</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>Rotterdam, NL · remote</td>
+                      </tr>
+                      <tr>
+                        <td className='mk'>FOCUS</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>ai agents · rag · solution dev</td>
+                      </tr>
+                      <tr>
+                        <td className='mk'>CONTACT</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>contact@davidpapp.dev</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -319,7 +315,7 @@ export function LandingContent() {
 
       {/* 3. FIXED BOTTOM TAB BAR */}
       <div className='tabbar'>
-        <div className='tab-prompt'>david@dev:~$</div>
+        <div className='tab-prompt'>&gt;</div>
         <button
           onClick={() => nav('home')}
           className={cn('tab', active === 'home' && 'active')}
