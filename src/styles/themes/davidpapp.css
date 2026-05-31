@@ -14,7 +14,7 @@
   --accent: #00ff88; /* neon green — primary / interactive */
   --accent-muted: #4ade80; /* muted green — secondary text/labels */
   --text: #e8e8e8; /* off-white — body text */
-  --text-dim: #6b7280; /* dim gray — meta, comments, inactive */
+  --text-dim: #9ca3af; /* dim gray (lifted contrast for WCAG AA compliance) */
   --border: #1f2937; /* hairline dividers + container edges */
 
   /* ---- Derived / functional ---- */
@@ -37,6 +37,8 @@
   /* ---- Type families ---- */
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Fira Code',
     'Cascadia Code', Menlo, Consolas, monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
 
   /* ---- Type scale ---- */
   --fs-hero: clamp(48px, 8vw, 96px); /* big bold name on hero */
@@ -577,7 +579,7 @@ body::before {
   color: var(--text);
   max-width: 70ch;
   text-wrap: pretty;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
 }
 .resume {
   margin-top: var(--sp-7);
@@ -918,6 +920,84 @@ body::before {
   .tab-prompt {
     display: none;
   }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --gutter: 12px;
+    --sp-6: 16px;
+    --sp-7: 32px;
+    --statusbar-h: 32px;
+  }
+  .term-body {
+    padding: 16px 12px;
+  }
+  .ascii {
+    font-size: clamp(5px, 1.2vw, 9px);
+    margin-bottom: var(--sp-3);
+  }
+  .hero-name {
+    font-size: 32px;
+  }
+  .hero-role {
+    font-size: 14px;
+  }
+  .hero-tag {
+    font-size: 13px;
+  }
+  .cta-row {
+    gap: 6px;
+  }
+  .cta {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+  .statustxt {
+    margin-top: var(--sp-4);
+    padding-top: var(--sp-4);
+  }
+  .meta-table {
+    font-size: 12px;
+  }
+  .mk {
+    width: 90px;
+  }
+  .chat-body {
+    height: 200px;
+    padding: 8px;
+  }
+  .chat-msg {
+    max-width: 95%;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .chat-input {
+    padding: 8px 10px;
+  }
+  .chat-pre {
+    font-size: 11px;
+  }
+  .chat-field {
+    font-size: 11px;
+  }
+  .send-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  .fs-expand {
+    padding: 12px 12px 12px 14px;
+  }
+  .fs-expand-body {
+    font-size: 13px;
+  }
+}
+
+/* Focus outlines for keyboard accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2.5px !important;
 }
 
 /* ─────────────────────────────────────────────────────────────

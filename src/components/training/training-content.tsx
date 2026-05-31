@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 import {
   IconEye,
   IconEyeOff,
@@ -365,7 +366,7 @@ export function TrainingContent() {
         {/* // 01 Pipeline */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 01</span>
+            <span className='mod-section-num'>{'// 01'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Pipeline</span>
           </div>
@@ -384,7 +385,7 @@ export function TrainingContent() {
         {/* // 02 Six-step wizard — interactive, preserved from prior impl */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 02</span>
+            <span className='mod-section-num'>{'// 02'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Six-step wizard</span>
           </div>
@@ -942,7 +943,7 @@ export function TrainingContent() {
         {/* // 03 Sample output (JSONL) */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 03</span>
+            <span className='mod-section-num'>{'// 03'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Sample output (JSONL)</span>
           </div>
@@ -966,7 +967,7 @@ export function TrainingContent() {
         {/* // 04 Why LoRA */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 04</span>
+            <span className='mod-section-num'>{'// 04'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Why LoRA</span>
           </div>
@@ -991,9 +992,9 @@ export function TrainingContent() {
           <a href='/chat' className='is-next'>
             → Next module: RAG + 3D Chat
           </a>
-          <a href='/' className='is-back'>
+          <Link href='/' className='is-back'>
             ← Back to homepage
-          </a>
+          </Link>
         </nav>
       </main>
     </div>

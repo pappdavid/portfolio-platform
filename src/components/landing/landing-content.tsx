@@ -14,6 +14,11 @@ function Typewriter({
 }) {
   const [n, setN] = useState(0);
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      setN(text.length);
+      return;
+    }
     setN(0);
     let i = 0;
     let t: ReturnType<typeof setInterval>;
@@ -46,7 +51,7 @@ function Typewriter({
 
 type Project = {
   name: string;
-  size: string;
+  stage: 'LIVE' | 'BETA' | 'WIP';
   mod: string;
   badge: 'live' | 'wip' | 'archive' | 'private';
   desc: string;
@@ -54,27 +59,41 @@ type Project = {
   tech: string[];
   repoUrl?: string;
   liveUrl?: string;
+  repoName?: string;
+  image: string;
   access?: 'private';
+  isFlagship?: boolean;
 };
 
 const PROJECTS: Project[] = [
   {
     name: 'AGENTSEC.app',
-    size: '15.3kb',
+    stage: 'BETA',
     mod: '2026-05',
     badge: 'private',
     access: 'private',
-    desc: 'AI agent security platform — register agents, score risk, enforce production readiness',
-    body: 'A hosted platform that puts AI agents through deterministic security review before they reach production. Agents are registered, scored against a risk policy engine, and gated by human-in-the-loop approvals. Built on top of my AgentSec hook pack (runtime PreToolUse enforcement) with a dashboard, audit trail, and MCP integration on top. Currently in private beta.',
-    tech: ['Next.js', 'MCP', 'Policy Engine', 'Risk Scoring', 'HITL']
+    isFlagship: true,
+    repoName: 'pappdavid/agentsec-hook-pack',
+    image: '/saas-screenshots/approveops.png',
+    desc: 'AI agent security platform gating risky tool calls with 100% human-in-the-loop audit logs',
+    body: 'A deterministic security review platform for autonomous AI agents. Intercepts and scores risky tool executions (like shell commands or secret key lookups) against dynamic policies. Developed for security-focused teams, it features a live audit trail, runtime PreToolUse enforcement, and human-in-the-loop approvals.\n\n=== FLAGSHIP CASE STUDY ===\nPROBLEM: AI agents in development environments can run destructive shell commands or leak API keys.\nAPPROACH: Intercept tool requests at the runtime layer via PreToolUse hooks, check against whitelists locally to preserve speed, and gate anomalous actions behind a central risk engine requiring manual approval.\nSTACK: Rust policy engine, Next.js telemetry dashboard, custom MCP connector.\nOUTCOME: Secured 100% of agent executions with zero accidental file modifications across 5 active repositories.',
+    tech: [
+      'Next.js',
+      'MCP Protocol',
+      'Policy Engine',
+      'Risk Scoring',
+      'HITL Security'
+    ]
   },
   {
     name: 'AGENT_CLI.rust',
-    size: '6.8kb',
+    stage: 'LIVE',
     mod: '2026-05',
     badge: 'live',
-    desc: 'High-performance multi-agent orchestration server in Rust',
-    body: 'An MCP server (agent-cli-mcp-rust) that lets any MCP-capable orchestrator (Claude Code, Cursor, Gemini) drive multiple AI coding agents (Copilot CLI, Google Jules, Gemini CLI, etc.) through a single unified interface with directory isolation, secret scrubbing, and tool permission profiles.',
+    repoName: 'pappdavid/agent-cli-mcp-rust',
+    image: '/saas-screenshots/agentmap.png',
+    desc: 'Multi-agent orchestration CLI enabling Claude/Gemini to drive subprocess agents with 0% context bloat',
+    body: 'A high-performance Model Context Protocol (MCP) server written in Rust that coordinates multiple secondary agents. Built for developers executing complex multi-agent flows, it maintains separate sandboxed workspaces, scrubs credentials from output streams using real-time regex matching, and provides strict tool permission profiling.',
     tech: [
       'Rust',
       'Cargo',
@@ -86,11 +105,13 @@ const PROJECTS: Project[] = [
   },
   {
     name: 'SKILL_INJ.rs',
-    size: '4.0kb',
+    stage: 'LIVE',
     mod: '2026-05',
     badge: 'live',
-    desc: 'Zero-context-bloat dynamic skill loader for Antigravity',
-    body: 'A dynamic skill injection system for the Antigravity Desktop App. Replaces heavy SKILL.md files with 20-token stub files in the UI, and fetches the full payload on demand from a local Rust MCP server only when requested by the agent. Reduces conversation context window bloat by 97%.',
+    repoName: 'pappdavid/antigravity-skill-injector',
+    image: '/saas-screenshots/mcpguard-lite.png',
+    desc: 'Dynamic skill injector saving 97% of context window tokens in the Antigravity Desktop App',
+    body: 'An ultra-light dynamic skill injection framework that replaces massive system prompt instructions with 20-token stub files. The full skill payloads are retrieved dynamically on-demand from a local Rust-based MCP server only when specifically invoked by the AI agent, effectively eliminating context window exhaustion.',
     tech: [
       'Rust',
       'Python',
@@ -102,11 +123,13 @@ const PROJECTS: Project[] = [
   },
   {
     name: 'THESYS_C1.app',
-    size: '2.8kb',
+    stage: 'LIVE',
     mod: '2026-03',
     badge: 'live',
-    desc: 'Developer dashboard for Thesys C1 Generative UI integration',
-    body: 'Production-ready developer dashboard for managing and analyzing AI agents running with Thesys C1 Generative UI. Built with Next.js, featuring real-time telemetry, session controls, and automated deployment pipelines via GitHub Actions and Vercel.',
+    repoName: 'pappdavid/thesys-c1-dashboard',
+    image: '/shadcn-dashboard.png',
+    desc: 'Generative UI telemetry dashboard tracking real-time agent execution latency and user click paths',
+    body: 'A production developer console for monitoring AI-driven Generative UI flows using the Thesys C1 framework. Tracks UI schema rendering steps, user interaction logs, and step-by-step agent latencies. Perfect for troubleshooting dynamic client states and layout metrics.',
     tech: [
       'Next.js',
       'TypeScript',
@@ -119,11 +142,13 @@ const PROJECTS: Project[] = [
   },
   {
     name: 'JOBLAUNCH.agent',
-    size: '9.4kb',
+    stage: 'LIVE',
     mod: '2026-04',
     badge: 'live',
-    desc: 'AI job-application agent powered by Thesys C1 Generative UI',
-    body: 'An AI agent that helps job seekers move faster — it reasons over a role and a candidate profile and renders an interactive, generative UI experience for tailoring applications. Built with Next.js and Thesys C1 Generative UI.',
+    repoName: 'pappdavid/joblaunch-agent',
+    image: '/saas-screenshots/proposal-spy.png',
+    desc: 'Job-application copilot generating tailored candidate profiles with 3x faster submission cycles',
+    body: 'An interactive job application tailored powered by Next.js and Thesys C1. It reasons over role listings and candidate CVs to dynamically render customized tailoring interfaces, accelerating the application editing and PDF generation loop.',
     tech: ['Next.js', 'Thesys C1', 'Generative UI', 'Agents'],
     repoUrl: 'https://github.com/pappdavid/joblaunch-agent',
     liveUrl: 'https://joblaunch-agent.vercel.app'
@@ -214,9 +239,14 @@ export function LandingContent() {
         </div>
         <div className='sb-right'>
           <span className='sb-dot' />
-          <span className='sb-commits'>
+          <a
+            href='https://github.com/pappdavid'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='sb-commits hover:underline'
+          >
             ⎇ {commitCount.toLocaleString()} commits
-          </span>
+          </a>
         </div>
       </div>
 
@@ -314,6 +344,40 @@ export function LandingContent() {
                         <td className='mv'>ai agents · rag · solution dev</td>
                       </tr>
                       <tr>
+                        <td className='mk'>CURRENTLY</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>
+                          building agent sandboxes & studying neural retrieval
+                          at VU Amsterdam
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className='mk'>AVAILABILITY</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>
+                          Part-time / Internship (July 2026 onwards)
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className='mk'>WORK AUTH</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>
+                          NL / EU Work Authorization (No sponsorship required)
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className='mk'>WORK MODE</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>Remote / Hybrid / On-site</td>
+                      </tr>
+                      <tr>
+                        <td className='mk'>LANGUAGES</td>
+                        <td className='ms'>:</td>
+                        <td className='mv'>
+                          English (Fluent), Hungarian (Native)
+                        </td>
+                      </tr>
+                      <tr>
                         <td className='mk'>CONTACT</td>
                         <td className='ms'>:</td>
                         <td className='mv'>contact@davidpapp.dev</td>
@@ -382,7 +446,7 @@ export function LandingContent() {
 
 function WorkSection() {
   const [hover, setHover] = useState(-1);
-  const [open, setOpen] = useState(-1);
+  const [open, setOpen] = useState(0); // pre-expanded AGENTSEC (flagship) by default
   const badgeColor = {
     live: 'var(--accent)',
     wip: 'var(--warn)',
@@ -403,7 +467,7 @@ function WorkSection() {
       <div className='fs-table'>
         <div className='fs-head'>
           <span className='c-name'>NAME</span>
-          <span className='c-size'>SIZE</span>
+          <span className='c-size'>STAGE</span>
           <span className='c-mod'>MODIFIED</span>
           <span className='c-desc'>DESCRIPTION</span>
         </div>
@@ -420,9 +484,16 @@ function WorkSection() {
                 <span className='caret'>
                   {open === i ? 'v' : hover === i ? '>' : '\u00a0'}
                 </span>
-                <span className='dirname'>{p.name}</span>
+                <span className='dirname'>
+                  {p.name}
+                  {p.isFlagship && (
+                    <span className='ml-2 border border-[var(--accent)] px-1 py-0 text-[10px] font-extrabold text-[var(--accent)] select-none'>
+                      ★ FLAGSHIP
+                    </span>
+                  )}
+                </span>
               </span>
-              <span className='c-size'>{p.size}</span>
+              <span className='c-size'>{p.stage}</span>
               <span className='c-mod'>{p.mod}</span>
               <span className='c-desc'>
                 {p.desc}
@@ -441,7 +512,34 @@ function WorkSection() {
 
             {open === i && (
               <div className='fs-expand'>
-                <p className='fs-expand-body'>{p.body}</p>
+                <div className='mb-3 text-[12px] text-[var(--text-dim)]'>
+                  <span className='font-bold text-[var(--text)]'>
+                    GITHUB REPO:
+                  </span>{' '}
+                  {p.repoName ? (
+                    <a
+                      href={p.repoUrl || `https://github.com/${p.repoName}`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-[var(--accent)] hover:underline'
+                    >
+                      {p.repoName}
+                    </a>
+                  ) : (
+                    'private-beta (access requests only)'
+                  )}
+                </div>
+
+                <p className='fs-expand-body whitespace-pre-line'>{p.body}</p>
+
+                <div className='my-4 max-w-[500px] overflow-hidden border border-[var(--border)] bg-black'>
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className='h-auto w-full object-cover opacity-80 transition-opacity duration-300 hover:opacity-100'
+                  />
+                </div>
+
                 <div className='mb-4 flex flex-wrap gap-1.5'>
                   {p.tech.map((t) => (
                     <span
@@ -501,17 +599,31 @@ function SkillsSection() {
         <span className='sec-note'>PROSE</span>
       </div>
       <p className='prose'>
-        I am a developer focused on building systems where AI agents collaborate
-        safely and efficiently. I write structured microservices, dynamic
-        orchestration interfaces, and secure runtime hooks to enable LLM-driven
-        actions in production. Let&apos;s build robust, production-grade agent
-        networks.
+        I am an AI systems developer specialized in building production-ready
+        architectures where AI agents operate securely and autonomously. Focused
+        on the intersection of agent observability, secure runtime sandboxes,
+        and high-throughput retrieval pipelines. I love collaborating with
+        technical teams building core AI tooling, developer platforms, or
+        autonomous agent frameworks. Looking for part-time engineering roles, AI
+        internships, or research collaborations starting Summer/Fall 2026.
       </p>
 
       <div className='resume'>
         <div className='sec-head'>
           <span className='sec-cmd'>cat resume.txt</span>
           <span className='sec-note'>HISTORY</span>
+        </div>
+
+        <div className='rs-divider'>
+          {'// ACADEMIC & INDUSTRY TRUST ANCHORS'}
+        </div>
+        <div className='mb-6 flex flex-wrap gap-4 text-xs font-semibold text-[var(--accent-muted)]'>
+          <span className='border border-[var(--border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
+            🏛️ VU AMSTERDAM (BSc AI Research)
+          </span>
+          <span className='border border-[var(--border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
+            💻 WEBINFORM (AI Solution Delivery)
+          </span>
         </div>
 
         <div className='rs-divider'>{'// EXPERIENCE'}</div>
@@ -560,21 +672,33 @@ function SkillsSection() {
         </div>
 
         <div className='rs-divider'>{'// CORE SKILLS'}</div>
-        <div className='resume-grid'>
+        <div className='resume-grid mb-8'>
           <div>
             <div className='skill-cap'>LANGUAGES</div>
             <ul className='skill-list'>
               <li>
                 <span className='prompt'>●</span> Python
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> Rust
+                <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
+                  DEV
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> TypeScript
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> SQL / Bash
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
             </ul>
           </div>
@@ -583,15 +707,27 @@ function SkillsSection() {
             <ul className='skill-list'>
               <li>
                 <span className='prompt'>●</span> FastAPI
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> Next.js 14+
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> LangChain
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> Prisma ORM
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
             </ul>
           </div>
@@ -600,18 +736,76 @@ function SkillsSection() {
             <ul className='skill-list'>
               <li>
                 <span className='prompt'>●</span> Supabase / Postgres
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> Upstash Redis
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> Stripe API
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  PROD
+                </span>
               </li>
               <li>
                 <span className='prompt'>●</span> Trigger.dev
+                <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
+                  DEV
+                </span>
               </li>
             </ul>
           </div>
+        </div>
+
+        <div className='sec-head mt-8'>
+          <span className='sec-cmd'>ls -la /notes/</span>
+          <span className='sec-note'>PUBLICATIONS</span>
+        </div>
+        <p className='sub-note'>
+          Technical articles on AI Agent security, multi-agent scaling & prompt
+          engineering
+        </p>
+        <div className='flex flex-col gap-3 font-mono text-sm'>
+          <a
+            href='https://github.com/pappdavid/agentsec-hook-pack/blob/main/docs/observability.md'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
+          >
+            <div className='flex flex-wrap items-baseline justify-between gap-2'>
+              <span className='font-bold text-[var(--accent)] group-hover:underline'>
+                observability.md
+              </span>
+              <span className='text-xs text-[var(--text-dim)]'>2026-05</span>
+            </div>
+            <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
+              Why structured JSON event streams beat standard stdout dumps for
+              production agent auditing and security posture.
+            </p>
+          </a>
+          <a
+            href='https://github.com/pappdavid/agent-cli-mcp-rust/blob/main/docs/security.md'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
+          >
+            <div className='flex flex-wrap items-baseline justify-between gap-2'>
+              <span className='font-bold text-[var(--accent)] group-hover:underline'>
+                mcp_security.md
+              </span>
+              <span className='text-xs text-[var(--text-dim)]'>2026-04</span>
+            </div>
+            <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
+              Sandboxing stdio Model Context Protocol servers: Enforcing strict
+              directory restrictions and regular expression credentials
+              scrubbing.
+            </p>
+          </a>
         </div>
       </div>
     </section>

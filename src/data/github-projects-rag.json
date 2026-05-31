@@ -67,27 +67,24 @@
     "details": "When Antigravity starts a conversation, it originally reads all SKILL.md files recursively, costing thousands of wasted context tokens. With the injector, stubs are read in the UI so the agent knows the skill exists, but it only triggers the 'mcp.fetch_skill' tool when a relevant action is requested, dynamically expanding the needed skill in the window."
   },
   {
-    "id": "saas-core",
-    "name": "saas-core",
-    "description": "A highly scalable, production-ready SaaS template offering zero-config multi-tenant architecture, billing, usage limits, and background workflows.",
-    "techStack": ["Next.js (App Router)", "Prisma", "PostgreSQL (Supabase)", "Clerk / Auth.js (Dual Auth)", "Stripe", "Trigger.dev", "Upstash Redis", "Resend"],
+    "id": "joblaunch-agent",
+    "name": "joblaunch-agent",
+    "description": "An AI-powered job application assistant that tailored resumes and cover letters for specific roles, powered by Thesys C1 Generative UI.",
+    "techStack": ["Next.js (App Router)", "TypeScript", "Thesys C1 SDK", "Tailwind CSS", "OpenAI API", "React 19"],
     "keyFeatures": [
-      "Dual auth runtime: seamless fallback or active selection between Clerk and Auth.js v5",
-      "Multi-tenant billing: Stripe subscriptions with usage-limit tracking and automatic pricing mapping",
-      "Background queuing: Trigger.dev background worker and cron job runners",
-      "Idempotent Bootstrapping: automated GitHub actions build/connect Vercel, Supabase, Redis, and Stripe on git push",
-      "GDPR compliance: self-serve user data export (/api/user/export) and user account deletion (/api/user/delete)"
+      "Generative UI tailoring: dynamic forms rendered by the agent on the fly based on user profile and role details",
+      "Resume & Cover Letter optimization: contextual alignment of professional experience with target job specifications",
+      "Interactive feedback loops: real-time user-in-the-loop validation of generated sections before export",
+      "Open deployment: hosted production service with highly polished terminal-based dashboard"
     ],
-    "architecture": "graph TD\n  Next[Next.js App Router] --> Prisma[Prisma ORM]\n  Prisma --> DB[(Supabase Postgres)]\n  Next --> Stripe[Stripe Billing]\n  Next --> Trigger[Trigger.dev Background Jobs]\n  Next --> Redis[(Upstash Redis Rate Limit)]",
+    "architecture": "graph TD\n  User[User Profile & Job URL] --> Agent[JobLaunch AI Agent]\n  Agent -->|renders step schemas| C1[Thesys C1 UI Engine]\n  C1 -->|interactive responses| User\n  Agent -->|calls completions| LLM[OpenAI API]\n  Agent -->|exports| PDF[Tailored PDF / Docs]",
     "fileStructure": [
-      "src/app/(dashboard)/ - Authenticated workspaces and user settings routes",
-      "src/app/api/stripe/webhook - Stripe subscription state synchronizer",
-      "src/lib/plans.ts - Plan tiers, Stripe pricing IDs, and usage limit variables",
-      "src/lib/rate-limit.ts - Redis-backed B2C and organization rate gates",
-      "prisma/schema.prisma - Full database schema (User, Org, Sub, Notification, File, Audit)",
-      "scripts/bootstrap.ts - Idempotent resource orchestrator script"
+      "src/app/job/ - Main dynamic application workspace and tailoring terminal UI",
+      "src/components/chat/ - Chat interfaces with custom generative components wrapper",
+      "src/lib/agents/ - Prompts, reasoning frameworks, and parser scripts",
+      "src/lib/thesys.ts - Thesys C1 session controls and component hooks"
     ],
-    "details": "Customizing the SaaS is done via saas-core.config.json (toggle features like stripe, jobs, slack) and service-config.ts (branding name, tagline, color). Database schema migrations are handled via 'prisma migrate dev', and local development is bootstrapped via 'npm run bootstrap:local'."
+    "details": "JobLaunch Agent streamlines the repetitive tasks of applying to jobs. By integrating Thesys C1 Generative UI, it doesn't just output static text; it lets the AI agent ask for details, present drafts as interactive forms, and adapt its interface as the applicant moves through steps."
   },
   {
     "id": "thesys-c1-dashboard",
