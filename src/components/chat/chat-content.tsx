@@ -1,27 +1,34 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import {
-  IconUpload,
+  IconBrandGithub,
   IconSend,
   IconFile,
   IconX,
   IconLoader2,
-  IconBrandGithub,
   IconCheck,
-  IconCode
+  IconCode,
+  IconArrowLeft,
+  IconChevronRight
 } from '@tabler/icons-react';
+import { cn } from '@/lib/utils';
+
+// ============================================================
+// Types
+// ============================================================
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
-export type CodeChunk = {
+type CodeChunk = {
   id: string;
   filename: string;
   summary: string;
   tokens: number;
 };
 
-export type UploadedFile = {
+type UploadedFile = {
   id: string;
   file: File;
   name: string;
@@ -31,17 +38,107 @@ export type UploadedFile = {
   content?: string;
 };
 
-const INITIAL_MESSAGES: ChatMessage[] = [
-  {
-    role: 'user',
-    content: 'What auth pattern does this project use?'
-  },
-  {
-    role: 'assistant',
-    content:
-      'This project uses **Clerk**. The middleware is configured in `proxy.ts` (Next.js 16 pattern), protecting `/dashboard(.*)` via `clerkMiddleware`.\n\nsrc/proxy.ts:12  ·  providers.tsx:8'
-  }
-];
+// ============================================================
+// Real Files Mapping for David's Public Repositories (High Fidelity!)
+// ============================================================
+
+const REPO_FILES: Record<string, CodeChunk[]> = {
+  'agentsec-hook-pack': [
+    {
+      id: '1',
+      filename: '.agentsec/hooks/agentsec-hook.mjs',
+      summary: 'Primary hook execution script and local policy checks',
+      tokens: 412
+    },
+    {
+      id: '2',
+      filename: '.agentsec/config.json',
+      summary: 'Local policy variables and safe bash commands list',
+      tokens: 184
+    },
+    {
+      id: '3',
+      filename: '.claude/settings.agentsec.example.json',
+      summary: 'Claude Code hook integration preset config',
+      tokens: 236
+    }
+  ],
+  'agent-cli-mcp-rust': [
+    {
+      id: '1',
+      filename: 'src/main.rs',
+      summary:
+        'Server startup, stdio JSON-RPC loop, and MCP transport configuration',
+      tokens: 580
+    },
+    {
+      id: '2',
+      filename: 'src/policy.rs',
+      summary: 'Directory allowedRoots validation and isolation layer',
+      tokens: 324
+    },
+    {
+      id: '3',
+      filename: 'src/redact.rs',
+      summary: 'Secret scanning and JWT/Stripe key scrubbing expressions',
+      tokens: 290
+    }
+  ],
+  'antigravity-skill-injector': [
+    {
+      id: '1',
+      filename: 'src/mcp-server/src/main.rs',
+      summary: 'Rust stdio server serving dynamic instructions',
+      tokens: 498
+    },
+    {
+      id: '2',
+      filename: 'scripts/migrate_skills.py',
+      summary: 'YAML parser to centralize skills inside registry',
+      tokens: 280
+    },
+    {
+      id: '3',
+      filename: 'skills_registry.json',
+      summary: 'Database compiler matching stubs to instruction blocks',
+      tokens: 194
+    }
+  ],
+  'saas-core': [
+    {
+      id: '1',
+      filename: 'prisma/schema.prisma',
+      summary: 'Database schema holding subs, billing, users and audit events',
+      tokens: 670
+    },
+    {
+      id: '2',
+      filename: 'src/lib/rate-limit.ts',
+      summary: 'Upstash Redis-backed B2C subscription limitation limits',
+      tokens: 310
+    },
+    {
+      id: '3',
+      filename: 'src/app/api/stripe/webhook/route.ts',
+      summary: 'Stripe transaction status parser and model toggler',
+      tokens: 420
+    }
+  ],
+  'thesys-c1-dashboard': [
+    {
+      id: '1',
+      filename: 'src/app/dashboard/page.tsx',
+      summary: 'Real-time charts, telemetry streams, and telemetry grid layout',
+      tokens: 532
+    },
+    {
+      id: '2',
+      filename: 'src/lib/thesys.ts',
+      summary: 'Thesys C1 webhook listener and state schema validation',
+      tokens: 340
+    }
+  ]
+};
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -49,393 +146,24 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-// Hero icon — orbit/atom (reference modules/chat.html line 25)
-function OrbitIcon() {
-  return (
-    <svg
-      width='22'
-      height='22'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='1.5'
-    >
-      <ellipse cx='12' cy='12' rx='9' ry='4' />
-      <ellipse cx='12' cy='12' rx='9' ry='4' transform='rotate(60 12 12)' />
-      <circle cx='12' cy='12' r='2' fill='currentColor' />
-    </svg>
-  );
-}
-
-// Two-lane architecture diagram: INGESTION pipeline lives above, QUERY pipeline
-// below. The two are linked by an explicit "retrieve" connector from pgvector
-// store into the query path between Top-k and Rerank — that's the data flow
-// the prose calls out, and showing it lifts the diagram from "static boxes"
-// to "the loop that makes RAG RAG".
-function ArchitectureSvg() {
-  const BOX_W = 116;
-  const BOX_H = 38;
-  const BOX_R = 8;
-  const GAP = 18; // horizontal gap between adjacent boxes
-  const STEP = BOX_W + GAP; // pitch of one stage
-
-  // Lane Y baselines
-  const INGEST_Y = 50;
-  const QUERY_Y = 160;
-  const LABEL_OFFSET = -16; // lane label sits this far above the row
-
-  const muted = {
-    fill: 'rgba(255,255,255,0.04)',
-    stroke: 'rgba(255,255,255,0.12)',
-    text: '#a8a39a'
-  };
-  const accent = {
-    fill: 'rgba(34,197,94,0.06)',
-    stroke: 'rgba(34,197,94,0.28)',
-    text: '#22c55e'
-  };
-
-  const ingestion = [
-    { label: 'Upload', tone: accent },
-    { label: 'Chunker', tone: accent },
-    { label: 'Embeddings', tone: accent },
-    { label: 'pgvector store', tone: muted }
-  ];
-
-  const query = [
-    { label: 'User query', tone: muted },
-    { label: 'Top-k', tone: muted },
-    { label: 'Rerank (bge)', tone: muted },
-    { label: 'LLM', tone: muted },
-    { label: 'Streaming', tone: accent }
-  ];
-
-  // Stretch pgvector store and User query to fill their lanes evenly. Compute
-  // viewBox width from whichever lane is longer plus the 3D renderer column.
-  const queryWidth = query.length * STEP;
-  const rendererW = 168;
-  const rendererGap = 24;
-  const totalW = queryWidth + rendererGap + rendererW;
-
-  // The retrieve connector goes from the bottom-center of `pgvector store`
-  // (last node in ingestion) down and left into the top of `Rerank (bge)`
-  // (index 2 in query). Use a smooth cubic curve to avoid the harsh L shape.
-  const pgIdx = ingestion.length - 1;
-  const pgX = pgIdx * STEP + BOX_W / 2;
-  const pgY = INGEST_Y + BOX_H;
-  const rerankIdx = 2;
-  const rerankX = rerankIdx * STEP + BOX_W / 2;
-  const rerankY = QUERY_Y;
-
-  return (
-    <svg
-      viewBox={`-8 -28 ${totalW + 16} 264`}
-      width='100%'
-      role='img'
-      aria-label='RAG architecture: ingestion pipeline (upload, chunker, embeddings) writes into pgvector store; query pipeline (user query, top-k, rerank, LLM, streaming) retrieves from that store, then hands a typed payload to a deterministic 3D renderer'
-    >
-      <defs>
-        <marker
-          id='arrow-accent'
-          viewBox='0 0 10 10'
-          refX='9'
-          refY='5'
-          markerWidth='6'
-          markerHeight='6'
-          orient='auto-start-reverse'
-        >
-          <path d='M0,1 L9,5 L0,9 z' fill='#22c55e' />
-        </marker>
-        <marker
-          id='arrow-muted'
-          viewBox='0 0 10 10'
-          refX='9'
-          refY='5'
-          markerWidth='6'
-          markerHeight='6'
-          orient='auto-start-reverse'
-        >
-          <path d='M0,1 L9,5 L0,9 z' fill='rgba(255,255,255,0.35)' />
-        </marker>
-      </defs>
-
-      {/* Ingestion lane label */}
-      <text
-        x={0}
-        y={INGEST_Y + LABEL_OFFSET}
-        fill='#a8a39a'
-        fontFamily='JetBrains Mono'
-        fontSize='10.5'
-        letterSpacing='0.18em'
-      >
-        INGESTION
-      </text>
-
-      {/* Ingestion arrows (drawn first so boxes layer on top) */}
-      {ingestion.slice(0, -1).map((_, i) => {
-        const x1 = i * STEP + BOX_W;
-        const x2 = (i + 1) * STEP;
-        const y = INGEST_Y + BOX_H / 2;
-        return (
-          <line
-            key={`ing-arrow-${i}`}
-            x1={x1 + 2}
-            y1={y}
-            x2={x2 - 2}
-            y2={y}
-            stroke='#22c55e'
-            strokeWidth='1.25'
-            strokeDasharray='3 3'
-            markerEnd='url(#arrow-accent)'
-          />
-        );
-      })}
-
-      {/* Ingestion boxes */}
-      {ingestion.map((node, i) => {
-        const x = i * STEP;
-        return (
-          <g key={`ing-${node.label}`}>
-            <rect
-              x={x}
-              y={INGEST_Y}
-              width={BOX_W}
-              height={BOX_H}
-              rx={BOX_R}
-              fill={node.tone.fill}
-              stroke={node.tone.stroke}
-            />
-            <text
-              x={x + BOX_W / 2}
-              y={INGEST_Y + BOX_H / 2 + 4}
-              textAnchor='middle'
-              fill={node.tone.text}
-              fontFamily='JetBrains Mono'
-              fontSize='11'
-            >
-              {node.label}
-            </text>
-          </g>
-        );
-      })}
-
-      {/* Cross-lane retrieve connector: pgvector store -> Rerank (bge) */}
-      <path
-        d={`M ${pgX} ${pgY} C ${pgX} ${pgY + 40}, ${rerankX} ${rerankY - 40}, ${rerankX} ${rerankY}`}
-        fill='none'
-        stroke='rgba(34,197,94,0.55)'
-        strokeWidth='1.25'
-        strokeDasharray='3 3'
-        markerEnd='url(#arrow-accent)'
-      />
-      <text
-        x={(pgX + rerankX) / 2 - 4}
-        y={(pgY + rerankY) / 2 + 4}
-        textAnchor='middle'
-        fill='#22c55e'
-        fontFamily='JetBrains Mono'
-        fontSize='9.5'
-        letterSpacing='0.12em'
-      >
-        retrieve
-      </text>
-
-      {/* Query lane label */}
-      <text
-        x={0}
-        y={QUERY_Y + LABEL_OFFSET}
-        fill='#a8a39a'
-        fontFamily='JetBrains Mono'
-        fontSize='10.5'
-        letterSpacing='0.18em'
-      >
-        QUERY
-      </text>
-
-      {/* Query arrows */}
-      {query.slice(0, -1).map((node, i) => {
-        const x1 = i * STEP + BOX_W;
-        const x2 = (i + 1) * STEP;
-        const y = QUERY_Y + BOX_H / 2;
-        const isAccent = query[i + 1].tone === accent;
-        return (
-          <line
-            key={`q-arrow-${i}`}
-            x1={x1 + 2}
-            y1={y}
-            x2={x2 - 2}
-            y2={y}
-            stroke={isAccent ? '#22c55e' : 'rgba(255,255,255,0.35)'}
-            strokeWidth='1.25'
-            strokeDasharray='3 3'
-            markerEnd={isAccent ? 'url(#arrow-accent)' : 'url(#arrow-muted)'}
-          />
-        );
-      })}
-
-      {/* Query boxes */}
-      {query.map((node, i) => {
-        const x = i * STEP;
-        return (
-          <g key={`q-${node.label}`}>
-            <rect
-              x={x}
-              y={QUERY_Y}
-              width={BOX_W}
-              height={BOX_H}
-              rx={BOX_R}
-              fill={node.tone.fill}
-              stroke={node.tone.stroke}
-            />
-            <text
-              x={x + BOX_W / 2}
-              y={QUERY_Y + BOX_H / 2 + 4}
-              textAnchor='middle'
-              fill={node.tone.text}
-              fontFamily='JetBrains Mono'
-              fontSize='11'
-            >
-              {node.label}
-            </text>
-          </g>
-        );
-      })}
-
-      {/* Streaming -> 3D Renderer arrow */}
-      <line
-        x1={queryWidth - GAP + 2}
-        y1={QUERY_Y + BOX_H / 2}
-        x2={queryWidth + rendererGap - 2}
-        y2={QUERY_Y + BOX_H / 2}
-        stroke='#22c55e'
-        strokeWidth='1.25'
-        strokeDasharray='3 3'
-        markerEnd='url(#arrow-accent)'
-      />
-
-      {/* 3D Renderer terminal block — slightly taller to flag "this is the
-          output", with a payload tag underneath like a small spec sheet */}
-      <g>
-        <rect
-          x={queryWidth + rendererGap}
-          y={QUERY_Y - 22}
-          width={rendererW}
-          height={BOX_H + 44}
-          rx={10}
-          fill='rgba(34,197,94,0.05)'
-          stroke='rgba(34,197,94,0.32)'
-        />
-        <text
-          x={queryWidth + rendererGap + rendererW / 2}
-          y={QUERY_Y + 4}
-          textAnchor='middle'
-          fill='#22c55e'
-          fontFamily='JetBrains Mono'
-          fontSize='12'
-        >
-          3D Renderer
-        </text>
-        <text
-          x={queryWidth + rendererGap + rendererW / 2}
-          y={QUERY_Y + 22}
-          textAnchor='middle'
-          fill='#a8a39a'
-          fontFamily='JetBrains Mono'
-          fontSize='9.5'
-        >
-          Three.js · deterministic
-        </text>
-        <text
-          x={queryWidth + rendererGap + rendererW / 2}
-          y={QUERY_Y + 44}
-          textAnchor='middle'
-          fill='#6a6457'
-          fontFamily='JetBrains Mono'
-          fontSize='9'
-          letterSpacing='0.1em'
-        >
-          ↳ typed payload
-        </text>
-      </g>
-    </svg>
-  );
-}
-
-function DodecahedronPreview() {
-  return (
-    <div
-      style={{
-        position: 'relative',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 12,
-        aspectRatio: '16/10',
-        background:
-          'radial-gradient(ellipse at 50% 60%, rgba(34,197,94,0.10), transparent 60%), var(--bg-1)',
-        display: 'grid',
-        placeItems: 'center',
-        overflow: 'hidden'
-      }}
-    >
-      <svg viewBox='0 0 200 120' width='60%' aria-hidden='true'>
-        <polygon
-          points='100,16 156,46 156,90 100,120 44,90 44,46'
-          fill='rgba(34,197,94,0.08)'
-          stroke='#22c55e'
-          strokeWidth='1.5'
-        />
-        <line
-          x1='100'
-          y1='16'
-          x2='100'
-          y2='68'
-          stroke='#22c55e'
-          strokeWidth='1'
-          opacity='0.5'
-        />
-        <line
-          x1='44'
-          y1='46'
-          x2='100'
-          y2='68'
-          stroke='#22c55e'
-          strokeWidth='1'
-          opacity='0.5'
-        />
-        <line
-          x1='156'
-          y1='46'
-          x2='100'
-          y2='68'
-          stroke='#22c55e'
-          strokeWidth='1'
-          opacity='0.5'
-        />
-        <circle cx='100' cy='68' r='3' fill='#22c55e' />
-      </svg>
-      <span
-        style={{
-          position: 'absolute',
-          bottom: 12,
-          left: 14,
-          fontFamily: 'var(--font-dp-mono), monospace',
-          fontSize: 11,
-          letterSpacing: '0.08em',
-          color: 'var(--accent)'
-        }}
-      >
-        RENDERED · 3D PAYLOAD v0.3
-      </span>
-    </div>
-  );
-}
+// ============================================================
+// Dedicated RAG Chat Console
+// ============================================================
 
 export function ChatContent() {
-  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      role: 'assistant',
+      content:
+        "Dedicated RAG Chat Console ready. I have search access to all of David's public repositories. You can upload custom files, load specific GitHub repos into the context, or ask me detailed technical questions!"
+    }
+  ]);
   const [input, setInput] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // GitHub Loading States
   const [repoUrl, setRepoUrl] = useState('');
   const [cloning, setCloning] = useState(false);
   const [cloneStatus, setCloneStatus] = useState<string | null>(null);
@@ -443,54 +171,57 @@ export function ChatContent() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(
-    null
-  );
 
-  useEffect(() => {
-    return () => {
-      readerRef.current?.cancel();
-    };
-  }, []);
-
+  // Auto-scroll chat body
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Load public GitHub projects dynamically (High fidelity!)
   const handleCloneRepo = useCallback(() => {
     const url = repoUrl.trim();
     if (!url || cloning) return;
+
     setCloning(true);
-    setCloneStatus('Cloning repo…');
+    setCloneStatus('indexing repository schema...');
     setCodeChunks([]);
 
+    // Extract repo slug
+    const parts = url.replace(/\/$/, '').split('/');
+    const repoSlug = parts[parts.length - 1]?.toLowerCase() || '';
+
     setTimeout(() => {
-      const repoName = url.split('/').slice(-1)[0] ?? 'repo';
-      setCodeChunks([
+      // Check if we have high-fidelity mock files for this project
+      let chunks: CodeChunk[] = [
         {
           id: '1',
-          filename: 'src/agent/pipeline.ts',
-          summary: 'Main agent execution pipeline with guard middleware',
-          tokens: 512
+          filename: 'README.md',
+          summary: 'Repository description and default instruction guide',
+          tokens: 150
         },
         {
           id: '2',
-          filename: 'src/guards/injection.ts',
-          summary: 'Prompt injection detection and sanitization',
-          tokens: 348
-        },
-        {
-          id: '3',
-          filename: `${repoName}/README.md`,
-          summary: 'Repository overview and setup instructions',
-          tokens: 224
+          filename: 'package.json',
+          summary: 'Project configurations and dependency listings',
+          tokens: 210
         }
-      ]);
+      ];
+
+      // Find matching project details
+      for (const key of Object.keys(REPO_FILES)) {
+        if (repoSlug.includes(key) || key.includes(repoSlug)) {
+          chunks = REPO_FILES[key];
+          break;
+        }
+      }
+
+      setCodeChunks(chunks);
       setCloning(false);
-      setCloneStatus('Repo loaded into context');
-    }, 1500);
+      setCloneStatus(`loaded context: ${repoSlug}`);
+    }, 1200);
   }, [repoUrl, cloning]);
 
+  // SSE Stream Sender
   const handleSend = useCallback(async () => {
     const trimmed = input.trim();
     if (!trimmed || isStreaming) return;
@@ -504,18 +235,20 @@ export function ChatContent() {
     setError(null);
 
     try {
+      // Collate uploaded file contexts
       const includedFileContent = uploadedFiles
         .filter((f) => f.include && f.status === 'ready' && f.content)
-        .map((f) => `### ${f.name}\n${f.content}`)
+        .map((f) => `### File: ${f.name}\n${f.content}`)
         .join('\n\n');
 
+      // Collate loaded GitHub files context
       const codeContext =
         codeChunks.length > 0
-          ? `Code context from repo:\n${codeChunks.map((c) => `${c.filename}: ${c.summary}`).join('\n')}`
+          ? `Local index repository files:\n${codeChunks.map((c) => `- ${c.filename}: ${c.summary}`).join('\n')}`
           : undefined;
 
       const fileContext = includedFileContent
-        ? `Uploaded file contents:\n\n${includedFileContent}`
+        ? `Uploaded files content:\n\n${includedFileContent}`
         : undefined;
 
       const context =
@@ -525,7 +258,7 @@ export function ChatContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMsg],
+          messages: messages.concat(userMsg),
           context
         })
       });
@@ -536,22 +269,8 @@ export function ChatContent() {
           updated[updated.length - 1] = {
             role: 'assistant',
             content:
-              'Rate limit reached (2 requests/hour for guests). Sign in for 50/hour.'
+              'Rate limit reached (2 queries/hour as guest). Please sign in for higher limits.'
           };
-          return updated;
-        });
-        return;
-      }
-
-      if (res.status === 403) {
-        const data = await res.json();
-        const msg =
-          data.code === 'DEMO_EXPIRED'
-            ? 'Demo expired — contact David for full access.'
-            : 'Demo quota exhausted — contact David for full access.';
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = { role: 'assistant', content: msg };
           return updated;
         });
         return;
@@ -562,7 +281,6 @@ export function ChatContent() {
       }
 
       const reader = res.body.getReader();
-      readerRef.current = reader;
       const decoder = new TextDecoder();
 
       while (true) {
@@ -577,22 +295,21 @@ export function ChatContent() {
             const { content } = JSON.parse(payload) as { content: string };
             setMessages((prev) => {
               const updated = [...prev];
-              updated[updated.length - 1] = {
-                role: 'assistant',
-                content: updated[updated.length - 1].content + content
-              };
+              const last = updated[updated.length - 1];
+              if (last && last.role === 'assistant') {
+                last.content += content;
+              }
               return updated;
             });
           } catch {
-            // malformed SSE chunk — skip
+            // skip malformed chunks
           }
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+      setError(err instanceof Error ? err.message : 'Connection failed');
       setMessages((prev) => prev.slice(0, -1));
     } finally {
-      readerRef.current = null;
       setIsStreaming(false);
     }
   }, [input, isStreaming, messages, uploadedFiles, codeChunks]);
@@ -647,608 +364,221 @@ export function ChatContent() {
   };
 
   return (
-    <div style={{ background: 'var(--bg-0)' }}>
-      <main className='mod-wrap' style={{ paddingBottom: 0 }}>
-        {/* Hero */}
-        <section style={{ padding: '80px 0 64px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 14,
-              marginBottom: 24
-            }}
-          >
-            <div className='mod-icon'>
-              <OrbitIcon />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <span className='mod-eyebrow'>
-                <span className='mod-dot' />
-                <span className='mod-dash' />
-                <span>MODULE 03 / RETRIEVAL</span>
-              </span>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: 'var(--font-dp-sans), Inter Tight, sans-serif',
-                  fontSize: 'clamp(40px, 5vw, 64px)',
-                  fontWeight: 600,
-                  letterSpacing: '-0.04em',
-                  lineHeight: 0.96,
-                  color: 'var(--ink-0)'
-                }}
-              >
-                RAG + 3D Chat
-              </h1>
-            </div>
+    <div
+      style={{
+        color: 'var(--text)',
+        fontFamily: 'var(--font-mono)',
+        minHeight: '100vh',
+        background: 'var(--bg)'
+      }}
+    >
+      {/* HEADER TITLE BAR */}
+      <div className='statusbar'>
+        <Link
+          href='/'
+          className='sb-accent flex items-center gap-2 hover:underline'
+        >
+          <IconArrowLeft className='h-4 w-4' />
+          <span>[portfolio]</span>
+        </Link>
+        <span className='sb-sep'>|</span>
+        <span className='sb-item'>
+          <span className='sb-k'>SESSION:</span>
+          <span className='sb-v'>rag_console</span>
+        </span>
+        <div className='sb-right'>
+          <span className='sb-dot' />
+          <span>ACTIVE_ROUTING</span>
+        </div>
+      </div>
+
+      <div className='scroll-container'>
+        <div className='shell block'>
+          {/* Header Title */}
+          <div className='sec-head'>
+            <span className='sec-cmd'>cat /etc/chat_os</span>
+            <span className='sec-note'>CONSOLE</span>
           </div>
 
-          <p
-            style={{
-              fontSize: 18,
-              lineHeight: 1.55,
-              color: 'var(--ink-2)',
-              maxWidth: 720,
-              margin: 0
-            }}
-          >
-            Chat with your docs. When the answer is a structure, render it
-            inline in Three.js with citations pointing back to source chunks.
-            Top-k → rerank → cite, kept stupid-simple.
-          </p>
-
-          <div
-            style={{
-              display: 'flex',
-              gap: 8,
-              marginTop: 28,
-              flexWrap: 'wrap'
-            }}
-          >
-            <span className='mod-status'>
-              <span className='mod-status-dot' />
-              pgvector + bge-reranker
-            </span>
-            <span className='mod-status'>
-              <span className='mod-status-dot' />
-              Streaming SSE
-            </span>
-            <span className='mod-status'>
-              <span className='mod-status-dot' />
-              3D outputs deterministic from trace
-            </span>
-          </div>
-        </section>
-
-        {/* // 01 Architecture */}
-        <section style={{ paddingBottom: 80 }}>
-          <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 01</span>
-            <span className='mod-section-line' />
-            <span className='mod-section-label'>Architecture</span>
-          </div>
-          <div className='mod-card' style={{ padding: 24 }}>
-            <ArchitectureSvg />
-          </div>
-        </section>
-
-        {/* // 02 Try it — interactive chat, preserved */}
-        <section style={{ paddingBottom: 80 }}>
-          <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 02</span>
-            <span className='mod-section-line' />
-            <span className='mod-section-label'>Try it</span>
-          </div>
-
-          {/* Repo + upload toolbar */}
-          <div
-            style={{
-              display: 'grid',
-              gap: 12,
-              gridTemplateColumns: '1fr',
-              marginBottom: 16
-            }}
-          >
-            <div style={{ display: 'flex', gap: 8 }}>
-              <div style={{ position: 'relative', flex: 1 }}>
-                <IconBrandGithub
-                  className='h-4 w-4'
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: 12,
-                    transform: 'translateY(-50%)',
-                    color: 'var(--ink-3)'
-                  }}
-                />
-                <input
-                  type='url'
-                  value={repoUrl}
-                  onChange={(e) => setRepoUrl(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleCloneRepo();
-                  }}
-                  placeholder='Paste a GitHub/GitLab repo URL…'
-                  disabled={cloning}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px 10px 36px',
-                    borderRadius: 8,
-                    fontFamily: 'var(--font-dp-mono), monospace',
-                    fontSize: 13,
-                    color: 'var(--ink-0)',
-                    background: 'var(--bg-2)',
-                    border: '1px solid var(--border-muted)',
-                    outline: 'none'
-                  }}
-                />
-              </div>
-              <button
-                type='button'
-                onClick={handleCloneRepo}
-                disabled={!repoUrl.trim() || cloning}
-                className='dp-btn dp-btn-ghost'
-                style={{
-                  padding: '8px 16px',
-                  fontSize: 13,
-                  opacity: !repoUrl.trim() || cloning ? 0.5 : 1,
-                  cursor: !repoUrl.trim() || cloning ? 'not-allowed' : 'pointer'
-                }}
-              >
-                {cloning ? (
-                  <IconLoader2 className='h-4 w-4 animate-spin' />
-                ) : (
-                  'Load'
-                )}
-              </button>
-            </div>
-
-            {cloneStatus && (
+          <div className='mt-6 grid grid-cols-1 gap-6 lg:grid-cols-4'>
+            {/* LEFT SIDEBAR: Index context sources */}
+            <div className='flex flex-col gap-4 lg:col-span-1'>
               <div
-                className='mod-card'
-                style={{ padding: 12, background: 'var(--bg-2)' }}
+                className='term-window flex flex-col gap-4 p-4'
+                style={{ background: 'var(--bg-raised)' }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    fontFamily: 'var(--font-dp-mono), monospace',
-                    fontSize: 11,
-                    color: 'var(--accent-bright)',
-                    marginBottom: codeChunks.length > 0 ? 10 : 0
-                  }}
-                >
-                  {cloning ? (
-                    <IconLoader2 className='h-3 w-3 animate-spin' />
-                  ) : (
-                    <IconCheck className='h-3 w-3' />
-                  )}
-                  {cloneStatus}
+                <div className='contact-label' style={{ fontSize: '10px' }}>
+                  CONTEXT SOURCES
                 </div>
-                {codeChunks.length > 0 && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 6
-                    }}
+
+                {/* Loader inputs */}
+                <div className='flex flex-col gap-2'>
+                  <div className='relative'>
+                    <IconBrandGithub
+                      className='absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2'
+                      style={{ color: 'var(--text-dim)' }}
+                    />
+                    <input
+                      value={repoUrl}
+                      onChange={(e) => setRepoUrl(e.target.value)}
+                      placeholder='pappdavid/saas-core...'
+                      className='w-full border border-[var(--border)] bg-[#070707] py-1.5 pr-2 pl-8 font-mono text-xs text-white focus:border-[var(--accent)] focus:outline-none'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleCloneRepo();
+                      }}
+                      disabled={cloning}
+                    />
+                  </div>
+                  <button
+                    onClick={handleCloneRepo}
+                    disabled={!repoUrl.trim() || cloning}
+                    className='w-full border border-[var(--accent)] bg-transparent py-1.5 text-center text-xs text-[var(--accent)] transition-all hover:bg-[var(--accent-faint)]'
                   >
-                    {codeChunks.map((chunk) => (
-                      <span
-                        key={chunk.id}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          padding: '4px 10px',
-                          borderRadius: 999,
-                          background: 'var(--accent-soft)',
-                          border: '1px solid var(--accent-line)',
-                          fontFamily: 'var(--font-dp-mono), monospace',
-                          fontSize: 11,
-                          color: 'var(--accent-bright)'
-                        }}
+                    {cloning ? 'indexing...' : '[load_repository]'}
+                  </button>
+                </div>
+
+                {/* Index status */}
+                {cloneStatus && (
+                  <div className='rounded-sm border border-[var(--border)] bg-[#0d0d0d] p-2 text-xs'>
+                    <div className='mb-1 flex items-center gap-1.5 text-[var(--accent)]'>
+                      {cloning ? (
+                        <IconLoader2 className='h-3 w-3 animate-spin' />
+                      ) : (
+                        <IconCheck className='h-3.5 w-3.5' />
+                      )}
+                      <span>{cloneStatus}</span>
+                    </div>
+                    {codeChunks.length > 0 && (
+                      <div className='mt-2 flex flex-col gap-1.5'>
+                        {codeChunks.map((c) => (
+                          <div
+                            key={c.id}
+                            className='flex items-center gap-1 truncate text-[10px] text-[var(--text-dim)]'
+                          >
+                            <IconChevronRight className='h-3 w-3 shrink-0' />
+                            <span>{c.filename}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* File Drop Area */}
+                <div className='relative rounded-sm border border-dashed border-[var(--border)] bg-[#080808] p-4 text-center'>
+                  <input
+                    ref={fileInputRef}
+                    type='file'
+                    multiple
+                    accept='.pdf,.txt,.md,.csv'
+                    className='hidden'
+                    onChange={handleFileChange}
+                    aria-label='Upload files'
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className='flex w-full cursor-pointer flex-col items-center gap-1.5 border-none bg-transparent text-[11px] text-[var(--text-dim)] transition-all hover:text-[var(--accent)]'
+                  >
+                    <IconFile className='h-5 w-5 opacity-40' />
+                    <span>Click to attach documents</span>
+                  </button>
+                </div>
+
+                {/* File list */}
+                {uploadedFiles.length > 0 && (
+                  <div className='flex max-h-[160px] flex-col gap-1.5 overflow-y-auto pr-1'>
+                    {uploadedFiles.map((f) => (
+                      <div
+                        key={f.id}
+                        className='flex items-center gap-1.5 border border-[var(--border)] bg-[#0d0d0d] p-1.5 text-[10px]'
                       >
-                        <IconCode className='h-3 w-3' />
-                        {chunk.filename}
-                        <span style={{ opacity: 0.6 }}>{chunk.tokens}t</span>
-                      </span>
+                        <input
+                          type='checkbox'
+                          checked={f.include}
+                          onChange={() => toggleFileInclude(f.id)}
+                          className='accent-[#00ff88]'
+                          aria-label={`Include ${f.name}`}
+                        />
+                        <span className='flex-1 truncate text-[var(--accent-muted)]'>
+                          {f.name}
+                        </span>
+                        <button
+                          onClick={() => removeFile(f.id)}
+                          className='border-none bg-transparent text-[var(--text-dim)] hover:text-white'
+                        >
+                          <IconX className='h-3 w-3' />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
-            )}
+            </div>
 
-            <div>
-              <input
-                ref={fileInputRef}
-                type='file'
-                multiple
-                accept='.pdf,.txt,.md,.csv'
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-                aria-label='Upload files'
-              />
-              <button
-                type='button'
-                onClick={() => fileInputRef.current?.click()}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  padding: 14,
-                  borderRadius: 10,
-                  border: '1px dashed var(--border-muted)',
-                  background: 'transparent',
-                  fontSize: 13,
-                  color: 'var(--ink-2)',
-                  cursor: 'pointer'
-                }}
-              >
-                <IconUpload className='h-4 w-4' />
-                Drop PDFs, text, or markdown here
-              </button>
+            {/* RIGHT MAIN PANEL: Unified Chat Console */}
+            <div className='flex flex-col gap-4 lg:col-span-3'>
+              <div className='chat term-window flex min-h-[500px] flex-col'>
+                <div className='chat-titlebar'>
+                  <span className='chat-status'>
+                    <span className='sb-dot' /> zui@portfolio:
+                    interactive_session
+                  </span>
+                  <span className='chat-conv'>status: running</span>
+                </div>
 
-              {uploadedFiles.length > 0 && (
-                <div
-                  style={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 6
-                  }}
-                >
-                  {uploadedFiles.map((f) => (
-                    <div
-                      key={f.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        padding: '8px 12px',
-                        borderRadius: 8,
-                        border: '1px solid var(--border-subtle)',
-                        background: 'var(--bg-2)',
-                        fontSize: 12
-                      }}
-                    >
-                      <input
-                        type='checkbox'
-                        checked={f.include}
-                        onChange={() => toggleFileInclude(f.id)}
-                        aria-label={`Include ${f.name}`}
-                        style={{ accentColor: 'var(--accent)' }}
-                      />
-                      <IconFile
-                        className='h-3.5 w-3.5'
-                        style={{ color: 'var(--ink-3)', flexShrink: 0 }}
-                      />
-                      <span
-                        style={{
-                          flex: 1,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          color: 'var(--ink-1)'
-                        }}
-                      >
-                        {f.name}
+                {/* Message logs */}
+                <div className='chat-body flex-1' style={{ height: '380px' }}>
+                  {messages.map((m, i) => (
+                    <div key={i} className={cn('chat-msg', m.role)}>
+                      {m.role === 'assistant' && (
+                        <span className='msg-tag'>ASSISTANT</span>
+                      )}
+                      <span className='msg-text whitespace-pre-wrap'>
+                        {m.content}
                       </span>
-                      <span
-                        style={{
-                          fontFamily: 'var(--font-dp-mono), monospace',
-                          color: 'var(--ink-3)'
-                        }}
-                      >
-                        {formatBytes(f.size)}
-                      </span>
-                      <span
-                        style={{
-                          padding: '1px 6px',
-                          borderRadius: 4,
-                          border: `1px solid ${f.status === 'processing' ? 'rgba(245,158,11,0.3)' : 'var(--accent-line)'}`,
-                          fontSize: 10,
-                          color:
-                            f.status === 'processing'
-                              ? '#f59e0b'
-                              : 'var(--accent-bright)'
-                        }}
-                      >
-                        {f.status}
-                      </span>
-                      <button
-                        type='button'
-                        onClick={() => removeFile(f.id)}
-                        aria-label={`Remove ${f.name}`}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 4,
-                          cursor: 'pointer',
-                          color: 'var(--ink-3)'
-                        }}
-                      >
-                        <IconX className='h-3.5 w-3.5' />
-                      </button>
                     </div>
                   ))}
+                  {isStreaming &&
+                    messages[messages.length - 1]?.content === '' && (
+                      <div className='chat-msg bot typing'>
+                        <span className='msg-tag'>ASSISTANT</span>
+                        <span className='msg-text'>
+                          thinking<span className='ell'>...</span>
+                        </span>
+                      </div>
+                    )}
+                  <div ref={messagesEndRef} />
                 </div>
-              )}
-            </div>
-          </div>
 
-          {/* Chat + retrieval trace 2-pane */}
-          <div
-            style={{
-              display: 'grid',
-              gap: 1,
-              gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
-              background: 'var(--border-subtle)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 14,
-              overflow: 'hidden'
-            }}
-          >
-            {/* Chat pane */}
-            <div style={{ background: 'var(--bg-1)', padding: 22 }}>
-              <div
-                style={{
-                  fontFamily: 'var(--font-dp-mono), monospace',
-                  fontSize: 11,
-                  letterSpacing: '0.16em',
-                  color: 'var(--ink-3)',
-                  textTransform: 'uppercase',
-                  marginBottom: 14
-                }}
-              >
-                CHAT
-              </div>
-              <div
-                aria-live='polite'
-                aria-label='Chat messages'
-                style={{
-                  maxHeight: 360,
-                  minHeight: 240,
-                  overflowY: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8,
-                  marginBottom: 14
-                }}
-              >
-                {messages.map((msg, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      padding: '10px 14px',
-                      borderRadius: 10,
-                      fontSize: 13.5,
-                      lineHeight: 1.55,
-                      whiteSpace: 'pre-wrap',
-                      color: 'var(--ink-1)',
-                      background:
-                        msg.role === 'user'
-                          ? 'rgba(255,255,255,0.04)'
-                          : 'rgba(34,197,94,0.05)',
-                      border:
-                        msg.role === 'user'
-                          ? '1px solid var(--border-subtle)'
-                          : '1px solid var(--accent-line)'
+                {/* Input form */}
+                <div className='chat-input border-t border-[var(--border)]'>
+                  <span className='chat-pre'>david@dev:~/assistant$</span>
+                  <input
+                    className='chat-field'
+                    placeholder='start typing here... (500 characters max)'
+                    value={input}
+                    maxLength={500}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSend();
                     }}
+                    spellCheck={false}
+                    disabled={isStreaming}
+                  />
+                  <button
+                    onClick={handleSend}
+                    className='send-btn'
+                    disabled={isStreaming || !input.trim()}
                   >
-                    {msg.content}
-                  </div>
-                ))}
-                {isStreaming &&
-                  messages[messages.length - 1]?.content === '' && (
-                    <div
-                      style={{
-                        padding: '10px 14px',
-                        borderRadius: 10,
-                        background: 'rgba(34,197,94,0.05)',
-                        border: '1px solid var(--accent-line)',
-                        width: 'fit-content'
-                      }}
-                    >
-                      <IconLoader2
-                        className='h-4 w-4 animate-spin'
-                        style={{ color: 'var(--accent)' }}
-                        aria-label='Generating response'
-                      />
-                    </div>
-                  )}
-                {error && (
-                  <p
-                    role='alert'
-                    style={{
-                      margin: 0,
-                      textAlign: 'center',
-                      fontSize: 12,
-                      color: '#ef4444'
-                    }}
-                  >
-                    {error}
-                  </p>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSend();
-                    }
-                  }}
-                  placeholder='Ask about your documents…'
-                  rows={1}
-                  style={{
-                    flex: 1,
-                    minHeight: 44,
-                    resize: 'none',
-                    padding: '10px 14px',
-                    borderRadius: 8,
-                    fontFamily: 'var(--font-dp-sans), Inter Tight, sans-serif',
-                    fontSize: 13.5,
-                    color: 'var(--ink-0)',
-                    background: 'var(--bg-2)',
-                    border: '1px solid var(--border-muted)',
-                    outline: 'none'
-                  }}
-                />
-                <button
-                  type='button'
-                  onClick={handleSend}
-                  disabled={isStreaming || !input.trim()}
-                  aria-label='Send message'
-                  className='dp-btn dp-btn-primary'
-                  style={{
-                    padding: 12,
-                    minWidth: 44,
-                    justifyContent: 'center',
-                    opacity: isStreaming || !input.trim() ? 0.5 : 1,
-                    cursor:
-                      isStreaming || !input.trim() ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  {isStreaming ? (
-                    <IconLoader2 className='h-4 w-4 animate-spin' />
-                  ) : (
-                    <IconSend className='h-4 w-4' />
-                  )}
-                </button>
-              </div>
-              <p
-                style={{
-                  margin: '10px 0 0',
-                  fontFamily: 'var(--font-dp-mono), monospace',
-                  fontSize: 11,
-                  color: 'var(--ink-3)'
-                }}
-              >
-                Rate limited: 2 messages/hour (guest) · 50/hour (signed in)
-              </p>
-            </div>
-
-            {/* Retrieval trace pane */}
-            <div style={{ background: 'var(--bg-1)', padding: 22 }}>
-              <div
-                style={{
-                  fontFamily: 'var(--font-dp-mono), monospace',
-                  fontSize: 11,
-                  letterSpacing: '0.16em',
-                  color: 'var(--ink-3)',
-                  textTransform: 'uppercase',
-                  marginBottom: 14
-                }}
-              >
-                RETRIEVAL TRACE
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-dp-mono), monospace',
-                  fontSize: 11.5,
-                  lineHeight: 1.85,
-                  color: 'var(--ink-2)'
-                }}
-              >
-                <div>● top_k=8 · 23ms</div>
-                <div>● rerank → 3 chunks kept</div>
-                <div style={{ paddingLeft: 14, color: 'var(--ink-3)' }}>
-                  ↳ src/proxy.ts:1-22 (0.91)
+                    [send]
+                  </button>
                 </div>
-                <div style={{ paddingLeft: 14, color: 'var(--ink-3)' }}>
-                  ↳ providers.tsx:1-18 (0.84)
-                </div>
-                <div style={{ paddingLeft: 14, color: 'var(--ink-3)' }}>
-                  ↳ auth/layout.tsx:1-30 (0.71)
-                </div>
-                <div>● gen → 412 tokens · 1.2s</div>
-                <div style={{ color: 'var(--accent)' }}>● streamed · cited</div>
-              </div>
-
-              <div style={{ marginTop: 22 }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-dp-mono), monospace',
-                    fontSize: 11,
-                    letterSpacing: '0.16em',
-                    color: 'var(--ink-3)',
-                    textTransform: 'uppercase',
-                    marginBottom: 10
-                  }}
-                >
-                  3D VIEWER
-                </div>
-                <DodecahedronPreview />
               </div>
             </div>
           </div>
-        </section>
-
-        {/* // 03 3D outputs */}
-        <section style={{ paddingBottom: 80 }}>
-          <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 03</span>
-            <span className='mod-section-line' />
-            <span className='mod-section-label'>3D outputs</span>
-          </div>
-          <div
-            className='mod-card'
-            style={{
-              padding: 28,
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.4fr)',
-              gap: 28,
-              alignItems: 'center'
-            }}
-          >
-            <div>
-              <p
-                style={{
-                  margin: '0 0 14px',
-                  color: 'var(--ink-1)',
-                  fontSize: 16,
-                  lineHeight: 1.6
-                }}
-              >
-                When a question implies structure — an org graph, a network, a
-                3D scene — the model emits a typed payload alongside the prose.
-                The renderer is deterministic from that payload, so the same
-                trace renders the same scene.
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                  color: 'var(--ink-3)',
-                  fontSize: 13.5,
-                  lineHeight: 1.6
-                }}
-              >
-                No image hallucination. No prompt-to-Three.js gymnastics. Just a
-                small schema and a viewer.
-              </p>
-            </div>
-            <DodecahedronPreview />
-          </div>
-        </section>
-
-        {/* Footer: prev/next module */}
-        <nav className='mod-foot'>
-          <a href='/mcp' className='is-next'>
-            → First module: MCP Sentinel
-          </a>
-          <a href='/' className='is-back'>
-            ← Back to homepage
-          </a>
-        </nav>
-      </main>
+        </div>
+      </div>
     </div>
   );
 }

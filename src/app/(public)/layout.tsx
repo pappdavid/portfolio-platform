@@ -1,5 +1,3 @@
-import { PublicHeader } from '@/components/layout/public-header';
-import { Footer } from '@/components/layout/footer';
 import '@/styles/themes/davidpapp.css';
 
 export default function PublicLayout({
@@ -8,16 +6,8 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className='bg-[#060608]'
-      style={{
-        backgroundImage:
-          'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,197,94,0.06) 0%, transparent 60%)'
-      }}
-    >
-      <PublicHeader />
-      <main className='relative min-h-[calc(100dvh-3.5rem)]'>{children}</main>
-      <Footer />
+    <div className='relative min-h-screen overflow-hidden bg-[#0a0a0a] text-[#e8e8e8] selection:bg-[rgba(0,255,136,0.25)] selection:text-white'>
+      <main className='relative min-h-screen'>{children}</main>
     </div>
   );
 }
