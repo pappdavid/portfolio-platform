@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import {
   IconEye,
@@ -365,7 +366,7 @@ export function TrainingContent() {
         {/* // 01 Pipeline */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 01</span>
+            <span className='mod-section-num'>{'// 01'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Pipeline</span>
           </div>
@@ -384,7 +385,7 @@ export function TrainingContent() {
         {/* // 02 Six-step wizard — interactive, preserved from prior impl */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 02</span>
+            <span className='mod-section-num'>{'// 02'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Six-step wizard</span>
           </div>
@@ -428,7 +429,7 @@ export function TrainingContent() {
                     ? 0
                     : `calc((100% - 100% / ${STEPS.length}) * ${currentStep} / ${STEPS.length - 1})`,
                 height: 2,
-                background: 'var(--accent)',
+                background: 'var(--dp-accent)',
                 borderRadius: 1,
                 transition: 'width 0.25s ease'
               }}
@@ -438,14 +439,14 @@ export function TrainingContent() {
               const isDone = i < currentStep;
               const isCurrent = i === currentStep;
               const nodeBg = isCurrent
-                ? 'var(--accent)'
+                ? 'var(--dp-accent)'
                 : isDone
-                  ? 'var(--accent)'
+                  ? 'var(--dp-accent)'
                   : 'var(--bg-2)';
               const nodeBorder = isCurrent
-                ? 'var(--accent)'
+                ? 'var(--dp-accent)'
                 : isDone
-                  ? 'var(--accent)'
+                  ? 'var(--dp-accent)'
                   : 'var(--border-muted)';
               const nodeFg = isCurrent
                 ? 'var(--bg-0)'
@@ -522,7 +523,7 @@ export function TrainingContent() {
                 fontFamily: 'var(--font-dp-mono), monospace',
                 fontSize: 11,
                 letterSpacing: '0.16em',
-                color: 'var(--accent)',
+                color: 'var(--dp-accent)',
                 marginBottom: 10
               }}
             >
@@ -740,7 +741,7 @@ export function TrainingContent() {
                       border: 'none',
                       cursor: 'pointer',
                       background: bringOwnKey
-                        ? 'var(--accent)'
+                        ? 'var(--dp-accent)'
                         : 'var(--border-muted)'
                     }}
                   >
@@ -942,7 +943,7 @@ export function TrainingContent() {
         {/* // 03 Sample output (JSONL) */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 03</span>
+            <span className='mod-section-num'>{'// 03'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Sample output (JSONL)</span>
           </div>
@@ -966,7 +967,7 @@ export function TrainingContent() {
         {/* // 04 Why LoRA */}
         <section style={{ paddingBottom: 80 }}>
           <div className='mod-section-meta'>
-            <span className='mod-section-num'>// 04</span>
+            <span className='mod-section-num'>{'// 04'}</span>
             <span className='mod-section-line' />
             <span className='mod-section-label'>Why LoRA</span>
           </div>
@@ -988,12 +989,12 @@ export function TrainingContent() {
 
         {/* Footer: prev/next module */}
         <nav className='mod-foot'>
-          <a href='/chat' className='is-next'>
+          <Link href='/chat' className='is-next'>
             → Next module: RAG + 3D Chat
-          </a>
-          <a href='/' className='is-back'>
+          </Link>
+          <Link href='/' className='is-back'>
             ← Back to homepage
-          </a>
+          </Link>
         </nav>
       </main>
     </div>
