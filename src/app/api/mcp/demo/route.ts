@@ -2,8 +2,20 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-const TOOLS = ['file_read', 'web_search', 'code_execute', 'db_query', 'send_email'];
-const STATUSES = ['allowed', 'allowed', 'allowed', 'warning', 'blocked'] as const;
+const TOOLS = [
+  'file_read',
+  'web_search',
+  'code_execute',
+  'db_query',
+  'send_email'
+];
+const STATUSES = [
+  'allowed',
+  'allowed',
+  'allowed',
+  'warning',
+  'blocked'
+] as const;
 
 function makeDemoEvent(i: number) {
   return JSON.stringify({
@@ -22,9 +34,13 @@ export async function GET(req: NextRequest) {
   const stream = new ReadableStream({
     start(controller) {
       const burst = setInterval(() => {
-        controller.enqueue(encoder.encode(`data: ${makeDemoEvent(index++)}\n\n`));
+        controller.enqueue(
+          encoder.encode(`data: ${makeDemoEvent(index++)}\n\n`)
+        );
         if (index >= 5) {
           clearInterval(burst);
+          clearInterval(keepalive);
+          controller.close();
         }
       }, 600);
 
@@ -44,7 +60,7 @@ export async function GET(req: NextRequest) {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
+      Connection: 'keep-alive'
     }
   });
 }

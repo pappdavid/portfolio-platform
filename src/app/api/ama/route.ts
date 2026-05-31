@@ -3,17 +3,11 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { amaPublicRateLimit, amaAuthRateLimit } from '@/lib/rate-limit';
 import { amaCorpus } from '@/lib/ama/corpus';
+import {
+  answerPortfolioQuestion,
+  portfolioAssistantLinks
+} from '@/lib/ama/answer';
 import { chunkText, retrieveChunks } from '@/lib/chat/rag';
-
-const AVAILABLE_LINKS = [
-  { label: 'MCP Sentinel demo', url: '/mcp' },
-  { label: 'Training Pipeline demo', url: '/training' },
-  { label: 'RAG + 3D Chat demo', url: '/chat' },
-  { label: 'Projects overview', url: '/projects' },
-  { label: 'About David', url: '/about' },
-  { label: 'MCP dashboard', url: '/dashboard/mcp' },
-  { label: 'Training dashboard', url: '/dashboard/training' }
-];
 
 const SYSTEM_PROMPT = `You are a portfolio assistant for David Papp, an AI engineer. Answer questions about David's work, projects, experience, and tech stack based strictly on the provided context.
 
@@ -22,7 +16,7 @@ Rules:
 - Speak in third person about David ("David built...", "David focuses on...")
 - Only reference facts from the context
 - Always return valid JSON in this exact format: {"answer":"...","links":[{"label":"...","url":"..."}]}
-- Include 1-3 relevant links from this list: ${JSON.stringify(AVAILABLE_LINKS)}
+- Include 1-3 relevant links from this list: ${JSON.stringify(portfolioAssistantLinks)}
 - If you don't know the answer from context, say "I don't have that detail in my portfolio content."`;
 
 export async function POST(req: Request) {
@@ -52,6 +46,11 @@ export async function POST(req: Request) {
   const context =
     relevant.length > 0 ? relevant.join('\n\n') : amaCorpus.slice(0, 1500);
 
+  const fallback = answerPortfolioQuestion(question);
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json(fallback);
+  }
+
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
@@ -77,11 +76,7 @@ export async function POST(req: Request) {
       answer: parsed.answer ?? '',
       links: parsed.links ?? []
     });
-  } catch (err) {
-    console.error('AMA error:', err);
-    return NextResponse.json(
-      { error: 'Failed to generate answer' },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json(fallback);
   }
 }

@@ -2,9 +2,9 @@ export const amaCorpus: string = `
 # About David Papp
 AI engineer building production-grade tools for teams that ship LLM products. Focus areas: agent observability, guard rails, fine-tuning pipelines, and retrieval systems. Previously led three product launches end-to-end. Values: cost discipline, security by default, shipping the simplest thing that works.
 
-Open to: full-time AI engineering roles, platform engineering, technical leadership, consulting engagements.
+Open to: junior AI / automation engineer, full-stack AI, and data science roles in the Netherlands.
 Contact: contact@davidpapp.dev | Book a call: https://calendly.com/david-webinform/30min
-LinkedIn: https://linkedin.com/in/davidpapp | GitHub: https://github.com/davidpapp
+LinkedIn: https://www.linkedin.com/in/d%C3%A1vid-papp | GitHub: https://github.com/pappdavid
 
 # MCP Sentinel
 A proxy layer for Model Context Protocol (MCP) that logs, guards, and audits every agent tool call in real time. Sits between AI agents and their tools. Validates inputs against guard rules: injection detection, PII scanning, cost limits. Logs every event to Supabase with RLS. Surfaces anomalies in a real-time dashboard. Built with TypeScript, Next.js, Supabase, Upstash, and Clerk auth. Demo available at /mcp or /dashboard/mcp.

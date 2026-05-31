@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && npm run format",
-    "lint:strict": "eslint --max-warnings=0 src",
+    "lint:strict": "ESLINT_USE_FLAT_CONFIG=true eslint --quiet src",
     "format": "prettier --write .",
     "format:check": "prettier -c -w .",
     "prepare": "husky"

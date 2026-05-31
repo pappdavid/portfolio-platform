@@ -1,30 +1,47 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CodeBlock } from '@/components/shared/code-block';
-import {
-  IconShield,
-  IconPlayerPlay,
-  IconCheck,
-  IconClock,
-  IconAlertTriangle
-} from '@tabler/icons-react';
-import { GridBackground } from '@/components/ui/grid-background';
-import { MonoEyebrow } from '@/components/ui/mono-eyebrow';
 
-const quickstartCode = `// Reference implementation — github.com/pappdavid/mcp-sentinel
-import { MCPSentinel } from './sentinel';
-
-const sentinel = new MCPSentinel({
-  apiKey: process.env.MCP_API_KEY,
-  guards: ['injection', 'pii', 'cost'],
-});
-
-// Wrap your MCP server
-const server = sentinel.wrap(yourMCPServer);
-server.listen(3001);`;
+const quickstartLines: Array<Array<{ cls?: string; text: string }>> = [
+  [{ cls: 'tc', text: '// github.com/pappdavid/mcp-sentinel' }],
+  [
+    { cls: 'tk', text: 'import' },
+    { text: ' { ' },
+    { cls: 'tv', text: 'MCPSentinel' },
+    { text: ' } ' },
+    { cls: 'tk', text: 'from' },
+    { text: ' ' },
+    { cls: 'ts', text: "'./sentinel'" },
+    { text: ';' }
+  ],
+  [{ text: '' }],
+  [
+    { cls: 'tk', text: 'const' },
+    { text: ' ' },
+    { cls: 'tv', text: 'sentinel' },
+    { text: ' = ' },
+    { cls: 'tk', text: 'new' },
+    { text: ' ' },
+    { cls: 'tf', text: 'MCPSentinel' },
+    { text: '({ apiKey, guards: [' },
+    { cls: 'ts', text: "'injection'" },
+    { text: ', ' },
+    { cls: 'ts', text: "'pii'" },
+    { text: ', ' },
+    { cls: 'ts', text: "'cost'" },
+    { text: '] });' }
+  ],
+  [
+    { cls: 'tk', text: 'const' },
+    { text: ' ' },
+    { cls: 'tv', text: 'server' },
+    { text: ' = sentinel.' },
+    { cls: 'tf', text: 'wrap' },
+    { text: '(yourMCPServer);' }
+  ],
+  [{ text: 'server.' }, { cls: 'tf', text: 'listen' }, { text: '(3001);' }]
+];
 
 type MockEvent = {
   id: string;
@@ -34,438 +51,258 @@ type MockEvent = {
   timestamp: string;
 };
 
-
-function McpArchSvg() {
+// Hero icon — shield with check, from the reference module
+function ShieldIcon() {
   return (
     <svg
-      viewBox='0 0 780 120'
+      width='22'
+      height='22'
+      viewBox='0 0 24 24'
       fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-      className='w-full'
-      aria-label='MCP Sentinel architecture: Agent to MCP Sentinel to Guards to Tools or Blocked to Event Log to Dashboard'
+      stroke='currentColor'
+      strokeWidth='1.5'
     >
+      <path d='M12 2 L20 5 V12 C20 17 16 21 12 22 C8 21 4 17 4 12 V5 Z' />
+      <path
+        d='M9 12 L11 14 L15 10'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    </svg>
+  );
+}
+
+function ArchitectureSvg() {
+  return (
+    <svg
+      viewBox='0 0 980 320'
+      width='100%'
+      height='320'
+      role='img'
+      aria-label='MCP Sentinel architecture: agent calls flow through sentinel guards to tools; blocked calls and event log fan out to dashboard and supabase'
+    >
+      <defs>
+        <linearGradient id='mcp-flow' x1='0' x2='1'>
+          <stop offset='0%' stopColor='#22c55e' />
+          <stop offset='100%' stopColor='#22c55e' stopOpacity='0.4' />
+        </linearGradient>
+      </defs>
+
+      {/* Agent */}
       <rect
-        x='0'
-        y='30'
-        width='90'
+        x='40'
+        y='130'
+        width='120'
         height='60'
-        rx='8'
+        rx='10'
         fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.1)'
-        strokeWidth='1'
+        stroke='rgba(255,255,255,0.12)'
       />
       <text
-        x='45'
-        y='65'
+        x='100'
+        y='166'
         textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='11'
-        fontFamily='monospace'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='12'
       >
-        Agent
+        AGENT
       </text>
+
       <path
-        d='M92 60 L118 60'
+        d='M160 160 L240 160'
         stroke='#22c55e'
         strokeWidth='1.5'
         strokeDasharray='4 3'
       />
-      <polygon points='118,56.5 125,60 118,63.5' fill='#22c55e' />
+      <polygon points='240,156 248,160 240,164' fill='#22c55e' />
+
+      {/* Sentinel */}
       <rect
-        x='127'
-        y='30'
-        width='110'
-        height='60'
-        rx='8'
-        fill='rgba(34,197,94,0.07)'
-        stroke='rgba(34,197,94,0.25)'
-        strokeWidth='1.5'
+        x='250'
+        y='80'
+        width='220'
+        height='160'
+        rx='14'
+        fill='rgba(34,197,94,0.05)'
+        stroke='rgba(34,197,94,0.3)'
       />
       <text
-        x='182'
-        y='65'
-        textAnchor='middle'
-        fill='#22c55e'
-        fontSize='11'
-        fontFamily='monospace'
-      >
-        MCP Sentinel
-      </text>
-      <path
-        d='M239 60 L265 60'
-        stroke='#22c55e'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='265,56.5 272,60 265,63.5' fill='#22c55e' />
-      <rect
-        x='274'
-        y='0'
-        width='90'
-        height='36'
-        rx='6'
-        fill='rgba(255,255,255,0.03)'
-        stroke='rgba(255,255,255,0.08)'
-        strokeWidth='1'
-      />
-      <text
-        x='319'
-        y='22'
-        textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Rate Limiter
-      </text>
-      <rect
-        x='274'
-        y='42'
-        width='90'
-        height='36'
-        rx='6'
-        fill='rgba(255,255,255,0.03)'
-        stroke='rgba(255,255,255,0.08)'
-        strokeWidth='1'
-      />
-      <text
-        x='319'
-        y='64'
-        textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Inj. Detector
-      </text>
-      <rect
-        x='274'
-        y='84'
-        width='90'
-        height='36'
-        rx='6'
-        fill='rgba(255,255,255,0.03)'
-        stroke='rgba(255,255,255,0.08)'
-        strokeWidth='1'
-      />
-      <text
-        x='319'
+        x='360'
         y='106'
         textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
+        fill='#22c55e'
+        fontFamily='JetBrains Mono'
+        fontSize='12'
       >
-        PII Scanner
+        MCP SENTINEL
       </text>
-      <path
-        d='M366 60 L392 60'
-        stroke='#22c55e'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='392,56.5 399,60 392,63.5' fill='#22c55e' />
-      <rect
-        x='401'
-        y='30'
-        width='90'
-        height='60'
-        rx='8'
-        fill='rgba(6,182,212,0.06)'
-        stroke='rgba(6,182,212,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='446'
-        y='60'
-        textAnchor='middle'
-        fill='#06b6d4'
-        fontSize='11'
-        fontFamily='monospace'
-      >
-        Tools
-      </text>
-      <text
-        x='446'
-        y='75'
-        textAnchor='middle'
-        fill='#52525b'
-        fontSize='9'
-        fontFamily='monospace'
-      >
-        pass →
-      </text>
-      <path
-        d='M493 60 L519 60'
-        stroke='#06b6d4'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='519,56.5 526,60 519,63.5' fill='#06b6d4' />
-      <rect
-        x='528'
-        y='30'
-        width='90'
-        height='60'
-        rx='8'
-        fill='rgba(6,182,212,0.06)'
-        stroke='rgba(6,182,212,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='573'
-        y='65'
-        textAnchor='middle'
-        fill='#06b6d4'
-        fontSize='11'
-        fontFamily='monospace'
-      >
-        Event Log
-      </text>
-      <path
-        d='M620 60 L646 60'
-        stroke='#06b6d4'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='646,56.5 653,60 646,63.5' fill='#06b6d4' />
-      <rect
-        x='655'
-        y='30'
-        width='90'
-        height='60'
-        rx='8'
-        fill='rgba(6,182,212,0.06)'
-        stroke='rgba(6,182,212,0.2)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='700'
-        y='65'
-        textAnchor='middle'
-        fill='#06b6d4'
-        fontSize='11'
-        fontFamily='monospace'
-      >
-        Dashboard
-      </text>
-    </svg>
-  );
-}
 
-function GuardFlowSvg() {
-  return (
-    <svg
-      viewBox='0 0 680 200'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-      className='w-full'
-      aria-label='Guard flow: Request through Rate Limiter, Injection Check, PII Scanner, then Forward to Tool or Block with alert, both logged'
-    >
+      {/* Guards */}
       <rect
-        x='0'
-        y='60'
-        width='100'
-        height='40'
-        rx='7'
-        fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.09)'
-        strokeWidth='1'
+        x='270'
+        y='120'
+        width='180'
+        height='26'
+        rx='6'
+        fill='rgba(255,255,255,0.03)'
+        stroke='rgba(255,255,255,0.08)'
       />
       <text
-        x='50'
-        y='85'
+        x='360'
+        y='138'
         textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='10.5'
       >
-        Request
+        rate_limit · sliding window 100/m
       </text>
+      <rect
+        x='270'
+        y='152'
+        width='180'
+        height='26'
+        rx='6'
+        fill='rgba(255,255,255,0.03)'
+        stroke='rgba(255,255,255,0.08)'
+      />
+      <text
+        x='360'
+        y='170'
+        textAnchor='middle'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='10.5'
+      >
+        injection_detector · regex + heur
+      </text>
+      <rect
+        x='270'
+        y='184'
+        width='180'
+        height='26'
+        rx='6'
+        fill='rgba(255,255,255,0.03)'
+        stroke='rgba(255,255,255,0.08)'
+      />
+      <text
+        x='360'
+        y='202'
+        textAnchor='middle'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='10.5'
+      >
+        pii_scanner · presidio
+      </text>
+
       <path
-        d='M102 80 L122 80'
+        d='M470 160 L560 160'
         stroke='#22c55e'
         strokeWidth='1.5'
         strokeDasharray='4 3'
       />
-      <polygon points='122,76.5 129,80 122,83.5' fill='#22c55e' />
+      <polygon points='560,156 568,160 560,164' fill='#22c55e' />
+
+      {/* Tools */}
       <rect
-        x='131'
-        y='60'
-        width='100'
-        height='40'
-        rx='7'
+        x='570'
+        y='130'
+        width='120'
+        height='60'
+        rx='10'
         fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.09)'
-        strokeWidth='1'
+        stroke='rgba(255,255,255,0.12)'
       />
       <text
-        x='181'
-        y='85'
+        x='630'
+        y='166'
         textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='12'
       >
-        Rate Limiter
+        TOOLS
       </text>
+
+      {/* Blocked path */}
       <path
-        d='M233 80 L253 80'
-        stroke='#22c55e'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='253,76.5 260,80 253,83.5' fill='#22c55e' />
-      <rect
-        x='262'
-        y='60'
-        width='100'
-        height='40'
-        rx='7'
-        fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.09)'
-        strokeWidth='1'
-      />
-      <text
-        x='312'
-        y='85'
-        textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Inj. Check
-      </text>
-      <path
-        d='M364 80 L384 80'
-        stroke='#22c55e'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='384,76.5 391,80 384,83.5' fill='#22c55e' />
-      <rect
-        x='393'
-        y='60'
-        width='100'
-        height='40'
-        rx='7'
-        fill='rgba(255,255,255,0.04)'
-        stroke='rgba(255,255,255,0.09)'
-        strokeWidth='1'
-      />
-      <text
-        x='443'
-        y='85'
-        textAnchor='middle'
-        fill='#a1a1aa'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        PII Scanner
-      </text>
-      <path
-        d='M495 80 L515 80'
-        stroke='#22c55e'
-        strokeWidth='1.5'
-        strokeDasharray='4 3'
-      />
-      <polygon points='515,76.5 522,80 515,83.5' fill='#22c55e' />
-      <rect
-        x='524'
-        y='60'
-        width='90'
-        height='40'
-        rx='7'
-        fill='rgba(34,197,94,0.07)'
-        stroke='rgba(34,197,94,0.25)'
-        strokeWidth='1.5'
-      />
-      <text
-        x='569'
-        y='82'
-        textAnchor='middle'
-        fill='#22c55e'
-        fontSize='10'
-        fontFamily='monospace'
-      >
-        Forward
-      </text>
-      <text
-        x='569'
-        y='95'
-        textAnchor='middle'
-        fill='#22c55e'
-        fontSize='8'
-        fontFamily='monospace'
-      >
-        to Tool
-      </text>
-      <path
-        d='M312 102 L312 148'
+        d='M360 240 L360 280'
         stroke='#ef4444'
         strokeWidth='1.5'
         strokeDasharray='4 3'
       />
-      <polygon points='308.5,148 312,155 315.5,148' fill='#ef4444' />
       <rect
-        x='262'
-        y='155'
-        width='100'
-        height='40'
-        rx='7'
-        fill='rgba(239,68,68,0.07)'
-        stroke='rgba(239,68,68,0.25)'
-        strokeWidth='1.5'
+        x='290'
+        y='280'
+        width='140'
+        height='32'
+        rx='8'
+        fill='rgba(239,68,68,0.08)'
+        stroke='rgba(239,68,68,0.3)'
       />
       <text
-        x='312'
-        y='175'
+        x='360'
+        y='300'
         textAnchor='middle'
         fill='#ef4444'
-        fontSize='10'
-        fontFamily='monospace'
+        fontFamily='JetBrains Mono'
+        fontSize='11'
       >
-        Block
+        BLOCKED · alert
       </text>
-      <text
-        x='312'
-        y='188'
-        textAnchor='middle'
-        fill='#52525b'
-        fontSize='8'
-        fontFamily='monospace'
-      >
-        + alert
-      </text>
+
+      {/* Event log → Dashboard */}
       <path
-        d='M569 102 L569 130 L622 130 L622 155'
-        stroke='#06b6d4'
+        d='M470 160 Q540 60 720 60 L760 60'
+        stroke='rgba(34,197,94,0.4)'
         strokeWidth='1.5'
         strokeDasharray='4 3'
       />
       <rect
-        x='580'
-        y='155'
-        width='90'
+        x='760'
+        y='40'
+        width='180'
         height='40'
-        rx='7'
+        rx='10'
         fill='rgba(6,182,212,0.06)'
-        stroke='rgba(6,182,212,0.2)'
-        strokeWidth='1.5'
+        stroke='rgba(6,182,212,0.25)'
       />
       <text
-        x='625'
-        y='180'
+        x='850'
+        y='65'
         textAnchor='middle'
         fill='#06b6d4'
-        fontSize='10'
-        fontFamily='monospace'
+        fontFamily='JetBrains Mono'
+        fontSize='12'
       >
-        Log Event
+        EVENT LOG → DASHBOARD
+      </text>
+
+      {/* Supabase audit */}
+      <rect
+        x='760'
+        y='240'
+        width='180'
+        height='40'
+        rx='10'
+        fill='rgba(255,255,255,0.04)'
+        stroke='rgba(255,255,255,0.12)'
+      />
+      <text
+        x='850'
+        y='265'
+        textAnchor='middle'
+        fill='#a8a39a'
+        fontFamily='JetBrains Mono'
+        fontSize='11.5'
+      >
+        SUPABASE · RLS
       </text>
       <path
-        d='M362 175 L580 175'
-        stroke='#ef4444'
+        d='M850 80 L850 240'
+        stroke='rgba(255,255,255,0.18)'
         strokeWidth='1.5'
         strokeDasharray='4 3'
       />
@@ -473,352 +310,374 @@ function GuardFlowSvg() {
   );
 }
 
+// Static seed events shown before the user clicks "Run sample" — matches the
+// reference visual. Once the SSE stream fires, the live events replace these.
+const SEED_EVENTS: MockEvent[] = [
+  {
+    id: 'evt_a4f1',
+    tool: 'file_read',
+    status: 'allowed',
+    latency: '4ms',
+    timestamp: '14:22:08'
+  },
+  {
+    id: 'evt_b2c9',
+    tool: 'web_search',
+    status: 'allowed',
+    latency: '11ms',
+    timestamp: '14:22:06'
+  },
+  {
+    id: 'evt_d8e3',
+    tool: 'code_execute',
+    status: 'allowed',
+    latency: '7ms',
+    timestamp: '14:22:04'
+  },
+  {
+    id: 'evt_f1a6',
+    tool: 'db_query',
+    status: 'warning',
+    latency: '9ms',
+    timestamp: '14:22:02'
+  },
+  {
+    id: 'evt_91be',
+    tool: 'send_email',
+    status: 'blocked',
+    latency: '3ms',
+    timestamp: '14:22:00'
+  }
+];
+
+const DEMO_EVENTS: MockEvent[] = [
+  {
+    id: 'evt_a4f1',
+    tool: 'file_read',
+    status: 'allowed',
+    latency: '4ms',
+    timestamp: '14:22:08'
+  },
+  {
+    id: 'evt_c7e2',
+    tool: 'web_search',
+    status: 'allowed',
+    latency: '11ms',
+    timestamp: '14:22:09'
+  },
+  {
+    id: 'evt_5b90',
+    tool: 'code_execute',
+    status: 'allowed',
+    latency: '7ms',
+    timestamp: '14:22:10'
+  },
+  {
+    id: 'evt_1f3c',
+    tool: 'db_query',
+    status: 'warning',
+    latency: '9ms',
+    timestamp: '14:22:11'
+  },
+  {
+    id: 'evt_9d12',
+    tool: 'send_email',
+    status: 'blocked',
+    latency: '3ms',
+    timestamp: '14:22:12'
+  }
+];
+
+const STREAM_STEP_MS = 450;
+const STREAM_RESET_DELAY_MS = 900;
+
+const TRADEOFFS = [
+  {
+    kind: 'CHOSE' as const,
+    title: 'Wrapper, not a sidecar',
+    body: '3 lines to install vs deploying a separate process. p99 stays low because everything is in-process.'
+  },
+  {
+    kind: 'CHOSE' as const,
+    title: 'Boundary guards, not LLM-based',
+    body: "Pattern + Presidio. No LLM call to decide whether to allow the next LLM call — that's a cost loop."
+  },
+  {
+    kind: 'SKIPPED' as const,
+    title: 'Fancy ML detection',
+    body: '90% of injection attempts are caught by 12 patterns. Ship that first; revisit when the data demands it.'
+  }
+];
+
 export function McpContent() {
-  const [events, setEvents] = useState<MockEvent[]>([]);
+  const [events, setEvents] = useState<MockEvent[]>(SEED_EVENTS);
   const [loading, setLoading] = useState(false);
   const [demoActive, setDemoActive] = useState(false);
 
   useEffect(() => {
     if (!demoActive) return;
+
     setLoading(true);
     setEvents([]);
 
-    const sse = new EventSource('/api/mcp/demo');
-    let count = 0;
+    const eventTimers = DEMO_EVENTS.map((event, index) =>
+      window.setTimeout(() => {
+        setEvents((prev) => [event, ...prev].slice(0, 8));
+      }, index * STREAM_STEP_MS)
+    );
 
-    sse.onmessage = (e) => {
-      try {
-        const raw = JSON.parse(e.data) as {
-          id: string;
-          tool_name: string;
-          action: string;
-          latency_ms: number;
-          created_at: string;
-        };
-        const event: MockEvent = {
-          id: raw.id,
-          tool: raw.tool_name,
-          status: raw.action as MockEvent['status'],
-          latency: `${raw.latency_ms}ms`,
-          timestamp: raw.created_at.slice(11, 19)
-        };
-        setEvents((prev) => [...prev, event].slice(0, 50));
-        count++;
-        if (count >= 5) {
-          setLoading(false);
-          sse.close();
-        }
-      } catch {
-        // ignore malformed event
-      }
+    const resetTimer = window.setTimeout(
+      () => {
+        setEvents(SEED_EVENTS);
+        setLoading(false);
+        setDemoActive(false);
+      },
+      DEMO_EVENTS.length * STREAM_STEP_MS + STREAM_RESET_DELAY_MS
+    );
+
+    return () => {
+      eventTimers.forEach((timer) => window.clearTimeout(timer));
+      window.clearTimeout(resetTimer);
     };
-
-    sse.onerror = () => {
-      setLoading(false);
-      sse.close();
-    };
-
-    return () => sse.close();
   }, [demoActive]);
 
   const runDemo = () => {
-    setDemoActive(false);
-    // toggle off then on to re-trigger effect
-    setTimeout(() => setDemoActive(true), 0);
+    if (loading) return;
+    setDemoActive(true);
   };
 
   return (
-    <div className='flex flex-col'>
-      {/* Hero */}
-      <section className='relative z-10 mx-auto max-w-4xl px-6 py-20'>
-        <GridBackground />
-        <MonoEyebrow color='green' className='mb-6'>
-          Agent Observability
-        </MonoEyebrow>
-        <h1
-          className='mb-4 text-5xl leading-[1.07] font-extrabold tracking-[-0.04em]'
-          style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-        >
-          MCP Sentinel
-        </h1>
-        <p
-          className='mb-8 max-w-2xl text-base leading-relaxed'
-          style={{ color: 'var(--ink-2)' }}
-        >
-          Drop-in observability for agent tool calls. Every MCP interaction is
-          logged, guarded, and auditable — without changing your tool
-          implementations.
-        </p>
-        <div className='flex gap-4'>
-          <Button
-            variant='outline'
-            size='lg'
-            asChild
+    <div style={{ background: 'var(--bg-0)' }}>
+      <main className='mod-wrap' style={{ paddingTop: 24, paddingBottom: 0 }}>
+        {/* Hero */}
+        <section style={{ padding: '80px 0 64px' }}>
+          <div
             style={{
-              background: 'var(--bg-2)',
-              color: 'var(--ink-0)',
-              borderColor: 'var(--border-muted)'
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              marginBottom: 24
             }}
           >
-            <a href='#quickstart'>Quickstart</a>
-          </Button>
-        </div>
-      </section>
-
-      {/* What / Who / Why */}
-      <section
-        className='border-y py-16'
-        style={{
-          borderColor: 'var(--border-subtle)',
-          background: 'var(--bg-1)'
-        }}
-      >
-        <div className='mx-auto grid max-w-4xl grid-cols-1 gap-8 px-4 md:grid-cols-3'>
-          <div>
-            <h3
-              className='mb-2 font-semibold'
-              style={{ color: 'var(--ink-0)' }}
-            >
-              What
-            </h3>
-            <p
-              className='text-sm leading-relaxed'
-              style={{ color: 'var(--ink-2)' }}
-            >
-              A proxy layer between AI agents and their tools. Logs every call,
-              applies guard rails, and surfaces anomalies in a real-time
-              dashboard.
-            </p>
-          </div>
-          <div>
-            <h3
-              className='mb-2 font-semibold'
-              style={{ color: 'var(--ink-0)' }}
-            >
-              Who
-            </h3>
-            <p
-              className='text-sm leading-relaxed'
-              style={{ color: 'var(--ink-2)' }}
-            >
-              Teams deploying LLM agents in production who need visibility into
-              tool usage, cost tracking, and security boundaries.
-            </p>
-          </div>
-          <div>
-            <h3
-              className='mb-2 font-semibold'
-              style={{ color: 'var(--ink-0)' }}
-            >
-              Why
-            </h3>
-            <p
-              className='text-sm leading-relaxed'
-              style={{ color: 'var(--ink-2)' }}
-            >
-              Agents call tools autonomously. Without observability, you cannot
-              audit decisions, detect misuse, or enforce compliance.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Quickstart */}
-      <section id='quickstart' className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <h2
-            className='mb-8 text-2xl font-bold'
-            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-          >
-            Quickstart
-          </h2>
-          <CodeBlock
-            code={quickstartCode}
-            language='typescript'
-            filename='mcp-server.ts'
-          />
-        </div>
-      </section>
-
-      {/* Live Demo */}
-      <section className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <h2
-            className='mb-2 text-2xl font-bold'
-            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-          >
-            Live Demo
-          </h2>
-          <p className='mb-8' style={{ color: 'var(--ink-2)' }}>
-            Run a sample workflow to see how Sentinel logs and guards tool
-            calls.
-          </p>
-          <Button
-            onClick={runDemo}
-            disabled={loading}
-            size='lg'
-            style={{
-              background: 'var(--accent)',
-              color: 'var(--bg-0)',
-              boxShadow: '0 0 20px rgba(34,197,94,0.3)'
-            }}
-          >
-            <IconPlayerPlay className='mr-2 h-4 w-4' />
-            {loading ? 'Running...' : 'Run Sample Workflow'}
-          </Button>
-
-          {events.length > 0 && (
-            <div className='mt-8 space-y-3'>
-              {events.map((event) => (
-                <div
-                  key={event.id}
-                  className='animate-in fade-in slide-in-from-left-2 flex items-center gap-4 rounded-lg p-4'
-                  style={{
-                    border: '1px solid var(--border-subtle)',
-                    background: 'var(--bg-2)'
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      fontSize: 12,
-                      color: 'var(--ink-3)'
-                    }}
-                  >
-                    {event.timestamp}
-                  </span>
-                  <Badge
-                    variant={
-                      event.status === 'allowed'
-                        ? 'default'
-                        : event.status === 'warning'
-                          ? 'secondary'
-                          : 'destructive'
-                    }
-                    className={
-                      event.status === 'allowed'
-                        ? 'w-20 justify-center border-[rgba(34,197,94,0.3)] bg-[rgba(34,197,94,0.08)] text-[#22c55e]'
-                        : event.status === 'blocked'
-                          ? 'w-20 justify-center border-red-500/30 bg-red-500/[0.08] text-red-400'
-                          : 'w-20 justify-center'
-                    }
-                  >
-                    {event.status === 'allowed' && (
-                      <IconCheck className='mr-1 h-3 w-3' />
-                    )}
-                    {event.status === 'warning' && (
-                      <IconAlertTriangle className='mr-1 h-3 w-3' />
-                    )}
-                    {event.status === 'blocked' && (
-                      <IconShield className='mr-1 h-3 w-3' />
-                    )}
-                    {event.status}
-                  </Badge>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      fontSize: 14,
-                      color: 'var(--ink-0)'
-                    }}
-                  >
-                    {event.tool}
-                  </span>
-                  <span
-                    className='ml-auto flex items-center'
-                    style={{
-                      fontFamily: 'var(--font-dp-mono)',
-                      fontSize: 12,
-                      color: 'var(--ink-3)'
-                    }}
-                  >
-                    <IconClock className='mr-1 h-3 w-3' />
-                    {event.latency}
-                  </span>
-                </div>
-              ))}
+            <div className='mod-icon'>
+              <ShieldIcon />
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* Architecture */}
-      <section
-        className='border-y py-20'
-        style={{
-          borderColor: 'var(--border-subtle)',
-          background: 'var(--bg-1)'
-        }}
-      >
-        <div className='mx-auto max-w-4xl px-4'>
-          <h2
-            className='mb-8 text-2xl font-bold'
-            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-          >
-            Architecture
-          </h2>
-          <div
-            className='overflow-x-auto rounded-xl p-6'
-            style={{
-              border: '1px solid var(--border-subtle)',
-              background: 'var(--bg-2)'
-            }}
-          >
-            <McpArchSvg />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <span className='mod-eyebrow'>
+                <span className='mod-dot' />
+                <span className='mod-dash' />
+                <span>MODULE 01 / SENTINEL</span>
+              </span>
+              <h1
+                style={{
+                  margin: 0,
+                  fontFamily: 'var(--font-dp-sans), Inter Tight, sans-serif',
+                  fontSize: 'clamp(40px, 5vw, 64px)',
+                  fontWeight: 600,
+                  letterSpacing: '-0.04em',
+                  lineHeight: 0.96,
+                  color: 'var(--ink-0)'
+                }}
+              >
+                MCP Sentinel
+              </h1>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Guard Flow */}
-      <section className='py-20'>
-        <div className='mx-auto max-w-4xl px-4'>
-          <h2
-            className='mb-8 text-2xl font-bold'
-            style={{ color: 'var(--ink-0)', fontFamily: 'var(--font-dp-sans)' }}
-          >
-            Guard Flow
-          </h2>
-          <div
-            className='overflow-x-auto rounded-xl p-6'
+          <p
             style={{
-              border: '1px solid var(--border-subtle)',
-              background: 'var(--bg-2)'
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: 'var(--ink-2)',
+              maxWidth: 720,
+              margin: 0
             }}
           >
-            <GuardFlowSvg />
+            Drop-in observability and guardrails for agent tool calls. Wrap your
+            MCP server, get an audit-ready event stream and four guards
+            (injection, PII, cost, rate limit) in front of every call. Reference
+            implementation, ~700 LOC.
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              marginTop: 28,
+              flexWrap: 'wrap'
+            }}
+          >
+            <span className='mod-status'>
+              <span className='mod-status-dot' />
+              p99 &lt; 12ms overhead
+            </span>
+            <span className='mod-status'>
+              <span className='mod-status-dot' />0 incidents post-rollout
+            </span>
+            <span className='mod-status'>
+              <span className='mod-status-dot' />
+              github.com/pappdavid/mcp-sentinel
+            </span>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Demo limits */}
-      <section className='py-16'>
-        <div className='mx-auto max-w-4xl px-4'>
+        {/* // 01 Architecture */}
+        <section style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>{'// 01'}</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>Architecture</span>
+          </div>
           <div
-            className='rounded-xl p-6'
+            className='mod-card'
             style={{
-              border: '1px solid var(--border-subtle)',
-              background: 'var(--bg-2)'
+              padding: 24,
+              background: 'var(--bg-1)',
+              overflow: 'hidden'
             }}
           >
-            <p
+            <ArchitectureSvg />
+          </div>
+        </section>
+
+        {/* // 02 Live event stream */}
+        <section style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>{'// 02'}</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>Live event stream</span>
+          </div>
+
+          <div className='mod-card' style={{ overflow: 'hidden' }}>
+            <div
+              className='mod-ev'
               style={{
-                fontFamily: 'var(--font-dp-mono)',
-                fontSize: 12,
+                color: 'var(--ink-3)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                fontSize: 10
+              }}
+            >
+              <span>id</span>
+              <span>tool</span>
+              <span>status</span>
+              <span>p50</span>
+              <span>time</span>
+            </div>
+            {events.map((event) => (
+              <div key={event.id} className='mod-ev'>
+                <span className='mod-ev-id'>{event.id}</span>
+                <span style={{ color: 'var(--ink-1)' }}>{event.tool}</span>
+                <span className={`mod-stat-${event.status}`}>
+                  {event.status === 'allowed' && '● allowed'}
+                  {event.status === 'warning' && '▲ warning'}
+                  {event.status === 'blocked' && '✕ blocked'}
+                </span>
+                <span style={{ color: 'var(--ink-2)' }}>{event.latency}</span>
+                <span className='mod-ev-time'>{event.timestamp}</span>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginTop: 20,
+              flexWrap: 'wrap'
+            }}
+          >
+            <button
+              type='button'
+              onClick={runDemo}
+              disabled={loading}
+              className='dp-btn dp-btn-primary'
+              style={{
+                padding: '10px 20px',
+                fontSize: 13,
+                opacity: loading ? 0.6 : 1,
+                cursor: loading ? 'wait' : 'pointer'
+              }}
+            >
+              {loading ? 'Streaming…' : 'Run sample workflow'}
+            </button>
+            <span
+              style={{
+                fontFamily: 'var(--font-dp-mono), monospace',
+                fontSize: 11.5,
                 color: 'var(--ink-3)'
               }}
             >
-              Demo is rate-limited to 100 events/minute with mock data.{' '}
-              <a
-                href='mailto:contact@davidpapp.dev'
-                style={{ color: 'var(--accent-bright)' }}
-                className='hover:underline'
-              >
-                Contact me
-              </a>{' '}
-              for a full walkthrough or to discuss deployment.
-            </p>
+              Mock telemetry, rate-limited to 100 events/min.
+            </span>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* // 03 Quickstart in 3 lines */}
+        <section id='quickstart' style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>{'// 03'}</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>Quickstart in 3 lines</span>
+          </div>
+          <pre className='mod-terminal'>
+            {quickstartLines.map((line, i) => (
+              <div key={i}>
+                {line.map((tok, j) =>
+                  tok.cls ? (
+                    <span key={j} className={tok.cls}>
+                      {tok.text}
+                    </span>
+                  ) : (
+                    <span key={j}>{tok.text}</span>
+                  )
+                )}
+                {line.length === 0 || (line.length === 1 && line[0].text === '')
+                  ? ' '
+                  : null}
+              </div>
+            ))}
+          </pre>
+        </section>
+
+        {/* // 04 Trade-offs */}
+        <section style={{ paddingBottom: 80 }}>
+          <div className='mod-section-meta'>
+            <span className='mod-section-num'>{'// 04'}</span>
+            <span className='mod-section-line' />
+            <span className='mod-section-label'>Trade-offs</span>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: 16
+            }}
+          >
+            {TRADEOFFS.map((t) => (
+              <div
+                key={t.title}
+                className={`mod-tradeoff ${t.kind === 'CHOSE' ? 'is-chose' : 'is-skipped'}`}
+              >
+                <div className='mod-tradeoff-tag'>{t.kind}</div>
+                <div className='mod-tradeoff-title'>{t.title}</div>
+                <p className='mod-tradeoff-body'>{t.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Footer: prev/next module */}
+        <nav className='mod-foot'>
+          <Link href='/training' className='is-next'>
+            → Next module: Custom Training
+          </Link>
+          <Link href='/' className='is-back'>
+            ← Back to homepage
+          </Link>
+        </nav>
+      </main>
     </div>
   );
 }
