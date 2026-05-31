@@ -204,8 +204,23 @@
   color: var(--accent);
 }
 
+/* subtle scanline texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.012) 0 1px,
+    transparent 1px 3px
+  );
+}
+
 /* ---- Layout & Shell ---- */
-.scroll-container {
+.scroll-container,
+.scroll {
   position: absolute;
   top: var(--statusbar-h);
   bottom: var(--tabbar-h);
@@ -329,7 +344,8 @@
   margin: var(--sp-3) 0 0;
   font-family: var(--font-mono);
 }
-.hero-tag .out {
+.hero-tag .out,
+.hero-tag .prompt {
   color: var(--accent);
   font-weight: 700;
 }
@@ -450,11 +466,6 @@
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
-}
-.sec-cmd::before {
-  content: '$ ';
-  color: var(--accent);
-  font-weight: 700;
 }
 .sec-note {
   font-size: 12px;
@@ -703,7 +714,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: 280px;
+  height: 260px;
   overflow-y: auto;
 }
 .chat-msg {
@@ -866,16 +877,20 @@
 }
 
 /* ---- Custom CSS Scrollbar ---- */
-.scroll-container::-webkit-scrollbar {
+.scroll-container::-webkit-scrollbar,
+.scroll::-webkit-scrollbar {
   width: 8px;
 }
-.scroll-container::-webkit-scrollbar-track {
+.scroll-container::-webkit-scrollbar-track,
+.scroll::-webkit-scrollbar-track {
   background: var(--bg);
 }
-.scroll-container::-webkit-scrollbar-thumb {
+.scroll-container::-webkit-scrollbar-thumb,
+.scroll::-webkit-scrollbar-thumb {
   background: var(--border);
 }
-.scroll-container::-webkit-scrollbar-thumb:hover {
+.scroll-container::-webkit-scrollbar-thumb:hover,
+.scroll::-webkit-scrollbar-thumb:hover {
   background: var(--text-dim);
 }
 
