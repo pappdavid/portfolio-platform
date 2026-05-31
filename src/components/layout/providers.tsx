@@ -15,16 +15,24 @@ export default function Providers({
   // we need the resolvedTheme value to set the baseTheme for clerk based on the dark or light theme
   const { resolvedTheme } = useTheme();
 
+  // NEXT_PUBLIC_* env vars are inlined at build time, so reading this in a
+  // client component is safe. Only enable Clerk when a publishable key exists.
+  const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
   return (
     <>
       <ActiveThemeProvider initialTheme={activeThemeValue}>
-        <ClerkProvider
-          appearance={{
-            baseTheme: resolvedTheme === 'dark' ? dark : undefined
-          }}
-        >
-          {children}
-        </ClerkProvider>
+        {clerkEnabled ? (
+          <ClerkProvider
+            appearance={{
+              baseTheme: resolvedTheme === 'dark' ? dark : undefined
+            }}
+          >
+            {children}
+          </ClerkProvider>
+        ) : (
+          children
+        )}
       </ActiveThemeProvider>
     </>
   );

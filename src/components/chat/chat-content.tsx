@@ -396,7 +396,9 @@ export function ChatContent() {
         <div className='shell block'>
           {/* Header Title */}
           <div className='sec-head'>
-            <span className='sec-cmd'><span className='prompt'>$ </span>cat /etc/chat_os</span>
+            <span className='sec-cmd'>
+              <span className='prompt'>$ </span>cat /etc/chat_os
+            </span>
             <span className='sec-note'>CONSOLE</span>
           </div>
 
