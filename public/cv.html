@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>David Papp - CV</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background-color: #09090b;
+      color: #e4e4e7;
+      font-family: 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .cv-container {
+      width: 100%;
+      max-width: 800px;
+      background: #09090b;
+      border: 1px solid #27272a;
+      padding: 30px;
+      border-radius: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    /* Top Status Bar */
+    .status-bar {
+      border: 1px solid #22c55e;
+      color: #22c55e;
+      padding: 6px 12px;
+      margin-bottom: 24px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(34, 197, 94, 0.05);
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-bar span {
+      display: flex;
+      align-items: center;
+    }
+
+    .status-bar .dot {
+      width: 6px;
+      height: 6px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    /* Header styling */
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px dashed #27272a;
+      padding-bottom: 20px;
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .subtitle {
+      color: #22c55e;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .location {
+      color: #a1a1aa;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      color: #a1a1aa;
+      text-decoration: none;
+    }
+
+    .contact-item::before {
+      content: "- ";
+      color: #22c55e;
+      margin-right: 6px;
+    }
+
+    .contact-item:hover {
+      color: #22c55e;
+    }
+
+    /* Section styling */
+    section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: #22c55e;
+      font-weight: 700;
+      border-bottom: 1px solid #22c55e;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Capabilities styling */
+    .cap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cap-item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+    }
+
+    .cap-label {
+      color: #a1a1aa;
+      font-weight: 500;
+    }
+
+    .cap-val {
+      color: #e4e4e7;
+    }
+
+    /* Experience styling */
+    .exp-item {
+      margin-bottom: 16px;
+    }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .exp-title {
+      color: #ffffff;
+    }
+
+    .exp-company {
+      color: #22c55e;
+    }
+
+    .exp-date {
+      color: #71717a;
+      font-size: 12px;
+    }
+
+    .exp-bullets {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .exp-bullets li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 4px;
+      color: #d4d4d8;
+    }
+
+    .exp-bullets li::before {
+      content: ">";
+      color: #22c55e;
+      position: absolute;
+      left: 0;
+    }
+
+    /* Education styling */
+    .edu-item {
+      margin-bottom: 16px;
+    }
+
+    .edu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .edu-degree {
+      color: #ffffff;
+    }
+
+    .edu-school {
+      color: #22c55e;
+    }
+
+    .edu-date {
+      color: #71717a;
+      font-size: 12px;
+    }
+
+    .edu-coursework {
+      color: #a1a1aa;
+      padding-left: 16px;
+    }
+
+    /* Footer styling */
+    footer {
+      margin-top: 32px;
+      border-top: 1px dashed #27272a;
+      padding-top: 16px;
+      text-align: center;
+      font-size: 11px;
+      color: #71717a;
+    }
+
+    footer a {
+      color: #22c55e;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background-color: #09090b !important;
+        color: #e4e4e7 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .cv-container {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cv-container">
+    <div class="status-bar">
+      <span>SYS.NAME: CV_2026</span>
+      <span><span class="dot"></span>STATUS: OPEN · FULL-TIME</span>
+    </div>
+    
+    <header>
+      <div class="header-main">
+        <div>
+          <h1>DAVID PAPP</h1>
+          <div class="subtitle">AI Solution Developer</div>
+          <div class="location">Amsterdam · Rotterdam, NL | OPEN · FULL-TIME</div>
+        </div>
+      </div>
+      <div class="contact-grid">
+        <a href="mailto:contact@davidpapp.dev" class="contact-item">contact@davidpapp.dev</a>
+        <a href="https://davidpapp.dev" class="contact-item" target="_blank">davidpapp.dev</a>
+        <a href="https://linkedin.com/in/d%C3%A1vid-papp" class="contact-item" target="_blank">linkedin.com/in/dávid-papp</a>
+        <a href="https://github.com/pappdavid" class="contact-item" target="_blank">github.com/pappdavid</a>
+      </div>
+    </header>
+
+    <section>
+      <div class="section-title">§ 1.0 PROFILE</div>
+      <p>AI Solution Developer with hands-on experience designing and shipping production-grade LLM-powered systems. Specializes in multi-agent orchestration, RAG pipelines, and secure runtime tooling for autonomous agents. Currently pursuing a BSc in Artificial Intelligence at VU Amsterdam while working as an AI Solutions Developer at WEBINFORM IT Ltd.</p>
+    </section>
+
+    <section>
+      <div class="section-title">§ 2.0 CAPABILITIES</div>
+      <div class="cap-list">
+        <div class="cap-item">
+          <div class="cap-label">AI · ML:</div>
+          <div class="cap-val">Neural network architectures, transformer models, fine-tuning (LoRA/QLoRA), embedding models, vector search, evaluation frameworks</div>
+        </div>
+        <div class="cap-item">
+          <div class="cap-label">LLMs · Agents:</div>
+          <div class="cap-val">Multi-agent orchestration (MCP), RAG pipelines, prompt engineering, tool-use architectures, guardrails & policy enforcement</div>
+        </div>
+        <div class="cap-item">
+          <div class="cap-label">Languages:</div>
+          <div class="cap-val">Python, Rust, TypeScript, SQL, Bash</div>
+        </div>
+        <div class="cap-item">
+          <div class="cap-label">Frontend · UI:</div>
+          <div class="cap-val">Next.js, React, Tailwind CSS, Three.js, Generative UI (Thesys C1)</div>
+        </div>
+        <div class="cap-item">
+          <div class="cap-label">Data · Infra:</div>
+          <div class="cap-val">Supabase/Postgres, pgvector, Upstash Redis, Stripe API, Vercel, GitHub Actions, Docker</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">§ 3.0 EXPERIENCE</div>
+      
+      <div class="exp-item">
+        <div class="exp-header">
+          <span><span class="exp-title">AI Solutions Developer</span> | <span class="exp-company">WEBINFORM IT Ltd</span></span>
+          <span class="exp-date">Oct 2024 – Present</span>
+        </div>
+        <ul class="exp-bullets">
+          <li>Designed secure multi-agent coordination architectures using MCP connectors</li>
+          <li>Bootstrapped low-latency fine-tuning dataset generation scripts over massive code bases</li>
+          <li>Overhauled SaaS backends with Stripe Billing, Prisma, and robust usage constraints</li>
+          <li>Built an AI agent security platform: risk scoring, policy engine, HITL approvals</li>
+        </ul>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-header">
+          <span><span class="exp-title">Programming Instructor</span> | <span class="exp-company">Logiscool</span></span>
+          <span class="exp-date">Feb 2023 – Jun 2023</span>
+        </div>
+        <ul class="exp-bullets">
+          <li>Taught programming fundamentals and game development to children aged 7–14</li>
+          <li>Developed custom curricula for Python and Scratch courses</li>
+        </ul>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-header">
+          <span><span class="exp-title">Project Assistant</span> | <span class="exp-company">4iG Nyrt.</span></span>
+          <span class="exp-date">Aug 2022 – Aug 2023</span>
+        </div>
+        <ul class="exp-bullets">
+          <li>Supported IT infrastructure projects for Hungary's largest IT services company</li>
+          <li>Assisted with enterprise deployment planning and documentation</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">§ 4.0 EDUCATION</div>
+      
+      <div class="edu-item">
+        <div class="edu-header">
+          <span><span class="edu-degree">BSc Artificial Intelligence</span> | <span class="edu-school">VU Amsterdam</span></span>
+          <span class="edu-date">2024 – 2027 (expected)</span>
+        </div>
+        <div class="edu-coursework">
+          Selected coursework: Machine Learning, Computational Linguistics, Data Structures & Algorithms, Linear Algebra, Calculus, Logic & Sets, Project Multi-Agent Systems
+        </div>
+      </div>
+
+      <div class="edu-item">
+        <div class="edu-header">
+          <span><span class="edu-degree">Advanced Studies in Computer Science</span> | <span class="edu-school">Milestone Institute</span></span>
+          <span class="edu-date">2019 – 2023</span>
+        </div>
+        <div class="edu-coursework">
+          Advanced program for gifted students with focus on mathematics and computer science
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      // terminal signature v2.0.26 //
+      <a href="mailto:contact@davidpapp.dev">contact@davidpapp.dev</a> | 
+      <a href="https://davidpapp.dev" target="_blank">davidpapp.dev</a> | 
+      <a href="https://linkedin.com/in/d%C3%A1vid-papp" target="_blank">linkedin</a> | 
+      <a href="https://github.com/pappdavid" target="_blank">github</a>
+    </footer>
+  </div>
+</body>
+</html>
