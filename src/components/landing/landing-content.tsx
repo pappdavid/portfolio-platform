@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 function Typewriter({
@@ -33,7 +32,10 @@ function Typewriter({
   return (
     <span>
       {text.slice(0, n)}
-      <span className='cur' style={{ opacity: n < text.length ? 1 : undefined }} />
+      <span
+        className='cur'
+        style={{ opacity: n < text.length ? 1 : undefined }}
+      />
     </span>
   );
 }
@@ -46,21 +48,25 @@ type Project = {
   name: string;
   size: string;
   mod: string;
-  badge: 'live' | 'wip' | 'archive';
+  badge: 'live' | 'wip' | 'archive' | 'private';
   desc: string;
   body: string;
   tech: string[];
+  repoUrl?: string;
+  liveUrl?: string;
+  access?: 'private';
 };
 
 const PROJECTS: Project[] = [
   {
-    name: 'AGENTSEC.hook',
-    size: '4.9kb',
+    name: 'AGENTSEC.app',
+    size: '15.3kb',
     mod: '2026-05',
-    badge: 'live',
-    desc: 'Runtime security and policy enforcement hooks for AI agents',
-    body: 'AgentSec Hook Pack intercepts and classifies risky tool calls before an AI agent (Claude Code / Codex) executes them — blocking destructive shell commands, secret exfiltration, unauthorized file edits, and unreviewed production deployments in real time. It uses a sequence of local fast-path checks and remote API policy validation with human-in-the-loop approvals.',
-    tech: ['Node.js', 'JavaScript', 'JSON-RPC', 'PreToolUse', 'Enforce/Observe']
+    badge: 'private',
+    access: 'private',
+    desc: 'AI agent security platform — register agents, score risk, enforce production readiness',
+    body: 'A hosted platform that puts AI agents through deterministic security review before they reach production. Agents are registered, scored against a risk policy engine, and gated by human-in-the-loop approvals. Built on top of my AgentSec hook pack (runtime PreToolUse enforcement) with a dashboard, audit trail, and MCP integration on top. Currently in private beta.',
+    tech: ['Next.js', 'MCP', 'Policy Engine', 'Risk Scoring', 'HITL']
   },
   {
     name: 'AGENT_CLI.rust',
@@ -75,7 +81,8 @@ const PROJECTS: Project[] = [
       'MCP Protocol',
       'JSON-RPC over stdio',
       'Subprocesses'
-    ]
+    ],
+    repoUrl: 'https://github.com/pappdavid/agent-cli-mcp-rust'
   },
   {
     name: 'SKILL_INJ.rs',
@@ -90,32 +97,43 @@ const PROJECTS: Project[] = [
       'Antigravity App',
       'Dynamic Loading',
       'Bash Installer'
-    ]
+    ],
+    repoUrl: 'https://github.com/pappdavid/antigravity-skill-injector'
   },
   {
-    name: 'SAAS_CORE.dir',
-    size: '15.3kb',
-    mod: '2026-05',
-    badge: 'live',
-    desc: 'Production-ready Next.js SaaS template with automatic bootstrapping',
-    body: 'A production-ready SaaS template giving you authentication (Auth.js v5 / Clerk dual auth), billing (Stripe), background jobs (Trigger.dev), database (Prisma + Supabase Postgres), rate-limiting (Upstash Redis), Resend transactional email, and automated CI/CD bootstrap actions out of the box.',
-    tech: ['Next.js 14+', 'Prisma', 'Stripe', 'Trigger.dev', 'Clerk', 'Upstash']
-  },
-  {
-    name: 'THESYS_C1.wip',
+    name: 'THESYS_C1.app',
     size: '2.8kb',
     mod: '2026-03',
-    badge: 'wip',
+    badge: 'live',
     desc: 'Developer dashboard for Thesys C1 Generative UI integration',
     body: 'Production-ready developer dashboard for managing and analyzing AI agents running with Thesys C1 Generative UI. Built with Next.js, featuring real-time telemetry, session controls, and automated deployment pipelines via GitHub Actions and Vercel.',
-    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Recharts', 'Generative UI']
+    tech: [
+      'Next.js',
+      'TypeScript',
+      'Tailwind CSS',
+      'Recharts',
+      'Generative UI'
+    ],
+    repoUrl: 'https://github.com/pappdavid/thesys-c1-dashboard',
+    liveUrl: 'https://thesys-c1-dashboard.vercel.app'
+  },
+  {
+    name: 'JOBLAUNCH.agent',
+    size: '9.4kb',
+    mod: '2026-04',
+    badge: 'live',
+    desc: 'AI job-application agent powered by Thesys C1 Generative UI',
+    body: 'An AI agent that helps job seekers move faster — it reasons over a role and a candidate profile and renders an interactive, generative UI experience for tailoring applications. Built with Next.js and Thesys C1 Generative UI.',
+    tech: ['Next.js', 'Thesys C1', 'Generative UI', 'Agents'],
+    repoUrl: 'https://github.com/pappdavid/joblaunch-agent',
+    liveUrl: 'https://joblaunch-agent.vercel.app'
   }
 ];
 
 const SUGGESTIONS = [
   "what is David's tech stack?",
   'tell me about agent-cli-mcp-rust',
-  'what does antigravity-skill-injector do?',
+  'what is the AgentSec platform?',
   'is David available for hire?'
 ];
 
@@ -196,7 +214,9 @@ export function LandingContent() {
         </div>
         <div className='sb-right'>
           <span className='sb-dot' />
-          <span className='sb-commits'>⎇ {commitCount.toLocaleString()} commits</span>
+          <span className='sb-commits'>
+            ⎇ {commitCount.toLocaleString()} commits
+          </span>
         </div>
       </div>
 
@@ -222,7 +242,10 @@ export function LandingContent() {
               </div>
 
               <div className='term-body'>
-                <pre className='ascii' aria-hidden='true'>{`██████╗  █████╗ ██╗   ██╗██╗██████╗
+                <pre
+                  className='ascii'
+                  aria-hidden='true'
+                >{`██████╗  █████╗ ██╗   ██╗██╗██████╗
 ██╔══██╗██╔══██╗██║   ██║██║██╔══██╗
 ██║  ██║███████║██║   ██║██║██║  ██║
 ██║  ██║██╔══██║╚██╗ ██╔╝██║██║  ██║
@@ -234,7 +257,7 @@ export function LandingContent() {
                 </div>
 
                 <h1 className='hero-name'>David&nbsp;Papp</h1>
-                <div className='hero-role'>Junior AI Solution Developer</div>
+                <div className='hero-role'>AI Solution Developer</div>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
                   <Typewriter text='Building AI-first solutions. One agent at a time.' />
@@ -243,18 +266,24 @@ export function LandingContent() {
                 <div className='hero-pill'>
                   <div
                     className='pill'
-                    style={{ color: 'var(--accent)', borderColor: 'var(--accent)' }}
+                    style={{
+                      color: 'var(--accent)',
+                      borderColor: 'var(--accent)'
+                    }}
                   >
-                    <span className='dot live' style={{ background: 'var(--accent)' }} />
+                    <span
+                      className='dot live'
+                      style={{ background: 'var(--accent)' }}
+                    />
                     OPEN TO WORK
                   </div>
-                  <span className='loc'>// Rotterdam, NL</span>
+                  <span className='loc'>{'// Amsterdam · Rotterdam, NL'}</span>
                 </div>
 
                 <div className='cta-row'>
-                  <button onClick={() => nav('skills')} className='cta cta-primary'>
+                  <a href='/cv.pdf' download className='cta cta-primary'>
                     [view resume]
-                  </button>
+                  </a>
                   <button onClick={() => nav('work')} className='cta'>
                     [projects]
                   </button>
@@ -275,7 +304,9 @@ export function LandingContent() {
                       <tr>
                         <td className='mk'>LOCATION</td>
                         <td className='ms'>:</td>
-                        <td className='mv'>Rotterdam, NL · remote</td>
+                        <td className='mv'>
+                          Amsterdam · Rotterdam, NL · remote
+                        </td>
                       </tr>
                       <tr>
                         <td className='mk'>FOCUS</td>
@@ -355,7 +386,8 @@ function WorkSection() {
   const badgeColor = {
     live: 'var(--accent)',
     wip: 'var(--warn)',
-    archive: 'var(--text-dim)'
+    archive: 'var(--text-dim)',
+    private: 'var(--warn)'
   };
 
   return (
@@ -421,24 +453,37 @@ function WorkSection() {
                     </span>
                   ))}
                 </div>
-                <Link
-                  href={
-                    p.name.includes('AGENTSEC')
-                      ? 'https://github.com/pappdavid/agentsec-hook-pack'
-                      : p.name.includes('AGENT_CLI')
-                        ? 'https://github.com/pappdavid/agent-cli-mcp-rust'
-                        : p.name.includes('SKILL_INJ')
-                          ? 'https://github.com/pappdavid/antigravity-skill-injector'
-                          : p.name.includes('THESYS_C1')
-                            ? 'https://github.com/pappdavid/thesys-c1-dashboard'
-                            : 'https://github.com/pappdavid/portfolio-platform'
-                  }
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='open-btn inline-block'
-                >
-                  [OPEN] read repository source code →
-                </Link>
+                {p.access === 'private' ? (
+                  <a
+                    href='mailto:contact@davidpapp.dev?subject=AgentSec%20access%20request'
+                    className='open-btn inline-block'
+                  >
+                    [REQUEST ACCESS] private beta →
+                  </a>
+                ) : (
+                  <div className='flex flex-wrap gap-3'>
+                    {p.liveUrl && (
+                      <a
+                        href={p.liveUrl}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='open-btn inline-block'
+                      >
+                        [LIVE] open deployment →
+                      </a>
+                    )}
+                    {p.repoUrl && (
+                      <a
+                        href={p.repoUrl}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='open-btn inline-block'
+                      >
+                        [OPEN] read repository source →
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -469,7 +514,7 @@ function SkillsSection() {
           <span className='sec-note'>HISTORY</span>
         </div>
 
-        <div className='rs-divider'>// EXPERIENCE</div>
+        <div className='rs-divider'>{'// EXPERIENCE'}</div>
 
         <div className='rs-row'>
           <div className='rs-line'>
@@ -514,7 +559,7 @@ function SkillsSection() {
           </ul>
         </div>
 
-        <div className='rs-divider'>// CORE SKILLS</div>
+        <div className='rs-divider'>{'// CORE SKILLS'}</div>
         <div className='resume-grid'>
           <div>
             <div className='skill-cap'>LANGUAGES</div>
@@ -588,7 +633,7 @@ function ContactSection({ nav }: ContactSectionProps) {
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: "Session active. Grounded in David's public GitHub projects. Ask me about AgentSec, agent-cli-mcp-rust, antigravity-skill-injector, saas-core, or thesys-c1-dashboard!"
+      text: "Session active. Grounded in David's public GitHub projects. Ask me about the AgentSec platform, agent-cli-mcp-rust, antigravity-skill-injector, thesys-c1-dashboard, or joblaunch-agent!"
     }
   ]);
   const [val, setVal] = useState('');
