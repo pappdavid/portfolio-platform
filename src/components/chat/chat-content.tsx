@@ -104,24 +104,24 @@ const REPO_FILES: Record<string, CodeChunk[]> = {
       tokens: 194
     }
   ],
-  'saas-core': [
+  'joblaunch-agent': [
     {
       id: '1',
-      filename: 'prisma/schema.prisma',
-      summary: 'Database schema holding subs, billing, users and audit events',
-      tokens: 670
+      filename: 'src/app/job/page.tsx',
+      summary: 'Main dynamic application workspace and tailoring terminal UI',
+      tokens: 540
     },
     {
       id: '2',
-      filename: 'src/lib/rate-limit.ts',
-      summary: 'Upstash Redis-backed B2C subscription limitation limits',
-      tokens: 310
+      filename: 'src/lib/agents/builder.ts',
+      summary: 'Tailoring prompts, LLM parameters, and resume parser scripts',
+      tokens: 380
     },
     {
       id: '3',
-      filename: 'src/app/api/stripe/webhook/route.ts',
-      summary: 'Stripe transaction status parser and model toggler',
-      tokens: 420
+      filename: 'src/lib/thesys.ts',
+      summary: 'Thesys C1 SDK setup and Generative UI state handlers',
+      tokens: 290
     }
   ],
   'thesys-c1-dashboard': [
@@ -423,7 +423,7 @@ export function ChatContent() {
                     <input
                       value={repoUrl}
                       onChange={(e) => setRepoUrl(e.target.value)}
-                      placeholder='pappdavid/saas-core...'
+                      placeholder='pappdavid/joblaunch-agent...'
                       className='w-full border border-[var(--border)] bg-[#070707] py-1.5 pr-2 pl-8 font-mono text-xs text-white focus:border-[var(--accent)] focus:outline-none'
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleCloneRepo();
