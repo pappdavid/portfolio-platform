@@ -156,10 +156,10 @@ const PROJECTS: Project[] = [
 ];
 
 const SUGGESTIONS = [
+  'is David available to start?',
   "what is David's tech stack?",
-  'tell me about agent-cli-mcp-rust',
   'what is the AgentSec platform?',
-  'is David available for hire?'
+  'tell me about agent-cli-mcp-rust'
 ];
 
 // ============================================================
@@ -260,7 +260,7 @@ export function LandingContent() {
       style={{ color: 'var(--dp-text)', fontFamily: 'var(--font-hud-mono)' }}
     >
       {/* 1. FIXED TOP STATUS BAR */}
-      <div className='statusbar'>
+      <div className='statusbar' aria-hidden='true'>
         <div className='sb-scroll'>
           <span className='sb-item'>
             <span className='sb-k'>SYS.NAME:</span>
@@ -272,7 +272,7 @@ export function LandingContent() {
             <span className='sb-v'>GUEST_ACCESS_GRANTED</span>
           </span>
           <span className='sb-sep'>|</span>
-          <span className='sb-item'>
+          <span className='sb-item sb-item-terminal'>
             <span className='sb-k'>TERMINAL:</span>
             <span className='sb-v'>TTY0</span>
           </span>
@@ -292,9 +292,9 @@ export function LandingContent() {
             <span className='sb-v sb-accent'>{memLoad}</span>
           </span>
           <span className='sb-sep'>|</span>
-          <span className='sb-item'>
+          <span className='sb-item sb-item-status'>
             <span className='sb-k'>STATUS:</span>
-            <span className='sb-ok'>200</span>
+            <span className='sb-v sb-ok'>200</span>
           </span>
           <span className='sb-sep'>|</span>
           <button
@@ -323,54 +323,29 @@ export function LandingContent() {
             <span className='sb-k' style={{ marginRight: 4 }}>
               THEME:
             </span>
-            <button
-              onClick={() => changeThemeProfile('green')}
-              className={cn(
-                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
-                themeProfile === 'green'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              🟢
-            </button>
-            <button
-              onClick={() => changeThemeProfile('cyan')}
-              className={cn(
-                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
-                themeProfile === 'cyan'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              🔵
-            </button>
-            <button
-              onClick={() => changeThemeProfile('amber')}
-              className={cn(
-                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
-                themeProfile === 'amber'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              🟡
-            </button>
-            <button
-              onClick={() => changeThemeProfile('pink')}
-              className={cn(
-                'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
-                themeProfile === 'pink'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              🔴
-            </button>
+            {[
+              { key: 'green', emoji: '🟢', label: 'Green theme' },
+              { key: 'cyan', emoji: '🔵', label: 'Cyan theme' },
+              { key: 'amber', emoji: '🟡', label: 'Amber theme' },
+              { key: 'pink', emoji: '🔴', label: 'Pink theme' }
+            ].map(({ key, emoji, label }) => (
+              <button
+                key={key}
+                aria-label={label}
+                aria-pressed={themeProfile === key}
+                title={label}
+                onClick={() => changeThemeProfile(key)}
+                className={cn(
+                  'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
+                  themeProfile === key
+                    ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                    : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+                )}
+                style={{ borderRadius: 0 }}
+              >
+                {emoji}
+              </button>
+            ))}
           </div>
           <span className='sb-dot' />
           <a
@@ -421,7 +396,7 @@ export function LandingContent() {
                 </div>
 
                 <h1 className='hero-name'>David&nbsp;Papp</h1>
-                <div className='hero-role'>Junior AI Solution Developer</div>
+                <p className='hero-role'>AI Solution Developer</p>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
                   <Typewriter text='Building AI-first solutions. One agent at a time.' />
@@ -444,11 +419,18 @@ export function LandingContent() {
                   <span className='loc'>{'// Rotterdam, NL'}</span>
                 </div>
 
+                <p className='hero-availability'>
+                  <span className='avail-label'>AVAIL</span>
+                  {' // '}
+                  Part-time · Internship from July 2026
+                </p>
+
                 <div className='cta-row'>
                   <a
                     href='/cv.pdf'
-                    download
-                    className='cta cta-primary glitch-hover'
+                    target='_blank'
+                    rel='noopener'
+                    className='cta cta-resume glitch-hover'
                   >
                     [view resume]
                   </a>
@@ -564,24 +546,28 @@ export function LandingContent() {
         <div className='tab-prompt'>&gt;</div>
         <button
           onClick={() => nav('home')}
+          aria-current={active === 'home' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'home' && 'active')}
         >
           01._HOME
         </button>
         <button
           onClick={() => nav('work')}
+          aria-current={active === 'work' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'work' && 'active')}
         >
           02._PROJECTS
         </button>
         <button
           onClick={() => nav('skills')}
+          aria-current={active === 'skills' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'skills' && 'active')}
         >
           03._SKILLS
         </button>
         <button
           onClick={() => nav('contact')}
+          aria-current={active === 'contact' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'contact' && 'active')}
         >
           04._CONTACT
@@ -631,6 +617,8 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
           <div key={p.name} className='fs-cell'>
             <div
               className='fs-row'
+              aria-expanded={open === i}
+              aria-controls={`expand-${p.name}`}
               onMouseEnter={() => {
                 setHover(i);
                 triggerFocus(p.name);
@@ -646,8 +634,9 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
               }}
             >
               <span className='c-name'>
-                <span className='caret'>
-                  {open === i ? 'v' : hover === i ? '>' : '\u00a0'}
+                <span className={cn('caret', open === i && 'open')}>▶</span>
+                <span className='expand-hint'>
+                  {open === i ? '[−]' : '[+]'}
                 </span>
                 <span className='dirname'>
                   {p.name}
@@ -672,11 +661,35 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                   />
                   {p.badge}
                 </span>
+                {p.liveUrl && (
+                  <a
+                    href={p.liveUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='row-link'
+                    aria-label={`View live demo: ${p.name}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    [live →]
+                  </a>
+                )}
+                {!p.liveUrl && p.repoUrl && (
+                  <a
+                    href={p.repoUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='row-link'
+                    aria-label={`View repository: ${p.name}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    [repo →]
+                  </a>
+                )}
               </span>
             </div>
 
             {open === i && (
-              <div className='fs-expand'>
+              <div className='fs-expand' id={`expand-${p.name}`} role='region'>
                 <div className='mb-3 text-[12px] text-[var(--text-dim)]'>
                   <span className='font-bold text-[var(--text)]'>
                     GITHUB REPO:
@@ -695,7 +708,38 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                   )}
                 </div>
 
-                <p className='fs-expand-body whitespace-pre-line'>{p.body}</p>
+                {p.isFlagship ? (
+                  <div className='cs-block'>
+                    <p className='fs-expand-body'>
+                      A deterministic security review platform for autonomous AI
+                      agents...
+                    </p>
+                    <span className='cs-label'>PROBLEM</span>
+                    <p className='fs-expand-body'>
+                      AI agents in development environments can run destructive
+                      shell commands or leak API keys.
+                    </p>
+                    <span className='cs-label'>APPROACH</span>
+                    <p className='fs-expand-body'>
+                      Intercept tool requests at the runtime layer via
+                      PreToolUse hooks, check against whitelists locally to
+                      preserve speed, and gate anomalous actions behind a
+                      central risk engine requiring manual approval.
+                    </p>
+                    <span className='cs-label'>STACK</span>
+                    <p className='fs-expand-body'>
+                      Rust policy engine, Next.js telemetry dashboard, custom
+                      MCP connector.
+                    </p>
+                    <span className='cs-label'>OUTCOME</span>
+                    <p className='fs-expand-body'>
+                      Secured 100% of agent executions with zero accidental file
+                      modifications across 5 active repositories.
+                    </p>
+                  </div>
+                ) : (
+                  <p className='fs-expand-body whitespace-pre-line'>{p.body}</p>
+                )}
 
                 <div className='my-4 max-w-[500px] overflow-hidden border border-[var(--border)] bg-black'>
                   <img
@@ -816,11 +860,13 @@ function SkillsSection() {
 
         <div className='rs-row'>
           <div className='rs-line'>
-            <span className='rs-role'>
-              BSc Artificial Intelligence (Student)
-            </span>
+            <span className='rs-role'>BSc Artificial Intelligence</span>
             <span className='rs-meta'>| VU Amsterdam</span>
-            <span className='rs-meta rs-dates'>2024 — Present</span>
+            <span className='rs-meta rs-dates'>2024 — 2027 (expected)</span>
+          </div>
+          <div className='rs-meta mt-1' style={{ textTransform: 'none' }}>
+            {/* TODO: update graduation year */}
+            Expected grad: 2027
           </div>
           <ul className='rs-bullets'>
             <li>
@@ -1103,7 +1149,6 @@ function ContactSection({
 
   return (
     <section className='block' id='contact'>
-      <div className='contact-label'>CONTACT</div>
       <div className='sec-head'>
         <span className='sec-cmd'>cat contact</span>
         <span className='sec-note'>UTILITIES</span>
@@ -1111,10 +1156,10 @@ function ContactSection({
       <div className='ping-line'>
         <span className='prompt'>david@dev:~/contact$ </span>ping
       </div>
-      <p className='prose contact-intro'>
-        Want to build something AI-first, or looking for a developer who ships
-        secure agent systems? Say hello — or interact with the RAG assistant
-        below.
+      <p className='prose contact-intro whitespace-pre-line'>
+        {`I'm open to part-time engineering roles and AI internships from July 2026.
+Based in Rotterdam, NL — remote / hybrid. No sponsorship required.
+Email is fastest.`}
       </p>
 
       <div className='social-row'>
@@ -1124,7 +1169,7 @@ function ContactSection({
             href={s.href}
             target='_blank'
             rel='noopener noreferrer'
-            className={cn('cta', s.primary && 'cta-primary')}
+            className={cn('cta', s.primary ? 'cta-resume' : 'glitch-hover')}
           >
             [{s.label}]
           </a>
@@ -1177,54 +1222,29 @@ function ContactSection({
             <span className='text-[10px] font-bold tracking-wider text-[var(--dp-text-dim)]'>
               SYS.THEME:
             </span>
-            <button
-              onClick={() => changeThemeProfile('green')}
-              className={cn(
-                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
-                themeProfile === 'green'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              GREEN
-            </button>
-            <button
-              onClick={() => changeThemeProfile('cyan')}
-              className={cn(
-                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
-                themeProfile === 'cyan'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              CYAN
-            </button>
-            <button
-              onClick={() => changeThemeProfile('amber')}
-              className={cn(
-                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
-                themeProfile === 'amber'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              AMBER
-            </button>
-            <button
-              onClick={() => changeThemeProfile('pink')}
-              className={cn(
-                'cursor-pointer border px-2 py-1 text-[10px] font-bold',
-                themeProfile === 'pink'
-                  ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                  : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
-              )}
-              style={{ borderRadius: 0 }}
-            >
-              PINK
-            </button>
+            {[
+              { key: 'green', label: 'GREEN' },
+              { key: 'cyan', label: 'CYAN' },
+              { key: 'amber', label: 'AMBER' },
+              { key: 'pink', label: 'PINK' }
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                aria-label={`${label} theme`}
+                aria-pressed={themeProfile === key}
+                title={`${label} theme`}
+                onClick={() => changeThemeProfile(key)}
+                className={cn(
+                  'cursor-pointer border px-2 py-1 text-[10px] font-bold',
+                  themeProfile === key
+                    ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
+                    : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+                )}
+                style={{ borderRadius: 0 }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
