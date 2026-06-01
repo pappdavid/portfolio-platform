@@ -7,8 +7,7 @@ export const metadata: Metadata = {
     'Building AI-first solutions. MCP Sentinel, agent-cli-mcp-rust, and production agent security architectures.',
   openGraph: {
     title: 'David Papp — AI Solution Developer',
-    description:
-      'Open to part-time AI engineering roles and internships from July 2026.',
+    description: 'Open to full-time AI engineering roles from July 2026.',
     images: [{ url: '/og-preview.jpg', width: 1200, height: 630 }],
     type: 'website'
   },

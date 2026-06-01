@@ -39,7 +39,7 @@ export function answerPortfolioQuestion(
   if (hasAny(normalized, ['role', 'roles', 'open to', 'available'])) {
     return {
       answer:
-        'David is open to junior AI / automation engineer, full-stack AI, and data science roles in the Netherlands. He is based around Rotterdam, studies AI at VU Amsterdam, and highlights a 24-hour response window for recruiting conversations.',
+        'David is open to AI / automation engineer, full-stack AI, and data science roles in the Netherlands. He is based around Rotterdam, studies AI at VU Amsterdam, and highlights a 24-hour response window for recruiting conversations.',
       links: [link('Contact David'), link('Proof of work')]
     };
   }
