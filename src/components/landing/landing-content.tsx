@@ -186,17 +186,25 @@ const PROJECTS: Project[] = [
     liveUrl: 'https://thesys-c1-dashboard.vercel.app'
   },
   {
-    name: 'JOBLAUNCH.agent',
+    name: 'SAAS_CORE.platform',
     stage: 'LIVE',
-    mod: '2026-04',
+    mod: '2026-05',
     badge: 'live',
-    repoName: 'pappdavid/joblaunch-agent',
-    image: '/saas-screenshots/joblaunch_agent_ui.png',
-    desc: 'Job-application copilot generating tailored candidate profiles with 3x faster submission cycles',
-    body: 'An interactive job application tailored powered by Next.js and Thesys C1. It reasons over role listings and candidate CVs to dynamically render customized tailoring interfaces, accelerating the application editing and PDF generation loop.',
-    tech: ['Next.js', 'Thesys C1', 'Generative UI', 'Agents'],
-    repoUrl: 'https://github.com/pappdavid/joblaunch-agent',
-    liveUrl: 'https://joblaunch-agent.vercel.app'
+    image: '/saas-screenshots/churn-autopsy.png',
+    desc: 'Shared auth, billing, and usage layer powering 5+ micro-SaaS products with Stripe metered billing and Supabase RLS',
+    body: 'A shared infrastructure layer that powers multiple self-hosted micro-SaaS products — handling authentication, Stripe billing, usage metering, admin tooling, and multi-tenant access control in one place. Clerk for auth (with org-level RBAC), Stripe for metered and subscription billing, Prisma + Supabase for the database layer with RLS, and Upstash Redis for rate limiting. New products onboard in ~30 minutes.',
+    tech: [
+      'Next.js 16',
+      'TypeScript',
+      'Clerk',
+      'Stripe',
+      'Prisma',
+      'Supabase',
+      'Upstash Redis',
+      'Vercel',
+      'Cloudflare'
+    ],
+    liveUrl: 'https://davidpapp.dev'
   }
 ];
 
@@ -493,7 +501,7 @@ export function LandingContent() {
                 </div>
 
                 <h1 className='hero-name'>David&nbsp;Papp</h1>
-                <p className='hero-role'>AI Systems Developer</p>
+                <p className='hero-role'>AI solution developer</p>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
                   <Typewriter text='Building AI-first solutions. One agent at a time.' />
@@ -982,9 +990,9 @@ function SkillsSection() {
 
         <div className='rs-row'>
           <div className='rs-line'>
-            <span className='rs-role'>AI Systems Developer</span>
+            <span className='rs-role'>AI solution developer</span>
             <span className='rs-meta'>| WebInform</span>
-            <span className='rs-meta rs-dates'>2025 — 2027 (Expected)</span>
+            <span className='rs-meta rs-dates'>2025 — present</span>
           </div>
           <ul className='rs-bullets'>
             <li>
