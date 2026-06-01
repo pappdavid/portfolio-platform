@@ -67,24 +67,23 @@
     "details": "When Antigravity starts a conversation, it originally reads all SKILL.md files recursively, costing thousands of wasted context tokens. With the injector, stubs are read in the UI so the agent knows the skill exists, but it only triggers the 'mcp.fetch_skill' tool when a relevant action is requested, dynamically expanding the needed skill in the window."
   },
   {
-    "id": "joblaunch-agent",
-    "name": "joblaunch-agent",
-    "description": "An AI-powered job application assistant that tailored resumes and cover letters for specific roles, powered by Thesys C1 Generative UI.",
-    "techStack": ["Next.js (App Router)", "TypeScript", "Thesys C1 SDK", "Tailwind CSS", "OpenAI API", "React 19"],
+    "id": "saas-core",
+    "name": "saas-core",
+    "description": "Shared auth, billing, and usage infrastructure layer powering 5+ active micro-SaaS products.",
+    "techStack": ["Next.js 16", "TypeScript", "Clerk (Multi-tenant)", "Stripe (Metered Billing)", "Prisma", "Supabase", "Upstash Redis"],
     "keyFeatures": [
-      "Generative UI tailoring: dynamic forms rendered by the agent on the fly based on user profile and role details",
-      "Resume & Cover Letter optimization: contextual alignment of professional experience with target job specifications",
-      "Interactive feedback loops: real-time user-in-the-loop validation of generated sections before export",
-      "Open deployment: hosted production service with highly polished terminal-based dashboard"
+      "Clerk Auth integration: fully configured multi-tenant workspaces with organization-level RBAC role controls",
+      "Stripe Metered Billing: dynamic utility-based tracking and automated checkout session synchronization",
+      "Upstash Redis Rate Limiting: highly scalable sliding-window request throttle limits guarding API endpoints",
+      "Supabase Database Layer: clean Row-Level Security (RLS) policies isolating tenant data tables natively"
     ],
-    "architecture": "graph TD\n  User[User Profile & Job URL] --> Agent[JobLaunch AI Agent]\n  Agent -->|renders step schemas| C1[Thesys C1 UI Engine]\n  C1 -->|interactive responses| User\n  Agent -->|calls completions| LLM[OpenAI API]\n  Agent -->|exports| PDF[Tailored PDF / Docs]",
+    "architecture": "graph TD\n  Client[SaaS User] -->|Clerk Session| Middleware[Next.js App Router Proxy]\n  Middleware -->|Quota Check| Redis[Upstash Rate Limiter]\n  Middleware -->|Access Grant| Supa[(Supabase Database with RLS)]\n  Supa -->|Usage Metric| Stripe[Stripe Metered Billing API]",
     "fileStructure": [
-      "src/app/job/ - Main dynamic application workspace and tailoring terminal UI",
-      "src/components/chat/ - Chat interfaces with custom generative components wrapper",
-      "src/lib/agents/ - Prompts, reasoning frameworks, and parser scripts",
-      "src/lib/thesys.ts - Thesys C1 session controls and component hooks"
+      "src/proxy.ts - Next.js App Router middleware mapping auth protection rules and Clerk integrations",
+      "src/lib/rate-limit.ts - Upstash Redis client and rate-limiting sliding window algorithms",
+      "src/components/layout/providers.tsx - App-wide context wrapper mounting themes, search state, and Clerk"
     ],
-    "details": "JobLaunch Agent streamlines the repetitive tasks of applying to jobs. By integrating Thesys C1 Generative UI, it doesn't just output static text; it lets the AI agent ask for details, present drafts as interactive forms, and adapt its interface as the applicant moves through steps."
+    "details": "SaaS Core acts as the centralized backbone powering multiple independent software-as-a-service applications. It completely isolates customer data via Postgres RLS, enforces real-time usage-based billing with Stripe webhooks, and protects resources against high-volume crawlers using Redis, allowing new SaaS products to onboard in ~30 minutes."
   },
   {
     "id": "thesys-c1-dashboard",

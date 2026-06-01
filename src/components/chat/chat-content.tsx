@@ -104,24 +104,24 @@ const REPO_FILES: Record<string, CodeChunk[]> = {
       tokens: 194
     }
   ],
-  'joblaunch-agent': [
+  'saas-core': [
     {
       id: '1',
-      filename: 'src/app/job/page.tsx',
-      summary: 'Main dynamic application workspace and tailoring terminal UI',
-      tokens: 540
+      filename: 'src/proxy.ts',
+      summary: 'Next.js middleware handling Clerk authentication, routing, and access control rules',
+      tokens: 420
     },
     {
       id: '2',
-      filename: 'src/lib/agents/builder.ts',
-      summary: 'Tailoring prompts, LLM parameters, and resume parser scripts',
-      tokens: 380
+      filename: 'src/lib/rate-limit.ts',
+      summary: 'Upstash Redis integration providing sliding-window rate limit checks for dashboard endpoints',
+      tokens: 210
     },
     {
       id: '3',
-      filename: 'src/lib/thesys.ts',
-      summary: 'Thesys C1 SDK setup and Generative UI state handlers',
-      tokens: 290
+      filename: 'src/components/layout/providers.tsx',
+      summary: 'App-wide React provider wrapping Clerk, Next-Themes, and Nuqs search states',
+      tokens: 310
     }
   ],
   'thesys-c1-dashboard': [

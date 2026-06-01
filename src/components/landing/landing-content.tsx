@@ -128,7 +128,7 @@ const PROJECTS: Project[] = [
       'HITL Security'
     ],
     repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack',
-    liveUrl: 'https://promptshield-cyan.vercel.app'
+    liveUrl: 'https://agentsec.davidpapp.dev'
   },
   {
     name: 'AGENT_CLI.rust',
@@ -1245,7 +1245,7 @@ function ContactSection({
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: "Session active. Grounded in David's public GitHub projects. Ask me about the AgentSec platform, agent-cli-mcp-rust, antigravity-skill-injector, thesys-c1-dashboard, or joblaunch-agent!"
+      text: "Session active. Grounded in David's public GitHub projects. Ask me about the AgentSec platform, agent-cli-mcp-rust, antigravity-skill-injector, thesys-c1-dashboard, or saas-core!"
     }
   ]);
   const [val, setVal] = useState('');
