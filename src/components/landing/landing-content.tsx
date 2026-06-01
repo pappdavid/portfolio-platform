@@ -190,9 +190,10 @@ const PROJECTS: Project[] = [
     stage: 'LIVE',
     mod: '2026-05',
     badge: 'live',
-    image: '/saas-screenshots/churn-autopsy.png',
-    desc: 'Shared auth, billing, and usage layer powering 5+ micro-SaaS products with Stripe metered billing and Supabase RLS',
-    body: 'A shared infrastructure layer that powers multiple self-hosted micro-SaaS products — handling authentication, Stripe billing, usage metering, admin tooling, and multi-tenant access control in one place. Clerk for auth (with org-level RBAC), Stripe for metered and subscription billing, Prisma + Supabase for the database layer with RLS, and Upstash Redis for rate limiting. New products onboard in ~30 minutes.',
+    repoName: 'code-shame/saas-core',
+    image: '/saas-screenshots/saas-core-factory.png',
+    desc: 'Self-provisioning micro-SaaS factory auto-provisioning databases, auth, email, caching, and billing pipelines on git push',
+    body: 'A production-ready self-provisioning template and modular scaffolding factory for B2B and AI-first micro-SaaS products. On git push, an automated GitHub Actions pipeline provisions everything (Vercel deployment, Supabase Postgres, Upstash Redis caching, Resend email audiences, and Stripe billing products) idempotently. Provides Clerk auth, Stripe metered billing, Prisma ORM, background jobs via Trigger.dev, and dual Auth.js/Clerk support.',
     tech: [
       'Next.js 16',
       'TypeScript',
@@ -201,10 +202,11 @@ const PROJECTS: Project[] = [
       'Prisma',
       'Supabase',
       'Upstash Redis',
-      'Vercel',
-      'Cloudflare'
+      'Trigger.dev',
+      'Resend'
     ],
-    liveUrl: 'https://davidpapp.dev'
+    repoUrl: 'https://github.com/code-shame/saas-core',
+    liveUrl: '/saas-projects'
   }
 ];
 
