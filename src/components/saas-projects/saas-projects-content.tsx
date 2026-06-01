@@ -165,7 +165,7 @@ export function SaasProjectsContent() {
             // Interested in hiring me?
           </h2>
           <p style={{ color: 'var(--dp-text-dim)', fontSize: '13px', marginTop: '8px', lineHeight: '1.6' }}>
-            I am available immediately for full-time AI solutions engineering roles and high-impact short consulting contracts.
+            I am available for full-time AI solutions engineering roles and high-impact short consulting contracts.
           </p>
           <div className='cta-row justify-center mt-8'>
             <a href='mailto:contact@davidpapp.dev' className='cta cta-resume glitch-hover'>

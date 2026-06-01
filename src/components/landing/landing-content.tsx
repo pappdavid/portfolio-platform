@@ -529,7 +529,7 @@ export function LandingContent() {
                 <p className='hero-availability'>
                   <span className='avail-label'>AVAIL</span>
                   {' // '}
-                  Full-time immediately / present
+                  Full-time
                 </p>
 
                 <div className='cta-row'>
@@ -591,7 +591,7 @@ export function LandingContent() {
                         <td className='mk'>AVAILABILITY</td>
                         <td className='ms'>:</td>
                         <td className='mv'>
-                          Full-time (available immediately / present)
+                          Full-time
                         </td>
                       </tr>
                       <tr>
@@ -773,7 +773,7 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                     </span>
                   )}
                 </span>
-                <span className='ml-3 flex shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)]'>
+                <span className='ml-3 hidden sm:flex shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)]'>
                   {p.repoUrl && (
                     <a
                       href={p.repoUrl}
@@ -802,16 +802,6 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
               <span className='c-mod'>{p.mod}</span>
               <span className='c-desc'>
                 {p.desc}
-                <span
-                  className='row-badge'
-                  style={{ color: badgeColor[p.badge] }}
-                >
-                  <span
-                    className='rb-dot'
-                    style={{ background: badgeColor[p.badge] }}
-                  />
-                  {p.badge}
-                </span>
                 {p.liveUrl && (
                   <a
                     href={p.liveUrl}
@@ -969,8 +959,7 @@ function SkillsSection() {
         retrieval pipelines and agent observability, I love collaborating with
         technical teams building core AI tooling, developer platforms, or
         autonomous agent frameworks. Looking for full-time engineering roles, AI
-        systems developer positions, or technical research collaborations
-        starting immediately in the present.
+        systems developer positions, or technical research collaborations.
       </p>
 
       <div className='resume'>
@@ -1183,7 +1172,7 @@ function NotesSection() {
       </p>
       <div className='flex flex-col gap-3 font-mono text-sm'>
         <a
-          href='https://github.com/pappdavid/agentsec-hook-pack/blob/main/docs/observability.md'
+          href='https://github.com/pappdavid/agentsec-hook-pack'
           target='_blank'
           rel='noopener noreferrer'
           className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
@@ -1202,7 +1191,7 @@ function NotesSection() {
           </p>
         </a>
         <a
-          href='https://github.com/pappdavid/agent-cli-mcp-rust/blob/main/docs/security.md'
+          href='https://github.com/pappdavid/agent-cli-mcp-rust'
           target='_blank'
           rel='noopener noreferrer'
           className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
@@ -1361,7 +1350,7 @@ function ContactSection({
         <span className='prompt'>david@dev:~/contact$ </span>ping
       </div>
       <p className='prose contact-intro whitespace-pre-line'>
-        {`I'm open immediately to full-time engineering and AI roles in the present.
+        {`I'm open to full-time engineering and AI roles.
 Based in Rotterdam, NL — remote / hybrid. No sponsorship required.
 Email is fastest.`}
       </p>

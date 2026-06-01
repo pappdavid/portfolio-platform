@@ -9,7 +9,7 @@ const ROWS: { kind: GlyphKind; k: string; v: string; avail?: boolean }[] = [
   {
     kind: 'briefcase',
     k: 'Availability',
-    v: 'Full-time (immediately / present)',
+    v: 'Full-time',
     avail: true
   }
 ];
