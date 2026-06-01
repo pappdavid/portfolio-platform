@@ -148,7 +148,7 @@ export function SaasProjectsContent() {
                       rel='noopener noreferrer'
                       className='row-link font-bold text-[11px]'
                     >
-                      [visit active demo ->]
+                      {'[visit active demo ->]'}
                     </a>
                   </div>
                 </div>
