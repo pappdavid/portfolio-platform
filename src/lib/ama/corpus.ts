@@ -2,7 +2,7 @@ export const amaCorpus: string = `
 # About David Papp
 AI engineer building production-grade tools for teams that ship LLM products. Focus areas: agent observability, guard rails, fine-tuning pipelines, and retrieval systems. Previously led three product launches end-to-end. Values: cost discipline, security by default, shipping the simplest thing that works.
 
-Open to: junior AI / automation engineer, full-stack AI, and data science roles in the Netherlands.
+Open to: AI / automation engineer, full-stack AI, and data science roles in the Netherlands.
 Contact: contact@davidpapp.dev | Book a call: https://calendly.com/david-webinform/30min
 LinkedIn: https://www.linkedin.com/in/d%C3%A1vid-papp | GitHub: https://github.com/pappdavid
 

@@ -40,7 +40,7 @@ export function FooterSig() {
               </div>
             </div>
             <p style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.6 }}>
-              AI Engineering student at VU Amsterdam. Available for junior AI /
+              AI Engineering student at VU Amsterdam. Available for AI /
               automation engineer roles in the Netherlands.
             </p>
             <div
