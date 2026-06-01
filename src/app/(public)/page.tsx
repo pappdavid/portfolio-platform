@@ -4,23 +4,18 @@ import { LandingContent } from '@/components/landing/landing-content';
 export const metadata: Metadata = {
   title: 'David Papp — AI Solution Developer',
   description:
-    '2nd-year BSc AI student at VU Amsterdam. I build production-quality LLM tools: agent observability, fine-tuning pipelines, and retrieval systems.',
+    'Building AI-first solutions. MCP Sentinel, agent-cli-mcp-rust, and production agent security architectures.',
   openGraph: {
     title: 'David Papp — AI Solution Developer',
     description:
-      '2nd-year BSc AI student at VU Amsterdam. I build production-quality LLM tools: agent observability, fine-tuning pipelines, and retrieval systems.',
-    url: 'https://davidpapp.dev',
-    siteName: 'David Papp Portfolio OS',
-    images: [
-      {
-        url: '/og/portfolio.png',
-        width: 1200,
-        height: 630,
-        alt: 'David Papp Portfolio OS — AI Solution Developer'
-      }
-    ],
-    locale: 'en_US',
+      'Open to part-time AI engineering roles and internships from July 2026.',
+    images: [{ url: '/og-preview.jpg', width: 1200, height: 630 }],
     type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'David Papp — AI Solution Developer',
+    images: ['/og-preview.jpg']
   }
 };
 

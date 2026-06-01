@@ -309,6 +309,11 @@
   animation: pulse 1.6s infinite;
   flex: none;
 }
+@media (prefers-reduced-motion: reduce) {
+  .sb-dot {
+    animation: none;
+  }
+}
 .sb-commits {
   color: var(--dp-accent);
 }
@@ -500,6 +505,19 @@ body::before {
 .cta-primary:hover {
   background: rgba(0, 255, 136, 0.14);
 }
+.cta-resume {
+  border-color: var(--dp-accent);
+  color: var(--dp-accent);
+  background: rgba(0, 255, 136, 0.12);
+  font-weight: 700;
+}
+.cta-resume:hover {
+  background: rgba(0, 255, 136, 0.2);
+  box-shadow: 0 0 12px var(--dp-accent-glow);
+}
+.cta-resume:active {
+  background: rgba(0, 255, 136, 0.28);
+}
 
 /* status.txt meta table */
 .statustxt {
@@ -629,8 +647,25 @@ body::before {
 }
 .caret {
   color: var(--dp-accent);
-  width: 10px;
-  display: inline-block;
+  width: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--dur-fast) var(--ease);
+  font-size: 10px;
+}
+.caret.open {
+  transform: rotate(90deg);
+}
+
+.expand-hint {
+  font-size: 11px;
+  color: var(--dp-text-dim);
+  font-family: var(--font-hud-mono);
+  min-width: 24px;
+}
+.fs-row:hover .expand-hint {
+  color: var(--dp-accent);
 }
 .dirname {
   color: var(--dp-accent);
@@ -659,17 +694,39 @@ body::before {
   height: 6px;
   border-radius: 50%;
 }
+.row-link {
+  font-size: 11px;
+  color: var(--dp-accent);
+  font-family: var(--font-hud-mono);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color var(--dur-fast) var(--ease);
+}
+.row-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .fs-expand {
   border-bottom: 1px solid var(--dp-border);
   background: var(--dp-accent-faint);
   padding: var(--sp-4) var(--sp-5) var(--sp-5) 34px;
 }
 .fs-expand-body {
-  font-size: 14px;
+  font-size: 14.5px; /* up from 14px */
   color: var(--dp-text);
-  line-height: 1.6;
+  line-height: 1.7; /* up from 1.6 */
   margin: 0 0 var(--sp-4);
   max-width: 72ch;
+}
+.cs-label {
+  color: var(--dp-accent);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 2px;
 }
 .open-btn {
   font-size: 12px;
@@ -1032,6 +1089,10 @@ body::before {
   .tab-prompt {
     display: none;
   }
+  .sb-item-terminal,
+  .sb-item-status {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1101,6 +1162,15 @@ body::before {
   }
   .fs-expand-body {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .cta-row {
+    flex-direction: column;
+  }
+  .cta {
+    text-align: center;
   }
 }
 
@@ -1322,21 +1392,29 @@ input:focus-visible {
   margin-top: 60px;
   border-top: 1px solid var(--border-subtle);
   font-family: var(--font-dp-mono), monospace;
-  font-size: 11.5px;
+  font-size: 13px; /* up from 11.5px */
   color: var(--ink-3);
   letter-spacing: 0.08em;
 }
 .mod-foot a {
+  padding: 8px 0;
+  display: inline-block;
   text-decoration: none;
+}
+.mod-foot a.is-back {
+  color: var(--dp-text-dim);
+  transition: color var(--dur-fast) var(--ease);
+}
+.mod-foot a.is-back:hover {
+  color: var(--dp-accent-muted);
 }
 .mod-foot a.is-next {
   color: var(--dp-accent);
+  font-weight: 700;
 }
-.mod-foot a.is-back {
-  color: var(--ink-3);
-}
-.mod-foot a.is-back:hover {
-  color: var(--ink-1);
+.mod-foot a.is-next:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Hide Clerk keyless / dev warning overlays to keep the monospaced terminal HUD clear of obstructions */
