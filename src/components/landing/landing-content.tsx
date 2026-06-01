@@ -112,10 +112,9 @@ type Project = {
 const PROJECTS: Project[] = [
   {
     name: 'AGENTSEC.app',
-    stage: 'BETA',
+    stage: 'LIVE',
     mod: '2026-05',
-    badge: 'private',
-    access: 'private',
+    badge: 'live',
     isFlagship: true,
     repoName: 'pappdavid/agentsec-hook-pack',
     image: '/saas-screenshots/agentsec_readme_header.png',
@@ -128,7 +127,8 @@ const PROJECTS: Project[] = [
       'Risk Scoring',
       'HITL Security'
     ],
-    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack'
+    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack',
+    liveUrl: 'https://promptshield-cyan.vercel.app'
   },
   {
     name: 'AGENT_CLI.rust',
@@ -527,7 +527,7 @@ export function LandingContent() {
                 <p className='hero-availability'>
                   <span className='avail-label'>AVAIL</span>
                   {' // '}
-                  Full-time from July 2026
+                  Full-time immediately / present
                 </p>
 
                 <div className='cta-row'>
@@ -588,7 +588,9 @@ export function LandingContent() {
                       <tr>
                         <td className='mk'>AVAILABILITY</td>
                         <td className='ms'>:</td>
-                        <td className='mv'>Full-time (July 2026 onwards)</td>
+                        <td className='mv'>
+                          Full-time (available immediately / present)
+                        </td>
                       </tr>
                       <tr>
                         <td className='mk'>WORK AUTH</td>
@@ -966,7 +968,7 @@ function SkillsSection() {
         technical teams building core AI tooling, developer platforms, or
         autonomous agent frameworks. Looking for full-time engineering roles, AI
         systems developer positions, or technical research collaborations
-        starting Summer/Fall 2026.
+        starting immediately in the present.
       </p>
 
       <div className='resume'>
@@ -1357,7 +1359,7 @@ function ContactSection({
         <span className='prompt'>david@dev:~/contact$ </span>ping
       </div>
       <p className='prose contact-intro whitespace-pre-line'>
-        {`I'm open to full-time engineering and AI roles from July 2026.
+        {`I'm open immediately to full-time engineering and AI roles in the present.
 Based in Rotterdam, NL — remote / hybrid. No sponsorship required.
 Email is fastest.`}
       </p>
