@@ -112,10 +112,9 @@ type Project = {
 const PROJECTS: Project[] = [
   {
     name: 'AGENTSEC.app',
-    stage: 'BETA',
+    stage: 'LIVE',
     mod: '2026-05',
-    badge: 'private',
-    access: 'private',
+    badge: 'live',
     isFlagship: true,
     repoName: 'pappdavid/agentsec-hook-pack',
     image: '/saas-screenshots/agentsec_readme_header.png',
@@ -128,7 +127,8 @@ const PROJECTS: Project[] = [
       'Risk Scoring',
       'HITL Security'
     ],
-    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack'
+    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack',
+    liveUrl: 'https://agentsec.davidpapp.dev'
   },
   {
     name: 'AGENT_CLI.rust',
@@ -190,9 +190,10 @@ const PROJECTS: Project[] = [
     stage: 'LIVE',
     mod: '2026-05',
     badge: 'live',
-    image: '/saas-screenshots/churn-autopsy.png',
-    desc: 'Shared auth, billing, and usage layer powering 5+ micro-SaaS products with Stripe metered billing and Supabase RLS',
-    body: 'A shared infrastructure layer that powers multiple self-hosted micro-SaaS products — handling authentication, Stripe billing, usage metering, admin tooling, and multi-tenant access control in one place. Clerk for auth (with org-level RBAC), Stripe for metered and subscription billing, Prisma + Supabase for the database layer with RLS, and Upstash Redis for rate limiting. New products onboard in ~30 minutes.',
+    repoName: 'code-shame/saas-core',
+    image: '/saas-screenshots/saas-core-factory.png',
+    desc: 'Self-provisioning micro-SaaS factory auto-provisioning databases, auth, email, caching, and billing pipelines on git push',
+    body: 'A production-ready self-provisioning template and modular scaffolding factory for B2B and AI-first micro-SaaS products. On git push, an automated GitHub Actions pipeline provisions everything (Vercel deployment, Supabase Postgres, Upstash Redis caching, Resend email audiences, and Stripe billing products) idempotently. Provides Clerk auth, Stripe metered billing, Prisma ORM, background jobs via Trigger.dev, and dual Auth.js/Clerk support.',
     tech: [
       'Next.js 16',
       'TypeScript',
@@ -201,10 +202,11 @@ const PROJECTS: Project[] = [
       'Prisma',
       'Supabase',
       'Upstash Redis',
-      'Vercel',
-      'Cloudflare'
+      'Trigger.dev',
+      'Resend'
     ],
-    liveUrl: 'https://davidpapp.dev'
+    repoUrl: 'https://github.com/code-shame/saas-core',
+    liveUrl: '/saas-projects'
   }
 ];
 
@@ -527,7 +529,7 @@ export function LandingContent() {
                 <p className='hero-availability'>
                   <span className='avail-label'>AVAIL</span>
                   {' // '}
-                  Full-time from July 2026
+                  Full-time
                 </p>
 
                 <div className='cta-row'>
@@ -588,7 +590,9 @@ export function LandingContent() {
                       <tr>
                         <td className='mk'>AVAILABILITY</td>
                         <td className='ms'>:</td>
-                        <td className='mv'>Full-time (July 2026 onwards)</td>
+                        <td className='mv'>
+                          Full-time
+                        </td>
                       </tr>
                       <tr>
                         <td className='mk'>WORK AUTH</td>
@@ -769,7 +773,7 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                     </span>
                   )}
                 </span>
-                <span className='ml-3 flex shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)]'>
+                <span className='ml-3 hidden sm:flex shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)]'>
                   {p.repoUrl && (
                     <a
                       href={p.repoUrl}
@@ -798,16 +802,6 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
               <span className='c-mod'>{p.mod}</span>
               <span className='c-desc'>
                 {p.desc}
-                <span
-                  className='row-badge'
-                  style={{ color: badgeColor[p.badge] }}
-                >
-                  <span
-                    className='rb-dot'
-                    style={{ background: badgeColor[p.badge] }}
-                  />
-                  {p.badge}
-                </span>
                 {p.liveUrl && (
                   <a
                     href={p.liveUrl}
@@ -965,8 +959,7 @@ function SkillsSection() {
         retrieval pipelines and agent observability, I love collaborating with
         technical teams building core AI tooling, developer platforms, or
         autonomous agent frameworks. Looking for full-time engineering roles, AI
-        systems developer positions, or technical research collaborations
-        starting Summer/Fall 2026.
+        systems developer positions, or technical research collaborations.
       </p>
 
       <div className='resume'>
@@ -1179,7 +1172,7 @@ function NotesSection() {
       </p>
       <div className='flex flex-col gap-3 font-mono text-sm'>
         <a
-          href='https://github.com/pappdavid/agentsec-hook-pack/blob/main/docs/observability.md'
+          href='https://github.com/pappdavid/agentsec-hook-pack'
           target='_blank'
           rel='noopener noreferrer'
           className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
@@ -1198,7 +1191,7 @@ function NotesSection() {
           </p>
         </a>
         <a
-          href='https://github.com/pappdavid/agent-cli-mcp-rust/blob/main/docs/security.md'
+          href='https://github.com/pappdavid/agent-cli-mcp-rust'
           target='_blank'
           rel='noopener noreferrer'
           className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
@@ -1243,7 +1236,7 @@ function ContactSection({
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: "Session active. Grounded in David's public GitHub projects. Ask me about the AgentSec platform, agent-cli-mcp-rust, antigravity-skill-injector, thesys-c1-dashboard, or joblaunch-agent!"
+      text: "Session active. Grounded in David's public GitHub projects. Ask me about the AgentSec platform, agent-cli-mcp-rust, antigravity-skill-injector, thesys-c1-dashboard, or saas-core!"
     }
   ]);
   const [val, setVal] = useState('');
@@ -1357,7 +1350,7 @@ function ContactSection({
         <span className='prompt'>david@dev:~/contact$ </span>ping
       </div>
       <p className='prose contact-intro whitespace-pre-line'>
-        {`I'm open to full-time engineering and AI roles from July 2026.
+        {`I'm open to full-time engineering and AI roles.
 Based in Rotterdam, NL — remote / hybrid. No sponsorship required.
 Email is fastest.`}
       </p>
