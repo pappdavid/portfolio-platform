@@ -15,14 +15,14 @@ const interTight = Inter_Tight({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-dp-sans',
-  display: 'swap',
+  display: 'swap'
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
   variable: '--font-dp-mono',
-  display: 'swap',
+  display: 'swap'
 });
 
 const META_THEME_COLORS = {
@@ -31,9 +31,9 @@ const META_THEME_COLORS = {
 };
 
 export const metadata: Metadata = {
-  title: 'Portfolio Platform',
+  title: 'David Papp — AI Solutions Developer',
   description:
-    'AI Engineering Portfolio — MCP Sentinel, Custom Training, RAG + 3D Chat'
+    'Portfolio of David Papp — AI Solutions Developer at WEBINFORM, BSc AI student at VU Amsterdam, and builder of open-source AI-agent security prototypes.'
 };
 
 export const viewport: Viewport = {
@@ -50,7 +50,12 @@ export default async function RootLayout({
   const themeToApply = activeThemeValue || DEFAULT_THEME;
 
   return (
-    <html lang='en' suppressHydrationWarning data-theme={themeToApply} className={`${interTight.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang='en'
+      suppressHydrationWarning
+      data-theme={themeToApply}
+      className={`${interTight.variable} ${jetbrainsMono.variable}`}
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{

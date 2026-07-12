@@ -19,8 +19,13 @@ Rules:
 - Include 1-3 relevant links from this list: ${JSON.stringify(portfolioAssistantLinks)}
 - If you don't know the answer from context, say "I don't have that detail in my portfolio content."`;
 
+async function optionalUserId() {
+  if (!process.env.CLERK_SECRET_KEY) return null;
+  return (await auth()).userId;
+}
+
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const userId = await optionalUserId();
   const identifier = userId || req.headers.get('x-forwarded-for') || 'anon';
 
   const limiter = userId ? amaAuthRateLimit : amaPublicRateLimit;

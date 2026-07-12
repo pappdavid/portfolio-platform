@@ -9,14 +9,11 @@ export type PortfolioAssistantAnswer = {
 };
 
 export const portfolioAssistantLinks: PortfolioAssistantLink[] = [
-  { label: 'MCP Sentinel demo', url: '/mcp' },
-  { label: 'Training Pipeline demo', url: '/training' },
-  { label: 'RAG + 3D Chat demo', url: '/chat' },
-  { label: 'Projects overview', url: '/projects' },
-  { label: 'Proof of work', url: '/#proof' },
+  { label: 'Projects', url: '/projects' },
+  { label: 'PromptShield demo', url: 'https://promptshield-cyan.vercel.app' },
+  { label: 'GitHub', url: 'https://github.com/pappdavid' },
   { label: 'Contact David', url: '/#contact' },
-  { label: 'MCP dashboard', url: '/dashboard/mcp' },
-  { label: 'Training dashboard', url: '/dashboard/training' }
+  { label: 'CV (PDF)', url: '/cv.pdf' }
 ];
 
 function hasAny(query: string, terms: string[]) {
@@ -39,50 +36,49 @@ export function answerPortfolioQuestion(
   if (hasAny(normalized, ['role', 'roles', 'open to', 'available'])) {
     return {
       answer:
-        'David is open to AI / automation engineer, full-stack AI, and data science roles in the Netherlands. He is based around Rotterdam, studies AI at VU Amsterdam, and highlights a 24-hour response window for recruiting conversations.',
-      links: [link('Contact David'), link('Proof of work')]
+        'David is open to full-time AI engineering, AI solutions, integration, automation, and agent-infrastructure roles. He is based in the Rotterdam area (NL), has NL/EU work authorization with no sponsorship required, and email is the fastest way to reach him.',
+      links: [link('Contact David'), link('CV (PDF)')]
     };
   }
 
-  if (hasAny(normalized, ['mcp', 'sentinel', 'guardrail', 'guardrails'])) {
+  if (hasAny(normalized, ['webinform', 'work', 'job', 'experience'])) {
     return {
       answer:
-        'MCP Sentinel is David’s guardrail and observability layer for agent tool calls. It wraps an MCP server, logs each call, applies injection, PII, cost, and rate-limit checks, and keeps p99 overhead under 12ms in the portfolio case study.',
-      links: [link('MCP Sentinel demo'), link('MCP dashboard')]
+        'Since October 2024 David has worked as an AI Solutions Developer (contract) at WEBINFORM IT Ltd, building internal AI tools and production LLM functionality for web applications and ERP-integrated systems. Delivery includes 20+ websites/webshops, three internal systems, a user-facing platform, and repair of an inherited AI-first service where he cut LLM API costs by roughly 40%.',
+      links: [link('CV (PDF)'), link('Contact David')]
     };
   }
 
-  if (hasAny(normalized, ['rag', 'retrieval', 'vector', 'embedding'])) {
+  if (
+    hasAny(normalized, [
+      'promptshield',
+      'injection',
+      'agentsec',
+      'mcpguard',
+      'agentmap',
+      'approveops',
+      'security',
+      'project'
+    ])
+  ) {
     return {
       answer:
-        'For RAG work, David prefers a pragmatic TypeScript/Python stack: Next.js for the interface, PostgreSQL or Supabase with vector search for retrieval, reranking where it improves precision, and citation-focused answer generation.',
-      links: [link('RAG + 3D Chat demo'), link('Projects overview')]
-    };
-  }
-
-  if (hasAny(normalized, ['training', 'fine-tune', 'finetune', 'lora'])) {
-    return {
-      answer:
-        'David’s custom training pipeline turns repos and docs into validated fine-tuning datasets. The flow parses source material, chunks it by useful boundaries, generates instruction pairs, validates JSONL, and prepares the handoff for LoRA-style training.',
-      links: [link('Training Pipeline demo'), link('Training dashboard')]
+        'David builds open-source agent-security prototypes: PromptShield (rule-based prompt-injection scanner with a live demo and CI-verified HTTP behavior), agentsec-hook-pack (tested PreToolUse policy hook for Claude Code/Codex), mcpguard-lite (static MCP manifest analyzer), agentmap (declared-metadata risk scoring), and approveops (approval-workflow prototype with transactional audit writes). All are showcase prototypes, not commercial products.',
+      links: [link('Projects'), link('PromptShield demo'), link('GitHub')]
     };
   }
 
   if (hasAny(normalized, ['stack', 'technology', 'tools', 'prefer'])) {
     return {
       answer:
-        'David’s current stack centers on TypeScript, Python, Next.js, React, Supabase/Postgres, Clerk, Upstash, OpenAI APIs, Tailwind CSS, Three.js, and Vercel. The portfolio case studies emphasize cost control, guardrails, retrieval, and production UX.',
-      links: [link('Projects overview'), link('Proof of work')]
+        "David's stack centers on TypeScript, Python, and Rust, with Next.js, Prisma, Clerk, Supabase/Postgres, LLM APIs, and the MCP protocol. Professionally he ships LLM features, APIs, and ERP integrations; personally he builds tested agent-security tooling.",
+      links: [link('Projects'), link('GitHub')]
     };
   }
 
   return {
     answer:
-      'David builds production-focused AI systems: agent observability, guardrails, fine-tuning automation, and RAG interfaces. The fastest way to evaluate the work is to start with the proof metrics and then open the three system dossiers.',
-    links: [
-      link('Proof of work'),
-      link('MCP Sentinel demo'),
-      link('Training Pipeline demo')
-    ]
+      'David is an AI Solutions Developer at WEBINFORM and a BSc AI student at VU Amsterdam who builds open-source agent-security prototypes on the side. Ask about his professional work, a specific project, his stack, or his availability — or email contact@davidpapp.dev.',
+    links: [link('Projects'), link('Contact David')]
   };
 }

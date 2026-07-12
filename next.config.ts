@@ -16,6 +16,25 @@ const nextConfig: NextConfig = {
     ]
   },
   transpilePackages: ['geist'],
+  async redirects() {
+    // Routes shared externally in earlier versions of the site. The pages
+    // they pointed at described projects that no longer exist in that form,
+    // so they now land on the honest projects index.
+    const stale = [
+      '/mcp',
+      '/training',
+      '/chat',
+      '/projects/mcp-sentinel',
+      '/projects/rag-chat',
+      '/projects/training',
+      '/projects/portfolio'
+    ];
+    return stale.map((source) => ({
+      source,
+      destination: '/projects',
+      permanent: false
+    }));
+  },
   async headers() {
     return [
       {

@@ -1,108 +1,228 @@
 [
   {
-    "id": "agentsec",
-    "name": "AgentSec (agentsec-hook-pack)",
-    "description": "Runtime security and policy enforcement hooks for AI coding agents (Claude Code, Codex). Intercepts and classifies risky tool calls (destructive commands, file edits, secret access, production deploys) in real time before execution.",
-    "techStack": ["Node.js", "JavaScript (ESM)", "Git", "JSON Configuration", "Next.js (Dashboard endpoint)"],
+    "id": "promptshield",
+    "name": "PromptShield",
+    "description": "Rule-based prompt-injection scanner plus runtime action inspector. A functional public prototype with a live Vercel demo — deterministic and heuristic by design, so false positives and negatives are possible.",
+    "techStack": [
+      "TypeScript",
+      "Next.js (App Router)",
+      "Prisma/PostgreSQL",
+      "Clerk",
+      "Vitest",
+      "Vercel"
+    ],
     "keyFeatures": [
-      "Zero-configuration quickstart: drop the hook .agentsec folder into any repository",
-      "Fast-path local check: allowed safe actions (ls, grep, pwd, npm test) pass instantly without network latency",
-      "Remote policy validation: risky actions are classified by a central policy engine",
-      "Human-in-the-loop approval: dangerous commands generate a persistent approval gate URL and wait for reviewer actions",
-      "Dual agent integration: supports Claude Code (settings.json PreToolUse hook) and OpenAI Codex (config.toml PreToolUse hook)"
+      "Deterministic regex/heuristic prompt scanner with six finding categories: instruction override, role hijack, jailbreak markers, system-prompt exfiltration, data exfiltration, unsafe tool use",
+      "Runtime inspection endpoint that classifies proposed agent actions as allow, block, or requires_approval",
+      "Authenticated dashboard with scan history and a bearer-authenticated tool-style HTTP API (scan_prompt, assess_risk)",
+      "Unit tests cover benign and malicious classification, false-positive regressions, and API shape",
+      "CI boots the production build, asserts real HTTP behavior (401 unauthenticated, benign=low, malicious=critical), and fails if the public demo is down"
     ],
-    "architecture": "sequenceDiagram\n  participant Agent as AI Agent (Claude/Codex)\n  participant Hook as agentsec-hook.mjs\n  participant API as AgentSec API\n  participant Human as Human Reviewer\n  \n  Agent->>Hook: PreToolUse event (Bash / Edit / Write)\n  Hook->>Hook: Local safe-command check\n  alt Safe command (ls, grep)\n    Hook-->>Agent: allow (skip network)\n  else Risky command\n    Hook->>API: POST tool payload + agentId\n    API->>API: Risk classification\n    alt Policy Allow\n      API-->>Hook: decision: allow\n      Hook-->>Agent: allow\n    else Policy Review\n      API-->>Hook: decision: requires_approval\n      Hook-->>Agent: pause + show approval URL\n      Human->>API: Approve / Reject\n      Agent->>Hook: Retry after approval\n    else Policy Denied\n      API-->>Hook: decision: deny\n      Hook-->>Agent: block command execution\n    end\n  end",
+    "architecture": "graph TD\n  User[Prompt or agent action] --> API[Bearer-auth HTTP API]\n  API --> Scanner[Rule-based scanner - 6 categories]\n  API --> Inspector[Runtime inspector - allow/block/requires_approval]\n  Scanner --> DB[(Prisma/Postgres scan history)]\n  DB --> Dash[Clerk-authenticated dashboard]",
     "fileStructure": [
-      ".agentsec/hooks/agentsec-hook.mjs - Primary hook runtime execution script",
-      ".agentsec/config.json - Policy configuration (baseUrl, safeCommands, failClosedFor, mode: observe/enforce)",
-      ".claude/settings.agentsec.example.json - Claude Code hook registration preset",
-      ".codex/config.agentsec.example.toml - OpenAI Codex hook configuration template",
-      "docs/AGENTSEC_HOOK_PACK.md - Deployment and integration manuals"
+      "src/lib/prompt-report.ts - deterministic prompt scanner",
+      "src/lib/runtime-inspection.ts - action classification",
+      "src/app/api/mcp - tool-style HTTP endpoint",
+      "src/app/api/runtime/inspect - runtime inspection endpoint"
     ],
-    "details": "AgentSec guards against destructive bash commands (e.g. rm -rf, DROP TABLE, git push --force), unreviewed file writes (like .env edits, production settings), and secret keychain lookups. The config.json allows setting modes: 'observe' mode reports events without blocking, while 'enforce' mode blocks untrusted commands. Safe commands like 'pwd', 'npm test', 'npm run lint' bypass the server entirely to conserve network round-trips."
+    "details": "Live demo: https://promptshield-cyan.vercel.app. It is not a full MCP transport, and it does not use an LLM for detection — scanning is deliberately deterministic so results are reproducible. It is a showcase prototype, not a commercial product."
+  },
+  {
+    "id": "agentsec-hook-pack",
+    "name": "agentsec-hook-pack",
+    "description": "Zero-dependency local PreToolUse policy hook for Claude Code and OpenAI Codex. A local hook package — not a hosted web application.",
+    "techStack": [
+      "Node.js (dependency-free)",
+      "node:test",
+      "GitHub Actions"
+    ],
+    "keyFeatures": [
+      "Reads a tool-use event from stdin and returns Claude-style JSON decisions or Codex-style exit codes",
+      "Safe-command fast path with chained-command and find-exec bypass protection",
+      "Destructive-pattern blocking (rm -rf, force pushes, DROP TABLE and similar)",
+      "observe / prompt / enforce modes with fail-closed handling on malformed input or API outage",
+      "Optional remote policy call to a PromptShield-compatible endpoint — exercised against a mock server in tests, not a proven hosted approval platform"
+    ],
+    "architecture": "sequenceDiagram\n  participant Agent as AI Agent (Claude/Codex)\n  participant Hook as agentsec-hook.mjs\n  Agent->>Hook: PreToolUse event via stdin\n  Hook->>Hook: safe-command fast path / destructive-pattern check\n  alt optional remote policy configured\n    Hook->>API: POST tool payload\n    API-->>Hook: allow / deny / requires_approval\n  end\n  Hook-->>Agent: JSON decision (Claude) or exit code (Codex)",
+    "fileStructure": [
+      ".agentsec/hooks/agentsec-hook.mjs - the single 253-line hook script",
+      ".agentsec/config.json - mode, safe commands, fail-closed settings",
+      "test/agentsec-hook.test.mjs - 12-case test suite incl. bypass attempts and API-outage fail-closed behavior"
+    ],
+    "details": "The 12-case node:test suite and CI cover bypass attempts, Codex exit-code semantics, and fail-closed behavior when the policy API is unreachable. Default mode is observe (reports without blocking)."
+  },
+  {
+    "id": "mcpguard-lite",
+    "name": "mcpguard-lite",
+    "description": "Static risk analyzer for raw MCP tools/list JSON manifests. Analyzes declared capabilities only — it does not probe running servers, and static manifest analysis does not prove runtime safety.",
+    "techStack": [
+      "TypeScript",
+      "Next.js",
+      "Prisma",
+      "Clerk",
+      "Vitest",
+      "Vercel"
+    ],
+    "keyFeatures": [
+      "Seven capability categories ranked by severity from declared tool manifests",
+      "Missing-control detection: approval gates, audit logging, sandboxing, egress limits",
+      "Distinguishes positive control declarations from negative wording like 'without approval'",
+      "Handles malformed JSON input gracefully",
+      "Unit-tested; CI runs vitest, typecheck, lint, build, and checks the live demo"
+    ],
+    "architecture": "graph TD\n  Paste[Pasted tools/list JSON] --> Analyzer[Deterministic static analyzer]\n  Analyzer --> Risks[Capability risks by severity]\n  Analyzer --> Gaps[Missing declared controls]\n  Risks --> Dash[Scan dashboard + events]",
+    "fileStructure": [
+      "src/lib/tools-list-report.ts - the static analysis engine",
+      "src/app/api/mcp - bearer-auth API endpoint"
+    ],
+    "details": "Live demo: https://mcpguard-lite.vercel.app (may cold-start slowly). Built on a shared Next.js/Prisma/Clerk scaffold also used by agentmap and approveops."
+  },
+  {
+    "id": "agentmap",
+    "name": "agentmap",
+    "description": "AI-agent inventory with explainable 0-100 risk scoring and readiness labels, computed from declared permissions, data access, and tool surface. Scoring is metadata-based reporting — it does not observe or enforce anything at runtime.",
+    "techStack": [
+      "TypeScript",
+      "Next.js",
+      "Prisma",
+      "Clerk",
+      "Vitest",
+      "Vercel"
+    ],
+    "keyFeatures": [
+      "Deterministic 0-100 risk score from declared metadata: broad permissions, command execution, secret access, and sensitive data raise the score",
+      "Readiness labels: ready / needs_review / blocked with threshold logic",
+      "Agent CRUD via /api/agents plus a dashboard with agents, MCP, security, and settings pages",
+      "Scoring logic unit-tested; CI exercises the API against the production build and checks the live demo"
+    ],
+    "architecture": "graph TD\n  Reg[Agent registration - declared metadata] --> Score[Deterministic risk scoring 0-100]\n  Score --> Label[ready / needs_review / blocked]\n  Label --> Dash[Inventory dashboard]",
+    "fileStructure": [
+      "src/lib/agent-risk.ts - scoring and readiness thresholds",
+      "src/app/api/agents - agent CRUD endpoints"
+    ],
+    "details": "Live demo: https://agentmap-fawn.vercel.app. It reports readiness based on what an agent declares about itself; it is not a runtime enforcement layer."
+  },
+  {
+    "id": "approveops",
+    "name": "approveops",
+    "description": "Human-in-the-loop approval-workflow prototype for risky agent actions: risk classification, owner-scoped pending queues, and transactional approval/audit writes. The caller must enforce decisions — submitting an action does not itself stop an external agent.",
+    "techStack": [
+      "TypeScript",
+      "Next.js",
+      "Prisma",
+      "Clerk",
+      "Vitest",
+      "Vercel"
+    ],
+    "keyFeatures": [
+      "Keyword-based risk classifier (low / medium / high / critical) — intentionally small and auditable, not a semantic policy engine",
+      "Approval lifecycle with genuine transactional guarantees: submission + audit event in one DB transaction, decision + audit event in another",
+      "Owner-only and pending-only decision guards with per-user queue isolation",
+      "Strongest test suite of the set: transactional persistence, user isolation, and guard behavior covered by mocked-database unit tests"
+    ],
+    "architecture": "graph TD\n  Submit[Action submitted] --> Classify[Keyword risk classifier]\n  Classify --> Queue[Owner-scoped pending queue]\n  Queue --> Decide[Approve / reject - transactional with audit event]\n  Decide --> Audit[(Audit log)]",
+    "fileStructure": [
+      "src/lib/risk-classifier.ts - keyword classification",
+      "src/lib/approvals.ts - transactional approval lifecycle"
+    ],
+    "details": "Live demo: https://approveops.vercel.app. Database behavior is proven with mocked-database tests; a complete production Clerk/Neon approval lifecycle has not been independently load-tested."
   },
   {
     "id": "agent-cli-mcp-rust",
     "name": "agent-cli-mcp-rust",
-    "description": "High-performance Model Context Protocol (MCP) server written in Rust that acts as a unified control plane orchestrating six different AI execution engines.",
-    "techStack": ["Rust", "Cargo", "MCP (2025-03-26 Protocol)", "JSON-RPC over stdio", "Process Pipetalks (std I/O)"],
+    "description": "A Rust MCP server that dispatches and supervises multiple AI coding CLIs (GitHub Copilot, Google Jules, plus generic executors) over JSON-RPC/stdio.",
+    "techStack": [
+      "Rust",
+      "Cargo",
+      "MCP Protocol",
+      "JSON-RPC over stdio",
+      "Subprocesses"
+    ],
     "keyFeatures": [
-      "Unified interface: manages GitHub Copilot, Google Jules, Gemini, Codex, OpenCode, and Claude CLIs",
-      "Tool permission profiles: scopes command levels (e.g. copilot-file-edit, copilot-safe-dev, copilot-target-repo)",
-      "Directory isolation: strict allowedRoots check blocks executions outside specified development folders",
-      "Secret scrubbing: real-time regex scanner censors API keys, JWTs, Stripe tokens, and DB credentials from stdout",
-      "Mandatory deny overlay: hard-coded security layers block destructive calls like 'vercel deploy --prod' or force pushes"
+      "Session management for long-running interactive executor runs",
+      "Directory isolation: allowedRoots checks block execution outside permitted folders",
+      "Destructive-command deny patterns (force pushes, production deploys)",
+      "Regex-based secret scrubbing of subprocess output (API keys, JWTs, tokens)",
+      "Real Google Jules API integration alongside Copilot CLI dispatch"
     ],
-    "architecture": "graph TD\n  CC[Claude Code] -->|JSON-RPC over stdio| MCP[MCP Transport]\n  MCP --> POL[Directory Policy]\n  MCP --> RED[Scrubber Engine]\n  MCP --> SES[Session Manager]\n  SES -->|pipes| Executors[Copilot CLI / Jules / Gemini]",
+    "architecture": "graph TD\n  CC[Claude Code] -->|JSON-RPC over stdio| MCP[MCP Transport]\n  MCP --> POL[Directory Policy]\n  MCP --> RED[Secret Scrubber]\n  MCP --> SES[Session Manager]\n  SES -->|pipes| Executors[Copilot CLI / Jules / generic]",
     "fileStructure": [
-      "src/main.rs - Entry point, MCP transport, and stdio JSON-RPC loop",
-      "src/server.rs - Tool registration and handler mappings",
-      "src/policy.rs - Path validation and allowed roots checker",
-      "src/redact.rs - Regex secret scrubbing engine",
-      "src/executors/ - Submodules for each CLI (copilot.rs, jules.rs, gemini.rs)",
-      "config.json - Default server setup (allowedRoots, stateDir, defaultTimeoutMs)"
+      "src/mcp.rs - MCP transport",
+      "src/tools.rs - tool surface (39 functions)",
+      "src/policy.rs - directory isolation + deny patterns (unit-tested)",
+      "src/redaction.rs - secret scrubbing (unit-tested)",
+      "src/jules_client.rs - Jules API integration"
     ],
-    "details": "The server exposes multiple MCP tools: 'agent_cli.overview' gives a session status board; 'agent_cli.capabilities' checks CLI versions and flags; 'agent_cli.run' triggers quick synchronous executions; 'agent_cli.start_run' and 'agent_cli.start_session' support long-running interactive tasks. Jules-specific tools ('jules.create_session', 'jules.approve_plan') provide fine-grained controls over remote Google AI development runs."
+    "details": "Unit tests cover the policy and redaction modules. The external executor integrations do not yet have end-to-end CI coverage, and no performance benchmarks have been published."
   },
   {
     "id": "antigravity-skill-injector",
     "name": "antigravity-skill-injector",
-    "description": "A dynamic skill loader for the Antigravity Desktop App. Solves system prompt context bloat by replacing full SKILL.md documents with 20-token stub files, loading the actual instructions dynamically on demand via a Rust MCP server.",
-    "techStack": ["Rust", "Python", "Bash", "MCP Protocol", "JSON-RPC"],
+    "description": "Small proof-of-concept: a Rust JSON-RPC server plus Python scripts that replace full Antigravity skill files with short stubs and serve full skill content on demand, reducing system-prompt size. No test suite and no measured token-savings benchmark.",
+    "techStack": [
+      "Rust",
+      "Python",
+      "Bash",
+      "MCP Protocol",
+      "JSON-RPC"
+    ],
     "keyFeatures": [
-      "Saves up to 97% conversation tokens by replacing multi-hundred-line skills with tiny 20-token stubs",
-      "Rust MCP Server: ultra-fast JSON-RPC stdio server that serves full skill contents instantly when requested",
-      "Python migration script: parses frontmatter of SKILL.md files and serializes them into a centralized JSON registry",
-      "Python stub generator: creates minimal stub files for the Antigravity desktop client UI",
-      "Bash installer: compiles Rust, migrates registry, creates stubs, and outputs config blocks in one command"
+      "Minimal stdio JSON-RPC server serving skill payloads from a JSON registry",
+      "Python migration script that parses SKILL.md frontmatter into the registry",
+      "Python stub generator plus a one-command bash installer"
     ],
-    "architecture": "graph LR\n  UI[Antigravity UI] -->|Renders stubs| Stub[skills/stub.md]\n  Agent[Agent Context] -->|needs skill| MCP[Rust MCP Server]\n  MCP -->|reads| Reg[skills_registry.json]\n  Reg -->|full payload| Agent",
+    "architecture": "graph LR\n  UI[Antigravity UI] -->|renders stubs| Stub[skills/stub.md]\n  Agent[Agent context] -->|requests skill| MCP[Rust JSON-RPC server]\n  MCP -->|reads| Reg[skills_registry.json]",
     "fileStructure": [
-      "src/mcp-server/ - Rust stdio MCP server compiling to skill-injector-mcp",
-      "scripts/migrate_skills.py - YAML frontmatter parser and JSON compiler",
-      "scripts/generate_stubs.py - Autogeneration script for token-saving stubs",
-      "install.sh - One-key setup script",
-      "skills_registry.json - Centralized skill instruction repository"
+      "src/main.rs - 195-line JSON-RPC server",
+      "scripts/migrate_skills.py - registry builder",
+      "scripts/generate_stubs.py - stub generator",
+      "install.sh - setup script"
     ],
-    "details": "When Antigravity starts a conversation, it originally reads all SKILL.md files recursively, costing thousands of wasted context tokens. With the injector, stubs are read in the UI so the agent knows the skill exists, but it only triggers the 'mcp.fetch_skill' tool when a relevant action is requested, dynamically expanding the needed skill in the window."
-  },
-  {
-    "id": "saas-core",
-    "name": "saas-core",
-    "description": "Shared auth, billing, and usage infrastructure layer powering 5+ active micro-SaaS products.",
-    "techStack": ["Next.js 16", "TypeScript", "Clerk (Multi-tenant)", "Stripe (Metered Billing)", "Prisma", "Supabase", "Upstash Redis"],
-    "keyFeatures": [
-      "Clerk Auth integration: fully configured multi-tenant workspaces with organization-level RBAC role controls",
-      "Stripe Metered Billing: dynamic utility-based tracking and automated checkout session synchronization",
-      "Upstash Redis Rate Limiting: highly scalable sliding-window request throttle limits guarding API endpoints",
-      "Supabase Database Layer: clean Row-Level Security (RLS) policies isolating tenant data tables natively"
-    ],
-    "architecture": "graph TD\n  Client[SaaS User] -->|Clerk Session| Middleware[Next.js App Router Proxy]\n  Middleware -->|Quota Check| Redis[Upstash Rate Limiter]\n  Middleware -->|Access Grant| Supa[(Supabase Database with RLS)]\n  Supa -->|Usage Metric| Stripe[Stripe Metered Billing API]",
-    "fileStructure": [
-      "src/proxy.ts - Next.js App Router middleware mapping auth protection rules and Clerk integrations",
-      "src/lib/rate-limit.ts - Upstash Redis client and rate-limiting sliding window algorithms",
-      "src/components/layout/providers.tsx - App-wide context wrapper mounting themes, search state, and Clerk"
-    ],
-    "details": "SaaS Core acts as the centralized backbone powering multiple independent software-as-a-service applications. It completely isolates customer data via Postgres RLS, enforces real-time usage-based billing with Stripe webhooks, and protects resources against high-volume crawlers using Redis, allowing new SaaS products to onboard in ~30 minutes."
+    "details": "Experiment/proof-of-concept status. Token-savings figures have not been measured, so no percentage claims are made for this project."
   },
   {
     "id": "thesys-c1-dashboard",
     "name": "thesys-c1-dashboard",
-    "description": "A developer-focused dashboard for monitoring and managing AI agent sessions, with rich telemetry for Generative UI pipelines using the Thesys C1 framework.",
-    "techStack": ["Next.js", "TypeScript", "Tailwind CSS", "Recharts", "GitHub Actions CI/CD"],
+    "description": "A Next.js dashboard whose panels are restructured live by a Thesys C1 generative-UI agent through a JSON command protocol. Working prototype — CI runs typecheck/lint/build, but there is no test suite and no public demo deployment.",
+    "techStack": [
+      "TypeScript",
+      "Next.js 14 (Pages Router)",
+      "Thesys C1 SDK",
+      "Tailwind CSS"
+    ],
     "keyFeatures": [
-      "Real-time Generative UI telemetry: tracks agent execution steps, schema rendering, and interface states",
-      "Session dashboard: lists user sessions, tool outputs, and LLM raw logs",
-      "Automated CI/CD: seamless GitHub Actions pipelines pushing code quality and Vercel deployments",
-      "Prebuilt widgets: standard components for visualizing agent run performance, latency, and success counts"
+      "JSON command protocol parsed from model responses: reorder, add, remove, retitle panels, toggle C1/chat mode",
+      "Drag-and-drop dashboard panels with form detection",
+      "Six pre-configured panel prompts and an /api/panel endpoint calling Thesys C1"
     ],
-    "architecture": "graph TD\n  Agent[AI Agent] -->|Generative UI events| Thesys[Thesys C1 API]\n  Thesys -->|Webhook| Dashboard[Next.js Developer Console]\n  Dashboard --> Recharts[Telemetry Visuals]",
+    "architecture": "graph TD\n  Agent[Thesys C1 response] --> Parser[Command-block parser]\n  Parser --> Panels[Dashboard panel state]\n  Panels --> UI[Drag-and-drop panel grid]",
     "fileStructure": [
-      "src/app/dashboard/ - Layout, charts, and telemetry grids",
-      "src/components/telemetry/ - Recharts wraps and generative UI action steps cards",
-      "src/lib/thesys.ts - Webhook validator and Generative UI state mapper",
-      ".github/workflows/deploy.yml - Vercel automatic builder and deployment pipeline"
+      "lib/thesys-client.ts - command protocol parser",
+      "components/DashboardPanel.tsx - panel behavior"
     ],
-    "details": "Provides developers running generative UI agents in production with exact session replays, showing when UI elements were rendered, what JSON schemas were requested by the LLM, and how users interacted with the dynamic cards."
+    "details": "Prototype status: no automated tests and no live deployment. The interesting part is the agent-drives-its-own-layout command protocol."
+  },
+  {
+    "id": "about-david",
+    "name": "About David Papp",
+    "description": "AI Solutions Developer (contract/freelance) at WEBINFORM IT Ltd since October 2024, and BSc Artificial Intelligence student at Vrije Universiteit Amsterdam (2024-2027 expected). Based in the Rotterdam area, Netherlands. Hungarian citizen with NL/EU work authorization - no sponsorship required.",
+    "techStack": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Next.js",
+      "SQL/Postgres",
+      "LLM APIs"
+    ],
+    "keyFeatures": [
+      "At WEBINFORM: builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems - APIs, automation, backend logic, and user-facing AI interfaces",
+      "Professional delivery includes 20+ websites/webshops, three internal systems, one user-facing platform, and recovery work on an inherited AI-first service",
+      "Repaired an inherited AI-first service with architecture, security, compliance, and prompt/context-injection problems; reverse-engineered undocumented integration behavior and reduced LLM API usage cost by approximately 40%",
+      "Two ERP/AI integration projects with direct involvement in discovery, requirements, solution design, client coordination, proposals, and pricing",
+      "Previously: Project Assistant at 4iG Nyrt. (Aug 2022 - Aug 2023) and Programming Instructor at Logiscool (Feb-Jun 2023)"
+    ],
+    "architecture": "graph TD\n  Work[WEBINFORM - production AI solutions] --> Skills[LLM APIs, ERP integration, backend]\n  Uni[VU Amsterdam BSc AI] --> Skills\n  Lab[Open-source agent-security prototypes] --> Skills",
+    "fileStructure": [],
+    "details": "Availability: open to full-time AI engineering, AI solutions, integration, automation, agent infrastructure, and technically oriented product/project roles. Contact: contact@davidpapp.dev. GitHub: https://github.com/pappdavid. LinkedIn: https://www.linkedin.com/in/d%C3%A1vid-papp. Important: the personal open-source projects above are showcase prototypes built outside employment - they are not WEBINFORM products, and none of them are commercial production systems. David has no published fine-tuning of production models; fine-tuning concepts are covered in coursework and personal experimentation only."
   }
 ]

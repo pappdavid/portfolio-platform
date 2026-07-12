@@ -105,116 +105,118 @@ type Project = {
   liveUrl?: string;
   repoName?: string;
   image: string;
-  access?: 'private';
   isFlagship?: boolean;
 };
 
 const PROJECTS: Project[] = [
   {
-    name: 'AGENTSEC.app',
+    name: 'PROMPTSHIELD',
     stage: 'LIVE',
-    mod: '2026-05',
+    mod: '2026-07',
     badge: 'live',
     isFlagship: true,
+    repoName: 'pappdavid/promptshield',
+    image: '/saas-screenshots/promptshield.png',
+    desc: 'Rule-based prompt-injection scanner and runtime action inspector — tested, CI-verified, live demo',
+    body: 'A deterministic prompt-injection scanner with six rule-based finding categories (instruction override, role hijack, jailbreak markers, system-prompt and data exfiltration, unsafe tool use) plus a runtime inspector that classifies agent actions as allow, block, or requires-approval. Unit-tested, and CI boots the production build to assert real HTTP behavior against benign and malicious inputs. Heuristic by design — it can produce false positives and negatives.',
+    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Vercel'],
+    repoUrl: 'https://github.com/pappdavid/promptshield',
+    liveUrl: 'https://promptshield-cyan.vercel.app'
+  },
+  {
+    name: 'AGENTSEC.hooks',
+    stage: 'BETA',
+    mod: '2026-07',
+    badge: 'live',
     repoName: 'pappdavid/agentsec-hook-pack',
     image: '/saas-screenshots/agentsec_readme_header.png',
-    desc: 'AI agent security platform gating risky tool calls with 100% human-in-the-loop audit logs',
-    body: 'A deterministic security review platform for autonomous AI agents. Intercepts and scores risky tool executions (like shell commands or secret key lookups) against dynamic policies. Developed for security-focused teams, it features a live audit trail, runtime PreToolUse enforcement, and human-in-the-loop approvals.',
-    tech: [
-      'Next.js',
-      'MCP Protocol',
-      'Policy Engine',
-      'Risk Scoring',
-      'HITL Security'
-    ],
-    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack',
-    liveUrl: 'https://agentsec.davidpapp.dev'
+    desc: 'Zero-dependency PreToolUse policy hook for Claude Code and Codex with a 12-case test suite',
+    body: 'A local hook package that gates AI coding-agent tool calls before they execute: safe-command fast paths, destructive-pattern blocking with chained-command bypass protection, observe/prompt/enforce modes, optional API-backed policy decisions, and fail-closed handling on malformed input or API outage. Tested against Claude-style JSON decisions and Codex-style exit codes in CI. A local hook pack, not a hosted platform — its remote policy service is exercised against a mock server in tests.',
+    tech: ['Node.js', 'PreToolUse Hooks', 'Claude Code', 'Codex', 'node:test'],
+    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack'
+  },
+  {
+    name: 'MCPGUARD.lite',
+    stage: 'LIVE',
+    mod: '2026-07',
+    badge: 'live',
+    repoName: 'pappdavid/mcpguard-lite',
+    image: '/saas-screenshots/mcpguard-lite.png',
+    desc: 'Static risk analyzer for MCP tools/list manifests — capability risks and missing-control gaps',
+    body: 'Paste a raw MCP tools/list JSON manifest and get a deterministic static analysis: seven capability categories ranked by severity, plus detection of missing declared controls (approval, audit logging, sandboxing, egress limits). Distinguishes positive control declarations from wording like "without approval", and handles malformed input. Static analysis of declared manifests only — it does not probe running servers or prove runtime safety.',
+    tech: ['Next.js', 'TypeScript', 'Prisma', 'Vitest', 'Vercel'],
+    repoUrl: 'https://github.com/pappdavid/mcpguard-lite',
+    liveUrl: 'https://mcpguard-lite.vercel.app'
+  },
+  {
+    name: 'AGENTMAP.app',
+    stage: 'LIVE',
+    mod: '2026-07',
+    badge: 'live',
+    repoName: 'pappdavid/agentmap',
+    image: '/saas-screenshots/agentmap.png',
+    desc: 'Agent inventory with explainable 0–100 risk scoring from declared permissions and tool surface',
+    body: 'Register AI agents and get a deterministic 0–100 risk score with readiness labels (ready / needs-review / blocked), computed from declared permissions, data access, and tool surface — broad permissions, command execution, and secret access raise the score. Scoring is based on declared metadata, not runtime observation: it reports readiness, it does not enforce it. Scoring logic is unit-tested and the API is exercised in CI against the production build.',
+    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Vercel'],
+    repoUrl: 'https://github.com/pappdavid/agentmap',
+    liveUrl: 'https://agentmap-fawn.vercel.app'
+  },
+  {
+    name: 'APPROVEOPS.app',
+    stage: 'LIVE',
+    mod: '2026-07',
+    badge: 'live',
+    repoName: 'pappdavid/approveops',
+    image: '/saas-screenshots/approveops.png',
+    desc: 'Human-in-the-loop approval queue with transactional audit writes and owner-scoped decisions',
+    body: 'An approval-workflow prototype for risky agent actions: keyword-based risk classification (low → critical), per-user pending queues, and approval decisions written transactionally together with their audit events, guarded by ownership and pending-only checks. Database behavior is covered by mocked-database unit tests. The caller is responsible for enforcing the decision — submitting an action does not itself stop an external agent.',
+    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Vercel'],
+    repoUrl: 'https://github.com/pappdavid/approveops',
+    liveUrl: 'https://approveops.vercel.app'
   },
   {
     name: 'AGENT_CLI.rust',
-    stage: 'LIVE',
+    stage: 'BETA',
     mod: '2026-05',
-    badge: 'live',
+    badge: 'wip',
     repoName: 'pappdavid/agent-cli-mcp-rust',
     image: '/saas-screenshots/agentcli_readme_header.png',
-    desc: 'Multi-agent orchestration CLI enabling Claude/Gemini to drive subprocess agents with 0% context bloat',
-    body: 'A high-performance Model Context Protocol (MCP) server written in Rust that coordinates multiple secondary agents. Built for developers executing complex multi-agent flows, it maintains separate sandboxed workspaces, scrubs credentials from output streams using real-time regex matching, and provides strict tool permission profiling.',
-    tech: [
-      'Rust',
-      'Cargo',
-      'MCP Protocol',
-      'JSON-RPC over stdio',
-      'Subprocesses'
-    ],
+    desc: 'Rust MCP server that dispatches and supervises multiple AI coding CLIs',
+    body: 'A Model Context Protocol server written in Rust that coordinates external coding agents (GitHub Copilot CLI, Google Jules, plus generic executors) over JSON-RPC/stdio: session management, directory isolation with allowed-roots checks, destructive-command deny patterns, and regex-based secret scrubbing of output streams. Unit tests cover the policy and redaction modules. The external executor integrations do not yet have end-to-end CI coverage.',
+    tech: ['Rust', 'MCP Protocol', 'JSON-RPC over stdio', 'Subprocesses'],
     repoUrl: 'https://github.com/pappdavid/agent-cli-mcp-rust'
   },
   {
     name: 'SKILL_INJ.rs',
-    stage: 'LIVE',
+    stage: 'WIP',
     mod: '2026-05',
-    badge: 'live',
+    badge: 'wip',
     repoName: 'pappdavid/antigravity-skill-injector',
     image: '/saas-screenshots/skillinj_readme_header.png',
-    desc: 'Dynamic skill injector saving 97% of context window tokens in the Antigravity Desktop App',
-    body: 'An ultra-light dynamic skill injection framework that replaces massive system prompt instructions with 20-token stub files. The full skill payloads are retrieved dynamically on-demand from a local Rust-based MCP server only when specifically invoked by the AI agent, effectively eliminating context window exhaustion.',
-    tech: [
-      'Rust',
-      'Python',
-      'Antigravity App',
-      'Dynamic Loading',
-      'Bash Installer'
-    ],
+    desc: 'Proof-of-concept dynamic skill loader that swaps full skill files for on-demand stubs',
+    body: 'A small experiment for the Antigravity desktop app: replaces full SKILL.md documents with short stub files and serves the full skill content on demand from a minimal Rust JSON-RPC server. Includes Python scripts that build the skill registry and generate stubs. Proof-of-concept status: no automated test suite and no measured token-savings benchmark.',
+    tech: ['Rust', 'Python', 'MCP Protocol', 'Bash Installer'],
     repoUrl: 'https://github.com/pappdavid/antigravity-skill-injector'
   },
   {
     name: 'THESYS_C1.app',
-    stage: 'LIVE',
-    mod: '2026-03',
-    badge: 'live',
+    stage: 'BETA',
+    mod: '2026-05',
+    badge: 'wip',
     repoName: 'pappdavid/thesys-c1-dashboard',
     image: '/saas-screenshots/thesys_c1_dashboard.png',
-    desc: 'Generative UI telemetry dashboard tracking real-time agent execution latency and user click paths',
-    body: 'A production developer console for monitoring AI-driven Generative UI flows using the Thesys C1 framework. Tracks UI schema rendering steps, user interaction logs, and step-by-step agent latencies. Perfect for troubleshooting dynamic client states and layout metrics.',
-    tech: [
-      'Next.js',
-      'TypeScript',
-      'Tailwind CSS',
-      'Recharts',
-      'Generative UI'
-    ],
-    repoUrl: 'https://github.com/pappdavid/thesys-c1-dashboard',
-    liveUrl: 'https://thesys-c1-dashboard.vercel.app'
-  },
-  {
-    name: 'SAAS_CORE.platform',
-    stage: 'LIVE',
-    mod: '2026-05',
-    badge: 'live',
-    repoName: 'code-shame/saas-core',
-    image: '/saas-screenshots/saas-core-factory.png',
-    desc: 'Self-provisioning micro-SaaS factory auto-provisioning databases, auth, email, caching, and billing pipelines on git push',
-    body: 'A production-ready self-provisioning template and modular scaffolding factory for B2B and AI-first micro-SaaS products. On git push, an automated GitHub Actions pipeline provisions everything (Vercel deployment, Supabase Postgres, Upstash Redis caching, Resend email audiences, and Stripe billing products) idempotently. Provides Clerk auth, Stripe metered billing, Prisma ORM, background jobs via Trigger.dev, and dual Auth.js/Clerk support.',
-    tech: [
-      'Next.js 16',
-      'TypeScript',
-      'Clerk',
-      'Stripe',
-      'Prisma',
-      'Supabase',
-      'Upstash Redis',
-      'Trigger.dev',
-      'Resend'
-    ],
-    repoUrl: 'https://github.com/code-shame/saas-core',
-    liveUrl: '/saas-projects'
+    desc: 'Dashboard whose panels are restructured live by a Thesys C1 agent via a JSON command protocol',
+    body: 'A Next.js dashboard where a generative-UI agent can reorder, add, remove, and retitle its own panels through a structured JSON command protocol parsed out of model responses, with drag-and-drop panels and a generative-UI/chat toggle. CI runs typecheck, lint, and build; there is no test suite, so treat it as a working prototype rather than a production console.',
+    tech: ['Next.js', 'TypeScript', 'Thesys C1', 'Tailwind CSS'],
+    repoUrl: 'https://github.com/pappdavid/thesys-c1-dashboard'
   }
 ];
 
 const SUGGESTIONS = [
   'is David available to start?',
   "what is David's tech stack?",
-  'what is the AgentSec platform?',
-  'tell me about agent-cli-mcp-rust'
+  'what did David build at WEBINFORM?',
+  'tell me about PromptShield'
 ];
 
 // ============================================================
@@ -225,9 +227,10 @@ export function LandingContent() {
   const [active, setActive] = useState('home');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const [commitCount, setCommitCount] = useState(1284);
-  const [repoCount, setRepoCount] = useState(14);
+  const [repoCount, setRepoCount] = useState<number | null>(null);
   const [themeProfile, setThemeProfile] = useState<string>('green');
+  // Decorative terminal-UI values. Labelled SIM in the status bar — not
+  // real telemetry.
   const [latency, setLatency] = useState<string>('5.2ms');
   const [memLoad, setMemLoad] = useState<string>('43.1%');
 
@@ -238,25 +241,20 @@ export function LandingContent() {
     document.documentElement.setAttribute('data-theme-profile', saved);
   }, []);
 
-  // Fetch real-time public repositories from pappdavid (personal) and code-shame (org)
+  // Fetch the real public repository count from GitHub
   useEffect(() => {
     async function fetchRepoCount() {
       try {
-        const [userRes, orgRes] = await Promise.all([
-          fetch('https://api.github.com/users/pappdavid'),
-          fetch('https://api.github.com/orgs/code-shame')
-        ]);
-        if (userRes.ok && orgRes.ok) {
+        const userRes = await fetch('https://api.github.com/users/pappdavid');
+        if (userRes.ok) {
           const userData = await userRes.json();
-          const orgData = await orgRes.json();
-          const total =
-            (userData.public_repos || 0) + (orgData.public_repos || 0);
+          const total = userData.public_repos;
           if (typeof total === 'number' && !isNaN(total) && total > 0) {
             setRepoCount(total);
           }
         }
       } catch (err) {
-        // Safe fallback is 14
+        // On failure the counter is simply not rendered
       }
     }
     fetchRepoCount();
@@ -268,12 +266,8 @@ export function LandingContent() {
     document.documentElement.setAttribute('data-theme-profile', profile);
   }, []);
 
-  // Telemetry fluctuation timers
+  // Decorative status-bar animation timers (labelled SIM in the UI)
   useEffect(() => {
-    const cInterval = setInterval(() => {
-      if (Math.random() < 0.35) setCommitCount((c) => c + 1);
-    }, 2600);
-
     const lInterval = setInterval(() => {
       const ms = (4.8 + Math.random() * 4.4).toFixed(1);
       setLatency(`${ms}ms`);
@@ -285,7 +279,6 @@ export function LandingContent() {
     }, 1800);
 
     return () => {
-      clearInterval(cInterval);
       clearInterval(lInterval);
       clearInterval(mInterval);
     };
@@ -349,7 +342,11 @@ export function LandingContent() {
     let moduleId: string | null = null;
     if (id) {
       const u = id.toUpperCase();
-      if (u.includes('AGENTSEC') || u.includes('AGENT_CLI'))
+      if (
+        u.includes('PROMPTSHIELD') ||
+        u.includes('AGENTSEC') ||
+        u.includes('AGENT_CLI')
+      )
         moduleId = 'sentinel';
       else if (u.includes('SKILL_INJ')) moduleId = 'training';
       else if (u.includes('CHAT') || u.includes('CONTACT')) moduleId = 'chat';
@@ -387,13 +384,19 @@ export function LandingContent() {
             <span className='sb-v'>davidpapp.dev</span>
           </span>
           <span className='sb-sep sb-item-node'>|</span>
-          <span className='sb-item'>
-            <span className='sb-k'>LATENCY:</span>
+          <span
+            className='sb-item'
+            title='Decorative UI animation, not real telemetry'
+          >
+            <span className='sb-k'>SIM.LATENCY:</span>
             <span className='sb-v sb-accent'>{latency}</span>
           </span>
           <span className='sb-sep'>|</span>
-          <span className='sb-item'>
-            <span className='sb-k'>MEM.LOAD:</span>
+          <span
+            className='sb-item'
+            title='Decorative UI animation, not real telemetry'
+          >
+            <span className='sb-k'>SIM.MEM:</span>
             <span className='sb-v sb-accent'>{memLoad}</span>
           </span>
           <span className='sb-sep'>|</span>
@@ -460,7 +463,8 @@ export function LandingContent() {
             rel='noopener noreferrer'
             className='sb-commits hover:underline'
           >
-            ⎇ {commitCount.toLocaleString()} commits · {repoCount} public repos
+            ⎇ github.com/pappdavid
+            {repoCount !== null ? ` · ${repoCount} public repos` : ''}
           </a>
         </div>
       </div>
@@ -539,7 +543,7 @@ export function LandingContent() {
                     rel='noopener'
                     className='cta cta-resume glitch-hover'
                   >
-                    [view resume — Jun 2026]
+                    [view resume — Jul 2026]
                   </a>
                   <button
                     onClick={() => nav('work')}
@@ -583,16 +587,14 @@ export function LandingContent() {
                         <td className='mk'>CURRENTLY</td>
                         <td className='ms'>:</td>
                         <td className='mv'>
-                          building agent sandboxes & studying neural retrieval
-                          at VU Amsterdam
+                          building AI solutions at WEBINFORM & studying AI at VU
+                          Amsterdam
                         </td>
                       </tr>
                       <tr>
                         <td className='mk'>AVAILABILITY</td>
                         <td className='ms'>:</td>
-                        <td className='mv'>
-                          Full-time
-                        </td>
+                        <td className='mv'>Full-time</td>
                       </tr>
                       <tr>
                         <td className='mk'>WORK AUTH</td>
@@ -773,7 +775,7 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                     </span>
                   )}
                 </span>
-                <span className='ml-3 hidden sm:flex shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)]'>
+                <span className='ml-3 hidden shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)] sm:flex'>
                   {p.repoUrl && (
                     <a
                       href={p.repoUrl}
@@ -851,35 +853,33 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
 
                 {p.isFlagship ? (
                   <div className='cs-block'>
-                    <p className='fs-expand-body'>
-                      A deterministic security review platform for autonomous AI
-                      agents. Intercepts and scores risky tool executions (like
-                      shell commands or secret key lookups) against dynamic
-                      policies. Developed for security-focused teams, it
-                      features a live audit trail, runtime PreToolUse
-                      enforcement, and human-in-the-loop approvals.
-                    </p>
+                    <p className='fs-expand-body'>{p.body}</p>
                     <span className='cs-label'>PROBLEM</span>
                     <p className='fs-expand-body'>
-                      AI agents in development environments can run destructive
-                      shell commands or leak API keys.
+                      Prompts fed to LLM agents can smuggle in instruction
+                      overrides, role hijacks, or exfiltration attempts, and
+                      agent tool calls can be destructive if executed
+                      unreviewed.
                     </p>
                     <span className='cs-label'>APPROACH</span>
                     <p className='fs-expand-body'>
-                      Intercept tool requests at the runtime layer via
-                      PreToolUse hooks, check against whitelists locally to
-                      preserve speed, and gate anomalous actions behind a
-                      central risk engine requiring manual approval.
+                      Scan prompts with deterministic rule-based detectors (no
+                      LLM in the loop, so results are reproducible), and
+                      classify proposed agent actions as allow, block, or
+                      requires-approval via a bearer-authenticated HTTP API.
                     </p>
                     <span className='cs-label'>STACK</span>
                     <p className='fs-expand-body'>
-                      Rust policy engine, Next.js telemetry dashboard, custom
-                      MCP connector.
+                      Next.js App Router, TypeScript, Prisma/Postgres, Clerk
+                      auth, Vitest.
                     </p>
-                    <span className='cs-label'>OUTCOME</span>
+                    <span className='cs-label'>STATUS</span>
                     <p className='fs-expand-body'>
-                      Secured 100% of agent executions with zero accidental file
-                      modifications across 5 active repositories.
+                      Functional public prototype. Unit tests cover benign and
+                      malicious classification; CI boots the production build,
+                      asserts live HTTP behavior, and fails if the public Vercel
+                      demo is down. Heuristic scanning — false positives and
+                      negatives are possible.
                     </p>
                   </div>
                 ) : (
@@ -905,37 +905,28 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                     </span>
                   ))}
                 </div>
-                {p.access === 'private' ? (
-                  <a
-                    href='mailto:contact@davidpapp.dev?subject=AgentSec%20access%20request'
-                    className='open-btn inline-block'
-                  >
-                    [REQUEST ACCESS] private beta →
-                  </a>
-                ) : (
-                  <div className='flex flex-wrap gap-3'>
-                    {p.liveUrl && (
-                      <a
-                        href={p.liveUrl}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='open-btn inline-block'
-                      >
-                        [LIVE] open deployment →
-                      </a>
-                    )}
-                    {p.repoUrl && (
-                      <a
-                        href={p.repoUrl}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='open-btn inline-block'
-                      >
-                        [OPEN] read repository source →
-                      </a>
-                    )}
-                  </div>
-                )}
+                <div className='flex flex-wrap gap-3'>
+                  {p.liveUrl && (
+                    <a
+                      href={p.liveUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='open-btn inline-block'
+                    >
+                      [LIVE] open deployment →
+                    </a>
+                  )}
+                  {p.repoUrl && (
+                    <a
+                      href={p.repoUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='open-btn inline-block'
+                    >
+                      [OPEN] read repository source →
+                    </a>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -953,13 +944,13 @@ function SkillsSection() {
         <span className='sec-note'>PROSE</span>
       </div>
       <p className='prose'>
-        I build the security layer that keeps AI agents from doing things they
-        shouldn't — specializing in PreToolUse enforcement, sandboxed subprocess
-        coordination, and live audit trails. Focused on high-throughput
-        retrieval pipelines and agent observability, I love collaborating with
-        technical teams building core AI tooling, developer platforms, or
-        autonomous agent frameworks. Looking for full-time engineering roles, AI
-        systems developer positions, or technical research collaborations.
+        I build AI solutions professionally at WEBINFORM — production LLM
+        features, APIs, and automation for web applications and ERP-integrated
+        systems — and, on my own time, a series of open-source prototypes around
+        AI-agent security: prompt-injection scanning, tool-call policy hooks,
+        and approval workflows. I&apos;m a BSc AI student at VU Amsterdam and
+        I&apos;m looking for full-time AI engineering, AI solutions,
+        integration, automation, or agent-infrastructure roles.
       </p>
 
       <div className='resume'>
@@ -973,7 +964,7 @@ function SkillsSection() {
         </div>
         <div className='mb-6 flex flex-wrap gap-4 text-xs font-semibold text-[var(--dp-accent-muted)]'>
           <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
-            🏛️ VU AMSTERDAM (BSc AI Research)
+            🏛️ VU AMSTERDAM (BSc Artificial Intelligence)
           </span>
           <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
             💻 WEBINFORM (AI Solution Delivery)
@@ -983,25 +974,28 @@ function SkillsSection() {
 
         <div className='rs-row'>
           <div className='rs-line'>
-            <span className='rs-role'>AI solution developer</span>
-            <span className='rs-meta'>| WebInform</span>
-            <span className='rs-meta rs-dates'>2025 — present</span>
+            <span className='rs-role'>AI Solutions Developer</span>
+            <span className='rs-meta'>| WEBINFORM IT Ltd (contract)</span>
+            <span className='rs-meta rs-dates'>Oct 2024 — present</span>
           </div>
           <ul className='rs-bullets'>
             <li>
-              <span className='li-mark'>&gt;</span> Designed secure multi-agent
-              coordination architectures using MCP, securing 100% of executions
-              across 5 active repositories.
+              <span className='li-mark'>&gt;</span> Build internal AI tools and
+              production LLM functionality for web applications and
+              ERP-integrated systems: APIs, automation, backend logic, and
+              user-facing AI interfaces.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Bootstrapped low-latency
-              dataset generation pipeline, reducing dataset prep time by 75% for
-              custom LLM fine-tuning.
+              <span className='li-mark'>&gt;</span> Took over an inherited
+              AI-first service with architecture, security, compliance, and
+              prompt-injection problems — reverse-engineered its undocumented
+              integrations, repaired it, and cut LLM API costs by roughly 40%.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Overhauled SaaS backend
-              architectures using Stripe and Prisma, managing usage-based
-              billing logic with 99.9% uptime.
+              <span className='li-mark'>&gt;</span> Delivered 20+
+              websites/webshops, three internal systems, and a user-facing
+              platform; two ERP/AI integration projects with direct involvement
+              in discovery, solution design, client coordination, and pricing.
             </li>
           </ul>
         </div>
@@ -1017,13 +1011,9 @@ function SkillsSection() {
           </div>
           <ul className='rs-bullets'>
             <li>
-              <span className='li-mark'>&gt;</span> Specializing in neural
-              representation, computational linguistics, and retrieval networks.
-            </li>
-            <li>
-              <span className='li-mark'>&gt;</span> Built research benchmarks
-              evaluating agent planning and tool selection under context bloat
-              constraints.
+              <span className='li-mark'>&gt;</span> Coursework includes machine
+              learning, computational linguistics, multi-agent systems, and the
+              mathematics underneath them.
             </li>
           </ul>
         </div>
@@ -1037,7 +1027,7 @@ function SkillsSection() {
           <ul className='rs-bullets'>
             <li>
               <span className='li-mark'>&gt;</span> Taught programming
-              fundamentals and game development to students aged 7–14.
+              fundamentals and game development to students aged 10–16.
             </li>
             <li>
               <span className='li-mark'>&gt;</span> Developed custom curricula
@@ -1054,43 +1044,48 @@ function SkillsSection() {
           </div>
           <ul className='rs-bullets'>
             <li>
-              <span className='li-mark'>&gt;</span> Supported IT infrastructure
-              projects for Hungary's largest IT services company.
+              <span className='li-mark'>&gt;</span> Supported project managers:
+              ticket preparation and processing, incoming client communication,
+              work coordination, and incident escalation.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Assisted with enterprise
-              deployment planning and technical documentation.
+              <span className='li-mark'>&gt;</span> Performed cross-system
+              checks and Playwright-based pre-tests before releases.
             </li>
           </ul>
         </div>
 
         <div className='rs-divider'>{'// CORE SKILLS'}</div>
+        <p className='mb-3 text-[10px] text-[var(--dp-text-dim)]'>
+          WORK = used in professional client delivery · LAB = personal
+          open-source projects · UNI = university coursework
+        </p>
         <div className='resume-grid mb-8'>
           <div>
             <div className='skill-cap'>AGENTIC & AI</div>
             <ul className='skill-list'>
               <li>
-                <span className='prompt'>●</span> Agent Orchestration
+                <span className='prompt'>●</span> LLM API Integration
                 <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                  WORK
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> Secure Sandboxing
+                <span className='prompt'>●</span> Prompt & Context Engineering
                 <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                  WORK
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> RAG Pipelines
-                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
-                </span>
-              </li>
-              <li>
-                <span className='prompt'>●</span> LLM Evaluation
+                <span className='prompt'>●</span> Agent Hooks & Policy Tooling
                 <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
-                  DEV
+                  LAB
+                </span>
+              </li>
+              <li>
+                <span className='prompt'>●</span> RAG Prototypes
+                <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
+                  LAB
                 </span>
               </li>
             </ul>
@@ -1099,27 +1094,27 @@ function SkillsSection() {
             <div className='skill-cap'>MODELS & DATA</div>
             <ul className='skill-list'>
               <li>
-                <span className='prompt'>●</span> Semantic Search
+                <span className='prompt'>●</span> Python
                 <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                  WORK
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> Streaming Inference
+                <span className='prompt'>●</span> SQL / Postgres
                 <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                  WORK
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> Vector Search
-                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                <span className='prompt'>●</span> Machine Learning Foundations
+                <span className='ml-1.5 border border-[var(--dp-border)] px-1 py-0 text-[9px] font-normal text-[var(--dp-text-dim)] select-none'>
+                  UNI
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> Python / PyTorch
+                <span className='prompt'>●</span> Vector & Semantic Search
                 <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
-                  DEV
+                  LAB
                 </span>
               </li>
             </ul>
@@ -1130,25 +1125,25 @@ function SkillsSection() {
               <li>
                 <span className='prompt'>●</span> Next.js / TypeScript
                 <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                  WORK
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> Rust Systems
-                <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
-                  DEV
-                </span>
-              </li>
-              <li>
-                <span className='prompt'>●</span> API Guarding & Auth
+                <span className='prompt'>●</span> APIs & Backend Logic
                 <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
-                  PROD
+                  WORK
                 </span>
               </li>
               <li>
-                <span className='prompt'>●</span> Distributed Tasks
+                <span className='prompt'>●</span> ERP Integrations
+                <span className='ml-1.5 border border-[var(--accent-muted)] px-1 py-0 text-[9px] font-normal text-[var(--accent-muted)] select-none'>
+                  WORK
+                </span>
+              </li>
+              <li>
+                <span className='prompt'>●</span> Rust
                 <span className='ml-1.5 border border-[var(--warn)] px-1 py-0 text-[9px] font-normal text-[var(--warn)] select-none'>
-                  DEV
+                  LAB
                 </span>
               </li>
             </ul>
@@ -1164,11 +1159,11 @@ function NotesSection() {
     <section className='block' id='notes'>
       <div className='sec-head'>
         <span className='sec-cmd'>ls -la /notes/</span>
-        <span className='sec-note'>PUBLICATIONS</span>
+        <span className='sec-note'>FIELD NOTES</span>
       </div>
       <p className='sub-note'>
-        Technical articles on AI Agent security, multi-agent scaling & prompt
-        engineering
+        Engineering notes from building the projects above — each links to the
+        repository where the pattern is implemented
       </p>
       <div className='flex flex-col gap-3 font-mono text-sm'>
         <a
@@ -1179,15 +1174,16 @@ function NotesSection() {
         >
           <div className='flex flex-wrap items-baseline justify-between gap-2'>
             <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-              Why JSON Event Streams Beat Stdout for AI Agent Auditing
+              Gating agent tool calls with PreToolUse hooks
             </span>
             <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-              2026-05
+              agentsec-hook-pack
             </span>
           </div>
           <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
-            Why structured JSON event streams beat standard stdout dumps for
-            production agent auditing and security posture.
+            Fail-closed decision hooks for Claude Code and Codex: safe-command
+            fast paths, chained-command bypass protection, and
+            observe/prompt/enforce modes. Implemented and tested in the repo.
           </p>
         </a>
         <a
@@ -1198,16 +1194,16 @@ function NotesSection() {
         >
           <div className='flex flex-wrap items-baseline justify-between gap-2'>
             <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-              Sandboxing stdio MCP Servers: Credentials Scrubbing & Directory
-              Guarding
+              Directory guarding & secret scrubbing for stdio MCP servers
             </span>
             <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-              2026-04
+              agent-cli-mcp-rust
             </span>
           </div>
           <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
-            Sandboxing stdio Model Context Protocol servers: Enforcing strict
-            directory restrictions and regular expression credentials scrubbing.
+            Allowed-roots path validation, destructive-command deny patterns,
+            and regex credential redaction of subprocess output — the policy and
+            redaction modules carry the unit tests.
           </p>
         </a>
       </div>
@@ -1236,7 +1232,7 @@ function ContactSection({
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: "Session active. Grounded in David's public GitHub projects. Ask me about the AgentSec platform, agent-cli-mcp-rust, antigravity-skill-injector, thesys-c1-dashboard, or saas-core!"
+      text: "Session active. Grounded in David's public GitHub projects. Ask me about PromptShield, agentsec-hook-pack, mcpguard-lite, agentmap, approveops, or agent-cli-mcp-rust!"
     }
   ]);
   const [val, setVal] = useState('');
@@ -1372,7 +1368,7 @@ Email is fastest.`}
       <div className='chat term-window'>
         <div className='chat-titlebar'>
           <span className='chat-status'>
-            <span className='sb-dot' /> RAG_ASSISTANT: connected
+            <span className='sb-dot' /> PORTFOLIO_ASSISTANT: ready
           </span>
           <span className='chat-conv'>context: github_public</span>
         </div>
@@ -1388,7 +1384,7 @@ Email is fastest.`}
             <div className='chat-msg bot typing'>
               <span className='msg-tag'>ASSISTANT</span>
               <span className='msg-text'>
-                searching vector store and reasoning
+                searching project corpus
                 <span className='ell'>...</span>
               </span>
             </div>

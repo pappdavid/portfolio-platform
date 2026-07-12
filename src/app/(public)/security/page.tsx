@@ -24,47 +24,26 @@ export default function SecurityPage() {
             on all tables. Service role key is never exposed to the client.
           </li>
           <li>
-            <strong>Rate Limiting</strong> — Upstash Redis sliding window
-            limiters on all API endpoints.
+            <strong>Rate Limiting</strong> — Upstash Redis sliding-window
+            limiters on the public chat and assistant endpoints.
           </li>
-          <li>
-            <strong>HMAC Signing</strong> — MCP API requests are signed with
-            HMAC-SHA256 to prevent tampering.
-          </li>
-        </ul>
-
-        <h2>MCP Sentinel Guards</h2>
-        <ul>
-          <li>Prompt injection detection on all incoming tool calls.</li>
-          <li>PII scanning with automatic redaction.</li>
-          <li>Cost tracking with per-key spending limits.</li>
-          <li>Output validation against expected schemas.</li>
         </ul>
 
         <h2>Data Protection</h2>
         <ul>
           <li>All connections use HTTPS/TLS.</li>
-          <li>API keys are hashed before storage.</li>
-          <li>
-            Training data is processed in-memory and not persisted beyond the
-            job lifecycle.
-          </li>
-          <li>Chat conversations are ephemeral unless explicitly saved.</li>
+          <li>Assistant chat conversations are not persisted by this site.</li>
         </ul>
 
         <h2>Responsible Disclosure</h2>
         <p>
-          If you discover a security vulnerability, please report it
-          responsibly. Contact details are available on the About page. We aim
-          to acknowledge reports within 48 hours and resolve critical issues
-          within 7 days.
+          If you discover a security vulnerability, please report it responsibly
+          to contact@davidpapp.dev. This is a personal portfolio site maintained
+          by one person; reports are handled on a best-effort basis.
         </p>
 
         <h2>Dependencies</h2>
-        <p>
-          We regularly audit npm dependencies and apply security patches.
-          Critical vulnerabilities are addressed within 24 hours of disclosure.
-        </p>
+        <p>npm dependencies are updated and patched on a best-effort basis.</p>
       </article>
     </div>
   );

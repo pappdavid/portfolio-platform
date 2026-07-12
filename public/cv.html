@@ -278,6 +278,18 @@
         max-width: 100% !important;
       }
 
+      .exp-item,
+      .edu-item,
+      .cap-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .section-title {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
       @page {
         size: A4;
         margin: 14mm;
@@ -288,7 +300,7 @@
 <body>
   <div class="cv-container">
     <div class="status-bar">
-      <span>SYS.NAME: CV_2026</span>
+      <span>SYS.NAME: CV_2026.07</span>
       <span><span class="dot"></span>STATUS: OPEN · FULL-TIME</span>
     </div>
     
@@ -296,8 +308,8 @@
       <div class="header-main">
         <div>
           <h1>DAVID PAPP</h1>
-          <div class="subtitle">AI Solution Developer</div>
-          <div class="location">Amsterdam · Rotterdam, NL | OPEN · FULL-TIME</div>
+          <div class="subtitle">AI Solutions Developer</div>
+          <div class="location">Rotterdam area, NL · remote / hybrid / on-site | OPEN · FULL-TIME</div>
         </div>
       </div>
       <div class="contact-grid">
@@ -310,48 +322,48 @@
 
     <section>
       <div class="section-title">§ 1.0 PROFILE</div>
-      <p>AI Solution Developer with hands-on experience designing and shipping production-grade LLM-powered systems. Specializes in multi-agent orchestration, RAG pipelines, and secure runtime tooling for autonomous agents. Currently pursuing a BSc in Artificial Intelligence at VU Amsterdam while working as an AI Solutions Developer at WEBINFORM IT Ltd.</p>
+      <p>AI Solutions Developer at WEBINFORM IT Ltd (contract, since Oct 2024), building internal AI tools and production LLM functionality for web applications and ERP-integrated systems. BSc Artificial Intelligence student at Vrije Universiteit Amsterdam (2024–2027 expected). Builds open-source AI-agent security prototypes (prompt-injection scanning, tool-call policy hooks, approval workflows) on the side. Based in the Rotterdam area, NL; NL/EU work authorization — no sponsorship required.</p>
     </section>
 
     <section>
       <div class="section-title">§ 2.0 CAPABILITIES</div>
       <div class="cap-list">
         <div class="cap-item">
-          <div class="cap-label">AI · ML:</div>
-          <div class="cap-val">Neural network architectures, transformer models, fine-tuning (LoRA/QLoRA), embedding models, vector search, evaluation frameworks</div>
-        </div>
-        <div class="cap-item">
           <div class="cap-label">LLMs · Agents:</div>
-          <div class="cap-val">Multi-agent orchestration (MCP), RAG pipelines, prompt engineering, tool-use architectures, guardrails & policy enforcement</div>
+          <div class="cap-val">LLM API integration, prompt & context engineering, MCP protocol, agent tool-call policy hooks, RAG prototyping</div>
         </div>
         <div class="cap-item">
           <div class="cap-label">Languages:</div>
-          <div class="cap-val">Python, Rust, TypeScript, SQL, Bash</div>
+          <div class="cap-val">TypeScript, Python, Rust, SQL, Bash</div>
         </div>
         <div class="cap-item">
           <div class="cap-label">Frontend · UI:</div>
-          <div class="cap-val">Next.js, React, Tailwind CSS, Three.js, Generative UI (Thesys C1)</div>
+          <div class="cap-val">Next.js, React, Tailwind CSS</div>
         </div>
         <div class="cap-item">
-          <div class="cap-label">Data · Infra:</div>
-          <div class="cap-val">Supabase/Postgres, pgvector, Upstash Redis, Stripe API, Vercel, GitHub Actions, Docker</div>
+          <div class="cap-label">Backend · Infra:</div>
+          <div class="cap-val">Postgres, Prisma, Supabase, Clerk, REST APIs, ERP integrations, Vercel, GitHub Actions</div>
+        </div>
+        <div class="cap-item">
+          <div class="cap-label">AI · ML (academic):</div>
+          <div class="cap-val">Machine learning foundations, computational linguistics, multi-agent systems (VU Amsterdam coursework)</div>
         </div>
       </div>
     </section>
 
     <section>
       <div class="section-title">§ 3.0 EXPERIENCE</div>
-      
+
       <div class="exp-item">
         <div class="exp-header">
-          <span><span class="exp-title">AI Solutions Developer</span> | <span class="exp-company">WEBINFORM IT Ltd</span></span>
+          <span><span class="exp-title">AI Solutions Developer (contract)</span> | <span class="exp-company">WEBINFORM IT Ltd</span></span>
           <span class="exp-date">Oct 2024 – Present</span>
         </div>
         <ul class="exp-bullets">
-          <li>Designed secure multi-agent coordination architectures using MCP connectors</li>
-          <li>Bootstrapped low-latency fine-tuning dataset generation scripts over massive code bases</li>
-          <li>Overhauled SaaS backends with Stripe Billing, Prisma, and robust usage constraints</li>
-          <li>Built an AI agent security platform: risk scoring, policy engine, HITL approvals</li>
+          <li>Build internal AI tools and production LLM functionality for web applications and ERP-integrated systems: APIs, automation, backend logic, and user-facing AI interfaces</li>
+          <li>Repaired an inherited AI-first service with architecture, security, compliance, and prompt/context-injection problems — reverse-engineered undocumented integration behavior and reduced LLM API usage cost by roughly 40%</li>
+          <li>Delivered 20+ websites/webshops, three internal systems, and one user-facing platform</li>
+          <li>Two ERP/AI integration projects with direct involvement in discovery, requirements, solution design, client coordination, proposals, and pricing</li>
         </ul>
       </div>
 
@@ -361,8 +373,7 @@
           <span class="exp-date">Feb 2023 – Jun 2023</span>
         </div>
         <ul class="exp-bullets">
-          <li>Taught programming fundamentals and game development to children aged 7–14</li>
-          <li>Developed custom curricula for Python and Scratch courses</li>
+          <li>Taught Python, Scratch, game development, and programming fundamentals</li>
         </ul>
       </div>
 
@@ -372,32 +383,32 @@
           <span class="exp-date">Aug 2022 – Aug 2023</span>
         </div>
         <ul class="exp-bullets">
-          <li>Supported IT infrastructure projects for Hungary's largest IT services company</li>
-          <li>Assisted with enterprise deployment planning and documentation</li>
+          <li>Supported project managers: ticket preparation and processing, incoming client communication, work coordination, and incident escalation</li>
+          <li>Performed cross-system checks and Playwright-based pre-tests</li>
         </ul>
       </div>
     </section>
 
     <section>
-      <div class="section-title">§ 4.0 EDUCATION</div>
-      
-      <div class="edu-item">
-        <div class="edu-header">
-          <span><span class="edu-degree">BSc Artificial Intelligence</span> | <span class="edu-school">VU Amsterdam</span></span>
-          <span class="edu-date">2024 – 2027 (expected)</span>
-        </div>
-        <div class="edu-coursework">
-          Selected coursework: Machine Learning, Computational Linguistics, Data Structures & Algorithms, Linear Algebra, Calculus, Logic & Sets, Project Multi-Agent Systems
-        </div>
-      </div>
+      <div class="section-title">§ 4.0 OPEN-SOURCE PROJECTS</div>
+      <ul class="exp-bullets">
+        <li><strong>PromptShield</strong> — rule-based prompt-injection scanner + runtime action inspector; unit-tested, CI asserts live HTTP behavior; public demo on Vercel (github.com/pappdavid/promptshield)</li>
+        <li><strong>agentsec-hook-pack</strong> — zero-dependency PreToolUse policy hook for Claude Code/Codex; 12-case test suite, fail-closed design (github.com/pappdavid/agentsec-hook-pack)</li>
+        <li><strong>mcpguard-lite / agentmap / approveops</strong> — bounded prototypes for MCP manifest analysis, declared-metadata risk scoring, and approval workflows; core logic covered by unit or mocked-database tests, with public Vercel demos</li>
+        <li><strong>agent-cli-mcp-rust</strong> — Rust MCP server supervising AI coding CLIs with directory isolation and secret scrubbing; policy and redaction modules are unit-tested (github.com/pappdavid/agent-cli-mcp-rust)</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-title">§ 5.0 EDUCATION</div>
 
       <div class="edu-item">
         <div class="edu-header">
-          <span><span class="edu-degree">Advanced Studies in Computer Science</span> | <span class="edu-school">Milestone Institute</span></span>
-          <span class="edu-date">2019 – 2023</span>
+          <span><span class="edu-degree">BSc Artificial Intelligence</span> | <span class="edu-school">Vrije Universiteit Amsterdam</span></span>
+          <span class="edu-date">2024 – 2027 (expected)</span>
         </div>
         <div class="edu-coursework">
-          Advanced program for gifted students with focus on mathematics and computer science
+          Coursework includes machine learning, computational linguistics, multi-agent systems, data structures & algorithms, linear algebra, calculus, and logic
         </div>
       </div>
     </section>
