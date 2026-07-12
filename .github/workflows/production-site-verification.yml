@@ -1,0 +1,73 @@
+name: Production site verification
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify live routes, redirects, CV, assistant, and rendered homepage
+        env:
+          BASE: https://davidpapp.dev
+        run: |
+          set -euo pipefail
+
+          ready=false
+          for i in $(seq 1 60); do
+            if curl -fsSL --max-time 30 "$BASE/" > /tmp/home.html \
+              && grep -q 'students aged 10–16' /tmp/home.html; then
+              ready=true
+              break
+            fi
+            sleep 10
+          done
+          [ "$ready" = true ]
+
+          for path in / /projects /saas-projects /brand /security /privacy-policy /terms-of-service /cv.pdf; do
+            code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$BASE$path")
+            echo "$path -> $code"
+            [ "$code" = 200 ]
+          done
+
+          for path in /mcp /training /chat /projects/mcp-sentinel /projects/rag-chat /projects/training /projects/portfolio /about; do
+            code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$BASE$path")
+            echo "$path -> $code"
+            [ "$code" = 307 ] || [ "$code" = 308 ]
+          done
+
+          curl -sfI "$BASE/cv.pdf" | grep -qi 'content-type: application/pdf'
+          bytes=$(curl -sf "$BASE/cv.pdf" | wc -c)
+          echo "cv.pdf bytes: $bytes"
+          [ "$bytes" -gt 20000 ]
+
+          curl -fsSL "$BASE/projects" > /tmp/projects.html
+          ! grep -Eqi 'used daily|~7k|97% reduction|production-ready|agentsec\.davidpapp\.dev' \
+            /tmp/home.html /tmp/projects.html
+
+          curl -sf -H 'content-type: application/json' \
+            -d '{"question":"Is David available for full-time work?"}' \
+            "$BASE/api/ama" > /tmp/ama.json
+          cat /tmp/ama.json
+          python3 - <<'PY'
+          import json
+          data = json.load(open('/tmp/ama.json'))
+          answer = data['answer'].lower()
+          assert 'full-time' in answer
+          assert 'sponsorship' in answer
+          assert '~7k' not in answer and 'used daily' not in answer
+          assert isinstance(data.get('links'), list) and data['links']
+          PY
+
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=8000 --dump-dom "$BASE/" > /tmp/rendered-home.html
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=8000 --dump-dom "$BASE/projects" > /tmp/rendered-projects.html
+          grep -q 'David' /tmp/rendered-home.html
+          grep -q 'PromptShield' /tmp/rendered-projects.html
+          ! grep -Eqi 'Application error|Internal Server Error' \
+            /tmp/rendered-home.html /tmp/rendered-projects.html
