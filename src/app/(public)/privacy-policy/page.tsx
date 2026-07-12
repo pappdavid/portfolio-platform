@@ -9,10 +9,10 @@ export default function PrivacyPolicyPage() {
     <div className='py-20'>
       <article className='prose dark:prose-invert mx-auto max-w-3xl px-4'>
         <h1>Privacy Policy</h1>
-        <p className='lead'>Last updated: March 2026</p>
+        <p className='lead'>Last updated: July 2026</p>
 
         <h2>Data We Collect</h2>
-        <p>When you use this platform, we may collect the following data:</p>
+        <p>When you use this site, the following data may be collected:</p>
         <ul>
           <li>
             <strong>Account data</strong> — email address and profile
@@ -23,16 +23,17 @@ export default function PrivacyPolicyPage() {
             interaction patterns for analytics.
           </li>
           <li>
-            <strong>API logs</strong> — MCP event logs, training job metadata,
-            and chat session data stored in Supabase.
+            <strong>Rate-limit counters</strong> — short-lived request counters
+            for the assistant endpoints. Assistant conversations themselves are
+            not persisted by this site.
           </li>
         </ul>
 
         <h2>How We Use Your Data</h2>
         <ul>
-          <li>To provide and maintain the platform services.</li>
+          <li>To provide and maintain the site.</li>
           <li>To enforce rate limits and prevent abuse.</li>
-          <li>To improve the platform based on aggregate usage patterns.</li>
+          <li>To improve the site based on aggregate usage patterns.</li>
         </ul>
 
         <h2>Data Storage</h2>
@@ -56,10 +57,7 @@ export default function PrivacyPolicyPage() {
         </p>
 
         <h2>Contact</h2>
-        <p>
-          For privacy-related questions, reach out via the contact information
-          on the About page.
-        </p>
+        <p>For privacy-related questions, contact contact@davidpapp.dev.</p>
       </article>
     </div>
   );

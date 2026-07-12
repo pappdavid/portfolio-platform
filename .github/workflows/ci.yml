@@ -1,0 +1,209 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Content consistency checks
+        run: npm run check:content
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint:strict
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
+      - name: Start local production server
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+        run: |
+          npm run start > /tmp/portfolio-server.log 2>&1 &
+          echo $! > /tmp/portfolio-server.pid
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/ > /dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/portfolio-server.log
+          exit 1
+
+      - name: Local HTTP routes and PDF
+        run: |
+          set -euo pipefail
+          check() {
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:3000$1")
+            echo "$1 -> $code (want $2)"
+            [ "$code" = "$2" ]
+          }
+          check /                       200
+          check /projects               200
+          check /saas-projects          200
+          check /brand                  200
+          check /security               200
+          check /privacy-policy         200
+          check /terms-of-service       200
+          check /cv.pdf                 200
+          check /mcp                    307
+          check /training               307
+          check /chat                   307
+          check /projects/mcp-sentinel  307
+          check /projects/rag-chat      307
+          check /projects/training      307
+          check /projects/portfolio     307
+          check /about                  307
+          curl -sfI http://localhost:3000/cv.pdf | grep -qi 'content-type: application/pdf'
+          bytes=$(curl -sf http://localhost:3000/cv.pdf | wc -c)
+          echo "cv.pdf bytes: $bytes"
+          [ "$bytes" -gt 20000 ]
+
+      - name: Local assistant API
+        run: |
+          set -euo pipefail
+          curl -sf -H 'content-type: application/json' \
+            -d '{"question":"Is David available for full-time work?"}' \
+            http://localhost:3000/api/ama > /tmp/ama.json
+          cat /tmp/ama.json
+          python3 - <<'PY'
+          import json
+          data = json.load(open('/tmp/ama.json'))
+          answer = data['answer'].lower()
+          assert 'full-time' in answer
+          assert 'sponsorship' in answer
+          assert isinstance(data.get('links'), list) and data['links']
+          PY
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H 'content-type: application/json' -d '{}' http://localhost:3000/api/ama)
+          echo "invalid request -> $code"
+          [ "$code" = 400 ]
+
+      - name: Local headless-browser rendering
+        run: |
+          set -euo pipefail
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
+          echo "Chrome: $CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=5000 --dump-dom http://localhost:3000/ > /tmp/home-dom.html
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=5000 --dump-dom http://localhost:3000/projects > /tmp/projects-dom.html
+          grep -q 'David' /tmp/home-dom.html
+          grep -q 'PromptShield' /tmp/projects-dom.html
+          ! grep -Eqi 'Application error|Internal Server Error' /tmp/home-dom.html /tmp/projects-dom.html
+
+      - name: Stop local production server
+        if: always()
+        run: kill "$(cat /tmp/portfolio-server.pid)" 2>/dev/null || true
+
+      - name: Export current CV for inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-cv-pdf
+          path: public/cv.pdf
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: External repository and demo links
+        run: |
+          set -euo pipefail
+          for url in \
+            https://github.com/pappdavid/promptshield \
+            https://github.com/pappdavid/agentsec-hook-pack \
+            https://github.com/pappdavid/mcpguard-lite \
+            https://github.com/pappdavid/agentmap \
+            https://github.com/pappdavid/approveops \
+            https://github.com/pappdavid/agent-cli-mcp-rust \
+            https://github.com/pappdavid/antigravity-skill-injector \
+            https://github.com/pappdavid/thesys-c1-dashboard \
+            https://promptshield-cyan.vercel.app \
+            https://mcpguard-lite.vercel.app \
+            https://agentmap-fawn.vercel.app \
+            https://approveops.vercel.app; do
+            code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$url")
+            echo "$url -> $code"
+            [ "$code" = 200 ]
+          done
+
+      - name: Deployed-site end-to-end verification
+        env:
+          PREVIEW_URL: https://portfolio-platform-git-fix-cred-e10015-davids-projects-3d9eb396.vercel.app
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = push ]; then
+            BASE=https://davidpapp.dev
+          else
+            BASE="$PREVIEW_URL"
+          fi
+          echo "Verifying $BASE"
+
+          ready=false
+          for i in $(seq 1 60); do
+            if curl -fsSL --max-time 30 "$BASE/" > /tmp/deployed-home.html \
+              && grep -q 'students aged 10–16' /tmp/deployed-home.html; then
+              ready=true
+              break
+            fi
+            sleep 10
+          done
+          [ "$ready" = true ]
+
+          for path in / /projects /saas-projects /brand /security /privacy-policy /terms-of-service /cv.pdf; do
+            code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$BASE$path")
+            echo "$path -> $code"
+            [ "$code" = 200 ]
+          done
+          for path in /mcp /training /chat /projects/mcp-sentinel /projects/rag-chat /projects/training /projects/portfolio /about; do
+            code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$BASE$path")
+            echo "$path -> $code"
+            [ "$code" = 307 ] || [ "$code" = 308 ]
+          done
+
+          curl -sfI "$BASE/cv.pdf" | grep -qi 'content-type: application/pdf'
+          bytes=$(curl -sf "$BASE/cv.pdf" | wc -c)
+          echo "deployed cv.pdf bytes: $bytes"
+          [ "$bytes" -gt 20000 ]
+          curl -fsSL "$BASE/projects" > /tmp/deployed-projects.html
+          ! grep -Eqi 'used daily|~7k|97% reduction|production-ready|agentsec\.davidpapp\.dev' \
+            /tmp/deployed-home.html /tmp/deployed-projects.html
+
+          curl -sf -H 'content-type: application/json' \
+            -d '{"question":"Is David available for full-time work?"}' \
+            "$BASE/api/ama" > /tmp/deployed-ama.json
+          python3 - <<'PY'
+          import json
+          data = json.load(open('/tmp/deployed-ama.json'))
+          answer = data['answer'].lower()
+          assert 'full-time' in answer
+          assert 'sponsorship' in answer
+          assert '~7k' not in answer and 'used daily' not in answer
+          PY
+
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=8000 --dump-dom "$BASE/" > /tmp/deployed-dom.html
+          grep -q 'David' /tmp/deployed-dom.html
+          ! grep -Eqi 'Application error|Internal Server Error' /tmp/deployed-dom.html

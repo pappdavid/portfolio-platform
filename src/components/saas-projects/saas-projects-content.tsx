@@ -26,25 +26,40 @@ export function SaasProjectsContent() {
     projects.length > 0 ? formatUpdatedAt(projects[0].updatedAt) : null;
 
   return (
-    <div className='shell relative py-16' style={{ fontFamily: 'var(--font-hud-mono)' }}>
+    <div
+      className='shell relative py-16'
+      style={{ fontFamily: 'var(--font-hud-mono)' }}
+    >
       {/* Header Prompt */}
       <header className='block'>
         <div className='sec-head'>
           <span className='sec-cmd'>cat saas_catalog.db</span>
           {projects.length > 0 && (
-            <span className='sec-note'>[{projects.length} products provisioned]</span>
+            <span className='sec-note'>
+              [{projects.length} prototype demos]
+            </span>
           )}
         </div>
-        <p className='prose mb-6' style={{ color: 'var(--dp-text-dim)', fontSize: '13px', lineHeight: '1.6' }}>
-          These side-projects are built and self-provisioned dynamically via the{' '}
-          <span style={{ color: 'var(--dp-accent)' }}>saas-core</span> Product Factory. On push, 
-          automated GitHub Actions orchestrate Vercel serverless deployments, Supabase PostgreSQL, 
-          Upstash Redis caching, Resend lists, and Stripe billing products idempotently in under 5 minutes.
+        <p
+          className='prose mb-6'
+          style={{
+            color: 'var(--dp-text-dim)',
+            fontSize: '13px',
+            lineHeight: '1.6'
+          }}
+        >
+          A catalogue of small side-project prototypes, each deployed as a
+          public Vercel demo from a shared Next.js scaffold. They are
+          experiments and demos — not commercial products with customers,
+          billing, or uptime guarantees. Screenshots are captured from the live
+          deployments.
         </p>
         {lastUpdated && (
           <p style={{ color: 'var(--dp-text-dim)', fontSize: '11px' }}>
-            {'// last daily db sync: '}
-            <span style={{ color: 'var(--dp-accent-muted)' }}>{lastUpdated}</span>
+            {'// screenshots last captured: '}
+            <span style={{ color: 'var(--dp-accent-muted)' }}>
+              {lastUpdated}
+            </span>
           </p>
         )}
       </header>
@@ -52,7 +67,10 @@ export function SaasProjectsContent() {
       {/* Grid */}
       <section className='block'>
         {projects.length === 0 ? (
-          <p className='text-center text-xs' style={{ color: 'var(--dp-text-dim)' }}>
+          <p
+            className='text-center text-xs'
+            style={{ color: 'var(--dp-text-dim)' }}
+          >
             [ERROR: no active product catalog entries found]
           </p>
         ) : (
@@ -60,7 +78,7 @@ export function SaasProjectsContent() {
             {projects.map((project) => (
               <div
                 key={project.slug}
-                className='term-window rounded-none overflow-hidden flex flex-col'
+                className='term-window flex flex-col overflow-hidden rounded-none'
                 style={{
                   border: '1px solid var(--dp-border)',
                   background: 'var(--dp-bg-raised)',
@@ -68,38 +86,38 @@ export function SaasProjectsContent() {
                 }}
               >
                 {/* Traffic-lights Chrome Header */}
-                <div 
-                  className='term-titlebar flex items-center justify-between' 
-                  style={{ 
+                <div
+                  className='term-titlebar flex items-center justify-between'
+                  style={{
                     padding: '8px 12px',
                     background: 'var(--dp-bg-titlebar)',
                     borderBottom: '1px solid var(--dp-border)'
                   }}
                 >
                   <div className='flex gap-1.5'>
-                    <span 
-                      className='w-2.5 h-2.5 rounded-full' 
-                      style={{ background: 'var(--dot-red)' }} 
+                    <span
+                      className='h-2.5 w-2.5 rounded-full'
+                      style={{ background: 'var(--dot-red)' }}
                     />
-                    <span 
-                      className='w-2.5 h-2.5 rounded-full' 
-                      style={{ background: 'var(--dot-yellow)' }} 
+                    <span
+                      className='h-2.5 w-2.5 rounded-full'
+                      style={{ background: 'var(--dot-yellow)' }}
                     />
-                    <span 
-                      className='w-2.5 h-2.5 rounded-full' 
-                      style={{ background: 'var(--dot-green)' }} 
+                    <span
+                      className='h-2.5 w-2.5 rounded-full'
+                      style={{ background: 'var(--dot-green)' }}
                     />
                   </div>
-                  <span 
-                    className='text-[10px]' 
+                  <span
+                    className='text-[10px]'
                     style={{ color: 'var(--dp-text-dim)', fontSize: '10px' }}
                   >
-                    {project.slug}.davidpapp.dev
+                    {project.url.replace(/^https?:\/\//, '')}
                   </span>
                 </div>
 
                 {/* Aspect-Video Screenshot */}
-                <div 
+                <div
                   className='relative aspect-video w-full overflow-hidden'
                   style={{ background: 'var(--dp-bg)' }}
                 >
@@ -107,21 +125,21 @@ export function SaasProjectsContent() {
                     src={project.screenshotPath}
                     alt={`${project.name} preview`}
                     fill
-                    className='object-cover object-top filter grayscale hover:grayscale-0 transition-all duration-300'
+                    className='object-cover object-top grayscale filter transition-all duration-300 hover:grayscale-0'
                     sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
                   />
                 </div>
 
                 {/* Details Body */}
-                <div 
-                  className='p-5 flex-1 flex flex-col justify-between'
+                <div
+                  className='flex flex-1 flex-col justify-between p-5'
                   style={{ borderTop: '1px solid var(--dp-border)' }}
                 >
                   <div>
-                    <h3 
-                      style={{ 
-                        color: 'var(--dp-accent)', 
-                        fontSize: '13px', 
+                    <h3
+                      style={{
+                        color: 'var(--dp-accent)',
+                        fontSize: '13px',
                         fontWeight: 700,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em'
@@ -129,26 +147,30 @@ export function SaasProjectsContent() {
                     >
                       {project.name}
                     </h3>
-                    <p 
-                      style={{ 
-                        color: 'var(--dp-text-dim)', 
-                        fontSize: '11px', 
-                        marginTop: '8px', 
-                        lineHeight: '1.5' 
+                    <p
+                      style={{
+                        color: 'var(--dp-text-dim)',
+                        fontSize: '11px',
+                        marginTop: '8px',
+                        lineHeight: '1.5'
                       }}
                     >
-                      {project.description || 'Idle boilerplate template ready for core logic.'}
+                      {project.description ||
+                        'Prototype demo — see the live deployment.'}
                     </p>
                   </div>
-                  
-                  <div className='mt-4 pt-3' style={{ borderTop: '1px dotted var(--dp-border)' }}>
+
+                  <div
+                    className='mt-4 pt-3'
+                    style={{ borderTop: '1px dotted var(--dp-border)' }}
+                  >
                     <a
                       href={project.url}
                       target='_blank'
                       rel='noopener noreferrer'
-                      className='row-link font-bold text-[11px]'
+                      className='row-link text-[11px] font-bold'
                     >
-                      {'[visit active demo ->]'}
+                      {'[visit live demo ->]'}
                     </a>
                   </div>
                 </div>
@@ -159,25 +181,46 @@ export function SaasProjectsContent() {
       </section>
 
       {/* CTA Footer */}
-      <section className='block py-16' style={{ borderTop: '1px solid var(--dp-border)' }}>
-        <div className='text-center max-w-2xl mx-auto'>
-          <h2 style={{ color: 'var(--dp-text)', fontSize: '16px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            // Interested in hiring me?
+      <section
+        className='block py-16'
+        style={{ borderTop: '1px solid var(--dp-border)' }}
+      >
+        <div className='mx-auto max-w-2xl text-center'>
+          <h2
+            style={{
+              color: 'var(--dp-text)',
+              fontSize: '16px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em'
+            }}
+          >
+            {'// Interested in hiring me?'}
           </h2>
-          <p style={{ color: 'var(--dp-text-dim)', fontSize: '13px', marginTop: '8px', lineHeight: '1.6' }}>
-            I am available for full-time AI solutions engineering roles and high-impact short consulting contracts.
+          <p
+            style={{
+              color: 'var(--dp-text-dim)',
+              fontSize: '13px',
+              marginTop: '8px',
+              lineHeight: '1.6'
+            }}
+          >
+            I am available for full-time AI engineering and AI solutions roles.
           </p>
-          <div className='cta-row justify-center mt-8'>
-            <a href='mailto:contact@davidpapp.dev' className='cta cta-resume glitch-hover'>
+          <div className='cta-row mt-8 justify-center'>
+            <a
+              href='mailto:contact@davidpapp.dev'
+              className='cta cta-resume glitch-hover'
+            >
               [email contact]
             </a>
             <a
-              href='https://calendly.com/david-webinform/30min'
+              href='https://github.com/pappdavid'
               target='_blank'
               rel='noopener noreferrer'
               className='cta glitch-hover'
             >
-              [schedule live call]
+              [github]
             </a>
           </div>
         </div>

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Summary
 
-Portfolio platform forked from `Kiranism/next-shadcn-dashboard-starter`. Built with Next.js 16 (App Router), React 19, TypeScript 5.7 (strict), Tailwind CSS v4, shadcn/ui, and Clerk auth. Features MCP Sentinel, Custom Training, RAG + 3D Chat pages backed by Supabase, Upstash rate limiting, and Thesys C1.
+Portfolio platform forked from `Kiranism/next-shadcn-dashboard-starter`. Built with Next.js 16 (App Router), React 19, TypeScript 5.7 (strict), Tailwind CSS v4, shadcn/ui, and Clerk auth. Public portfolio site (terminal-OS 'DavidOS' identity) with a landing page, projects showcase, SaaS demo catalogue, RAG-grounded assistant endpoints, and a downloadable CV, backed by Supabase and Upstash rate limiting. Recruiter-facing content consistency is checked by scripts/portfolio-regression-checks.mjs (`npm run check:content`) — keep it passing.
 
 ## Commands
 
@@ -18,7 +18,7 @@ npm run lint:strict  # Zero-warning ESLint
 npm run format       # Prettier
 ```
 
-No test framework is configured yet.
+No general test framework is configured. Run `npm run check:content` for recruiter-facing content checks and `npm run typecheck` for TypeScript.
 
 ## Architecture
 
@@ -27,11 +27,13 @@ No test framework is configured yet.
 ```
 src/app/
 ├── (marketing)/page.tsx          # Landing page (public, maps to /)
-├── (products)/                   # Public product showcase pages
-│   ├── mcp/page.tsx              # MCP Sentinel page
-│   ├── training/page.tsx         # Custom Training page
-│   ├── chat/page.tsx             # RAG + 3D Chat page
-│   └── projects/page.tsx         # Projects portfolio
+├── (public)/                     # Public pages
+│   ├── page.tsx                  # Landing (DavidOS terminal UI)
+│   ├── projects/page.tsx         # Projects showcase
+│   ├── saas-projects/page.tsx    # SaaS demo catalogue
+│   └── brand/, security/, ...    # Static pages
+│   # /mcp, /training, /chat and old project detail routes are redirects
+│   # defined in next.config.ts — do not recreate those pages
 ├── dashboard/                    # Protected by Clerk (see proxy.ts)
 │   ├── layout.tsx                # Sidebar shell + KBar + InfoSidebar
 │   ├── overview/                 # Parallel routes: @area_stats, @bar_stats, @pie_stats, @sales
@@ -39,7 +41,7 @@ src/app/
 │   ├── training/page.tsx         # Datasets & training jobs
 │   └── referrals/page.tsx        # Referral link tracking
 ├── auth/                         # Clerk sign-in/sign-up (catch-all routes)
-├── api/                          # API routes (mcp/, chat/, training/, ref/)
+├── api/                          # API routes (ama/, chat/, demo-quota/, ref/)
 ├── r/                            # Referral redirect handler
 ├── about/, privacy-policy/, terms-of-service/
 └── layout.tsx                    # Root: ThemeProvider → NuqsAdapter → ClerkProvider

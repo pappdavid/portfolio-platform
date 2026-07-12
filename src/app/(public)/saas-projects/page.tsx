@@ -4,7 +4,7 @@ import { SaasProjectsContent } from '@/components/saas-projects/saas-projects-co
 export const metadata: Metadata = {
   title: 'SaaS Projects — David Papp',
   description:
-    'Side projects from the Code Shame org — a Vercel + Supabase + Clerk + Redis stack, updated daily.'
+    'A catalogue of small side-project prototypes, each with a public Vercel demo.'
 };
 
 export default function SaasProjectsPage() {

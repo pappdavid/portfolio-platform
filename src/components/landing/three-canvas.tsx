@@ -9,7 +9,7 @@ export interface ThreeCanvasRef {
 }
 
 const MODULE_LABELS: { id: ModuleId; label: string }[] = [
-  { id: 'sentinel', label: 'MCP Sentinel' },
+  { id: 'sentinel', label: 'Security Lab' },
   { id: 'training', label: 'Custom Training' },
   { id: 'chat', label: 'RAG + 3D Chat' }
 ];
