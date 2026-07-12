@@ -19,6 +19,27 @@ Rules:
 - Include 1-3 relevant links from this list: ${JSON.stringify(portfolioAssistantLinks)}
 - If you don't know the answer from context, say "I don't have that detail in my portfolio content."`;
 
+const HIRING_FACT_TERMS = [
+  'available',
+  'availability',
+  'full-time',
+  'full time',
+  'open to work',
+  'open for work',
+  'work authorization',
+  'work permit',
+  'sponsorship',
+  'visa',
+  'start date',
+  'when can david start',
+  'hire david'
+];
+
+function asksForHiringFacts(question: string) {
+  const normalized = question.toLowerCase();
+  return HIRING_FACT_TERMS.some((term) => normalized.includes(term));
+}
+
 async function optionalUserId() {
   if (!process.env.CLERK_SECRET_KEY) return null;
   return (await auth()).userId;
@@ -46,15 +67,18 @@ export async function POST(req: Request) {
     );
   }
 
+  const fallback = answerPortfolioQuestion(question);
+
+  // Hiring status and work-authorization facts must never vary by model output.
+  // Return the reviewed deterministic answer even when an OpenAI key is present.
+  if (asksForHiringFacts(question) || !process.env.OPENAI_API_KEY) {
+    return NextResponse.json(fallback);
+  }
+
   const chunks = chunkText(amaCorpus);
   const relevant = retrieveChunks(question, chunks, 3);
   const context =
     relevant.length > 0 ? relevant.join('\n\n') : amaCorpus.slice(0, 1500);
-
-  const fallback = answerPortfolioQuestion(question);
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json(fallback);
-  }
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
