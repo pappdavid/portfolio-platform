@@ -63,7 +63,7 @@ jobs:
           }
           check /                       200
           check /projects               200
-          check /saas-projects          200
+          check /saas-projects          307
           check /brand                  200
           check /security               200
           check /privacy-policy         200
@@ -97,6 +97,16 @@ jobs:
           assert 'sponsorship' in answer
           assert isinstance(data.get('links'), list) and data['links']
           PY
+          curl -sf -H 'content-type: application/json' \
+            -d '{"question":"What are David selected projects?"}' \
+            http://localhost:3000/api/ama > /tmp/projects-answer.json
+          python3 - <<'PY'
+          import json
+          answer = json.load(open('/tmp/projects-answer.json'))['answer'].lower()
+          for name in ['voidarch context', 'voidarch studio', 'agentsec suite', 'saas-core']:
+              assert name in answer, name
+          assert 'five separate' not in answer
+          PY
           code=$(curl -s -o /dev/null -w '%{http_code}' \
             -H 'content-type: application/json' -d '{}' http://localhost:3000/api/ama)
           echo "invalid request -> $code"
@@ -112,8 +122,13 @@ jobs:
           "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --virtual-time-budget=5000 --dump-dom http://localhost:3000/projects > /tmp/projects-dom.html
           grep -q 'David' /tmp/home-dom.html
-          grep -q 'PromptShield' /tmp/projects-dom.html
-          ! grep -Eqi 'Application error|Internal Server Error' /tmp/home-dom.html /tmp/projects-dom.html
+          for name in 'VoidArch Context' 'VoidArch Studio' 'AgentSec Suite' 'saas-core'; do
+            grep -q "$name" /tmp/home-dom.html
+            grep -q "$name" /tmp/projects-dom.html
+          done
+          grep -q 'https://promptshield-cyan.vercel.app' /tmp/projects-dom.html
+          ! grep -Eqi 'thesys-c1-dashboard|THESYS_C1|voidarch-context-portal|Application error|Internal Server Error' \
+            /tmp/home-dom.html /tmp/projects-dom.html
 
       - name: Stop local production server
         if: always()
@@ -128,22 +143,16 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: External repository and demo links
+      - name: External component repositories and integrated demo
         run: |
           set -euo pipefail
           for url in \
-            https://github.com/pappdavid/promptshield \
+            https://github.com/pappdavid/PromptShield \
             https://github.com/pappdavid/agentsec-hook-pack \
             https://github.com/pappdavid/mcpguard-lite \
             https://github.com/pappdavid/agentmap \
             https://github.com/pappdavid/approveops \
-            https://github.com/pappdavid/agent-cli-mcp-rust \
-            https://github.com/pappdavid/antigravity-skill-injector \
-            https://github.com/pappdavid/thesys-c1-dashboard \
-            https://promptshield-cyan.vercel.app \
-            https://mcpguard-lite.vercel.app \
-            https://agentmap-fawn.vercel.app \
-            https://approveops.vercel.app; do
+            https://promptshield-cyan.vercel.app; do
             code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$url")
             echo "$url -> $code"
             [ "$code" = 200 ]
@@ -151,7 +160,7 @@ jobs:
 
       - name: Deployed-site end-to-end verification
         env:
-          PREVIEW_URL: https://portfolio-platform-git-fix-cred-e10015-davids-projects-3d9eb396.vercel.app
+          PREVIEW_URL: https://portfolio-platform-git-feat-fou-79013c-davids-projects-3d9eb396.vercel.app
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = push ]; then
@@ -164,7 +173,7 @@ jobs:
           ready=false
           for i in $(seq 1 60); do
             if curl -fsSL --max-time 30 "$BASE/" > /tmp/deployed-home.html \
-              && grep -q 'students aged 10–16' /tmp/deployed-home.html; then
+              && grep -q 'VoidArch Context' /tmp/deployed-home.html; then
               ready=true
               break
             fi
@@ -172,12 +181,12 @@ jobs:
           done
           [ "$ready" = true ]
 
-          for path in / /projects /saas-projects /brand /security /privacy-policy /terms-of-service /cv.pdf; do
+          for path in / /projects /brand /security /privacy-policy /terms-of-service /cv.pdf; do
             code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$BASE$path")
             echo "$path -> $code"
             [ "$code" = 200 ]
           done
-          for path in /mcp /training /chat /projects/mcp-sentinel /projects/rag-chat /projects/training /projects/portfolio /about; do
+          for path in /saas-projects /mcp /training /chat /projects/mcp-sentinel /projects/rag-chat /projects/training /projects/portfolio /about; do
             code=$(curl -s -o /dev/null -m 30 -w '%{http_code}' "$BASE$path")
             echo "$path -> $code"
             [ "$code" = 307 ] || [ "$code" = 308 ]
@@ -188,23 +197,26 @@ jobs:
           echo "deployed cv.pdf bytes: $bytes"
           [ "$bytes" -gt 20000 ]
           curl -fsSL "$BASE/projects" > /tmp/deployed-projects.html
-          ! grep -Eqi 'used daily|~7k|97% reduction|production-ready|agentsec\.davidpapp\.dev' \
+          for name in 'VoidArch Context' 'VoidArch Studio' 'AgentSec Suite' 'saas-core'; do
+            grep -q "$name" /tmp/deployed-home.html
+            grep -q "$name" /tmp/deployed-projects.html
+          done
+          grep -q 'https://promptshield-cyan.vercel.app' /tmp/deployed-projects.html
+          ! grep -Eqi 'thesys-c1-dashboard|THESYS_C1|voidarch-context-portal|used daily|~7k|97% reduction|production-ready|agentsec\.davidpapp\.dev' \
             /tmp/deployed-home.html /tmp/deployed-projects.html
 
           curl -sf -H 'content-type: application/json' \
-            -d '{"question":"Is David available for full-time work?"}' \
+            -d '{"question":"What are David selected projects?"}' \
             "$BASE/api/ama" > /tmp/deployed-ama.json
           python3 - <<'PY'
           import json
-          data = json.load(open('/tmp/deployed-ama.json'))
-          answer = data['answer'].lower()
-          assert 'full-time' in answer
-          assert 'sponsorship' in answer
-          assert '~7k' not in answer and 'used daily' not in answer
+          answer = json.load(open('/tmp/deployed-ama.json'))['answer'].lower()
+          for name in ['voidarch context', 'voidarch studio', 'agentsec suite', 'saas-core']:
+              assert name in answer, name
           PY
 
           CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
           "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --virtual-time-budget=8000 --dump-dom "$BASE/" > /tmp/deployed-dom.html
-          grep -q 'David' /tmp/deployed-dom.html
+          grep -q 'VoidArch Context' /tmp/deployed-dom.html
           ! grep -Eqi 'Application error|Internal Server Error' /tmp/deployed-dom.html

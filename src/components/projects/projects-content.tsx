@@ -13,8 +13,9 @@ type Project = {
   status: string;
   description: string;
   tags: string[];
-  repoUrl: string;
+  repoUrl?: string;
   liveUrl?: string;
+  componentLinks?: { label: string; url: string }[];
   tabs: {
     overview: string;
     // Code snippets below are excerpts from the actual repository source.
@@ -25,246 +26,120 @@ type Project = {
 
 const projects: Project[] = [
   {
-    id: 'promptshield',
-    title: 'PromptShield',
-    status: 'Prototype · live demo · CI-verified',
-    description:
-      'Rule-based prompt-injection scanner plus runtime action inspector, with unit tests and CI that asserts live HTTP behavior.',
-    tags: ['TypeScript', 'Next.js', 'Prisma', 'Vitest'],
-    repoUrl: 'https://github.com/pappdavid/promptshield',
+    id: 'voidarch-context',
+    title: 'VoidArch Context',
+    status: 'Active project · local-first CLI and engine',
+    description: 'Persistent repo memory, document and code-graph retrieval, local embeddings, and deterministic token-budgeted context packs for coding agents.',
+    tags: ['TypeScript', 'SurrealDB', 'Tree-sitter', 'ONNX', 'BM25'],
+    tabs: {
+      overview: 'VoidArch Context is a standalone, agent-neutral context engine. It indexes repository files and documentation into embedded SurrealDB, stores durable memories and task state, builds a Tree-sitter code graph, supports local ONNX embeddings, and fuses available channels into a token-budgeted Markdown or JSON context pack. It runs locally without Docker or Python. Current limitations include single-process database access and an explicit embed pass for vector retrieval.',
+      code: {
+        snippet: `voidarch-context init
+voidarch-context ingest
+voidarch-context graph build
+voidarch-context models install
+voidarch-context embed --approve
+voidarch-context context "fix the auth token refresh bug"`,
+        language: 'bash',
+        filename: 'Verified CLI workflow'
+      },
+      diagram: `graph TD
+  Repo[Repository files and docs] --> DB[(Embedded SurrealDB)]
+  Repo --> Graph[Tree-sitter code graph]
+  Repo --> Vector[Local ONNX embeddings]
+  Memory[Decisions, lessons, tasks] --> DB
+  DB --> Pack[Token-budgeted context pack]
+  Graph --> Pack
+  Vector --> Pack
+  Pack --> Agent[Claude Code / Codex / other agents]`
+    }
+  },
+  {
+    id: 'voidarch-studio',
+    title: 'VoidArch Studio',
+    status: 'Active development · local orchestration control room',
+    description: 'Daemon-owned agent sessions, worktrees, runs, routing, safety hooks, observability, and a Tauri desktop shell.',
+    tags: ['TypeScript', 'Node.js', 'PTY', 'WebSocket', 'xterm.js', 'Tauri'],
+    tabs: {
+      overview: 'VoidArch Studio is the orchestration layer built on Context. The current repository includes a localhost dashboard, daemon-owned PTY sessions for Claude, Codex, and shell, worktree and run management, transcript and resume metadata, safety hooks, observability, and a thin Tauri v2 desktop shell. It is in active development and is not presented as a released hosted service.',
+      code: {
+        snippet: `pnpm dfc:dashboard --repo-root /path/to/repo
+# localhost control room: sessions, worktrees, runs, memory, metrics
+# daemon owns PTYs so sessions survive closing the desktop shell`,
+        language: 'bash',
+        filename: 'Local Studio launch'
+      },
+      diagram: `graph TD
+  UI[Web dashboard / Tauri shell] --> Daemon[Local daemon]
+  Daemon --> PTY[Claude, Codex, shell PTYs]
+  Daemon --> Worktrees[Worktree and run manager]
+  Daemon --> Hooks[Safety and observability hooks]
+  Context[VoidArch Context] --> UI
+  PTY --> Transcripts[Transcripts and resume metadata]`
+    }
+  },
+  {
+    id: 'agentsec-suite',
+    title: 'AgentSec Suite',
+    status: 'Working integrated suite · live demo',
+    description: 'One integrated interface for prompt scanning, MCP manifest analysis, agent risk mapping, approval workflows, and local runtime hooks.',
+    tags: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Node.js'],
     liveUrl: 'https://promptshield-cyan.vercel.app',
+    componentLinks: [
+        { label: 'PromptShield', url: 'https://github.com/pappdavid/PromptShield' },
+        { label: 'Hook Pack', url: 'https://github.com/pappdavid/agentsec-hook-pack' },
+        { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
+        { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
+        { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
+      ],
     tabs: {
-      overview:
-        'PromptShield scans prompts with deterministic regex/heuristic rules across six categories (instruction override, role hijacking, jailbreak markers, system-prompt exfiltration, data exfiltration, unsafe tool use) and classifies proposed agent actions as allow, block, or requires-approval. Unit tests cover benign and malicious classification and false-positive regressions; CI boots the production build, asserts real HTTP responses, and fails if the public demo is down. Detection is heuristic by design — false positives and negatives are possible.',
+      overview: 'AgentSec Suite combines four web modules and one local enforcement package: PromptShield scans prompts and proposed actions; MCPGuard analyzes declared MCP tool manifests; AgentMap scores declared agent permissions and data access; ApproveOps manages owner-scoped approval decisions and audit writes; and the hook pack gates Claude Code and Codex tool calls. The integrated deployment is the public demo. Component repositories are linked as supporting evidence rather than presented as five separate products.',
       code: {
-        snippet: `// Excerpt from src/lib/prompt-report.ts — the actual rule table
-const RULES = [
-  {
-    category: "instruction_override",
-    title: "Instruction override attempt",
-    severity: "high",
-    patterns: [
-      /ignore ((all|previous|above)\\s+){0,2}instructions?/i,
-      /disregard ((all|previous|above)\\s+){0,2}instructions?/i,
-      /forget (everything|your instructions|your system prompt)/i,
-    ],
-    remediation:
-      "Reject or quarantine prompts that ask the model to ignore or replace trusted instructions.",
-  },
-  {
-    category: "system_prompt_exfiltration",
-    title: "System prompt exfiltration",
-    severity: "critical",
-    patterns: [/system prompt/i, /hidden instructions?/i],
-    remediation:
-      "Remove requests to reveal system prompts, hidden instructions, policies, or private chain-of-thought.",
-  },
-  // ...4 more categories in the repo
+        snippet: `const modules = [
+  { slug: 'promptshield', name: 'PromptShield' },
+  { slug: 'mcpguard', name: 'MCP Guard Lite' },
+  { slug: 'agentmap', name: 'AgentMap' },
+  { slug: 'approveops', name: 'ApproveOps' }
 ];`,
         language: 'typescript',
-        filename: 'src/lib/prompt-report.ts (excerpt)'
+        filename: 'VoidArch-Labs/AgentSec · src/app/page.tsx (excerpt)'
       },
       diagram: `graph TD
-  A[Prompt or agent action] --> B[Bearer-auth HTTP API]
-  B --> C[Rule-based scanner - 6 categories]
-  B --> D[Runtime inspector]
-  C --> E[(Scan history - Prisma/Postgres)]
-  D --> F{allow / block / requires_approval}
-  E --> G[Clerk-authenticated dashboard]`
+  Action[Prompt or agent action] --> PS[PromptShield]
+  Manifest[MCP tools/list] --> MCP[MCPGuard]
+  Agent[Declared agent metadata] --> AM[AgentMap]
+  PS --> Decision{allow / block / review}
+  MCP --> Decision
+  AM --> Decision
+  Decision --> AO[ApproveOps]
+  Hook[Claude/Codex PreToolUse hook] --> Decision
+  AO --> Audit[(Decision and audit records)]`
     }
   },
   {
-    id: 'agentsec-hook-pack',
-    title: 'agentsec-hook-pack',
-    status: 'Tested local tool · 12-case suite',
-    description:
-      'Zero-dependency PreToolUse policy hook for Claude Code and Codex: safe-command fast paths, destructive-command blocking, fail-closed handling.',
-    tags: ['Node.js', 'Hooks', 'node:test'],
-    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack',
+    id: 'saas-core',
+    title: 'saas-core',
+    status: 'Private engineering infrastructure',
+    description: 'Modular Next.js scaffold and product-factory tooling with typed presets, environment validation, rendering, and CI workflows.',
+    tags: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Stripe', 'GitHub Actions'],
     tabs: {
-      overview:
-        'A single dependency-free Node script that gates AI coding-agent tool calls before execution. It reads the tool-use event from stdin, applies a safe-command allowlist with chained-command and find-exec bypass protection, blocks destructive patterns, optionally consults a remote policy API, and fails closed on malformed input or API outage. Supports observe/prompt/enforce modes and emits Claude-style JSON decisions or Codex-style exit codes. The remote policy service is exercised against a mock server in tests — this is a local hook pack, not a hosted approval platform.',
+      overview: 'saas-core is a private engineering repository used as supporting infrastructure. The codebase contains a modular Next.js scaffold, typed module and preset planning, environment validation, product rendering scripts, CI workflows, and provider adapters. It is shown as an engineering system, not as a public product or live demo; no provisioning or integration claim is made beyond what the repository implements.',
       code: {
-        snippet: `// Excerpt from .agentsec/hooks/agentsec-hook.mjs
-const SHELL_CONTROL_PATTERN = /(?:&&|\\|\\||[;|\`]|>\\s*|<\\s*|\\$\\(|\\r|\\n)/;
-const FIND_MUTATION_PATTERN =
-  /\\s-(?:exec|execdir|ok|okdir|delete|fprint|fprintf|fls)\\b/i;
-
-function isConfiguredSafeCommand(command, safeCommands) {
-  // A "safe" command chained to anything else is not safe
-  if (SHELL_CONTROL_PATTERN.test(command)) return false;
-  // find is only safe without mutating flags
-  if (/^find(?:\\s|$)/i.test(command) && FIND_MUTATION_PATTERN.test(command))
-    return false;
-
-  return safeCommands.some(
-    (safeCommand) =>
-      command === safeCommand || command.startsWith(\`\${safeCommand} \`)
-  );
-}`,
-        language: 'javascript',
-        filename: '.agentsec/hooks/agentsec-hook.mjs (excerpt)'
-      },
-      diagram: `sequenceDiagram
-  participant Agent as AI Agent (Claude/Codex)
-  participant Hook as agentsec-hook.mjs
-  Agent->>Hook: PreToolUse event via stdin
-  Hook->>Hook: safe-command fast path
-  Hook->>Hook: destructive-pattern check
-  Hook-->>Agent: allow / deny / ask (fail-closed on errors)`
-    }
-  },
-  {
-    id: 'mcpguard-lite',
-    title: 'mcpguard-lite',
-    status: 'Prototype · live demo',
-    description:
-      'Static risk analyzer for MCP tools/list manifests: capability risks by severity plus missing-declared-control gaps.',
-    tags: ['TypeScript', 'Next.js', 'MCP', 'Vitest'],
-    repoUrl: 'https://github.com/pappdavid/mcpguard-lite',
-    liveUrl: 'https://mcpguard-lite.vercel.app',
-    tabs: {
-      overview:
-        'Paste a raw MCP tools/list JSON manifest and get a deterministic static analysis: seven capability categories ranked by severity and detection of missing declared controls (approval, audit logging, sandboxing, egress limits). It distinguishes genuine control declarations from wording like "without approval" and handles malformed input. Static analysis of declared manifests only — it does not probe running servers, and a clean manifest does not prove runtime safety.',
-      code: {
-        snippet: `// Behavior covered by the repo's unit tests:
-// - risky manifest -> capability findings by severity
-// - read-only manifest -> low risk, no control gaps flagged
-// - "runs without approval" -> NOT counted as an approval control
-// - invalid JSON -> handled error, not a crash
-// See src/lib/tools-list-report.ts (200 lines) for the engine.`,
-        language: 'typescript',
-        filename: 'src/lib/tools-list-report.ts (summary)'
+        snippet: `"factory:plan": "tsx scripts/factory/plan-product.ts",
+"factory:render": "tsx scripts/factory/render-product.ts",
+"env:validate": "tsx scripts/env-validate.ts",
+"modules:check": "tsx scripts/modules/check.ts",
+"readiness:check": "node --import tsx scripts/readiness.ts"`,
+        language: 'json',
+        filename: 'VoidArch-Labs/saas-core · package.json (excerpt)'
       },
       diagram: `graph TD
-  A[Pasted tools/list JSON] --> B[Deterministic static analyzer]
-  B --> C[Capability risks by severity]
-  B --> D[Missing declared controls]
-  C --> E[Scan dashboard]
-  D --> E`
-    }
-  },
-  {
-    id: 'agentmap',
-    title: 'agentmap',
-    status: 'Prototype · live demo',
-    description:
-      'Agent inventory with explainable 0–100 risk scoring from declared permissions, data access, and tool surface.',
-    tags: ['TypeScript', 'Next.js', 'Prisma', 'Vitest'],
-    repoUrl: 'https://github.com/pappdavid/agentmap',
-    liveUrl: 'https://agentmap-fawn.vercel.app',
-    tabs: {
-      overview:
-        'Register AI agents with their declared metadata and get a deterministic 0–100 risk score with readiness labels (ready / needs-review / blocked). Command execution, secret access, sensitive data, and broad permissions raise the score, and every factor is listed so the score is explainable. Scoring is based on declared metadata, not runtime observation — it reports readiness rather than enforcing it. The scoring logic is unit-tested and CI exercises the API against the production build.',
-      code: {
-        snippet: `// Excerpt from src/lib/agent-risk.ts — the actual rules
-const riskRules = [
-  { pattern: /\\b(shell|exec|command|terminal|bash|script)\\b/i,
-    points: 35, factor: "command execution capability" },
-  { pattern: /\\b(write|delete|remove|drop|deploy|production|prod)\\b/i,
-    points: 25, factor: "destructive or production change capability" },
-  { pattern: /\\b(secrets?|tokens?|credentials?|passwords?|api keys?|env)\\b/i,
-    points: 25, factor: "secret access" },
-  { pattern: /\\b(customer data|personal data|pii|phi|billing|financial)\\b/i,
-    points: 40, factor: "sensitive data access" },
-];
-
-function readinessFor(score) {
-  if (score >= 75) return "blocked";
-  if (score >= 40) return "needs_review";
-  return "ready";
-}`,
-        language: 'typescript',
-        filename: 'src/lib/agent-risk.ts (excerpt)'
-      },
-      diagram: `graph TD
-  A[Agent registration - declared metadata] --> B[Deterministic scoring 0-100]
-  B --> C{Readiness}
-  C -->|score < 40| D[ready]
-  C -->|40 - 74| E[needs_review]
-  C -->|75+| F[blocked]`
-    }
-  },
-  {
-    id: 'approveops',
-    title: 'approveops',
-    status: 'Prototype · live demo · mocked-DB tests',
-    description:
-      'Human-in-the-loop approval queue: risk classification, owner-scoped pending decisions, transactional approval + audit writes.',
-    tags: ['TypeScript', 'Next.js', 'Prisma', 'Vitest'],
-    repoUrl: 'https://github.com/pappdavid/approveops',
-    liveUrl: 'https://approveops.vercel.app',
-    tabs: {
-      overview:
-        'An approval-workflow prototype for risky agent actions. A deliberately small keyword classifier assigns low/medium/high/critical risk; submissions and decisions are each written in a single database transaction together with their audit events, guarded by owner-only and pending-only checks. This behavior is covered by mocked-database unit tests. The caller is responsible for enforcing decisions — submitting an action does not itself stop an external agent.',
-      code: {
-        snippet: `// Excerpt from src/lib/approvals.ts — transactional write
-return prisma.$transaction(async (tx) => {
-  const approval = await tx.approvalRequest.create({
-    data: {
-      title: input.title,
-      description: input.description,
-      riskLevel: risk.riskLevel,
-      riskReasons: risk.reasons,
-      createdById: user.id,
-    },
-  });
-
-  await recordApprovalAuditEvent(tx, {
-    type: "approval_submitted",
-    userId: user.id,
-    severity: auditSeverityForRisk(risk.riskLevel),
-    details: { approvalRequestId: approval.id, status: approval.status },
-  });
-
-  return approval;
-});`,
-        language: 'typescript',
-        filename: 'src/lib/approvals.ts (excerpt)'
-      },
-      diagram: `graph TD
-  A[Action submitted] --> B[Keyword risk classifier]
-  B --> C[Owner-scoped pending queue]
-  C --> D[Approve / reject]
-  D --> E[(Transactional write: decision + audit event)]`
-    }
-  },
-  {
-    id: 'agent-cli-mcp-rust',
-    title: 'agent-cli-mcp-rust',
-    status: 'Developer tool · unit-tested core modules',
-    description:
-      'Rust MCP server dispatching and supervising multiple AI coding CLIs with directory isolation and secret scrubbing.',
-    tags: ['Rust', 'MCP', 'JSON-RPC'],
-    repoUrl: 'https://github.com/pappdavid/agent-cli-mcp-rust',
-    tabs: {
-      overview:
-        'A Model Context Protocol server in Rust that coordinates external coding agents (GitHub Copilot CLI, Google Jules, generic executors) over JSON-RPC/stdio: session management, allowed-roots directory isolation, destructive-command deny patterns, and regex-based secret scrubbing of subprocess output. Unit tests cover the policy and redaction modules. The external executor integrations do not yet have end-to-end CI coverage, and no performance benchmarks have been published.',
-      code: {
-        snippet: `// Excerpt from src/redaction.rs — real secret patterns (unit-tested)
-const REDACTED: &str = "[REDACTED_SECRET]";
-
-let raw_patterns = vec![
-    // Database connection strings
-    (r#"postgres(?:ql)?://[^\\s"',)]+"#, "DB_URL"),
-    (r#"mongodb(?:\\+srv)?://[^\\s"',)]+"#, "MONGO_URL"),
-    // GitHub tokens
-    (r"ghp_[A-Za-z0-9_]{36,}", "GITHUB_PAT"),
-    (r"github_pat_[A-Za-z0-9_]{82,}", "GITHUB_PAT_FINE"),
-    // Slack / Stripe
-    (r"xox[baprs]-[A-Za-z0-9-]{10,}", "SLACK_TOKEN"),
-    (r"sk_live_[A-Za-z0-9]{24,}", "STRIPE_LIVE_KEY"),
-    // ...more patterns in the repo
-];`,
-        language: 'rust',
-        filename: 'src/redaction.rs (excerpt)'
-      },
-      diagram: `graph TD
-  CC[Claude Code] -->|JSON-RPC over stdio| MCP[MCP Transport]
-  MCP --> POL[Directory policy - allowed roots]
-  MCP --> RED[Secret scrubber]
-  MCP --> SES[Session manager]
-  SES -->|pipes| EX[Copilot CLI / Jules / generic executors]`
+  Preset[Typed preset] --> Plan[Factory planner]
+  Registry[Module registry] --> Plan
+  Plan --> Validate[Environment and module validation]
+  Validate --> Render[Template renderer]
+  Render --> Product[Generated bounded product scaffold]
+  Product --> CI[Typecheck, tests, build, readiness checks]`
     }
   }
 ];
@@ -289,12 +164,12 @@ export function ProjectsContent() {
             SHOWCASE
           </span>
           <h1 className='text-4xl font-bold tracking-tight text-[var(--dp-text)] sm:text-5xl'>
-            Open-source projects
+            Selected engineering projects
           </h1>
           <p className='mt-4 max-w-2xl text-lg leading-relaxed text-[var(--dp-text-dim)]'>
-            Personal prototypes and developer tools around AI-agent security —
-            each card states its real status, and every code tab shows actual
-            source from the repository.
+            Four current systems spanning local-first context, agent orchestration,
+            security controls, and reusable product infrastructure. Public links are
+            shown only where a repository or working demo is actually accessible.
           </p>
         </div>
       </section>
@@ -336,14 +211,16 @@ export function ProjectsContent() {
                   </div>
                 </button>
                 <div className='mt-2 flex justify-center gap-4 text-xs'>
-                  <a
-                    href={p.repoUrl}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='text-[var(--dp-accent)] underline-offset-2 hover:underline'
-                  >
-                    Repository →
-                  </a>
+                  {p.repoUrl && (
+                    <a
+                      href={p.repoUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-[var(--dp-accent)] underline-offset-2 hover:underline'
+                    >
+                      Repository →
+                    </a>
+                  )}
                   {p.liveUrl && (
                     <a
                       href={p.liveUrl}
@@ -378,6 +255,21 @@ export function ProjectsContent() {
                 <p className='leading-relaxed text-[var(--dp-text-dim)]'>
                   {project.tabs.overview}
                 </p>
+                {project.componentLinks && (
+                  <div className='mt-5 flex flex-wrap gap-2'>
+                    {project.componentLinks.map((component) => (
+                      <a
+                        key={component.label}
+                        href={component.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='border border-[var(--dp-border)] px-2 py-1 text-xs text-[var(--dp-accent-muted)] hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
+                      >
+                        {component.label} repository →
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             </TabsContent>
             <TabsContent value='code' className='mt-4'>

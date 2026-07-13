@@ -104,111 +104,57 @@ type Project = {
   repoUrl?: string;
   liveUrl?: string;
   repoName?: string;
-  image: string;
+  image?: string;
+  componentLinks?: { label: string; url: string }[];
   isFlagship?: boolean;
 };
 
 const PROJECTS: Project[] = [
   {
-    name: 'PROMPTSHIELD',
-    stage: 'LIVE',
+    name: 'VoidArch Context',
+    stage: 'BETA',
     mod: '2026-07',
     badge: 'live',
     isFlagship: true,
-    repoName: 'pappdavid/promptshield',
-    image: '/saas-screenshots/promptshield.png',
-    desc: 'Rule-based prompt-injection scanner and runtime action inspector — tested, CI-verified, live demo',
-    body: 'A deterministic prompt-injection scanner with six rule-based finding categories (instruction override, role hijack, jailbreak markers, system-prompt and data exfiltration, unsafe tool use) plus a runtime inspector that classifies agent actions as allow, block, or requires-approval. Unit-tested, and CI boots the production build to assert real HTTP behavior against benign and malicious inputs. Heuristic by design — it can produce false positives and negatives.',
-    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Vercel'],
-    repoUrl: 'https://github.com/pappdavid/promptshield',
-    liveUrl: 'https://promptshield-cyan.vercel.app'
+    desc: 'Local-first memory, repo-query, code-graph, vector retrieval, and token-budgeted context packs for coding agents',
+    body: 'A standalone, agent-neutral context engine for Claude Code, Codex, and other coding agents. It indexes repository files and documentation into embedded SurrealDB, builds a Tree-sitter code graph, stores durable decisions and lessons, supports local ONNX embeddings, and fuses the available channels into a deterministic token-budgeted context pack. It runs locally without Docker or Python; semantic retrieval requires an explicit embedding pass and the embedded database is single-process.',
+    tech: ['TypeScript', 'SurrealDB', 'Tree-sitter', 'ONNX', 'BM25', 'Claude Code', 'Codex']
   },
   {
-    name: 'AGENTSEC.hooks',
-    stage: 'BETA',
-    mod: '2026-07',
-    badge: 'live',
-    repoName: 'pappdavid/agentsec-hook-pack',
-    image: '/saas-screenshots/agentsec_readme_header.png',
-    desc: 'Zero-dependency PreToolUse policy hook for Claude Code and Codex with a 12-case test suite',
-    body: 'A local hook package that gates AI coding-agent tool calls before they execute: safe-command fast paths, destructive-pattern blocking with chained-command bypass protection, observe/prompt/enforce modes, optional API-backed policy decisions, and fail-closed handling on malformed input or API outage. Tested against Claude-style JSON decisions and Codex-style exit codes in CI. A local hook pack, not a hosted platform — its remote policy service is exercised against a mock server in tests.',
-    tech: ['Node.js', 'PreToolUse Hooks', 'Claude Code', 'Codex', 'node:test'],
-    repoUrl: 'https://github.com/pappdavid/agentsec-hook-pack'
-  },
-  {
-    name: 'MCPGUARD.lite',
-    stage: 'LIVE',
-    mod: '2026-07',
-    badge: 'live',
-    repoName: 'pappdavid/mcpguard-lite',
-    image: '/saas-screenshots/mcpguard-lite.png',
-    desc: 'Static risk analyzer for MCP tools/list manifests — capability risks and missing-control gaps',
-    body: 'Paste a raw MCP tools/list JSON manifest and get a deterministic static analysis: seven capability categories ranked by severity, plus detection of missing declared controls (approval, audit logging, sandboxing, egress limits). Distinguishes positive control declarations from wording like "without approval", and handles malformed input. Static analysis of declared manifests only — it does not probe running servers or prove runtime safety.',
-    tech: ['Next.js', 'TypeScript', 'Prisma', 'Vitest', 'Vercel'],
-    repoUrl: 'https://github.com/pappdavid/mcpguard-lite',
-    liveUrl: 'https://mcpguard-lite.vercel.app'
-  },
-  {
-    name: 'AGENTMAP.app',
-    stage: 'LIVE',
-    mod: '2026-07',
-    badge: 'live',
-    repoName: 'pappdavid/agentmap',
-    image: '/saas-screenshots/agentmap.png',
-    desc: 'Agent inventory with explainable 0–100 risk scoring from declared permissions and tool surface',
-    body: 'Register AI agents and get a deterministic 0–100 risk score with readiness labels (ready / needs-review / blocked), computed from declared permissions, data access, and tool surface — broad permissions, command execution, and secret access raise the score. Scoring is based on declared metadata, not runtime observation: it reports readiness, it does not enforce it. Scoring logic is unit-tested and the API is exercised in CI against the production build.',
-    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Vercel'],
-    repoUrl: 'https://github.com/pappdavid/agentmap',
-    liveUrl: 'https://agentmap-fawn.vercel.app'
-  },
-  {
-    name: 'APPROVEOPS.app',
-    stage: 'LIVE',
-    mod: '2026-07',
-    badge: 'live',
-    repoName: 'pappdavid/approveops',
-    image: '/saas-screenshots/approveops.png',
-    desc: 'Human-in-the-loop approval queue with transactional audit writes and owner-scoped decisions',
-    body: 'An approval-workflow prototype for risky agent actions: keyword-based risk classification (low → critical), per-user pending queues, and approval decisions written transactionally together with their audit events, guarded by ownership and pending-only checks. Database behavior is covered by mocked-database unit tests. The caller is responsible for enforcing the decision — submitting an action does not itself stop an external agent.',
-    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Vercel'],
-    repoUrl: 'https://github.com/pappdavid/approveops',
-    liveUrl: 'https://approveops.vercel.app'
-  },
-  {
-    name: 'AGENT_CLI.rust',
-    stage: 'BETA',
-    mod: '2026-05',
-    badge: 'wip',
-    repoName: 'pappdavid/agent-cli-mcp-rust',
-    image: '/saas-screenshots/agentcli_readme_header.png',
-    desc: 'Rust MCP server that dispatches and supervises multiple AI coding CLIs',
-    body: 'A Model Context Protocol server written in Rust that coordinates external coding agents (GitHub Copilot CLI, Google Jules, plus generic executors) over JSON-RPC/stdio: session management, directory isolation with allowed-roots checks, destructive-command deny patterns, and regex-based secret scrubbing of output streams. Unit tests cover the policy and redaction modules. The external executor integrations do not yet have end-to-end CI coverage.',
-    tech: ['Rust', 'MCP Protocol', 'JSON-RPC over stdio', 'Subprocesses'],
-    repoUrl: 'https://github.com/pappdavid/agent-cli-mcp-rust'
-  },
-  {
-    name: 'SKILL_INJ.rs',
+    name: 'VoidArch Studio',
     stage: 'WIP',
-    mod: '2026-05',
+    mod: '2026-07',
     badge: 'wip',
-    repoName: 'pappdavid/antigravity-skill-injector',
-    image: '/saas-screenshots/skillinj_readme_header.png',
-    desc: 'Proof-of-concept dynamic skill loader that swaps full skill files for on-demand stubs',
-    body: 'A small experiment for the Antigravity desktop app: replaces full SKILL.md documents with short stub files and serves the full skill content on demand from a minimal Rust JSON-RPC server. Includes Python scripts that build the skill registry and generate stubs. Proof-of-concept status: no automated test suite and no measured token-savings benchmark.',
-    tech: ['Rust', 'Python', 'MCP Protocol', 'Bash Installer'],
-    repoUrl: 'https://github.com/pappdavid/antigravity-skill-injector'
+    desc: 'Local orchestration control room for agent sessions, worktrees, runs, routing, hooks, and observability',
+    body: 'The active orchestration layer built on VoidArch Context. The current implementation includes a localhost web dashboard, daemon-owned PTY sessions for Claude, Codex, and shell, worktree and run management, session transcripts and resume metadata, safety hooks, and a thin Tauri desktop shell. Studio is in active development and is not presented as a released hosted product.',
+    tech: ['TypeScript', 'Node.js', 'PTY', 'WebSocket', 'xterm.js', 'Tauri', 'Rust']
   },
   {
-    name: 'THESYS_C1.app',
+    name: 'AgentSec Suite',
+    stage: 'LIVE',
+    mod: '2026-07',
+    badge: 'live',
+    desc: 'Integrated agent-security suite with prompt scanning, MCP analysis, agent risk mapping, approval workflows, and runtime hooks',
+    body: 'A working integrated security dashboard combining PromptShield, MCPGuard, AgentMap, ApproveOps, and the AgentSec hook pack. The deployed suite exposes the four web modules through one interface, while the local hook package gates Claude Code and Codex tool calls. The public component repositories remain linked as independently inspectable evidence; the suite is a portfolio-grade working system, not a claim of universal production protection.',
+    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Node.js', 'Vercel'],
+    liveUrl: 'https://promptshield-cyan.vercel.app',
+    image: '/saas-screenshots/promptshield.png',
+    componentLinks: [
+        { label: 'PromptShield', url: 'https://github.com/pappdavid/PromptShield' },
+        { label: 'Hook Pack', url: 'https://github.com/pappdavid/agentsec-hook-pack' },
+        { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
+        { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
+        { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
+      ]
+  },
+  {
+    name: 'saas-core',
     stage: 'BETA',
-    mod: '2026-05',
-    badge: 'wip',
-    repoName: 'pappdavid/thesys-c1-dashboard',
-    image: '/saas-screenshots/thesys_c1_dashboard.png',
-    desc: 'Dashboard whose panels are restructured live by a Thesys C1 agent via a JSON command protocol',
-    body: 'A Next.js dashboard where a generative-UI agent can reorder, add, remove, and retitle its own panels through a structured JSON command protocol parsed out of model responses, with drag-and-drop panels and a generative-UI/chat toggle. CI runs typecheck, lint, and build; there is no test suite, so treat it as a working prototype rather than a production console.',
-    tech: ['Next.js', 'TypeScript', 'Thesys C1', 'Tailwind CSS'],
-    repoUrl: 'https://github.com/pappdavid/thesys-c1-dashboard'
+    mod: '2026-06',
+    badge: 'private',
+    desc: 'Private modular Next.js product scaffold and factory infrastructure used to generate and validate bounded SaaS builds',
+    body: 'A private engineering repository containing a modular Next.js scaffold, typed module and preset planning, environment validation, product rendering scripts, CI workflows, and provider adapters. It is presented as supporting infrastructure rather than a public product or live demo; provider provisioning and generated integrations are described only where the repository implements them.',
+    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Stripe', 'GitHub Actions', 'Vercel']
   }
 ];
 
@@ -216,7 +162,7 @@ const SUGGESTIONS = [
   'is David available to start?',
   "what is David's tech stack?",
   'what did David build at WEBINFORM?',
-  'tell me about PromptShield'
+  'tell me about AgentSec Suite'
 ];
 
 // ============================================================
@@ -847,52 +793,36 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                       {p.repoName}
                     </a>
                   ) : (
-                    'private-beta (access requests only)'
+                    'private source / technical case study'
                   )}
                 </div>
 
-                {p.isFlagship ? (
-                  <div className='cs-block'>
-                    <p className='fs-expand-body'>{p.body}</p>
-                    <span className='cs-label'>PROBLEM</span>
-                    <p className='fs-expand-body'>
-                      Prompts fed to LLM agents can smuggle in instruction
-                      overrides, role hijacks, or exfiltration attempts, and
-                      agent tool calls can be destructive if executed
-                      unreviewed.
-                    </p>
-                    <span className='cs-label'>APPROACH</span>
-                    <p className='fs-expand-body'>
-                      Scan prompts with deterministic rule-based detectors (no
-                      LLM in the loop, so results are reproducible), and
-                      classify proposed agent actions as allow, block, or
-                      requires-approval via a bearer-authenticated HTTP API.
-                    </p>
-                    <span className='cs-label'>STACK</span>
-                    <p className='fs-expand-body'>
-                      Next.js App Router, TypeScript, Prisma/Postgres, Clerk
-                      auth, Vitest.
-                    </p>
-                    <span className='cs-label'>STATUS</span>
-                    <p className='fs-expand-body'>
-                      Functional public prototype. Unit tests cover benign and
-                      malicious classification; CI boots the production build,
-                      asserts live HTTP behavior, and fails if the public Vercel
-                      demo is down. Heuristic scanning — false positives and
-                      negatives are possible.
-                    </p>
+                <p className='fs-expand-body whitespace-pre-line'>{p.body}</p>
+                {p.image && (
+                  <div className='my-4 max-w-[500px] overflow-hidden border border-[var(--border)] bg-black'>
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      className='h-auto w-full object-cover opacity-80 transition-opacity duration-300 hover:opacity-100'
+                    />
                   </div>
-                ) : (
-                  <p className='fs-expand-body whitespace-pre-line'>{p.body}</p>
                 )}
 
-                <div className='my-4 max-w-[500px] overflow-hidden border border-[var(--border)] bg-black'>
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    className='h-auto w-full object-cover opacity-80 transition-opacity duration-300 hover:opacity-100'
-                  />
-                </div>
+                {p.componentLinks && (
+                  <div className='mb-4 flex flex-wrap gap-2 text-[11px]'>
+                    {p.componentLinks.map((component) => (
+                      <a
+                        key={component.label}
+                        href={component.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='border border-[var(--dp-border)] px-2 py-1 text-[var(--dp-accent-muted)] hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
+                      >
+                        {component.label} repo →
+                      </a>
+                    ))}
+                  </div>
+                )}
 
                 <div className='mb-4 flex flex-wrap gap-1.5'>
                   {p.tech.map((t) => (
@@ -946,9 +876,8 @@ function SkillsSection() {
       <p className='prose'>
         I build AI solutions professionally at WEBINFORM — production LLM
         features, APIs, and automation for web applications and ERP-integrated
-        systems — and, on my own time, a series of open-source prototypes around
-        AI-agent security: prompt-injection scanning, tool-call policy hooks,
-        and approval workflows. I&apos;m a BSc AI student at VU Amsterdam and
+        systems — and, on my own time, local-first context infrastructure, agent
+        orchestration tooling, and the integrated AgentSec security suite. I&apos;m a BSc AI student at VU Amsterdam and
         I&apos;m looking for full-time AI engineering, AI solutions,
         integration, automation, or agent-infrastructure roles.
       </p>
