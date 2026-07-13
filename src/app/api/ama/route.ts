@@ -35,9 +35,30 @@ const HIRING_FACT_TERMS = [
   'hire david'
 ];
 
-function asksForHiringFacts(question: string) {
+const PROJECT_FACT_TERMS = [
+  'project',
+  'portfolio',
+  'voidarch',
+  'agentsec',
+  'promptshield',
+  'mcpguard',
+  'agentmap',
+  'approveops',
+  'saas-core',
+  'saas core'
+];
+
+function containsAnyTerm(question: string, terms: string[]) {
   const normalized = question.toLowerCase();
-  return HIRING_FACT_TERMS.some((term) => normalized.includes(term));
+  return terms.some((term) => normalized.includes(term));
+}
+
+function asksForHiringFacts(question: string) {
+  return containsAnyTerm(question, HIRING_FACT_TERMS);
+}
+
+function asksForProjectFacts(question: string) {
+  return containsAnyTerm(question, PROJECT_FACT_TERMS);
 }
 
 async function optionalUserId() {
@@ -69,9 +90,13 @@ export async function POST(req: Request) {
 
   const fallback = answerPortfolioQuestion(question);
 
-  // Hiring status and work-authorization facts must never vary by model output.
-  // Return the reviewed deterministic answer even when an OpenAI key is present.
-  if (asksForHiringFacts(question) || !process.env.OPENAI_API_KEY) {
+  // Hiring, work-authorization, and project identity facts must never vary by
+  // model output. Return the reviewed deterministic answer even with an API key.
+  if (
+    asksForHiringFacts(question) ||
+    asksForProjectFacts(question) ||
+    !process.env.OPENAI_API_KEY
+  ) {
     return NextResponse.json(fallback);
   }
 
