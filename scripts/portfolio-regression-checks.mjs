@@ -160,4 +160,58 @@ assert(
   'assistant corpus: personal projects must stay framed as prototypes'
 );
 
+// The portfolio has exactly four primary projects. AgentSec is one integrated
+// suite, not five competing cards, and only its integrated deployment is linked
+// as a public demo.
+const primaryProjectIds = ['voidarch-context', 'voidarch-studio', 'agentsec-suite', 'saas-core'];
+const primaryProjectNames = ['VoidArch Context', 'VoidArch Studio', 'AgentSec Suite', 'saas-core'];
+const retiredProjectMarkers = [
+  'thesys-c1-dashboard',
+  'THESYS_C1',
+  'voidarch-context-portal'
+];
+const standaloneAgentSecIds = [
+  "id: 'promptshield'",
+  "id: 'agentsec-hook-pack'",
+  "id: 'mcpguard-lite'",
+  "id: 'agentmap'",
+  "id: 'approveops'"
+];
+
+const projectsSource = read('src/components/projects/projects-content.tsx');
+for (const name of primaryProjectNames) {
+  assert(projectsSource.includes(name), `projects page: missing ${name}`);
+  assert(landing.includes(name), `landing page: missing ${name}`);
+  assert(cvHtml.includes(name), `CV: missing ${name}`);
+  assert(corpus.includes(name), `assistant corpus: missing ${name}`);
+}
+for (const marker of retiredProjectMarkers) {
+  for (const path of RECRUITER_FACING) {
+    assert(!read(path).includes(marker), `${path}: retired project marker ${marker}`);
+  }
+}
+for (const marker of standaloneAgentSecIds) {
+  assert(!projectsSource.includes(marker), `projects page: AgentSec component must not be a standalone card (${marker})`);
+}
+assert(
+  projectsSource.includes('https://promptshield-cyan.vercel.app'),
+  'projects page: AgentSec Suite must link the integrated live demo'
+);
+for (const retiredDemo of [
+  'https://mcpguard-lite.vercel.app',
+  'https://agentmap-fawn.vercel.app',
+  'https://approveops.vercel.app'
+]) {
+  assert(!projectsSource.includes(retiredDemo), `projects page: component demo must not be a primary CTA (${retiredDemo})`);
+  assert(!landing.includes(retiredDemo), `landing page: component demo must not be a primary CTA (${retiredDemo})`);
+}
+
+const projectEntries = ragData.filter((entry) => entry.id !== 'about-david');
+assert.equal(projectEntries.length, 4, 'RAG data: exactly four project entries required');
+assert.deepEqual(
+  projectEntries.map((entry) => entry.id),
+  primaryProjectIds,
+  'RAG data: project order and identities must match the approved portfolio'
+);
+
 console.log('portfolio content consistency checks passed');

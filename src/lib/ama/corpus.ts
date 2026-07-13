@@ -12,19 +12,15 @@ Builds internal AI tools and production LLM functionality for web applications a
 # Earlier experience
 Project Assistant at 4iG Nyrt. (Aug 2022 - Aug 2023): supported project managers, prepared and processed tickets, handled incoming client communication, performed cross-system checks and Playwright-based pre-tests, coordinated work, and escalated incidents. Programming Instructor at Logiscool (Feb 2023 - Jun 2023): taught Python, Scratch, game development, and programming fundamentals.
 
-# Open-source projects (personal showcase prototypes, not commercial products)
-PromptShield: rule-based prompt-injection scanner (six finding categories) plus runtime action inspector; unit-tested with CI that boots the production build and asserts live HTTP behavior; live demo at https://promptshield-cyan.vercel.app.
-agentsec-hook-pack: zero-dependency local PreToolUse policy hook for Claude Code and Codex with observe/prompt/enforce modes, destructive-command blocking, fail-closed handling, and a 12-case test suite. A local hook pack, not a hosted platform.
-mcpguard-lite: static risk analyzer for MCP tools/list manifests (declared capabilities and missing declared controls); live demo at https://mcpguard-lite.vercel.app. Static analysis does not prove runtime safety.
-agentmap: agent inventory with explainable 0-100 risk scoring from declared metadata and readiness labels; live demo at https://agentmap-fawn.vercel.app. Reporting, not runtime enforcement.
-approveops: human-in-the-loop approval-workflow prototype with transactional approval/audit writes and owner-scoped queues; live demo at https://approveops.vercel.app.
-agent-cli-mcp-rust: Rust MCP server dispatching external AI coding CLIs with directory isolation and secret scrubbing; unit tests cover the policy and redaction modules, while third-party executor integrations do not yet have end-to-end CI coverage.
-antigravity-skill-injector: proof-of-concept skill loader using Rust and Python; compilation and protocol initialization are checked in CI, but there is no desktop-app integration test or measured token-savings benchmark.
-thesys-c1-dashboard: prototype dashboard whose panels are restructured by a Thesys C1 agent via a JSON command protocol; CI runs typecheck, lint, and build, but there is no test suite or public demo.
+# Selected engineering projects (personal work, not commercial products)
+VoidArch Context: local-first, agent-neutral repo memory and context engine using embedded SurrealDB, BM25 document retrieval, a Tree-sitter code graph, durable memories, optional local ONNX embeddings, and deterministic token-budgeted context packs. It runs locally; vector retrieval requires an explicit embedding pass and the embedded database is single-process.
+VoidArch Studio: active-development local orchestration control room built on Context, with daemon-owned PTY sessions for Claude, Codex, and shell, worktrees, run management, transcripts, resume metadata, safety hooks, observability, and a thin Tauri desktop shell. It is not a released hosted service.
+AgentSec Suite: working integrated suite combining PromptShield, MCPGuard, AgentMap, ApproveOps, and the AgentSec hook pack. The public integrated demo is https://promptshield-cyan.vercel.app. The five public component repositories are supporting source modules, not five separate portfolio products.
+saas-core: private modular Next.js scaffold and factory infrastructure with typed presets, environment validation, product rendering scripts, CI workflows, and provider adapters. It is supporting engineering infrastructure, not a public product or live demo.
 
 # Tech stack
-TypeScript, Python, Rust, SQL/Postgres, Next.js, React, Tailwind CSS, Prisma, Clerk, Supabase, LLM APIs (OpenAI and others), MCP protocol, Vercel, GitHub Actions.
+TypeScript, Python, Rust, SQL/Postgres, Next.js, React, Tailwind CSS, Prisma, Clerk, Supabase, SurrealDB, LLM APIs, MCP protocol, Vercel, GitHub Actions, Tauri.
 
 # Project scope
-David has not fine-tuned production models - fine-tuning is coursework and personal experimentation. The personal projects have no uptime SLAs, no latency benchmarks, and no customer deployments; they are tested prototypes and developer tools. This portfolio site labels its decorative terminal-style status values as SIM (simulated).
+David has not fine-tuned production models - fine-tuning is coursework and personal experimentation. The personal projects are not commercial products and have no uptime SLAs or invented performance benchmarks. This portfolio site labels decorative terminal-style status values as SIM (simulated).
 `;
