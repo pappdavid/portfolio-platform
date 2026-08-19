@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
+import {
+  buildReferralPresentation,
+  prioritizeReferralProjects
+} from '@/lib/referral-personalization';
 
 function Typewriter({
   text,
@@ -169,9 +174,14 @@ const SUGGESTIONS = [
 // Unified Landing Page Component
 // ============================================================
 
-export function LandingContent() {
+export function LandingContent({
+  referral
+}: {
+  referral: ReferralPersonalizationSnapshot | null;
+}) {
   const [active, setActive] = useState('home');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const referralView = buildReferralPresentation(referral);
 
   const [repoCount, setRepoCount] = useState<number | null>(null);
   const [themeProfile, setThemeProfile] = useState<string>('green');
@@ -456,7 +466,7 @@ export function LandingContent() {
                 <p className='hero-role'>AI solution developer</p>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
-                  <Typewriter text='Building AI-first solutions. One agent at a time.' />
+                  <Typewriter text={referralView.heroTag} />
                 </div>
 
                 <div className='hero-pill'>
@@ -495,7 +505,7 @@ export function LandingContent() {
                     onClick={() => nav('work')}
                     className='cta glitch-hover'
                   >
-                    [projects]
+                    {referralView.projectsCta}
                   </button>
                   <button
                     onClick={() => nav('skills')}
@@ -524,6 +534,20 @@ export function LandingContent() {
                           Amsterdam · Rotterdam, NL · remote
                         </td>
                       </tr>
+                      {referral && (
+                        <tr>
+                          <td className='mk'>TARGET</td>
+                          <td className='ms'>:</td>
+                          <td className='mv'>{referralView.target}</td>
+                        </tr>
+                      )}
+                      {referralView.roleFocus && (
+                        <tr>
+                          <td className='mk'>ROLE FOCUS</td>
+                          <td className='ms'>:</td>
+                          <td className='mv'>{referralView.roleFocus}</td>
+                        </tr>
+                      )}
                       <tr>
                         <td className='mk'>FOCUS</td>
                         <td className='ms'>:</td>
@@ -576,7 +600,7 @@ export function LandingContent() {
           <div className='divider' />
 
           {/* ============ SECTION 2: WORK ============ */}
-          <WorkSection triggerFocus={triggerFocus} />
+          <WorkSection triggerFocus={triggerFocus} referral={referral} />
 
           <div className='divider' />
 
@@ -595,6 +619,7 @@ export function LandingContent() {
             themeProfile={themeProfile}
             changeThemeProfile={changeThemeProfile}
             triggerFocus={triggerFocus}
+            referral={referral}
           />
 
           <div style={{ height: '48px' }} />
@@ -661,11 +686,16 @@ export function LandingContent() {
 
 interface WorkSectionProps {
   triggerFocus: (id: string | null) => void;
+  referral: ReferralPersonalizationSnapshot | null;
 }
 
-function WorkSection({ triggerFocus }: WorkSectionProps) {
+function WorkSection({ triggerFocus, referral }: WorkSectionProps) {
   const [hover, setHover] = useState(-1);
   const [open, setOpen] = useState(-1); // all closed by default
+  const projects = prioritizeReferralProjects(PROJECTS, referral);
+  const referralFeatured = new Set(
+    (referral?.featuredProjects || []).map((name) => name.toLowerCase())
+  );
   const badgeColor = {
     live: 'var(--dp-accent)',
     wip: 'var(--warn)',
@@ -680,7 +710,8 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
         <span className='sec-note'>FILESYSTEM</span>
       </div>
       <p className='sub-note'>
-        {PROJECTS.length} active nodes found — click row to expand case study
+        {projects.length} active nodes found — click row to expand case study
+        {referralFeatured.size > 0 ? ' · role matches prioritized' : ''}
       </p>
 
       <div className='fs-table'>
@@ -691,7 +722,7 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
           <span className='c-desc'>DESCRIPTION</span>
         </div>
 
-        {PROJECTS.map((p, i) => (
+        {projects.map((p, i) => (
           <div key={p.name} className='fs-cell'>
             <div
               className='fs-row'
@@ -718,6 +749,11 @@ function WorkSection({ triggerFocus }: WorkSectionProps) {
                   {p.isFlagship && (
                     <span className='ml-2 border border-[var(--accent)] px-1 py-0 text-[10px] font-extrabold text-[var(--accent)] select-none'>
                       ★ FLAGSHIP
+                    </span>
+                  )}
+                  {referralFeatured.has(p.name.toLowerCase()) && (
+                    <span className='ml-2 border border-[var(--dp-accent)] px-1 py-0 text-[10px] font-extrabold text-[var(--dp-accent)] select-none'>
+                      ★ ROLE MATCH
                     </span>
                   )}
                 </span>
@@ -1144,6 +1180,7 @@ interface ContactSectionProps {
   themeProfile: string;
   changeThemeProfile: (profile: string) => void;
   triggerFocus: (id: string | null) => void;
+  referral: ReferralPersonalizationSnapshot | null;
 }
 
 type ChatMsg = {
@@ -1156,12 +1193,14 @@ type ChatMsg = {
 function ContactSection({
   themeProfile,
   changeThemeProfile,
-  triggerFocus
+  triggerFocus,
+  referral
 }: ContactSectionProps) {
+  const referralView = buildReferralPresentation(referral);
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: "Session active. Grounded in David's public GitHub projects. Ask me about PromptShield, agentsec-hook-pack, mcpguard-lite, agentmap, approveops, or agent-cli-mcp-rust!"
+      text: referralView.chatGreeting
     }
   ]);
   const [val, setVal] = useState('');
@@ -1299,7 +1338,7 @@ Email is fastest.`}
           <span className='chat-status'>
             <span className='sb-dot' /> PORTFOLIO_ASSISTANT: ready
           </span>
-          <span className='chat-conv'>context: github_public</span>
+          <span className='chat-conv'>{referralView.chatContextLabel}</span>
         </div>
 
         <div className='chat-body' ref={bodyRef}>

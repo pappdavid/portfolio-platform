@@ -30,7 +30,7 @@ export default async function LandingPage() {
   return (
     <>
       <ReferralBanner referral={referral} />
-      <LandingContent />
+      <LandingContent referral={referral} />
     </>
   );
 }

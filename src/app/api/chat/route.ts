@@ -5,11 +5,12 @@ import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
-import { chunkText, retrieveChunks } from '@/lib/chat/rag';
+import { retrieveChunks } from '@/lib/chat/rag';
 import { getOrCreateCompanyForUser } from '@/lib/company';
 import { getReferralPersonalization } from '@/lib/referral-context';
 import {
   buildReferralChatContext,
+  buildReferralRetrievalQuery,
   REFERRAL_COOKIE
 } from '@/lib/referral-personalization';
 import {
@@ -108,9 +109,8 @@ export async function POST(req: Request) {
   );
 
   const body = await req.json();
-  const { messages, context } = body as {
+  const { messages } = body as {
     messages: ChatMessage[];
-    context?: string;
   };
 
   if (!messages || messages.length === 0) {
@@ -123,26 +123,26 @@ export async function POST(req: Request) {
   const lastMessage = messages[messages.length - 1];
   let augmentedContent = lastMessage.content;
 
-  const relevantProjects = retrieveChunks(
+  const retrievalQuery = buildReferralRetrievalQuery(
     lastMessage.content,
+    referral
+  );
+  const relevantProjects = retrieveChunks(
+    retrievalQuery,
     githubProjectsChunks,
     3
   );
 
-  let relevantUploads: string[] = [];
-  if (context) {
-    const chunks = chunkText(context);
-    relevantUploads = retrieveChunks(lastMessage.content, chunks, 3);
-  }
-
-  const allContext = [...relevantProjects, ...relevantUploads];
-  if (allContext.length > 0) {
-    augmentedContent = `Context from David's public GitHub repositories and documents:\n${allContext.join('\n---\n')}\n\nUser question: ${lastMessage.content}`;
+  if (relevantProjects.length > 0) {
+    augmentedContent = `Context from David's reviewed public project corpus:\n${relevantProjects.join('\n---\n')}\n\nUser question: ${lastMessage.content}`;
   }
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json(
-      { error: 'Chat is temporarily unavailable; use /api/ama or email contact@davidpapp.dev.' },
+      {
+        error:
+          'Chat is temporarily unavailable; use /api/ama or email contact@davidpapp.dev.'
+      },
       { status: 503 }
     );
   }
