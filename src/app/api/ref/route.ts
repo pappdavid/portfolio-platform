@@ -45,6 +45,17 @@ export async function POST(req: Request) {
     .single();
 
   if (error) {
+    let backendHost = 'missing';
+    try {
+      backendHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || '').hostname;
+    } catch {}
+    console.error('referral insert failed', {
+      backendHost,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code
+    });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
