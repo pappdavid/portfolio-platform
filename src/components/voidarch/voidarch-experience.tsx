@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { LiquidField } from './liquid-field';
 import { SignalAtlas } from './signal-atlas';
-import { VOIDARCH_NODES } from '@/lib/voidarch/architecture';
+import { ArchitectureSections } from './architecture-sections';
 import styles from '@/app/voidarch/voidarch.module.css';
 
 export function VoidArchExperience() {
   const [focus, setFocus] = useState<readonly [number, number]>([0.72, 0.42]);
   const [routeState, setRouteState] = useState({ energy: 0, phase: 0 });
+  const [fieldEnabled, setFieldEnabled] = useState(true);
 
   return (
     <main className={styles.page}>
@@ -17,6 +18,7 @@ export function VoidArchExperience() {
           focus={focus}
           routeEnergy={routeState.energy}
           routePhase={routeState.phase}
+          enabled={fieldEnabled}
         />
         <div className={styles.atmosphere} />
 
@@ -29,7 +31,18 @@ export function VoidArchExperience() {
             <a href='#evidence'>EVIDENCE</a>
             <a href='/voidarch/architecture.json'>AGENT VIEW</a>
           </nav>
-          <div className={styles.status}>ACTIVE ARCHITECTURE / REV 0.x</div>
+          <div className={styles.statusCluster}>
+            <button
+              type='button'
+              className={styles.fieldToggle}
+              aria-label='Toggle liquid field'
+              aria-pressed={fieldEnabled}
+              onClick={() => setFieldEnabled((enabled) => !enabled)}
+            >
+              FIELD {fieldEnabled ? 'ON' : 'OFF'}
+            </button>
+            <div className={styles.status}>ACTIVE ARCHITECTURE / REV 0.x</div>
+          </div>
         </header>
 
         <div className={styles.heroCopy}>
@@ -53,38 +66,7 @@ export function VoidArchExperience() {
         />
       </section>
 
-      <section className={styles.section} id='architecture'>
-        <div className={styles.sectionIndex}>01 / ARCHITECTURE</div>
-        <div>
-          <h2>Three layers, one shared trace.</h2>
-          <p>
-            Context remembers. Router decides. Studio executes and exposes
-            evidence.
-          </p>
-          <div className={styles.architectureRows}>
-            {VOIDARCH_NODES.filter((node) => node.group === 'core').map(
-              (node) => (
-                <article key={node.id}>
-                  <span>{node.title}</span>
-                  <p>{node.summary}</p>
-                  <b>{node.maturity}</b>
-                </article>
-              )
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.section} id='evidence'>
-        <div className={styles.sectionIndex}>02 / EVIDENCE</div>
-        <div>
-          <h2>One click beneath every major claim.</h2>
-          <p>
-            The public surface stays concise because implementation, evaluation,
-            and provenance sit directly underneath the architecture.
-          </p>
-        </div>
-      </section>
+      <ArchitectureSections />
     </main>
   );
 }

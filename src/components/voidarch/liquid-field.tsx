@@ -219,8 +219,16 @@ export function LiquidField({
     <canvas
       ref={canvasRef}
       data-testid='voidarch-liquid-field'
+      data-enabled={enabled ? 'true' : 'false'}
       aria-hidden='true'
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        opacity: enabled ? 1 : 0,
+        transition: 'opacity 180ms ease'
+      }}
     />
   );
 }
