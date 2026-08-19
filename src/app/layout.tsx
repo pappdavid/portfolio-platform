@@ -9,6 +9,7 @@ import { Inter_Tight, JetBrains_Mono } from 'next/font/google';
 import { cookies } from 'next/headers';
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import '@crayonai/react-ui/styles/index.css';
 import '../styles/globals.css';
 
 const interTight = Inter_Tight({

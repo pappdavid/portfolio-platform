@@ -5,13 +5,18 @@ import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
-import { retrieveChunks } from '@/lib/chat/rag';
 import { getOrCreateCompanyForUser } from '@/lib/company';
+import { amaCorpus } from '@/lib/ama/corpus';
+import {
+  buildPortfolioKnowledgeBase,
+  formatKnowledgeContext,
+  retrieveKnowledge,
+  toEvidenceItems
+} from '@/lib/chat/knowledge-base';
 import { getReferralPersonalization } from '@/lib/referral-context';
 import {
   buildReferralChatContext,
   buildReferralRetrievalQuery,
-  getReferralFeaturedProjectChunks,
   REFERRAL_COOKIE
 } from '@/lib/referral-personalization';
 import {
@@ -34,7 +39,7 @@ interface ChatMessage {
   content: string;
 }
 
-let githubProjectsChunks: string[] = [];
+let portfolioKnowledgeBase = buildPortfolioKnowledgeBase(amaCorpus, []);
 try {
   const projectsPath = path.join(
     process.cwd(),
@@ -42,27 +47,21 @@ try {
   );
   if (fs.existsSync(projectsPath)) {
     const projectsData = JSON.parse(fs.readFileSync(projectsPath, 'utf8'));
-    githubProjectsChunks = projectsData.map((proj: any) => {
-      return `Project Name: ${proj.name}
-Description: ${proj.description}
-Tech Stack: ${proj.techStack.join(', ')}
-Key Features:
-${proj.keyFeatures.map((f: string) => `- ${f}`).join('\n')}
-Architecture / Flow:
-${proj.architecture}
-File Structure:
-${proj.fileStructure.map((f: string) => `- ${f}`).join('\n')}
-Details: ${proj.details}`;
-    });
+    portfolioKnowledgeBase = buildPortfolioKnowledgeBase(
+      amaCorpus,
+      projectsData
+    );
   }
 } catch (err) {
-  console.error('Failed to load github-projects-rag.json', err);
+  console.error('Failed to load portfolio knowledge base', err);
 }
+
+const CHAT_MODEL = process.env.PORTFOLIO_CHAT_MODEL || 'gpt-5-nano';
 
 const SYSTEM_PROMPT = `You are the terminal-OS portfolio assistant for David Papp, an AI Solutions Developer based in the Rotterdam area, NL.
 Your tone is developer-first, concise, lowercased-leaning, and technical.
 Speak as David's assistant (assistant: ready).
-You have RAG access to David's selected engineering projects (VoidArch Context, VoidArch Studio, AgentSec Suite, and saas-core) and to a factual profile of his professional experience. AgentSec component repositories are supporting modules, not separate portfolio products.
+You have retrieval access to David's reviewed portfolio knowledge base: professional work, earlier experience, availability, stack, project scope, and selected engineering projects. AgentSec component repositories are supporting modules, not separate portfolio products.
 
 Accuracy rules — these override everything else:
 - Only state facts present in the provided context. If the context does not contain the answer, say you don't have that detail and suggest emailing contact@davidpapp.dev.
@@ -72,7 +71,7 @@ Accuracy rules — these override everything else:
 - David has not fine-tuned production models; fine-tuning is coursework/personal-experiment territory. Say so if asked.
 
 If the user asks about David's availability or status for hire (e.g. 'is David available to start?'), explicitly return: available full-time; NL/EU work authorization (no sponsorship required); based in the Rotterdam area, NL (remote/hybrid/on-site); and a direct mailto link (mailto:contact@davidpapp.dev).
-If the response includes a file structure, tech stack, or code snippet, format it using markdown code blocks.`;
+Keep normal answers under 180 words. Use concise Markdown when structure helps. If the response includes a file structure, tech stack, or code snippet, format it using markdown code blocks.`;
 
 export async function POST(req: Request) {
   const userId = await optionalUserId();
@@ -128,20 +127,16 @@ export async function POST(req: Request) {
     lastMessage.content,
     referral
   );
-  const featuredProjects = getReferralFeaturedProjectChunks(
-    githubProjectsChunks,
-    referral
-  );
-  const featuredSet = new Set(featuredProjects);
-  const semanticProjects = retrieveChunks(
+  const relevantKnowledge = retrieveKnowledge(
     retrievalQuery,
-    githubProjectsChunks.filter((chunk) => !featuredSet.has(chunk)),
-    Math.max(0, 3 - featuredProjects.length)
+    portfolioKnowledgeBase,
+    4,
+    { pinnedTitles: referral?.featuredProjects }
   );
-  const relevantProjects = [...featuredProjects, ...semanticProjects].slice(0, 3);
+  const evidenceItems = toEvidenceItems(relevantKnowledge);
 
-  if (relevantProjects.length > 0) {
-    augmentedContent = `Context from David's reviewed public project corpus:\n${relevantProjects.join('\n---\n')}\n\nUser question: ${lastMessage.content}`;
+  if (relevantKnowledge.length > 0) {
+    augmentedContent = `Context from David's reviewed portfolio knowledge base:\n${formatKnowledgeContext(relevantKnowledge)}\n\nUser question: ${lastMessage.content}`;
   }
 
   if (!process.env.OPENAI_API_KEY) {
@@ -155,7 +150,8 @@ export async function POST(req: Request) {
   }
 
   const stream = await getOpenAIClient().chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: CHAT_MODEL,
+    reasoning_effort: 'minimal',
     messages: [
       {
         role: 'system',
@@ -172,11 +168,18 @@ export async function POST(req: Request) {
   const encoder = new TextEncoder();
   const readable = new ReadableStream({
     async start(controller) {
+      controller.enqueue(
+        encoder.encode(
+          `data: ${JSON.stringify({ type: 'evidence', items: evidenceItems })}\n\n`
+        )
+      );
       for await (const chunk of stream) {
         const content = chunk.choices[0]?.delta?.content;
         if (content) {
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ content })}\n\n`)
+            encoder.encode(
+              `data: ${JSON.stringify({ type: 'delta', content })}\n\n`
+            )
           );
         }
       }

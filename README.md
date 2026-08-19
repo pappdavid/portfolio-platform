@@ -40,13 +40,13 @@ The open-source projects shown on the site live in their own repositories:
 - **Landing page** (`/`) — terminal-OS single-page experience: hero, project filesystem table with expandable case studies, work history, skills, field notes, contact section with a streaming assistant chat.
 - **Projects** (`/projects`) — project cards with overview / real-source-code-excerpt / architecture-diagram tabs.
 - **SaaS catalogue** (`/saas-projects`) — screenshots and links for small prototype demos deployed on Vercel (synced by `scripts/sync-saas-projects.mjs` + a scheduled workflow).
-- **Assistant APIs** — `/api/chat` (streaming chat grounded in `src/data/github-projects-rag.json` via keyword retrieval, OpenAI `gpt-4o-mini`) and `/api/ama` (JSON Q&A over `src/lib/ama/corpus.ts` with a deterministic no-API-key fallback).
+- **Assistant APIs** — `/api/chat` streams answers plus retrieved-evidence cards from a reviewed portfolio KB; `/api/ama` shares the same KB while retaining deterministic answers for hiring/project identity. Both default to OpenAI `gpt-5-nano` and can be overridden with `PORTFOLIO_CHAT_MODEL`.
 - **CV** — `public/cv.html` is the source; `public/cv.pdf` is generated from it with headless Chrome (`npm run cv:pdf`).
 - **Dashboard** (`/dashboard`, Clerk-protected) — starter-kit dashboard pages (overview charts, referrals, profile) retained from the upstream template; not part of the public portfolio.
 - **Static pages** — `/brand`, `/security`, `/privacy-policy`, `/terms-of-service`.
 - **Redirects** — previously shared routes (`/mcp`, `/training`, `/chat`, `/projects/mcp-sentinel`, `/projects/rag-chat`, `/projects/training`, `/projects/portfolio`, `/about`) redirect to current pages instead of 404ing (see `next.config.ts`).
 
-The retrieval in `/api/chat` is deliberately simple: paragraph chunking plus keyword-overlap scoring (`src/lib/chat/rag.ts`). There is no vector database in this app.
+The assistant KB is built from the reviewed factual profile (`src/lib/ama/corpus.ts`) plus structured project records (`src/data/github-projects-rag.json`). Retrieval uses weighted BM25-style ranking with exact referral-project boosts in `src/lib/chat/knowledge-base.ts`; the corpus is small enough that a vector database would add machinery without improving exact-entity retrieval.
 
 ---
 
@@ -60,7 +60,7 @@ The retrieval in `/api/chat` is deliberately simple: paragraph chunking plus key
 | Auth | Clerk (middleware in `src/proxy.ts` protects `/dashboard`) |
 | Database | Supabase Postgres (migrations in `supabase/migrations/`, RLS enabled) |
 | Rate limiting | Upstash Redis sliding windows (`src/lib/rate-limit.ts`) — disabled gracefully if env vars are absent |
-| AI | OpenAI API (`gpt-4o-mini`) for the assistant endpoints |
+| AI | OpenAI API (`gpt-5-nano` default, configurable) + reviewed BM25-style portfolio KB; Crayon Markdown/evidence-card rendering |
 | 3D | Three.js constellation background (`src/lib/scene/`, `@react-three/fiber`) |
 | Deployment | Vercel |
 | CI | GitHub Actions: install, lint, typecheck, build, content-regression checks |

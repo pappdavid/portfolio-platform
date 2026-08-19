@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   buildReferralChatContext,
+  buildReferralPresentation,
   parseReferralNotes,
   serializeReferralNotes
 } from './referral-personalization';
@@ -93,7 +94,9 @@ test('chat context forbids unsupported claims about the referral company itself'
 });
 
 test('featured referral project chunks are selected in configured order', async () => {
-  const { getReferralFeaturedProjectChunks } = await import('./referral-personalization');
+  const { getReferralFeaturedProjectChunks } = await import(
+    './referral-personalization'
+  );
   const chunks = [
     'Project Name: VoidArch Context\nDetails: context',
     'Project Name: VoidArch Studio\nDetails: studio',
@@ -112,4 +115,22 @@ test('chat context names explicitly prioritized referral projects', () => {
     featuredProjects: ['VoidArch Context', 'AgentSec Suite']
   });
   assert.match(text, /Prioritized projects: VoidArch Context, AgentSec Suite/);
+});
+
+test('chat presentation reports the reviewed knowledge base accurately', () => {
+  assert.equal(
+    buildReferralPresentation(null).chatContextLabel,
+    'context: reviewed_kb'
+  );
+  assert.equal(
+    buildReferralPresentation({
+      company: 'Attendi',
+      role: 'Machine Learning Engineer'
+    }).chatContextLabel,
+    'context: reviewed_kb + referral'
+  );
+  assert.match(
+    buildReferralPresentation(null).chatGreeting,
+    /reviewed portfolio knowledge base/i
+  );
 });
