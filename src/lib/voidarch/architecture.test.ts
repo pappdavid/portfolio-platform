@@ -3,6 +3,7 @@ import test from 'node:test';
 
 async function loadArchitecture(): Promise<Record<string, unknown>> {
   try {
+    // @ts-expect-error Node's native TypeScript test runner requires the explicit .ts extension.
     return (await import('./architecture.ts')) as Record<string, unknown>;
   } catch {
     return {};
@@ -79,4 +80,43 @@ test('Hermes is described only as an external testbed or integration surface', a
   assert.match(text, /external/);
   assert.match(text, /testbed|integration surface/);
   assert.doesNotMatch(text, /hermes[^.]{0,80}(core|owned by voidarch)/);
+});
+
+test('architecture manifest is serializable and exposes nodes, edges, and maturity legend', async () => {
+  const mod = await loadArchitecture();
+  assert.equal(typeof mod.getArchitectureManifest, 'function');
+  const manifest = (mod.getArchitectureManifest as () => unknown)() as {
+    name: string;
+    maturityLegend: string[];
+    nodes: unknown[];
+    edges: unknown[];
+  };
+  assert.equal(manifest.name, 'VoidArch');
+  assert.equal(manifest.nodes.length, 8);
+  assert.ok(manifest.edges.length >= 8);
+  assert.deepEqual(manifest.maturityLegend, [
+    'WORKING',
+    'ACTIVE',
+    'PROTOTYPE',
+    'PLANNED',
+    'FUTURE',
+    'EXTERNAL'
+  ]);
+  assert.doesNotThrow(() => JSON.stringify(manifest));
+});
+
+test('evidence manifest is serializable and groups evidence by core subsystem', async () => {
+  const mod = await loadArchitecture();
+  assert.equal(typeof mod.getEvidenceManifest, 'function');
+  const manifest = (mod.getEvidenceManifest as () => unknown)() as {
+    name: string;
+    evidence: Record<string, unknown[]>;
+  };
+  assert.equal(manifest.name, 'VoidArch');
+  assert.deepEqual(Object.keys(manifest.evidence).sort(), [
+    'context',
+    'router',
+    'studio'
+  ]);
+  assert.doesNotThrow(() => JSON.stringify(manifest));
 });

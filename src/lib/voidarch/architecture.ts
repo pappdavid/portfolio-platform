@@ -198,3 +198,19 @@ export function getVoidArchNode(id: VoidArchNodeId): VoidArchNode {
   if (!node) throw new Error(`Unknown VoidArch node: ${id}`);
   return node;
 }
+
+export function getArchitectureManifest() {
+  return {
+    name: 'VoidArch',
+    maturityLegend: [...VOIDARCH_MATURITY],
+    nodes: VOIDARCH_NODES,
+    edges: VOIDARCH_EDGES
+  } as const;
+}
+
+export function getEvidenceManifest() {
+  return {
+    name: 'VoidArch',
+    evidence: VOIDARCH_EVIDENCE
+  } as const;
+}
