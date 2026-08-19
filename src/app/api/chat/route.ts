@@ -1,9 +1,10 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import OpenAI from 'openai';
+import { streamText } from 'ai';
 import fs from 'fs';
 import path from 'path';
+import { getPortfolioModel } from '@/lib/openrouter';
 import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
 import { getOrCreateCompanyForUser } from '@/lib/company';
 import { amaCorpus } from '@/lib/ama/corpus';
@@ -24,10 +25,6 @@ import {
   DemoExpiredError,
   QuotaExhaustedError
 } from '@/lib/demo-quota';
-
-function getOpenAIClient(): OpenAI {
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-}
 
 async function optionalUserId() {
   if (!process.env.CLERK_SECRET_KEY) return null;
@@ -55,8 +52,6 @@ try {
 } catch (err) {
   console.error('Failed to load portfolio knowledge base', err);
 }
-
-const CHAT_MODEL = process.env.PORTFOLIO_CHAT_MODEL || 'gpt-5-nano';
 
 const SYSTEM_PROMPT = `You are the terminal-OS portfolio assistant for David Papp, an AI Solutions Developer based in the Rotterdam area, NL.
 Your tone is developer-first, concise, lowercased-leaning, and technical.
@@ -139,30 +134,17 @@ export async function POST(req: Request) {
     augmentedContent = `Context from David's reviewed portfolio knowledge base:\n${formatKnowledgeContext(relevantKnowledge)}\n\nUser question: ${lastMessage.content}`;
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json(
-      {
-        error:
-          'Chat is temporarily unavailable; use /api/ama or email contact@davidpapp.dev.'
-      },
-      { status: 503 }
-    );
-  }
+  const model = getPortfolioModel();
 
-  const stream = await getOpenAIClient().chat.completions.create({
-    model: CHAT_MODEL,
-    reasoning_effort: 'minimal',
+  const result = streamText({
+    model,
+    system: referral
+      ? `${SYSTEM_PROMPT}\n\n${buildReferralChatContext(referral)}`
+      : SYSTEM_PROMPT,
     messages: [
-      {
-        role: 'system',
-        content: referral
-          ? `${SYSTEM_PROMPT}\n\n${buildReferralChatContext(referral)}`
-          : SYSTEM_PROMPT
-      },
       ...messages.slice(0, -1),
       { role: 'user', content: augmentedContent }
-    ],
-    stream: true
+    ]
   });
 
   const encoder = new TextEncoder();
@@ -173,8 +155,7 @@ export async function POST(req: Request) {
           `data: ${JSON.stringify({ type: 'evidence', items: evidenceItems })}\n\n`
         )
       );
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content;
+      for await (const content of result.textStream) {
         if (content) {
           controller.enqueue(
             encoder.encode(

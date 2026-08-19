@@ -1,23 +1,21 @@
-import { createOpenAI } from '@ai-sdk/openai';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
-const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
+export const PORTFOLIO_GATEWAY_MODEL_ID =
+  process.env.PORTFOLIO_CHAT_MODEL || 'deepseek/deepseek-v4-flash-0731';
 
-export const PORTFOLIO_MODEL_ID =
-  process.env.PORTFOLIO_CHAT_MODEL || 'deepseek/deepseek-v4-flash:free';
+export const PORTFOLIO_OPENROUTER_MODEL_ID =
+  process.env.PORTFOLIO_OPENROUTER_MODEL || 'openrouter/free';
 
 export function getPortfolioModel() {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) return PORTFOLIO_GATEWAY_MODEL_ID;
 
-  const openrouter = createOpenAI({
-    name: 'openrouter',
+  const openrouter = createOpenRouter({
     apiKey,
-    baseURL: OPENROUTER_BASE_URL,
-    headers: {
-      'HTTP-Referer': 'https://davidpapp.dev',
-      'X-Title': 'David Papp Portfolio'
-    }
+    compatibility: 'strict',
+    appName: 'David Papp Portfolio',
+    appUrl: 'https://davidpapp.dev'
   });
 
-  return openrouter.chat(PORTFOLIO_MODEL_ID);
+  return openrouter.chat(PORTFOLIO_OPENROUTER_MODEL_ID);
 }

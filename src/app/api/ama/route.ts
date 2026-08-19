@@ -1,7 +1,8 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { generateText } from 'ai';
 import { amaPublicRateLimit, amaAuthRateLimit } from '@/lib/rate-limit';
+import { getPortfolioModel } from '@/lib/openrouter';
 import { amaCorpus } from '@/lib/ama/corpus';
 import projectsData from '@/data/github-projects-rag.json';
 import {
@@ -18,7 +19,6 @@ const portfolioKnowledgeBase = buildPortfolioKnowledgeBase(
   amaCorpus,
   projectsData
 );
-const AMA_MODEL = process.env.PORTFOLIO_CHAT_MODEL || 'gpt-5-nano';
 
 const SYSTEM_PROMPT = `You are a portfolio assistant for David Papp, an AI engineer. Answer questions about David's work, projects, experience, and tech stack based strictly on the provided context.
 
@@ -100,14 +100,11 @@ export async function POST(req: Request) {
   }
 
   const fallback = answerPortfolioQuestion(question);
+  const model = getPortfolioModel();
 
   // Hiring, work-authorization, and project identity facts must never vary by
   // model output. Return the reviewed deterministic answer even with an API key.
-  if (
-    asksForHiringFacts(question) ||
-    asksForProjectFacts(question) ||
-    !process.env.OPENAI_API_KEY
-  ) {
+  if (asksForHiringFacts(question) || asksForProjectFacts(question)) {
     return NextResponse.json(fallback);
   }
 
@@ -117,23 +114,12 @@ export async function POST(req: Request) {
       ? formatKnowledgeContext(relevant)
       : amaCorpus.slice(0, 1500);
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   try {
-    const completion = await openai.chat.completions.create({
-      model: AMA_MODEL,
-      reasoning_effort: 'minimal',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        {
-          role: 'user',
-          content: `Context:\n${context}\n\nQuestion: ${question}`
-        }
-      ],
-      response_format: { type: 'json_object' }
+    const { text: raw } = await generateText({
+      model,
+      system: SYSTEM_PROMPT,
+      prompt: `Context:\n${context}\n\nQuestion: ${question}`
     });
-
-    const raw = completion.choices[0]?.message?.content ?? '';
 
     const parsed = JSON.parse(raw) as {
       answer: string;
