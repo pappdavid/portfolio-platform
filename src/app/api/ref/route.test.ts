@@ -22,3 +22,12 @@ const eventsSource = readFileSync(
 test('private analytics includes ownerless system-created links', () => {
   assert.match(eventsSource, /user_id\.is\.null/);
 });
+
+test('production referral URL comes from the request origin', () => {
+  assert.doesNotMatch(source, /http:\/\/localhost:3000/);
+  assert.match(source, /new URL\(req\.url\)\.origin/);
+});
+
+test('temporary backend diagnostics are removed', () => {
+  assert.doesNotMatch(source, /backendHost|referral insert failed/);
+});

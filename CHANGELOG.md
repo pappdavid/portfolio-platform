@@ -7,6 +7,11 @@
 - The public landing page resolves referral context server-side and shows the matched company plus optional role/focus metadata.
 - Portfolio chat resolves the same server-side referral context and uses it only to prioritize already-supported factual evidence.
 - Referral creation accepts an optional structured personalization snapshot while remaining compatible with legacy plain-text notes.
+- Referral creation no longer requires Clerk; system-created links are ownerless and remain visible in the signed-in analytics view.
+
+### Fixed
+- Restored the referral Supabase backend and applied the minimal `ref_links` / `ref_events` schema required by the live tracking path.
+- Referral API responses now derive `/r/<token>` URLs from the incoming request origin instead of falling back to localhost.
 
 ## [2026-05-31] — Portfolio P0: Clerk, Projects, CV
 
