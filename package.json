@@ -19,7 +19,8 @@
     "check:content": "node scripts/portfolio-regression-checks.mjs",
     "cv:pdf": "bash scripts/generate-cv-pdf.sh",
     "typecheck": "tsc --noEmit",
-    "test:voidarch:model": "node --test --experimental-strip-types src/lib/voidarch/architecture.test.ts"
+    "test:voidarch:model": "node --test --experimental-strip-types src/lib/voidarch/architecture.test.ts",
+    "test:voidarch:e2e": "node --test tests/voidarch/voidarch.spec.mjs"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [
@@ -125,6 +126,7 @@
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
+    "playwright": "^1.62.1",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tw-animate-css": "^1.2.4"
