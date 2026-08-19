@@ -40,7 +40,7 @@ The open-source projects shown on the site live in their own repositories:
 - **Landing page** (`/`) — terminal-OS single-page experience: hero, project filesystem table with expandable case studies, work history, skills, field notes, contact section with a streaming assistant chat.
 - **Projects** (`/projects`) — project cards with overview / real-source-code-excerpt / architecture-diagram tabs.
 - **SaaS catalogue** (`/saas-projects`) — screenshots and links for small prototype demos deployed on Vercel (synced by `scripts/sync-saas-projects.mjs` + a scheduled workflow).
-- **Assistant APIs** — `/api/chat` streams answers plus retrieved-evidence cards from a reviewed portfolio KB; `/api/ama` shares the same KB while retaining deterministic answers for hiring/project identity. Both default to OpenAI `gpt-5-nano` and can be overridden with `PORTFOLIO_CHAT_MODEL`.
+- **Assistant APIs** — `/api/chat` streams answers plus retrieved-evidence cards from a reviewed portfolio KB; `/api/ama` shares the same KB while retaining deterministic answers for hiring/project identity. On Vercel they default to AI Gateway `deepseek/deepseek-v4-flash-0731` using deployment OIDC; when `OPENROUTER_API_KEY` is present they prefer OpenRouter `openrouter/free`. `PORTFOLIO_CHAT_MODEL` and `PORTFOLIO_OPENROUTER_MODEL` override those defaults.
 - **CV** — `public/cv.html` is the source; `public/cv.pdf` is generated from it with headless Chrome (`npm run cv:pdf`).
 - **Dashboard** (`/dashboard`, Clerk-protected) — starter-kit dashboard pages (overview charts, referrals, profile) retained from the upstream template; not part of the public portfolio.
 - **Static pages** — `/brand`, `/security`, `/privacy-policy`, `/terms-of-service`.
@@ -60,7 +60,7 @@ The assistant KB is built from the reviewed factual profile (`src/lib/ama/corpus
 | Auth | Clerk (middleware in `src/proxy.ts` protects `/dashboard`) |
 | Database | Supabase Postgres (migrations in `supabase/migrations/`, RLS enabled) |
 | Rate limiting | Upstash Redis sliding windows (`src/lib/rate-limit.ts`) — disabled gracefully if env vars are absent |
-| AI | OpenAI API (`gpt-5-nano` default, configurable) + reviewed BM25-style portfolio KB; Crayon Markdown/evidence-card rendering |
+| AI | Vercel AI SDK + AI Gateway on Vercel OIDC; OpenRouter preferred when configured; reviewed BM25-style portfolio KB; Crayon Markdown/evidence-card rendering |
 | 3D | Three.js constellation background (`src/lib/scene/`, `@react-three/fiber`) |
 | Deployment | Vercel |
 | CI | GitHub Actions: install, lint, typecheck, build, content-regression checks |
@@ -82,7 +82,9 @@ npm run dev                     # http://localhost:3000
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` / `CLERK_SECRET_KEY` | Yes (or Clerk keyless mode) | Auth |
 | `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | Yes for dashboard/referrals | Database |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Optional | Rate limiting |
-| `OPENAI_API_KEY` | Optional | Assistant endpoints (deterministic fallback without it) |
+| `OPENROUTER_API_KEY` | Optional | Prefer OpenRouter; Vercel deployments otherwise use AI Gateway via OIDC |
+| `PORTFOLIO_CHAT_MODEL` | Optional | Override the AI Gateway model |
+| `PORTFOLIO_OPENROUTER_MODEL` | Optional | Override the OpenRouter model |
 
 Apply `supabase/migrations/001_initial.sql` and `002_demo_quota.sql` in the Supabase SQL editor if you use the dashboard features.
 

@@ -8,7 +8,8 @@ test('AMA shares the reviewed portfolio knowledge base', () => {
   assert.match(source, /formatKnowledgeContext/);
   assert.doesNotMatch(source, /retrieveChunks/);
 });
-test('AMA defaults to the current cheap portfolio model', () => {
-  assert.match(source, /gpt-5-nano/);
-  assert.doesNotMatch(source, /gpt-4o-mini/);
+test('AMA uses the shared Gateway/OpenRouter model selector through the Vercel AI SDK', () => {
+  assert.match(source, /getPortfolioModel/);
+  assert.match(source, /generateText/);
+  assert.doesNotMatch(source, /OPENAI_API_KEY|from ['\"]openai['\"]/);
 });
