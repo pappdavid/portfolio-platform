@@ -91,3 +91,25 @@ test('chat context forbids unsupported claims about the referral company itself'
   assert.match(text, /routing metadata/i);
   assert.match(text, /do not state or infer facts about the company/i);
 });
+
+test('featured referral project chunks are selected in configured order', async () => {
+  const { getReferralFeaturedProjectChunks } = await import('./referral-personalization');
+  const chunks = [
+    'Project Name: VoidArch Context\nDetails: context',
+    'Project Name: VoidArch Studio\nDetails: studio',
+    'Project Name: AgentSec Suite\nDetails: security'
+  ];
+  const selected = getReferralFeaturedProjectChunks(chunks, {
+    company: 'Attendi',
+    featuredProjects: ['AgentSec Suite', 'VoidArch Context']
+  });
+  assert.deepEqual(selected, [chunks[2], chunks[0]]);
+});
+
+test('chat context names explicitly prioritized referral projects', () => {
+  const text = buildReferralChatContext({
+    company: 'Attendi',
+    featuredProjects: ['VoidArch Context', 'AgentSec Suite']
+  });
+  assert.match(text, /Prioritized projects: VoidArch Context, AgentSec Suite/);
+});

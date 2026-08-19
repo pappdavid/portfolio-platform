@@ -13,3 +13,7 @@ test('referral metadata participates in project retrieval', () => {
   assert.match(source, /buildReferralRetrievalQuery/);
   assert.match(source, /retrieveChunks\(\s*retrievalQuery/);
 });
+
+test('explicitly featured referral projects are injected before semantic retrieval', () => {
+  assert.match(source, /getReferralFeaturedProjectChunks/);
+});

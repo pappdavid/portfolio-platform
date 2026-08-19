@@ -150,6 +150,22 @@ export function prioritizeReferralProjects<T extends { name: string }>(
   });
 }
 
+export function getReferralFeaturedProjectChunks(
+  chunks: readonly string[],
+  snapshot: ReferralPersonalizationSnapshot | null | undefined
+): string[] {
+  if (!snapshot?.featuredProjects?.length) return [];
+  const byName = new Map<string, string>();
+  for (const chunk of chunks) {
+    const match = chunk.match(/^Project Name:\s*(.+)$/m);
+    if (match) byName.set(match[1].trim().toLowerCase(), chunk);
+  }
+  return snapshot.featuredProjects
+    .map((name) => byName.get(name.toLowerCase()))
+    .filter((chunk): chunk is string => Boolean(chunk))
+    .slice(0, 3);
+}
+
 export function buildReferralChatContext(
   snapshot: ReferralPersonalizationSnapshot
 ): string {
@@ -159,6 +175,12 @@ export function buildReferralChatContext(
     snapshot.role ? `Role: ${snapshot.role}` : undefined,
     snapshot.focus?.length
       ? `Relevant focus: ${snapshot.focus.join(', ')}`
+      : undefined,
+    snapshot.featuredProjects?.length
+      ? `Prioritized projects: ${snapshot.featuredProjects.join(', ')}`
+      : undefined,
+    snapshot.featuredProjects?.length
+      ? 'For broad role-fit or relevance questions, consider the prioritized projects before other project evidence.'
       : undefined,
     snapshot.chatContext
       ? `Application framing: ${snapshot.chatContext}`
