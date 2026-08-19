@@ -1,11 +1,17 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
 import { chunkText, retrieveChunks } from '@/lib/chat/rag';
 import { getOrCreateCompanyForUser } from '@/lib/company';
+import { getReferralPersonalization } from '@/lib/referral-context';
+import {
+  buildReferralChatContext,
+  REFERRAL_COOKIE
+} from '@/lib/referral-personalization';
 import {
   checkAndConsumeQuota,
   DemoExpiredError,
@@ -96,6 +102,11 @@ export async function POST(req: Request) {
     }
   }
 
+  const cookieStore = await cookies();
+  const referral = await getReferralPersonalization(
+    cookieStore.get(REFERRAL_COOKIE)?.value
+  );
+
   const body = await req.json();
   const { messages, context } = body as {
     messages: ChatMessage[];
@@ -139,7 +150,12 @@ export async function POST(req: Request) {
   const stream = await getOpenAIClient().chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
+      {
+        role: 'system',
+        content: referral
+          ? `${SYSTEM_PROMPT}\n\n${buildReferralChatContext(referral)}`
+          : SYSTEM_PROMPT
+      },
       ...messages.slice(0, -1),
       { role: 'user', content: augmentedContent }
     ],
