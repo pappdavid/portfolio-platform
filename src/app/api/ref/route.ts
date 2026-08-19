@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs/server';
 import { createHmac } from 'crypto';
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
@@ -8,11 +7,6 @@ import {
 } from '@/lib/referral-personalization';
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
   const body = await req.json();
   const { company, notes, personalization } = body as {
     company?: string;
@@ -46,7 +40,7 @@ export async function POST(req: Request) {
 
   const { data, error } = await supabaseAdmin
     .from('ref_links')
-    .insert({ token, company, notes: storedNotes, user_id: userId })
+    .insert({ token, company, notes: storedNotes })
     .select()
     .single();
 

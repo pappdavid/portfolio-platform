@@ -4,7 +4,7 @@ import {
   buildReferralChatContext,
   parseReferralNotes,
   serializeReferralNotes
-} from './referral-personalization.ts';
+} from './referral-personalization';
 
 test('structured referral notes round-trip a public personalization snapshot', () => {
   const snapshot = {
