@@ -286,3 +286,291 @@
     justify-self: start;
   }
 }
+
+.atlasViewport {
+  position: absolute;
+  inset: 68px 0 0;
+  z-index: 8;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.atlasViewport:active {
+  cursor: grabbing;
+}
+
+.atlasControlBar {
+  position: absolute;
+  z-index: 18;
+  top: 18px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.atlasControlBar button,
+.atlasControlBar span {
+  min-width: 34px;
+  border: 1px solid var(--va-line);
+  background: rgba(12, 8, 25, 0.74);
+  padding: 8px 9px;
+  color: var(--va-muted);
+  font-family: var(--font-dp-mono), ui-monospace, monospace;
+  font-size: 0.56rem;
+  font-weight: 700;
+}
+
+.atlasControlBar button:hover {
+  border-color: var(--va-teal);
+  color: var(--va-teal);
+}
+
+.atlasWorld {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.atlasEdges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.atlasEdges path {
+  fill: none;
+  stroke: rgba(167, 205, 255, 0.22);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  transition:
+    stroke 180ms ease,
+    opacity 180ms ease;
+}
+
+.atlasEdges .activeEdge {
+  stroke: var(--va-teal);
+  stroke-width: 2;
+  stroke-dasharray: 8 10;
+  animation: routeDash 0.9s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(94, 230, 255, 0.4));
+}
+
+@keyframes routeDash {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+.atlasNode {
+  position: absolute;
+  width: 190px;
+  transform: translate(-50%, -50%);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #e9e2f5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.atlasNode strong {
+  display: block;
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+}
+.atlasNode small {
+  display: block;
+  margin-top: 4px;
+  color: var(--va-muted);
+  font-family: var(--font-dp-mono), ui-monospace, monospace;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.atlasNode p {
+  margin: 7px 0 0;
+  color: #837d90;
+  font-size: 0.67rem;
+  line-height: 1.45;
+}
+
+.atlasAnchor {
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin-bottom: 9px;
+  border: 1px solid var(--va-teal);
+  border-radius: 50%;
+  background: #0f091c;
+  box-shadow: 0 0 18px rgba(94, 230, 255, 0.24);
+}
+
+.atlasNodeCore strong {
+  color: var(--va-acid);
+  font-size: 1.55rem;
+}
+.atlasNodeCore .atlasAnchor {
+  border-color: var(--va-acid);
+  box-shadow: 0 0 20px rgba(214, 255, 104, 0.26);
+}
+.atlasNode:hover strong {
+  color: var(--va-teal);
+}
+.atlasNode:hover .atlasAnchor,
+.routeNode .atlasAnchor {
+  background: var(--va-teal);
+  box-shadow: 0 0 28px rgba(94, 230, 255, 0.54);
+}
+.routeNode strong {
+  color: var(--va-teal);
+}
+
+.atlasInspector {
+  position: absolute;
+  z-index: 24;
+  top: 72px;
+  right: 22px;
+  width: min(390px, calc(100vw - 44px));
+  max-height: calc(100% - 150px);
+  overflow: auto;
+  border: 1px solid rgba(225, 211, 255, 0.28);
+  background: rgba(15, 9, 30, 0.9);
+  padding: 18px;
+  box-shadow: 0 24px 90px rgba(57, 20, 120, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.inspectorTopline {
+  display: flex;
+  justify-content: space-between;
+  color: var(--va-muted);
+  font-family: var(--font-dp-mono), monospace;
+  font-size: 0.56rem;
+  font-weight: 700;
+}
+.inspectorTopline button {
+  border: 0;
+  background: transparent;
+  color: var(--va-muted);
+  font-size: inherit;
+}
+.atlasInspector h2 {
+  margin: 18px 0 8px;
+  font-size: 2.2rem;
+  letter-spacing: -0.05em;
+}
+.atlasInspector > p {
+  color: #aaa2b7;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.maturityBadge {
+  display: inline-block;
+  border: 1px solid var(--va-line);
+  padding: 5px 7px;
+  color: var(--va-acid);
+  font-family: var(--font-dp-mono), monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+}
+.inspectorFacts {
+  margin: 18px 0;
+}
+.inspectorFacts div {
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--va-line);
+}
+.inspectorFacts dt {
+  color: var(--va-muted);
+  font-family: var(--font-dp-mono), monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+}
+.inspectorFacts dd {
+  margin: 0;
+  color: #d5cede;
+  font-family: var(--font-dp-mono), monospace;
+  font-size: 0.62rem;
+  line-height: 1.55;
+}
+.inspectorBullets {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.inspectorBullets li {
+  border-left: 2px solid rgba(94, 230, 255, 0.28);
+  padding-left: 10px;
+  color: #bdb6c7;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.routeTrace {
+  position: absolute;
+  z-index: 22;
+  left: 50%;
+  bottom: 18px;
+  display: flex;
+  width: min(680px, calc(100vw - 40px));
+  transform: translate(-50%, 120px);
+  gap: 18px;
+  border: 1px solid var(--va-line);
+  background: rgba(13, 8, 26, 0.88);
+  padding: 11px 13px;
+  opacity: 0;
+  color: var(--va-muted);
+  font-family: var(--font-dp-mono), monospace;
+  font-size: 0.62rem;
+  transition: 220ms ease;
+  backdrop-filter: blur(14px);
+}
+.routeTraceVisible {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+.routeTrace b {
+  color: var(--va-teal);
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .atlasViewport {
+    opacity: 0.82;
+  }
+  .atlasWorld {
+    left: 62%;
+  }
+  .atlasNode p {
+    display: none;
+  }
+  .atlasInspector {
+    top: 120px;
+    right: 12px;
+  }
+  .atlasControlBar {
+    top: 12px;
+    right: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlasEdges .activeEdge {
+    animation: none;
+  }
+  .routeTrace {
+    transition: none;
+  }
+}

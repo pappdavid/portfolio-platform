@@ -1,25 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import { LiquidField } from './liquid-field';
+import { SignalAtlas } from './signal-atlas';
 import { VOIDARCH_NODES } from '@/lib/voidarch/architecture';
 import styles from '@/app/voidarch/voidarch.module.css';
 
-const positions: Record<string, { left: string; top: string }> = {
-  context: { left: '59%', top: '24%' },
-  memory: { left: '48%', top: '66%' },
-  models: { left: '74%', top: '17%' },
-  router: { left: '70%', top: '46%' },
-  tools: { left: '67%', top: '76%' },
-  studio: { left: '86%', top: '29%' },
-  policy: { left: '88%', top: '57%' },
-  evidence: { left: '91%', top: '80%' }
-};
-
 export function VoidArchExperience() {
+  const [focus, setFocus] = useState<readonly [number, number]>([0.72, 0.42]);
+  const [routeState, setRouteState] = useState({ energy: 0, phase: 0 });
+
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
-        <LiquidField />
+        <LiquidField
+          focus={focus}
+          routeEnergy={routeState.energy}
+          routePhase={routeState.phase}
+        />
         <div className={styles.atmosphere} />
 
         <header className={styles.topbar}>
@@ -49,38 +47,10 @@ export function VoidArchExperience() {
           </div>
         </div>
 
-        <div
-          className={styles.atlas}
-          data-testid='voidarch-atlas'
-          aria-label='VoidArch architecture atlas'
-        >
-          <svg
-            className={styles.edges}
-            viewBox='0 0 1000 720'
-            aria-hidden='true'
-          >
-            <path d='M590 175 C650 230 680 275 700 330' />
-            <path d='M520 510 C535 410 555 300 590 175' />
-            <path d='M740 120 C745 215 730 275 700 330' />
-            <path d='M675 555 C690 485 700 420 700 330' />
-            <path d='M735 330 C790 305 825 255 860 205' />
-            <path d='M735 340 C800 380 850 405 885 420' />
-            <path d='M885 420 C905 500 915 545 920 585' />
-          </svg>
-          {VOIDARCH_NODES.map((node) => (
-            <div
-              key={node.id}
-              className={`${styles.node} ${node.group === 'core' ? styles.coreNode : ''}`}
-              style={positions[node.id]}
-              data-node={node.id}
-            >
-              <span className={styles.anchor} />
-              <strong>{node.title}</strong>
-              <small>{node.maturity}</small>
-              <p>{node.summary}</p>
-            </div>
-          ))}
-        </div>
+        <SignalAtlas
+          onFocusChange={setFocus}
+          onRouteState={(energy, phase) => setRouteState({ energy, phase })}
+        />
       </section>
 
       <section className={styles.section} id='architecture'>

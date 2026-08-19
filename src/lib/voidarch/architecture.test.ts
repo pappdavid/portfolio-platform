@@ -120,3 +120,43 @@ test('evidence manifest is serializable and groups evidence by core subsystem', 
   ]);
   assert.doesNotThrow(() => JSON.stringify(manifest));
 });
+
+test('each subsystem owns a stable world coordinate and inspector detail', async () => {
+  const mod = await loadArchitecture();
+  const nodes = mod.VOIDARCH_NODES as Array<{
+    position?: { x: number; y: number };
+    role?: string;
+    owns?: string;
+    connects?: string;
+    bullets?: string[];
+  }>;
+  for (const node of nodes) {
+    assert.ok(node.position, 'node position should exist');
+    assert.ok(Number.isFinite(node.position?.x));
+    assert.ok(Number.isFinite(node.position?.y));
+    assert.ok((node.position?.x ?? 0) >= 0 && (node.position?.x ?? 0) <= 1600);
+    assert.ok((node.position?.y ?? 0) >= 0 && (node.position?.y ?? 0) <= 900);
+    assert.ok(node.role && node.owns && node.connects);
+    assert.ok(Array.isArray(node.bullets) && node.bullets.length >= 2);
+  }
+});
+
+test('canonical research route references valid nodes and edges and ends in evidence', async () => {
+  const mod = await loadArchitecture();
+  const nodes = mod.VOIDARCH_NODES as Array<{ id: string }>;
+  const edges = mod.VOIDARCH_EDGES as Array<{ id: string }>;
+  const route = mod.VOIDARCH_RESEARCH_ROUTE as
+    | Array<{ node: string; edge?: string }>
+    | undefined;
+  assert.ok(Array.isArray(route));
+  assert.equal(route[0]?.node, 'context');
+  assert.equal(route.at(-1)?.node, 'evidence');
+  assert.ok(route.some((step) => step.node === 'router'));
+  assert.ok(route.some((step) => step.node === 'studio'));
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  const edgeIds = new Set(edges.map((edge) => edge.id));
+  for (const step of route) {
+    assert.ok(nodeIds.has(step.node), step.node);
+    if (step.edge) assert.ok(edgeIds.has(step.edge), step.edge);
+  }
+});
