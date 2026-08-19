@@ -18,7 +18,8 @@
     "prepare": "husky",
     "check:content": "node scripts/portfolio-regression-checks.mjs",
     "cv:pdf": "bash scripts/generate-cv-pdf.sh",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:voidarch:model": "node --test --experimental-strip-types src/lib/voidarch/architecture.test.ts"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [
