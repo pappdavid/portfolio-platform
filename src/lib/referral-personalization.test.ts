@@ -36,3 +36,58 @@ test('chat context frames relevance but explicitly forbids new factual claims', 
   assert.match(text, /Machine Learning Engineer/);
   assert.match(text, /Do not treat referral context as evidence/);
 });
+
+test('referral retrieval query includes role focus and explicitly featured projects', async () => {
+  const { buildReferralRetrievalQuery } = await import(
+    './referral-personalization'
+  );
+  const query = buildReferralRetrievalQuery('why is David relevant?', {
+    company: 'Attendi',
+    role: 'Machine Learning Engineer',
+    focus: ['applied ML', 'Python', 'production AI'],
+    featuredProjects: ['VoidArch Context', 'AgentSec Suite']
+  });
+  assert.match(query, /Machine Learning Engineer/);
+  assert.match(query, /applied ML/);
+  assert.match(query, /VoidArch Context/);
+  assert.match(query, /AgentSec Suite/);
+});
+
+test('referral presentation visibly frames the target without claiming company facts', async () => {
+  const { buildReferralPresentation } = await import(
+    './referral-personalization'
+  );
+  const view = buildReferralPresentation({
+    company: 'Attendi',
+    role: 'Machine Learning Engineer',
+    focus: ['applied ML', 'Python']
+  });
+  assert.equal(view.target, 'Attendi · Machine Learning Engineer');
+  assert.equal(view.roleFocus, 'applied ML · Python');
+  assert.match(view.heroTag, /Machine Learning Engineer/);
+  assert.equal(view.projectsCta, '[relevant projects]');
+});
+
+test('featured referral projects are ordered first and other projects remain', async () => {
+  const { prioritizeReferralProjects } = await import(
+    './referral-personalization'
+  );
+  const projects = [{ name: 'A' }, { name: 'B' }, { name: 'C' }];
+  const ordered = prioritizeReferralProjects(projects, {
+    company: 'Example',
+    featuredProjects: ['C', 'A']
+  });
+  assert.deepEqual(
+    ordered.map((project) => project.name),
+    ['C', 'A', 'B']
+  );
+});
+
+test('chat context forbids unsupported claims about the referral company itself', () => {
+  const text = buildReferralChatContext({
+    company: 'Attendi',
+    role: 'Machine Learning Engineer'
+  });
+  assert.match(text, /routing metadata/i);
+  assert.match(text, /do not state or infer facts about the company/i);
+});
