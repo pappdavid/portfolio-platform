@@ -45,7 +45,18 @@ export async function POST(req: Request) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    let backendHost = 'missing';
+    try {
+      backendHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || '').hostname;
+    } catch {}
+    console.error('referral insert failed', {
+      backendHost,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code
+    });
+    return NextResponse.json({ error: error.message, backendHost, details: error.details, hint: error.hint, code: error.code }, { status: 500 });
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
