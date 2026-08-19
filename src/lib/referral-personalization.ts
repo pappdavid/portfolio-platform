@@ -97,8 +97,8 @@ export function buildReferralPresentation(
       heroTag: 'Building AI-first solutions. One agent at a time.',
       projectsCta: '[projects]',
       chatGreeting:
-        "Session active. Grounded in David's public GitHub projects and factual profile. Ask me about his engineering work.",
-      chatContextLabel: 'context: github_public'
+        "Session active. Grounded in David's reviewed portfolio knowledge base. Ask me about his engineering work.",
+      chatContextLabel: 'context: reviewed_kb'
     };
   }
 
@@ -116,7 +116,7 @@ export function buildReferralPresentation(
     target,
     roleFocus,
     chatGreeting: `Referral context loaded for ${target}. Ask which verified projects and experience are most relevant.`,
-    chatContextLabel: 'context: github_public + referral'
+    chatContextLabel: 'context: reviewed_kb + referral'
   };
 }
 

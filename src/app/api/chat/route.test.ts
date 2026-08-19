@@ -11,9 +11,11 @@ test('public chat does not accept caller supplied document context', () => {
 
 test('referral metadata participates in project retrieval', () => {
   assert.match(source, /buildReferralRetrievalQuery/);
-  assert.match(source, /retrieveChunks\(\s*retrievalQuery/);
+  assert.match(source, /retrieveKnowledge\(\s*retrievalQuery/);
+  assert.match(source, /pinnedTitles:\s*referral\?\.featuredProjects/);
 });
 
-test('explicitly featured referral projects are injected before semantic retrieval', () => {
-  assert.match(source, /getReferralFeaturedProjectChunks/);
+test('explicitly featured referral projects are deterministic retrieval boosts', () => {
+  assert.match(source, /pinnedTitles:\s*referral\?\.featuredProjects/);
+  assert.doesNotMatch(source, /getReferralFeaturedProjectChunks/);
 });

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { MarkDownRenderer, ThemeProvider as CrayonThemeProvider } from '@crayonai/react-ui';
 import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
 import {
   buildReferralPresentation,
@@ -1187,12 +1188,57 @@ interface ContactSectionProps {
   referral: ReferralPersonalizationSnapshot | null;
 }
 
+type ChatEvidence = {
+  id: string;
+  title: string;
+  kind: string;
+  summary: string;
+  href?: string;
+  score: number;
+};
+
 type ChatMsg = {
   role: 'bot' | 'user';
   text: string;
   isCustomCard?: boolean;
-  projectData?: Project;
+  evidence?: ChatEvidence[];
 };
+
+function EvidenceCards({ items }: { items: ChatEvidence[] }) {
+  return (
+    <div className='chat-msg bot'>
+      <span className='msg-tag'>RETRIEVED</span>
+      <div className='grid w-full gap-2 sm:grid-cols-2'>
+        {items.map((item, index) => (
+          <a
+            key={item.id}
+            href={item.href || '#'}
+            target={item.href?.startsWith('http') ? '_blank' : undefined}
+            rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            className='block border border-[var(--dp-border)] bg-[var(--dp-bg-raised)] p-2.5 text-left transition-colors hover:border-[var(--dp-accent)]'
+          >
+            <div className='flex items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-[var(--dp-text-dim)]'>
+              <span>{item.kind}</span>
+              <span>#{index + 1}</span>
+            </div>
+            <div className='mt-1 text-[12px] font-bold text-[var(--dp-accent)]'>{item.title}</div>
+            <p className='mt-1 line-clamp-3 text-[11px] leading-relaxed text-[var(--dp-text-dim)]'>{item.summary}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MarkdownAnswer({ text }: { text: string }) {
+  return (
+    <CrayonThemeProvider mode='dark' cssSelector='.portfolio-chat-markdown'>
+      <div className='portfolio-chat-markdown msg-text min-w-0'>
+        <MarkDownRenderer textMarkdown={text} variant='clear' />
+      </div>
+    </CrayonThemeProvider>
+  );
+}
 
 function ContactSection({
   themeProfile,
@@ -1253,30 +1299,45 @@ function ContactSection({
         setMsgs((m) => [...m, { role: 'bot', text: '' }]);
 
         if (reader) {
+          let buffer = '';
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const textChunk = decoder.decode(value, { stream: true });
-            for (const line of textChunk.split('\n')) {
-              if (line.startsWith('data: ')) {
-                const payload = line.slice(6).trim();
-                if (payload === '[DONE]') break;
-                try {
-                  const { content } = JSON.parse(payload) as {
-                    content: string;
-                  };
-                  setMsgs((prev) => {
-                    const updated = [...prev];
-                    const last = updated[updated.length - 1];
-                    if (last && last.role === 'bot') {
-                      last.text += content;
+            buffer += decoder.decode(value, { stream: true });
+            let boundary = buffer.indexOf('\n\n');
+            while (boundary !== -1) {
+              const frame = buffer.slice(0, boundary);
+              buffer = buffer.slice(boundary + 2);
+              const dataLine = frame.split('\n').find((line) => line.startsWith('data: '));
+              if (dataLine) {
+                const payload = dataLine.slice(6).trim();
+                if (payload !== '[DONE]') {
+                  try {
+                    const parsed = JSON.parse(payload) as
+                      | { type: 'evidence'; items: ChatEvidence[] }
+                      | { type: 'delta'; content: string };
+                    if (parsed.type === 'evidence' && parsed.items.length > 0) {
+                      setMsgs((prev) => {
+                        const updated = [...prev];
+                        updated.splice(Math.max(0, updated.length - 1), 0, {
+                          role: 'bot', text: '', isCustomCard: true, evidence: parsed.items
+                        });
+                        return updated;
+                      });
+                    } else if (parsed.type === 'delta' && parsed.content) {
+                      setMsgs((prev) => {
+                        const updated = [...prev];
+                        const last = updated[updated.length - 1];
+                        if (last && last.role === 'bot' && !last.isCustomCard) last.text += parsed.content;
+                        return updated;
+                      });
                     }
-                    return updated;
-                  });
-                } catch {
-                  // Skip parse failures
+                  } catch {
+                    // Ignore malformed frames; complete SSE frames remain isolated.
+                  }
                 }
               }
+              boundary = buffer.indexOf('\n\n');
             }
           }
         }
@@ -1346,17 +1407,25 @@ Email is fastest.`}
         </div>
 
         <div className='chat-body' ref={bodyRef}>
-          {msgs.map((m, i) => (
-            <div key={i} className={cn('chat-msg', m.role)}>
-              {m.role === 'bot' && <span className='msg-tag'>ASSISTANT</span>}
-              <span className='msg-text whitespace-pre-wrap'>{m.text}</span>
-            </div>
-          ))}
+          {msgs.map((m, i) =>
+            m.isCustomCard && m.evidence ? (
+              <EvidenceCards key={i} items={m.evidence} />
+            ) : (
+              <div key={i} className={cn('chat-msg', m.role)}>
+                {m.role === 'bot' && <span className='msg-tag'>ASSISTANT</span>}
+                {m.role === 'bot' ? (
+                  <MarkdownAnswer text={m.text} />
+                ) : (
+                  <span className='msg-text whitespace-pre-wrap'>{m.text}</span>
+                )}
+              </div>
+            )
+          )}
           {typing && (
             <div className='chat-msg bot typing'>
               <span className='msg-tag'>ASSISTANT</span>
               <span className='msg-text'>
-                searching project corpus
+                retrieving reviewed knowledge
                 <span className='ell'>...</span>
               </span>
             </div>
