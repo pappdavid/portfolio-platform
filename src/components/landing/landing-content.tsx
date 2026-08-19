@@ -466,7 +466,11 @@ export function LandingContent({
                 <p className='hero-role'>AI solution developer</p>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
-                  <Typewriter text={referralView.heroTag} />
+                  {referral ? (
+                    <span>{referralView.heroTag}</span>
+                  ) : (
+                    <Typewriter text={referralView.heroTag} />
+                  )}
                 </div>
 
                 <div className='hero-pill'>

@@ -11,6 +11,7 @@ import { getReferralPersonalization } from '@/lib/referral-context';
 import {
   buildReferralChatContext,
   buildReferralRetrievalQuery,
+  getReferralFeaturedProjectChunks,
   REFERRAL_COOKIE
 } from '@/lib/referral-personalization';
 import {
@@ -127,11 +128,17 @@ export async function POST(req: Request) {
     lastMessage.content,
     referral
   );
-  const relevantProjects = retrieveChunks(
-    retrievalQuery,
+  const featuredProjects = getReferralFeaturedProjectChunks(
     githubProjectsChunks,
-    3
+    referral
   );
+  const featuredSet = new Set(featuredProjects);
+  const semanticProjects = retrieveChunks(
+    retrievalQuery,
+    githubProjectsChunks.filter((chunk) => !featuredSet.has(chunk)),
+    Math.max(0, 3 - featuredProjects.length)
+  );
+  const relevantProjects = [...featuredProjects, ...semanticProjects].slice(0, 3);
 
   if (relevantProjects.length > 0) {
     augmentedContent = `Context from David's reviewed public project corpus:\n${relevantProjects.join('\n---\n')}\n\nUser question: ${lastMessage.content}`;
