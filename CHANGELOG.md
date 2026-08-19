@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026-08-19] — Referral personalization
+
+### Added
+- Referral visits persist their existing `/r/<token>` identity in an HTTP-only cookie after recording the visit.
+- The public landing page resolves referral context server-side and shows the matched company plus optional role/focus metadata.
+- Portfolio chat resolves the same server-side referral context and uses it only to prioritize already-supported factual evidence.
+- Referral creation accepts an optional structured personalization snapshot while remaining compatible with legacy plain-text notes.
+
 ## [2026-05-31] — Portfolio P0: Clerk, Projects, CV
 
 ### Added
