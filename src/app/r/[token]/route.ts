@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
 
 export async function GET(
   req: NextRequest,
@@ -31,5 +32,13 @@ export async function GET(
     country: req.headers.get('x-vercel-ip-country') || null
   });
 
-  return NextResponse.redirect(new URL('/', req.url));
+  const response = NextResponse.redirect(new URL('/', req.url));
+  response.cookies.set(REFERRAL_COOKIE, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30
+  });
+  return response;
 }
