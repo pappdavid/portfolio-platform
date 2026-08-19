@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       hint: error.hint,
       code: error.code
     });
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message, backendHost, details: error.details, hint: error.hint, code: error.code }, { status: 500 });
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
