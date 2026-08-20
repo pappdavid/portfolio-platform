@@ -145,3 +145,16 @@ test('reduced motion is respected and the liquid field can be disabled without h
     assert.ok(await page.getByTestId('voidarch-atlas').isVisible());
   });
 });
+
+
+test('Agent View opens a readable interface instead of raw JSON', async () => {
+  await withPage(async (page) => {
+    await page.goto(`${baseURL}/voidarch`, { waitUntil: 'networkidle' });
+    await page.getByRole('link', { name: /agent view/i }).click();
+    await page.waitForURL(/\/voidarch\/agent(?:$|\?)/);
+    assert.match(await page.getByRole('heading', { level: 1 }).innerText(), /agent-readable architecture/i);
+    assert.ok(await page.getByRole('link', { name: 'RAW ARCHITECTURE JSON', exact: true }).isVisible());
+    assert.ok(await page.getByRole('link', { name: 'RAW EVIDENCE JSON', exact: true }).isVisible());
+    assert.match((await page.locator('body').innerText()).toUpperCase(), /MACHINE-READABLE/);
+  });
+});

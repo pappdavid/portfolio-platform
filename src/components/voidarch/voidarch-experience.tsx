@@ -29,7 +29,7 @@ export function VoidArchExperience() {
           <nav className={styles.nav} aria-label='VoidArch sections'>
             <a href='#architecture'>ARCHITECTURE</a>
             <a href='#evidence'>EVIDENCE</a>
-            <a href='/voidarch/architecture.json'>AGENT VIEW</a>
+            <a href='/voidarch/agent'>AGENT VIEW</a>
           </nav>
           <div className={styles.statusCluster}>
             <button
