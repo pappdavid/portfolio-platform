@@ -69,50 +69,56 @@ test('atlas uses one fixed world coordinate system across viewport resize', asyn
   });
 });
 
-test('lower architecture sections use distinct visual systems and expose planned scope', async () => {
+test('lower page is project-specific, evidence-dense, and avoids fake demo metrics', async () => {
   await withPage(async (page) => {
     await page.goto(`${baseURL}/voidarch`, { waitUntil: 'networkidle' });
     const text = (await page.locator('body').innerText()).toUpperCase();
     for (const phrase of [
-      'MEMORY HAS TOPOLOGY',
-      'A REQUEST BECOMES A ROUTE',
-      'AN OPERATIONAL RUNWAY',
-      'SELF-IMPROVEMENT AS A CONTROLLED LOOP',
-      'THE CORE HAS AN ECOSYSTEM',
-      'PAST WORK BECOMES AN ARCHITECTURAL EXTRACTION PATH'
+      'THE ARCHITECTURE IS ALREADY SPLIT INTO REAL PROJECTS',
+      'A TASK CROSSES SIX CONCRETE BOUNDARIES',
+      'CONTEXT IS SIX SYSTEMS BEFORE IT IS A PROMPT',
+      'STUDIO IS A DAEMON BEFORE IT IS A DASHBOARD',
+      'SECURITY WORK BECAME POLICY PRIMITIVES',
+      'PRODUCT EXPERIMENTS EXPOSED THE SAME INFRASTRUCTURE PROBLEMS',
+      'WHAT IS STILL MISSING'
     ]) assert.match(text, new RegExp(phrase));
-    assert.match(text, /PLANNED/);
-    assert.match(text, /FUTURE/);
-    assert.match(text, /EXTERNAL/);
+    for (const fact of ['SURREALKV', 'BM25', 'TREE-SITTER', 'PREPAREDCONTEXTREQUEST', 'DAEMON-OWNED PTY', 'TAURI', 'REQUIRES_APPROVAL']) {
+      assert.match(text, new RegExp(fact));
+    }
+    assert.doesNotMatch(text, /€0\.18|GROUNDING 93%|QUEUE 12/);
   });
 });
 
-test('memory view is interactive and switches lifecycle detail', async () => {
+test('Context internals are interactive and expose actual commands and storage layers', async () => {
   await withPage(async (page) => {
     await page.goto(`${baseURL}/voidarch`, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /^Episodic$/ }).click();
-    const detail = page.getByTestId('memory-detail');
-    assert.match(await detail.innerText(), /What happened during a run/i);
-    assert.match(await detail.innerText(), /TRACE-LINKED/i);
+    await page.getByRole('button', { name: /^Code graph$/ }).click();
+    const detail = page.getByTestId('context-detail');
+    assert.match(await detail.innerText(), /Tree-sitter/i);
+    assert.match(await detail.innerText(), /graph build/i);
+    await page.getByRole('button', { name: /^Vectors$/ }).click();
+    assert.match(await detail.innerText(), /MiniLM/i);
   });
 });
 
-test('Studio and ecosystem graphs each own their labels and geometry in one SVG', async () => {
+test('Studio and policy diagrams each own labels and geometry in one SVG', async () => {
   await withPage(async (page) => {
     await page.goto(`${baseURL}/voidarch`, { waitUntil: 'networkidle' });
     const studio = page.getByTestId('studio-topology');
-    assert.equal(await studio.getAttribute('viewBox'), '0 0 720 430');
-    const studioText = await studio.textContent();
-    assert.match(studioText ?? '', /ORCHESTRATOR/);
-    assert.match(studioText ?? '', /VERIFY/);
-    assert.match(studioText ?? '', /ARTIFACT \/ STATE DELTA/);
+    assert.equal(await studio.getAttribute('viewBox'), '0 0 900 520');
+    const studioText = ((await studio.textContent()) ?? '').toUpperCase();
+    assert.match(studioText, /DAEMON/);
+    assert.match(studioText, /PTY SESSIONS/);
+    assert.match(studioText, /TAURI SHELL/);
+    assert.match(studioText, /WORKTREES/);
 
-    const ecosystem = page.getByTestId('ecosystem-boundary');
-    assert.equal(await ecosystem.getAttribute('viewBox'), '0 0 1180 650');
-    const ecoText = ((await ecosystem.textContent()) ?? '').toUpperCase();
-    assert.match(ecoText, /HERMES/);
-    assert.match(ecoText, /MCP/);
-    assert.match(ecoText, /VOID-ARCH/);
+    const policy = page.getByTestId('policy-flow');
+    assert.equal(await policy.getAttribute('viewBox'), '0 0 1000 360');
+    const policyText = ((await policy.textContent()) ?? '').toUpperCase();
+    assert.match(policyText, /ALLOW/);
+    assert.match(policyText, /BLOCK/);
+    assert.match(policyText, /REQUIRES_APPROVAL/);
+    assert.match(policyText, /APPROVEOPS/);
   });
 });
 
@@ -126,8 +132,8 @@ test('atlas nodes are keyboard operable and mobile layout does not overflow the 
     await page.getByTestId('voidarch-inspector').waitFor();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     assert.ok(overflow <= 1, `horizontal overflow: ${overflow}px`);
-    await page.getByRole('heading', { name: /memory has topology/i }).scrollIntoViewIfNeeded();
-    assert.ok(await page.getByRole('button', { name: /^Episodic$/ }).isVisible());
+    await page.getByRole('heading', { name: /context is six systems/i }).scrollIntoViewIfNeeded();
+    assert.ok(await page.getByRole('button', { name: /^Code graph$/ }).isVisible());
   });
 });
 
@@ -155,6 +161,9 @@ test('Agent View opens a readable interface instead of raw JSON', async () => {
     assert.match(await page.getByRole('heading', { level: 1 }).innerText(), /agent-readable architecture/i);
     assert.ok(await page.getByRole('link', { name: 'RAW ARCHITECTURE JSON', exact: true }).isVisible());
     assert.ok(await page.getByRole('link', { name: 'RAW EVIDENCE JSON', exact: true }).isVisible());
-    assert.match((await page.locator('body').innerText()).toUpperCase(), /MACHINE-READABLE/);
+    const agentText = (await page.locator('body').innerText()).toUpperCase();
+    assert.match(agentText, /MACHINE-READABLE/);
+    assert.match(agentText, /PROJECT PROVENANCE/);
+    assert.match(agentText, /VOIDARCH CONTEXT/);
   });
 });

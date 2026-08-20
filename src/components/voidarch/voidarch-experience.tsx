@@ -27,8 +27,9 @@ export function VoidArchExperience() {
             <span>VA</span> / VOIDARCH
           </div>
           <nav className={styles.nav} aria-label='VoidArch sections'>
-            <a href='#architecture'>ARCHITECTURE</a>
-            <a href='#evidence'>EVIDENCE</a>
+            <a href='#systems'>SYSTEMS</a>
+            <a href='#flow'>FLOW</a>
+            <a href='#labs'>LABS</a>
             <a href='/voidarch/agent'>AGENT VIEW</a>
           </nav>
           <div className={styles.statusCluster}>
@@ -49,14 +50,15 @@ export function VoidArchExperience() {
           <div className={styles.kicker}>SYSTEMS AROUND THE MODEL</div>
           <h1>Context, route, execute, remember.</h1>
           <p>
-            VoidArch is the systems layer extracted from repeated AI projects:
-            persistent context, explicit routing, observable execution, durable
-            evidence, and a constrained path toward systems that can improve
-            their own infrastructure.
+            VoidArch is a set of working systems for repository context,
+            capability routing, local agent execution, safety policy, and
+            evidence. Context packages repository state; Router resolves trusted
+            execution paths; Studio owns the processes that actually run them.
           </p>
           <div className={styles.thesis}>
-            <strong>The atlas is the homepage.</strong> Follow the architecture,
-            then drop beneath each claim into evidence.
+            <strong>The atlas is the index.</strong> Every major claim below
+            maps to a repository, a command surface, a deterministic contract,
+            or a verification path.
           </div>
         </div>
 

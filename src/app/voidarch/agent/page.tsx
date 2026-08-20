@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {
   VOIDARCH_EVIDENCE,
   VOIDARCH_NODES,
+  VOIDARCH_PROJECTS,
   VOIDARCH_RESEARCH_ROUTE
 } from '@/lib/voidarch/architecture';
 import styles from './agent.module.css';
@@ -97,8 +98,45 @@ export default function VoidArchAgentPage() {
         </div>
       </section>
 
+      <section className={styles.projects} aria-labelledby='projects-title'>
+        <div className={styles.sectionLabel}>03 / PROJECT PROVENANCE</div>
+        <div className={styles.contractHeader}>
+          <h2 id='projects-title'>Implementation behind the contract.</h2>
+          <p>
+            Subsystems are backed by bounded projects with explicit
+            verification. Private repositories expose capability summaries
+            without publishing source locations.
+          </p>
+        </div>
+        <div className={styles.projectList}>
+          {VOIDARCH_PROJECTS.map((project) => (
+            <article key={project.id}>
+              <div>
+                <span>{project.kind.toUpperCase()}</span>
+                <h3>{project.title}</h3>
+                <b>{project.maturity}</b>
+              </div>
+              <p>{project.summary}</p>
+              <ul>
+                {project.implemented.slice(0, 3).map((fact) => (
+                  <li key={fact}>{fact}</li>
+                ))}
+              </ul>
+              <footer>
+                <span>{project.visibility.toUpperCase()}</span>
+                {project.repository ? (
+                  <a href={project.repository}>REPOSITORY ↗</a>
+                ) : (
+                  <em>SOURCE LOCATION NOT EXPOSED</em>
+                )}
+              </footer>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className={styles.route} aria-labelledby='route-title'>
-        <div className={styles.sectionLabel}>03 / CANONICAL ROUTE</div>
+        <div className={styles.sectionLabel}>04 / CANONICAL ROUTE</div>
         <h2 id='route-title'>research_query</h2>
         <ol>
           {VOIDARCH_RESEARCH_ROUTE.map((step, index) => (
@@ -112,7 +150,7 @@ export default function VoidArchAgentPage() {
       </section>
 
       <section className={styles.evidence} aria-labelledby='evidence-title'>
-        <div className={styles.sectionLabel}>04 / EVIDENCE INDEX</div>
+        <div className={styles.sectionLabel}>05 / EVIDENCE INDEX</div>
         <h2 id='evidence-title'>Evidence beneath the claim.</h2>
         <div className={styles.evidenceColumns}>
           {Object.entries(VOIDARCH_EVIDENCE).map(([group, items]) => (

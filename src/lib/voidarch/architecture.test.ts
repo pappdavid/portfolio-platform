@@ -160,3 +160,86 @@ test('canonical research route references valid nodes and edges and ends in evid
     if (step.edge) assert.ok(edgeIds.has(step.edge), step.edge);
   }
 });
+
+test('project spine exposes concrete core and supporting implementations', async () => {
+  const mod = await loadArchitecture();
+  const projects = mod.VOIDARCH_PROJECTS as
+    | Array<{
+        id: string;
+        visibility: string;
+        implemented: string[];
+        verification: string[];
+      }>
+    | undefined;
+  assert.ok(Array.isArray(projects), 'VOIDARCH_PROJECTS should exist');
+  const ids = new Set(projects.map((project) => project.id));
+  for (const id of ['context', 'router', 'studio', 'agentsec', 'saas-core']) {
+    assert.ok(ids.has(id), `missing project ${id}`);
+  }
+  for (const project of projects) {
+    assert.ok(
+      project.implemented.length >= 3,
+      `${project.id} needs concrete implementation facts`
+    );
+    assert.ok(
+      project.verification.length >= 1,
+      `${project.id} needs verification evidence`
+    );
+  }
+  assert.equal(
+    projects.find((project) => project.id === 'router')?.visibility,
+    'private'
+  );
+});
+
+test('core project data contains repository-specific implementation facts', async () => {
+  const mod = await loadArchitecture();
+  const text = JSON.stringify(mod.VOIDARCH_PROJECTS);
+  for (const fact of [
+    'SurrealKV',
+    'BM25',
+    'Tree-sitter',
+    'PreparedContextRequest',
+    'daemon-owned PTY',
+    'WebSocket',
+    'Tauri',
+    'requires_approval'
+  ])
+    assert.match(text, new RegExp(fact, 'i'), fact);
+});
+
+test('applied lab signals connect experiments to extracted infrastructure primitives', async () => {
+  const mod = await loadArchitecture();
+  const signals = mod.VOIDARCH_LAB_SIGNALS as
+    | Array<{
+        domain: string;
+        recurringSystems: string;
+        extractedPrimitive: string;
+      }>
+    | undefined;
+  assert.ok(Array.isArray(signals), 'VOIDARCH_LAB_SIGNALS should exist');
+  assert.ok(signals.length >= 6);
+  const text = JSON.stringify(signals).toLowerCase();
+  for (const term of [
+    'code review',
+    'documentation',
+    'scope',
+    'technical debt',
+    'cloud',
+    'proposal'
+  ]) {
+    assert.match(text, new RegExp(term));
+  }
+});
+
+test('architecture manifest includes project provenance and lab signals', async () => {
+  const mod = await loadArchitecture();
+  const manifest = (mod.getArchitectureManifest as () => unknown)() as {
+    projects?: unknown[];
+    labSignals?: unknown[];
+  };
+  assert.ok(Array.isArray(manifest.projects) && manifest.projects.length >= 5);
+  assert.ok(
+    Array.isArray(manifest.labSignals) && manifest.labSignals.length >= 6
+  );
+});
