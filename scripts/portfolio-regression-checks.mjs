@@ -15,6 +15,7 @@ function read(path) {
 
 const RECRUITER_FACING = [
   'src/components/landing/landing-content.tsx',
+  'src/lib/job-type.ts',
   'src/components/projects/projects-content.tsx',
   'src/components/saas-projects/saas-projects-content.tsx',
   'src/data/github-projects-rag.json',
