@@ -3,22 +3,22 @@
     {
       "slug": "self-interview",
       "repo": "github.com/pappdavid/self-interview",
-      "commit": "6cd8820",
-      "built_at": "2026-08-25T17:20:00Z",
+      "commit": "b41c7ba",
+      "built_at": "2026-08-25T17:13:56Z",
       "entry": "index.html"
     },
     {
       "slug": "task-to-flow",
       "repo": "github.com/pappdavid/task-to-flow",
       "commit": "1edc1d8",
-      "built_at": "2026-08-25T17:30:00Z",
+      "built_at": "2026-08-25T17:13:56Z",
       "entry": "index.html"
     },
     {
       "slug": "rolefit-quiz",
       "repo": "github.com/pappdavid/rolefit-quiz",
       "commit": "27cf718",
-      "built_at": "2026-08-25T18:12:00Z",
+      "built_at": "2026-08-25T17:13:56Z",
       "entry": "index.html"
     }
   ]
