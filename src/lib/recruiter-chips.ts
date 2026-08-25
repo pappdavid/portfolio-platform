@@ -18,6 +18,37 @@ export interface RecruiterChip {
   answer: string;
 }
 
+/**
+ * Demo-awareness chips, shown only on role pages (demoChips on
+ * JobTypeSiteView). Tapping one sends a deterministic internal token that
+ * src/app/api/chat/route.ts resolves into an SSE `card` frame BEFORE any
+ * retrieval or model call — see src/lib/assistant-intents.ts. The answers
+ * here are the plain-text fallbacks rendered when a card frame is not
+ * available (e.g. older clients); they carry no new facts.
+ */
+export const DEMO_CHIPS: Record<JobTypeId, RecruiterChip[]> = {
+  'ai-engineering': [
+    { question: 'Interview him right now', answer: 'interview:start' },
+    { question: 'Which role fits him best?', answer: 'quiz:start' },
+    { question: 'See a task become a workflow', answer: 'flow:example' }
+  ],
+  'ai-integration': [
+    { question: 'Interview him right now', answer: 'interview:start' },
+    { question: 'Which role fits him best?', answer: 'quiz:start' },
+    { question: 'See a task become a workflow', answer: 'flow:example' }
+  ],
+  automation: [
+    { question: 'Interview him right now', answer: 'interview:start' },
+    { question: 'Which role fits him best?', answer: 'quiz:start' },
+    { question: 'See a task become a workflow', answer: 'flow:example' }
+  ],
+  'product-engineering': [
+    { question: 'Interview him right now', answer: 'interview:start' },
+    { question: 'Which role fits him best?', answer: 'quiz:start' },
+    { question: 'See a task become a workflow', answer: 'flow:example' }
+  ]
+};
+
 export const RECRUITER_CHIPS: Record<JobTypeId, RecruiterChip[]> = {
   'ai-engineering': [
     {

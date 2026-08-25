@@ -10,7 +10,7 @@
 
 import { buildReferralPresentation } from '@/lib/referral-personalization';
 import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
-import { getRecruiterChipQuestions } from '@/lib/recruiter-chips';
+import { getRecruiterChipQuestions, DEMO_CHIPS } from '@/lib/recruiter-chips';
 
 export const JOB_TYPE_QUERY_PARAM = 'role';
 
@@ -270,6 +270,11 @@ export interface JobTypeSiteView {
   suggestions: string[];
   /** Non-technical recruiter chip questions (rendered after suggestions). */
   recruiterChips: string[];
+  /**
+   * Demo-awareness chips (question + internal token) for role pages only;
+   * empty on the general site so `/` stays byte-identical.
+   */
+  demoChips: { question: string; answer: string }[];
   /** Warmer recruiter-facing greeting on role pages; null on the general site. */
   recruiterGreeting: string | null;
 }
@@ -300,6 +305,7 @@ export function getJobTypeSiteView(
       chatContextLabel: base.chatContextLabel,
       suggestions: DEFAULT_SUGGESTIONS,
       recruiterChips: [],
+      demoChips: [],
       recruiterGreeting: null
     };
   }
@@ -318,6 +324,7 @@ export function getJobTypeSiteView(
       fromReferral?.chatContextLabel ?? jobType.chatContextLabel,
     suggestions: jobType.suggestions,
     recruiterChips: jobType.recruiterChips,
+    demoChips: DEMO_CHIPS[jobType.id],
     recruiterGreeting: RECRUITER_GREETINGS[jobType.id] ?? null
   };
 }

@@ -26,6 +26,15 @@ import {
   QuotaExhaustedError
 } from '@/lib/demo-quota';
 import { findRecruiterChipAnswer } from '@/lib/recruiter-chips';
+import {
+  resolveDemoIntent,
+  INTERVIEW_SCRIPT,
+  QUIZ_SCRIPT,
+  FLOW_EXAMPLE,
+  ROLE_GROUP_LABELS,
+  scoreQuiz,
+  type DemoIntent
+} from '@/lib/assistant-intents';
 
 async function optionalUserId() {
   if (!process.env.CLERK_SECRET_KEY) return null;
@@ -68,6 +77,138 @@ Accuracy rules — these override everything else:
 
 If the user asks about David's availability or status for hire (e.g. 'is David available to start?'), explicitly return: available full-time; NL/EU work authorization (no sponsorship required); based in the Rotterdam area, NL (remote/hybrid/on-site); and a direct mailto link (mailto:contact@davidpapp.dev).
 Keep normal answers under 180 words. Use concise Markdown when structure helps. If the response includes a file structure, tech stack, or code snippet, format it using markdown code blocks.`;
+
+/**
+ * Build the SSE stream for a deterministic demo-intent response. Emits one
+ * `card` frame plus a short delta of framing text — no retrieval, no model
+ * call, no network. Everything rendered comes from assistant-intents.ts.
+ */
+function demoIntentStream(intent: DemoIntent): Response {
+  const encoder = new TextEncoder();
+  let frames: object[];
+
+  if (intent.kind === 'interview') {
+    const step = INTERVIEW_SCRIPT[intent.step];
+    const nextStep = intent.step + 1;
+    frames = [
+      {
+        type: 'card',
+        card: 'interview',
+        payload: {
+          step: nextStep,
+          totalSteps: INTERVIEW_SCRIPT.length,
+          question: step.question,
+          answer: step.answer,
+          receipt: step.receipt.map((label) => ({ label })),
+          done: false
+        }
+      },
+      {
+        type: 'delta',
+        content:
+          nextStep < INTERVIEW_SCRIPT.length
+            ? `\n\nWant the next question? Tap **continue** (question ${
+                nextStep + 1
+              } of ${INTERVIEW_SCRIPT.length}).`
+            : `\n\nThat's the whole interview — anything else, just ask, or email contact@davidpapp.dev.`
+      }
+    ];
+  } else if (intent.kind === 'quiz') {
+    const index = intent.answered.length;
+    const question = QUIZ_SCRIPT[index];
+
+    if (!question) {
+      // Quiz complete: score deterministically and emit the result card.
+      const winner = scoreQuiz(intent.answered);
+      frames = [
+        {
+          type: 'card',
+          card: 'quiz',
+          payload: {
+            questionIndex: QUIZ_SCRIPT.length,
+            totalQuestions: QUIZ_SCRIPT.length,
+            question: null,
+            choices: [],
+            answered: intent.answered,
+            result: { roleGroup: winner, label: ROLE_GROUP_LABELS[winner] }
+          }
+        },
+        {
+          type: 'delta',
+          content: `Based on your answers, **${ROLE_GROUP_LABELS[winner]}** looks like the closest match — one signal among several, not a verdict. The "Which role fits him best?" chip on a role page restarts it, or ask me anything directly.`
+        }
+      ];
+    } else {
+      const progress =
+        index > 0
+          ? intent.answered
+              .map(
+                (id) =>
+                  QUIZ_SCRIPT.find((q) =>
+                    q.choices.some((c) => c.id === id)
+                  )?.choices.find((c) => c.id === id)?.label ?? id
+              )
+              .map((label) => `· ${label}`)
+              .join('\n') + '\n\n'
+          : '';
+      frames = [
+        {
+          type: 'card',
+          card: 'quiz',
+          payload: {
+            questionIndex: index + 1,
+            totalQuestions: QUIZ_SCRIPT.length,
+            question: question.question,
+            choices: question.choices,
+            answered: intent.answered,
+            result: null
+          }
+        },
+        {
+          type: 'delta',
+          content: `${progress}Pick whichever answer fits best.`
+        }
+      ];
+    }
+  } else {
+    frames = [
+      {
+        type: 'card',
+        card: 'flow',
+        payload: {
+          nodes: FLOW_EXAMPLE.nodes,
+          edges: FLOW_EXAMPLE.edges,
+          summary: FLOW_EXAMPLE.summary
+        }
+      },
+      {
+        type: 'delta',
+        content:
+          'This is a fixed illustrative example. To assemble flows from your own task descriptions, open the interactive version at /demos/task-to-flow/index.html.'
+      }
+    ];
+  }
+
+  const readable = new ReadableStream({
+    start(controller) {
+      for (const frame of frames) {
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify(frame)}\n\n`)
+        );
+      }
+      controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+      controller.close();
+    }
+  });
+
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive'
+    }
+  });
+}
 
 export async function POST(req: Request) {
   const userId = await optionalUserId();
@@ -114,6 +255,13 @@ export async function POST(req: Request) {
       { error: 'messages is required' },
       { status: 400 }
     );
+  }
+
+  // Deterministic demo intents (interview / quiz / flow cards) resolve
+  // BEFORE retrieval or any model call — zero network, zero keys.
+  const demoIntent = resolveDemoIntent(messages[messages.length - 1].content);
+  if (demoIntent) {
+    return demoIntentStream(demoIntent);
   }
 
   const lastMessage = messages[messages.length - 1];

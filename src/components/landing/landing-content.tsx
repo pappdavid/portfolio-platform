@@ -6,6 +6,8 @@ import {
   MarkDownRenderer,
   ThemeProvider as CrayonThemeProvider
 } from '@crayonai/react-ui';
+import { DemoCard } from '@/lib/assistant-intents';
+import { DemoCards } from '@/components/landing/demo-cards';
 import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
 import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
 import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
@@ -1262,7 +1264,17 @@ type ChatMsg = {
   text: string;
   isCustomCard?: boolean;
   evidence?: ChatEvidence[];
+  demoCard?: DemoCard;
 };
+
+/** True for internal tokens that must not render as raw user bubbles. */
+function isInternalDemoToken(text: string): boolean {
+  return (
+    /^interview:(start|step:\d{1,2})$/.test(text) ||
+    /^quiz:(start|next|answer(:[a-z-]+)+)$/.test(text) ||
+    text === 'flow:example'
+  );
+}
 
 function EvidenceCards({ items }: { items: ChatEvidence[] }) {
   return (
@@ -1330,12 +1342,18 @@ function ContactSection({
   }, [msgs, typing]);
 
   const send = useCallback(
-    async (text: string) => {
+    async (text: string, displayLabel?: string) => {
       const q = text.trim().slice(0, 500);
       if (!q || typing) return;
 
-      // Add user message
-      setMsgs((m) => [...m, { role: 'user', text: q }]);
+      // Internal demo tokens drive deterministic card flows; never render
+      // them as raw user bubbles (labelled variant gets a friendly label).
+      const hideUserBubble = !displayLabel && isInternalDemoToken(q);
+      const userText = displayLabel ?? q;
+
+      if (!hideUserBubble) {
+        setMsgs((m) => [...m, { role: 'user', text: userText }]);
+      }
       setVal('');
       setTyping(true);
 
@@ -1382,7 +1400,12 @@ function ContactSection({
                   try {
                     const parsed = JSON.parse(payload) as
                       | { type: 'evidence'; items: ChatEvidence[] }
-                      | { type: 'delta'; content: string };
+                      | { type: 'delta'; content: string }
+                      | {
+                          type: 'card';
+                          card: DemoCard['kind'];
+                          payload: DemoCard;
+                        };
                     if (parsed.type === 'evidence' && parsed.items.length > 0) {
                       setMsgs((prev) => {
                         const updated = [...prev];
@@ -1391,6 +1414,20 @@ function ContactSection({
                           text: '',
                           isCustomCard: true,
                           evidence: parsed.items
+                        });
+                        return updated;
+                      });
+                    } else if (
+                      parsed.type === 'card' &&
+                      parsed.payload?.kind === parsed.card
+                    ) {
+                      setMsgs((prev) => {
+                        const updated = [...prev];
+                        updated.splice(Math.max(0, updated.length - 1), 0, {
+                          role: 'bot',
+                          text: '',
+                          isCustomCard: true,
+                          demoCard: parsed.payload
                         });
                         return updated;
                       });
@@ -1479,7 +1516,9 @@ Email is fastest.`}
 
         <div className='chat-body' ref={bodyRef}>
           {msgs.map((m, i) =>
-            m.isCustomCard && m.evidence ? (
+            m.isCustomCard && m.demoCard ? (
+              <DemoCards key={i} card={m.demoCard} onSend={send} />
+            ) : m.isCustomCard && m.evidence ? (
               <EvidenceCards key={i} items={m.evidence} />
             ) : (
               <div key={i} className={cn('chat-msg', m.role)}>
@@ -1534,6 +1573,24 @@ Email is fastest.`}
                     className='max-w-full cursor-pointer truncate border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-left text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
                   >
                     ▸ {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {siteView.demoChips.length > 0 && (
+            <div className='flex flex-col gap-1.5'>
+              <span className='text-[9px] tracking-wider text-[var(--dp-text-dim)] uppercase'>
+                interactive demos
+              </span>
+              <div className='flex flex-wrap gap-1.5'>
+                {siteView.demoChips.map((chip) => (
+                  <button
+                    key={chip.answer}
+                    onClick={() => send(chip.answer, chip.question)}
+                    className='max-w-full cursor-pointer truncate border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-left text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
+                  >
+                    ★ {chip.question}
                   </button>
                 ))}
               </div>
