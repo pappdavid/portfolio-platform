@@ -17,10 +17,7 @@ test('resolves every canonical id, label, and common alias', () => {
     assert.equal(resolveJobType(profile.id)?.id, profile.id);
     assert.equal(resolveJobType(profile.label)?.id, profile.id);
     // URL-style spelling with spaces instead of dashes.
-    assert.equal(
-      resolveJobType(profile.id.replace(/-/g, ' '))?.id,
-      profile.id
-    );
+    assert.equal(resolveJobType(profile.id.replace(/-/g, ' '))?.id, profile.id);
   }
   assert.equal(resolveJobType('ml engineer')?.id, 'ai-engineering');
   assert.equal(resolveJobType('erp')?.id, 'ai-integration');
@@ -58,7 +55,9 @@ test('search-param resolution reads the role param and tolerates arrays', () => 
 });
 
 test('every profile features only canonical project names', () => {
-  const canonical = new Set(CANONICAL_PROJECT_NAMES.map((n) => n.toLowerCase()));
+  const canonical = new Set(
+    CANONICAL_PROJECT_NAMES.map((n) => n.toLowerCase())
+  );
   for (const profile of Object.values(JOB_TYPES)) {
     assert.ok(profile.featuredProjects.length > 0, profile.id);
     for (const name of profile.featuredProjects) {
@@ -70,13 +69,14 @@ test('every profile features only canonical project names', () => {
   }
 });
 
-test('general site (no profile, no referral) reproduces today’s copy exactly', () =>
-{
+test('general site (no profile, no referral) reproduces today’s copy exactly', () => {
   const view = getJobTypeSiteView(null, null);
   assert.equal(view.profile, null);
   assert.equal(view.heroRole, DEFAULT_HERO_ROLE);
   assert.equal(view.focusLine, DEFAULT_FOCUS_LINE);
   assert.deepEqual(view.suggestions, DEFAULT_SUGGESTIONS);
+  assert.deepEqual(view.recruiterChips, []);
+  assert.equal(view.recruiterGreeting, null);
   assert.match(view.heroTag, /Building AI-first solutions/);
   assert.equal(view.projectsCta, '[projects]');
 });
@@ -90,6 +90,34 @@ test('a job-type profile shapes hero, focus, chat, and suggestions without refer
   assert.match(view.chatGreeting, /automation roles/);
   assert.match(view.chatContextLabel, /automation profile/);
   assert.ok(!view.suggestions.includes(DEFAULT_SUGGESTIONS[0]));
+  assert.ok(view.recruiterChips.length > 0);
+  assert.match(view.recruiterGreeting ?? '', /David's assistant/);
+});
+
+test('every job-type profile exposes recruiter chips and a warmer recruiter greeting', () => {
+  for (const profile of Object.values(JOB_TYPES)) {
+    const view = getJobTypeSiteView(profile, null);
+    assert.ok(
+      Array.isArray(view.recruiterChips),
+      `${profile.id}: recruiterChips must be an array`
+    );
+    assert.ok(
+      view.recruiterChips.length > 0,
+      `${profile.id}: recruiterChips must not be empty`
+    );
+    assert.ok(
+      view.recruiterChips.length <= 6,
+      `${profile.id}: recruiterChips must not exceed 6`
+    );
+    assert.ok(
+      view.recruiterGreeting && view.recruiterGreeting.length > 0,
+      `${profile.id}: recruiterGreeting must be set`
+    );
+  }
+  // General-site copy stays byte-identical.
+  const general = getJobTypeSiteView(null, null);
+  assert.deepEqual(general.recruiterChips, []);
+  assert.equal(general.recruiterGreeting, null);
 });
 
 test('referral copy stays the most specific override on top of a job-type profile', () => {
@@ -146,7 +174,10 @@ test('prioritization: referral tier first, then job type, then curated order pre
 
   // Unknown featured names are ignored and ties keep original order.
   const unknownOnly = prioritizeProjects(projects, {
-    jobType: { ...JOB_TYPES.automation, featuredProjects: ['Nonexistent Thing'] }
+    jobType: {
+      ...JOB_TYPES.automation,
+      featuredProjects: ['Nonexistent Thing']
+    }
   });
   assert.deepEqual(unknownOnly, projects);
 });

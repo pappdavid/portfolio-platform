@@ -10,6 +10,7 @@
 
 import { buildReferralPresentation } from '@/lib/referral-personalization';
 import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
+import { getRecruiterChipQuestions } from '@/lib/recruiter-chips';
 
 export const JOB_TYPE_QUERY_PARAM = 'role';
 
@@ -38,8 +39,10 @@ export interface JobTypeProfile {
   /** Assistant greeting and status chip for this profile. */
   chatGreeting: string;
   chatContextLabel: string;
-  /** Chat suggestion chips. */
+  /** Technical chat suggestion chips. */
   suggestions: string[];
+  /** Non-technical recruiter-language chips (rendered after suggestions). */
+  recruiterChips: string[];
   /** Canonical project names moved to the top of the filesystem table. */
   featuredProjects: string[];
 }
@@ -51,6 +54,18 @@ export const CANONICAL_PROJECT_NAMES = [
   'AgentSec Suite',
   'saas-core'
 ] as const;
+
+/** Per-profile, non-technical recruiter greeting lines. */
+const RECRUITER_GREETINGS: Record<JobTypeId, string> = {
+  'ai-engineering':
+    "Hi! I'm David's assistant — tuned for AI engineering roles. Ask me anything, or tap a question below to get started.",
+  'ai-integration':
+    "Hi! I'm David's assistant — tuned for AI solutions & integration roles. Ask me anything, or tap a question below to get started.",
+  automation:
+    "Hi! I'm David's assistant — tuned for automation roles. Ask me anything, or tap a question below to get started.",
+  'product-engineering':
+    "Hi! I'm David's assistant — tuned for product engineering roles. Ask me anything, or tap a question below to get started."
+};
 
 export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
   'ai-engineering': {
@@ -71,8 +86,9 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'what LLM work has David done professionally?',
       'how does the retrieval in this assistant work?',
       'tell me about VoidArch Context',
-      "what ML fundamentals does David study at VU?"
+      'what ML fundamentals does David study at VU?'
     ],
+    recruiterChips: getRecruiterChipQuestions('ai-engineering'),
     featuredProjects: ['VoidArch Context', 'VoidArch Studio', 'AgentSec Suite']
   },
   'ai-integration': {
@@ -84,7 +100,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Taking AI into ERP-integrated business systems — discovery, solution design, delivery.',
     focusLine: 'erp integrations · llm apis · solution design · delivery',
     pitch:
-      "Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems — 20+ delivered websites/webshops, three internal systems, one user-facing platform, and two ERP/AI integration projects with direct involvement in discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service cut its LLM API costs by roughly 40%.",
+      'Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems — 20+ delivered websites/webshops, three internal systems, one user-facing platform, and two ERP/AI integration projects with direct involvement in discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service cut its LLM API costs by roughly 40%.',
     projectsCta: '[delivery case studies]',
     chatGreeting:
       'Session active. Tuned for solutions and integration roles — ask how David runs an ERP + AI integration project or what he delivered at WEBINFORM.',
@@ -95,6 +111,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'which stack does David deliver with?',
       'is David available for full-time work?'
     ],
+    recruiterChips: getRecruiterChipQuestions('ai-integration'),
     featuredProjects: ['saas-core', 'VoidArch Context', 'AgentSec Suite']
   },
   automation: {
@@ -109,7 +126,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Tuned for automation roles: professional work spans APIs, backend logic, and automation for web applications and ERP-integrated systems, plus Playwright-based pre-release testing at 4iG. In the lab, the AgentSec hook pack gates Claude Code and Codex tool calls with safe-command fast paths and observe/prompt/enforce modes, and saas-core turns typed presets into validated builds through scripted CI workflows.',
     projectsCta: '[automation work]',
     chatGreeting:
-      "Session active. Tuned for automation roles — ask what David has automated in client delivery or how his hook pack gates agent tool calls.",
+      'Session active. Tuned for automation roles — ask what David has automated in client delivery or how his hook pack gates agent tool calls.',
     chatContextLabel: 'context: reviewed_kb + automation profile',
     suggestions: [
       'what has David automated in client delivery?',
@@ -117,6 +134,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       "what's in David's automation stack?",
       'tell me about ApproveOps'
     ],
+    recruiterChips: getRecruiterChipQuestions('automation'),
     featuredProjects: ['AgentSec Suite', 'saas-core', 'VoidArch Studio']
   },
   'product-engineering': {
@@ -139,6 +157,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'what does the delivery stack look like?',
       'what did David build at WEBINFORM?'
     ],
+    recruiterChips: getRecruiterChipQuestions('product-engineering'),
     featuredProjects: ['AgentSec Suite', 'saas-core', 'VoidArch Context']
   }
 };
@@ -217,10 +236,10 @@ export function resolveJobType(input: unknown): JobTypeProfile | null {
 }
 
 export function resolveJobTypeFromSearchParams(
-  searchParams: Record<
-    string,
-    string | readonly string[] | undefined
-  > | null | undefined
+  searchParams:
+    | Record<string, string | readonly string[] | undefined>
+    | null
+    | undefined
 ): JobTypeProfile | null {
   if (!searchParams) return null;
   const raw = searchParams[JOB_TYPE_QUERY_PARAM];
@@ -249,6 +268,10 @@ export interface JobTypeSiteView {
   chatGreeting: string;
   chatContextLabel: string;
   suggestions: string[];
+  /** Non-technical recruiter chip questions (rendered after suggestions). */
+  recruiterChips: string[];
+  /** Warmer recruiter-facing greeting on role pages; null on the general site. */
+  recruiterGreeting: string | null;
 }
 
 /**
@@ -275,7 +298,9 @@ export function getJobTypeSiteView(
       roleFocus: base.roleFocus,
       chatGreeting: base.chatGreeting,
       chatContextLabel: base.chatContextLabel,
-      suggestions: DEFAULT_SUGGESTIONS
+      suggestions: DEFAULT_SUGGESTIONS,
+      recruiterChips: [],
+      recruiterGreeting: null
     };
   }
 
@@ -291,7 +316,9 @@ export function getJobTypeSiteView(
     chatGreeting: fromReferral?.chatGreeting ?? jobType.chatGreeting,
     chatContextLabel:
       fromReferral?.chatContextLabel ?? jobType.chatContextLabel,
-    suggestions: jobType.suggestions
+    suggestions: jobType.suggestions,
+    recruiterChips: jobType.recruiterChips,
+    recruiterGreeting: RECRUITER_GREETINGS[jobType.id] ?? null
   };
 }
 
@@ -312,9 +339,8 @@ export function prioritizeProjects<T extends { name: string }>(
   const tierOf = (item: T): number => {
     const name = item.name.toLowerCase();
     const referralIndex =
-      referral?.featuredProjects?.findIndex(
-        (n) => n.toLowerCase() === name
-      ) ?? -1;
+      referral?.featuredProjects?.findIndex((n) => n.toLowerCase() === name) ??
+      -1;
     if (referralIndex !== -1) return referralIndex;
     const jobTypeIndex = jobType
       ? jobType.featuredProjects.findIndex((n) => n.toLowerCase() === name)
@@ -325,8 +351,6 @@ export function prioritizeProjects<T extends { name: string }>(
 
   return [...projects]
     .map((project, index) => ({ project, index }))
-    .sort(
-      (a, b) => tierOf(a.project) - tierOf(b.project) || a.index - b.index
-    )
+    .sort((a, b) => tierOf(a.project) - tierOf(b.project) || a.index - b.index)
     .map(({ project }) => project);
 }

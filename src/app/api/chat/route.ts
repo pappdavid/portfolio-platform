@@ -25,6 +25,7 @@ import {
   DemoExpiredError,
   QuotaExhaustedError
 } from '@/lib/demo-quota';
+import { findRecruiterChipAnswer } from '@/lib/recruiter-chips';
 
 async function optionalUserId() {
   if (!process.env.CLERK_SECRET_KEY) return null;
@@ -118,6 +119,11 @@ export async function POST(req: Request) {
   const lastMessage = messages[messages.length - 1];
   let augmentedContent = lastMessage.content;
 
+  // Non-technical recruiter chip questions get a deterministic, corpus-grounded
+  // answer injected into context so the assistant never hallucinates a response
+  // to concern-type questions (e.g. "Will he fit our team?").
+  const chipAnswer = findRecruiterChipAnswer(lastMessage.content);
+
   const retrievalQuery = buildReferralRetrievalQuery(
     lastMessage.content,
     referral
@@ -130,7 +136,9 @@ export async function POST(req: Request) {
   );
   const evidenceItems = toEvidenceItems(relevantKnowledge);
 
-  if (relevantKnowledge.length > 0) {
+  if (chipAnswer) {
+    augmentedContent = `Verified answer (use this as the basis for your response):\n${chipAnswer}\n\nUser question: ${lastMessage.content}`;
+  } else if (relevantKnowledge.length > 0) {
     augmentedContent = `Context from David's reviewed portfolio knowledge base:\n${formatKnowledgeContext(relevantKnowledge)}\n\nUser question: ${lastMessage.content}`;
   }
 

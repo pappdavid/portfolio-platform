@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { MarkDownRenderer, ThemeProvider as CrayonThemeProvider } from '@crayonai/react-ui';
+import {
+  MarkDownRenderer,
+  ThemeProvider as CrayonThemeProvider
+} from '@crayonai/react-ui';
 import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
 import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
 import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
@@ -122,7 +125,15 @@ const PROJECTS: Project[] = [
     isFlagship: true,
     desc: 'Local-first memory, repo-query, code-graph, vector retrieval, and token-budgeted context packs for coding agents',
     body: 'A standalone, agent-neutral context engine for Claude Code, Codex, and other coding agents. It indexes repository files and documentation into embedded SurrealDB, builds a Tree-sitter code graph, stores durable decisions and lessons, supports local ONNX embeddings, and fuses the available channels into a deterministic token-budgeted context pack. It runs locally without Docker or Python; semantic retrieval requires an explicit embedding pass and the embedded database is single-process.',
-    tech: ['TypeScript', 'SurrealDB', 'Tree-sitter', 'ONNX', 'BM25', 'Claude Code', 'Codex']
+    tech: [
+      'TypeScript',
+      'SurrealDB',
+      'Tree-sitter',
+      'ONNX',
+      'BM25',
+      'Claude Code',
+      'Codex'
+    ]
   },
   {
     name: 'VoidArch Studio',
@@ -131,7 +142,15 @@ const PROJECTS: Project[] = [
     badge: 'wip',
     desc: 'Local orchestration control room for agent sessions, worktrees, runs, routing, hooks, and observability',
     body: 'The active orchestration layer built on VoidArch Context. The current implementation includes a localhost web dashboard, daemon-owned PTY sessions for Claude, Codex, and shell, worktree and run management, session transcripts and resume metadata, safety hooks, and a thin Tauri desktop shell. Studio is in active development and is not presented as a released hosted product.',
-    tech: ['TypeScript', 'Node.js', 'PTY', 'WebSocket', 'xterm.js', 'Tauri', 'Rust']
+    tech: [
+      'TypeScript',
+      'Node.js',
+      'PTY',
+      'WebSocket',
+      'xterm.js',
+      'Tauri',
+      'Rust'
+    ]
   },
   {
     name: 'AgentSec Suite',
@@ -140,16 +159,30 @@ const PROJECTS: Project[] = [
     badge: 'live',
     desc: 'Integrated agent-security suite with prompt scanning, MCP analysis, agent risk mapping, approval workflows, and runtime hooks',
     body: 'A working integrated security dashboard combining PromptShield, MCPGuard, AgentMap, ApproveOps, and the AgentSec hook pack. The deployed suite exposes the four web modules through one interface, while the local hook package gates Claude Code and Codex tool calls. The public component repositories remain linked as independently inspectable evidence; the suite is a portfolio-grade working system, not a claim of universal production protection.',
-    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Node.js', 'Vercel'],
+    tech: [
+      'Next.js',
+      'TypeScript',
+      'Prisma',
+      'Clerk',
+      'Vitest',
+      'Node.js',
+      'Vercel'
+    ],
     liveUrl: 'https://promptshield-cyan.vercel.app',
     image: '/saas-screenshots/promptshield.png',
     componentLinks: [
-        { label: 'PromptShield', url: 'https://github.com/pappdavid/PromptShield' },
-        { label: 'Hook Pack', url: 'https://github.com/pappdavid/agentsec-hook-pack' },
-        { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
-        { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
-        { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
-      ]
+      {
+        label: 'PromptShield',
+        url: 'https://github.com/pappdavid/PromptShield'
+      },
+      {
+        label: 'Hook Pack',
+        url: 'https://github.com/pappdavid/agentsec-hook-pack'
+      },
+      { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
+      { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
+      { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
+    ]
   },
   {
     name: 'saas-core',
@@ -158,7 +191,15 @@ const PROJECTS: Project[] = [
     badge: 'private',
     desc: 'Private modular Next.js product scaffold and factory infrastructure used to generate and validate bounded SaaS builds',
     body: 'A private engineering repository containing a modular Next.js scaffold, typed module and preset planning, environment validation, product rendering scripts, CI workflows, and provider adapters. It is presented as supporting infrastructure rather than a public product or live demo; provider provisioning and generated integrations are described only where the repository implements them.',
-    tech: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Stripe', 'GitHub Actions', 'Vercel']
+    tech: [
+      'Next.js',
+      'TypeScript',
+      'Prisma',
+      'Clerk',
+      'Stripe',
+      'GitHub Actions',
+      'Vercel'
+    ]
   }
 ];
 
@@ -176,8 +217,7 @@ export function LandingContent({
 }) {
   const [active, setActive] = useState('home');
   const scrollRef = useRef<HTMLDivElement>(null);
-  const siteView =
-    view ?? getJobTypeSiteView(null, referral ?? null);
+  const siteView = view ?? getJobTypeSiteView(null, referral ?? null);
   const jobType = siteView.profile;
   const hasContext = Boolean(referral || jobType);
 
@@ -930,9 +970,10 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         I build AI solutions professionally at WEBINFORM — production LLM
         features, APIs, and automation for web applications and ERP-integrated
         systems — and, on my own time, local-first context infrastructure, agent
-        orchestration tooling, and the integrated AgentSec security suite. I&apos;m a BSc AI student at VU Amsterdam and
-        I&apos;m looking for full-time AI engineering, AI solutions,
-        integration, automation, or agent-infrastructure roles.
+        orchestration tooling, and the integrated AgentSec security suite.
+        I&apos;m a BSc AI student at VU Amsterdam and I&apos;m looking for
+        full-time AI engineering, AI solutions, integration, automation, or
+        agent-infrastructure roles.
       </p>
 
       {pitch && (
@@ -1233,15 +1274,21 @@ function EvidenceCards({ items }: { items: ChatEvidence[] }) {
             key={item.id}
             href={item.href || '#'}
             target={item.href?.startsWith('http') ? '_blank' : undefined}
-            rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            rel={
+              item.href?.startsWith('http') ? 'noopener noreferrer' : undefined
+            }
             className='block border border-[var(--dp-border)] bg-[var(--dp-bg-raised)] p-2.5 text-left transition-colors hover:border-[var(--dp-accent)]'
           >
-            <div className='flex items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-[var(--dp-text-dim)]'>
+            <div className='flex items-center justify-between gap-2 text-[10px] tracking-wide text-[var(--dp-text-dim)] uppercase'>
               <span>{item.kind}</span>
               <span>#{index + 1}</span>
             </div>
-            <div className='mt-1 text-[12px] font-bold text-[var(--dp-accent)]'>{item.title}</div>
-            <p className='mt-1 line-clamp-3 text-[11px] leading-relaxed text-[var(--dp-text-dim)]'>{item.summary}</p>
+            <div className='mt-1 text-[12px] font-bold text-[var(--dp-accent)]'>
+              {item.title}
+            </div>
+            <p className='mt-1 line-clamp-3 text-[11px] leading-relaxed text-[var(--dp-text-dim)]'>
+              {item.summary}
+            </p>
           </a>
         ))}
       </div>
@@ -1268,7 +1315,7 @@ function ContactSection({
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: siteView.chatGreeting
+      text: siteView.recruiterGreeting ?? siteView.chatGreeting
     }
   ]);
   const [val, setVal] = useState('');
@@ -1326,7 +1373,9 @@ function ContactSection({
             while (boundary !== -1) {
               const frame = buffer.slice(0, boundary);
               buffer = buffer.slice(boundary + 2);
-              const dataLine = frame.split('\n').find((line) => line.startsWith('data: '));
+              const dataLine = frame
+                .split('\n')
+                .find((line) => line.startsWith('data: '));
               if (dataLine) {
                 const payload = dataLine.slice(6).trim();
                 if (payload !== '[DONE]') {
@@ -1338,7 +1387,10 @@ function ContactSection({
                       setMsgs((prev) => {
                         const updated = [...prev];
                         updated.splice(Math.max(0, updated.length - 1), 0, {
-                          role: 'bot', text: '', isCustomCard: true, evidence: parsed.items
+                          role: 'bot',
+                          text: '',
+                          isCustomCard: true,
+                          evidence: parsed.items
                         });
                         return updated;
                       });
@@ -1346,7 +1398,8 @@ function ContactSection({
                       setMsgs((prev) => {
                         const updated = [...prev];
                         const last = updated[updated.length - 1];
-                        if (last && last.role === 'bot' && !last.isCustomCard) last.text += parsed.content;
+                        if (last && last.role === 'bot' && !last.isCustomCard)
+                          last.text += parsed.content;
                         return updated;
                       });
                     }
@@ -1455,17 +1508,37 @@ Email is fastest.`}
           className='flex flex-col gap-3 border-t border-b border-[var(--dp-border)] px-4 py-3'
           style={{ background: 'var(--dp-bg-raised)' }}
         >
-          <div className='flex flex-wrap gap-1.5'>
-            {siteView.suggestions.map((s) => (
-              <button
-                key={s}
-                onClick={() => handleSuggestion(s)}
-                className='max-w-full cursor-pointer truncate border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-left text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
-              >
-                &gt; {s}
-              </button>
-            ))}
-          </div>
+          {siteView.suggestions.length > 0 && (
+            <div className='flex flex-wrap gap-1.5'>
+              {siteView.suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => handleSuggestion(s)}
+                  className='max-w-full cursor-pointer truncate border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-left text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
+                >
+                  &gt; {s}
+                </button>
+              ))}
+            </div>
+          )}
+          {siteView.recruiterChips.length > 0 && (
+            <div className='flex flex-col gap-1.5'>
+              <span className='text-[9px] tracking-wider text-[var(--dp-text-dim)] uppercase'>
+                recruiter questions
+              </span>
+              <div className='flex flex-wrap gap-1.5'>
+                {siteView.recruiterChips.map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => handleSuggestion(q)}
+                    className='max-w-full cursor-pointer truncate border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-left text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
+                  >
+                    ▸ {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='chat-input'>
