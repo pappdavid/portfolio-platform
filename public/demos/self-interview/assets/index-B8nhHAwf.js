@@ -1,34 +1,34 @@
 (function () {
-  const n = document.createElement('link').relList;
-  if (n && n.supports && n.supports('modulepreload')) return;
-  for (const s of document.querySelectorAll('link[rel="modulepreload"]')) r(s);
-  new MutationObserver((s) => {
-    for (const o of s)
-      if (o.type === 'childList')
-        for (const d of o.addedNodes)
+  const t = document.createElement('link').relList;
+  if (t && t.supports && t.supports('modulepreload')) return;
+  for (const o of document.querySelectorAll('link[rel="modulepreload"]')) r(o);
+  new MutationObserver((o) => {
+    for (const s of o)
+      if (s.type === 'childList')
+        for (const d of s.addedNodes)
           d.tagName === 'LINK' && d.rel === 'modulepreload' && r(d);
   }).observe(document, { childList: !0, subtree: !0 });
-  function t(s) {
-    const o = {};
+  function n(o) {
+    const s = {};
     return (
-      s.integrity && (o.integrity = s.integrity),
-      s.referrerPolicy && (o.referrerPolicy = s.referrerPolicy),
-      s.crossOrigin === 'use-credentials'
-        ? (o.credentials = 'include')
-        : s.crossOrigin === 'anonymous'
-          ? (o.credentials = 'omit')
-          : (o.credentials = 'same-origin'),
-      o
+      o.integrity && (s.integrity = o.integrity),
+      o.referrerPolicy && (s.referrerPolicy = o.referrerPolicy),
+      o.crossOrigin === 'use-credentials'
+        ? (s.credentials = 'include')
+        : o.crossOrigin === 'anonymous'
+          ? (s.credentials = 'omit')
+          : (s.credentials = 'same-origin'),
+      s
     );
   }
-  function r(s) {
-    if (s.ep) return;
-    s.ep = !0;
-    const o = t(s);
-    fetch(s.href, o);
+  function r(o) {
+    if (o.ep) return;
+    o.ep = !0;
+    const s = n(o);
+    fetch(o.href, s);
   }
 })();
-const I = [
+const v = [
   {
     name: 'junior',
     patterns: ['junior', 'jr', 'entry', 'entry-level', 'beginner'],
@@ -108,12 +108,12 @@ const I = [
     answer: 'employer'
   }
 ];
-function v(e) {
-  const n = (e || '').toLowerCase();
-  for (const t of I) if (t.patterns.some((r) => n.includes(r))) return t.answer;
+function A(e) {
+  const t = (e || '').toLowerCase();
+  for (const n of v) if (n.patterns.some((r) => t.includes(r))) return n.answer;
   return null;
 }
-const h = [
+const y = [
   {
     id: 'experience',
     question: 'Is he junior?',
@@ -188,95 +188,112 @@ const h = [
   }
 ];
 function b(e) {
-  return h.find((n) => n.id === e);
+  return y.find((t) => t.id === e);
 }
-const A = [
+const E = [
     'Is he junior?',
     'Has he shipped real things?',
     "What's actually production vs prototype?",
     'Did fixing a service cut costs?',
     "What's his stack?"
   ],
-  E =
+  L =
     "Good question — I don't have a scripted answer for that one, and I won't improvise facts. Ask David directly and he'll give you a straight answer.",
-  a = document.getElementById('chat'),
+  l = document.getElementById('chat'),
   p = document.getElementById('chips'),
-  L = document.getElementById('composer-form'),
-  y = document.getElementById('composer-input'),
+  S = document.getElementById('composer-form'),
+  g = document.getElementById('composer-input'),
   i = window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  c = (e) => new Promise((n) => setTimeout(n, i ? 0 : e));
+  a = (e) => new Promise((t) => setTimeout(t, i ? 0 : e));
 function u() {
   requestAnimationFrame(() => {
-    a.scrollTop = a.scrollHeight;
+    l.scrollTop = l.scrollHeight;
   });
 }
-function l(e, n) {
-  const t = document.createElement('div');
+function c(e, t) {
+  const n = document.createElement('div');
   return (
-    (t.className = `msg ${e}`), (t.textContent = n), a.appendChild(t), u(), t
+    (n.className = `msg ${e}`), (n.textContent = t), l.appendChild(n), u(), n
   );
 }
-function T(e, n) {
-  if (!n) return;
-  const t = document.createElement('span');
-  (t.className = 'receipt'), (t.textContent = `✔ ${n}`), e.appendChild(t);
+function T(e, t) {
+  if (!t) return;
+  const n = document.createElement('span');
+  (n.className = 'receipt'), (n.textContent = `✔ ${t}`), e.appendChild(n);
 }
 async function f() {
   const e = document.createElement('div');
   (e.className = 'typing'),
     (e.innerHTML = '<span></span><span></span><span></span>'),
-    a.appendChild(e),
+    l.appendChild(e),
     u(),
-    await c(650),
+    await a(650),
     e.remove();
 }
-async function g(e, n) {
+async function w(e, t) {
   await f();
-  const t = l('david', '');
-  if (i) t.textContent = e;
+  const n = c('david', '');
+  if (i) n.textContent = e;
   else {
     for (let r = 4; r <= e.length; r += 4)
-      (t.textContent = e.slice(0, r)),
+      (n.textContent = e.slice(0, r)),
         u(),
-        await new Promise((s) => setTimeout(s, 12));
-    t.textContent = e;
+        await new Promise((o) => setTimeout(o, 12));
+    n.textContent = e;
   }
-  T(t, n);
+  T(n, t);
 }
-let m = !1;
-async function S() {
-  if (!m) {
-    m = !0;
-    for (const e of h)
-      l('recruiter', e.question),
-        await c(i ? 0 : 400),
-        await g(e.answer, e.source),
-        await c(i ? 0 : 500);
+const m = {
+  'ai-engineering': 'the AI Engineering page',
+  'ai-integration': 'the AI Integration page',
+  automation: 'the Automation page',
+  'product-engineering': 'the Product Engineering page'
+};
+function C() {
+  try {
+    const e = new URLSearchParams(window.location.search).get('role');
+    return e && m[e]
+      ? `(You came from ${m[e]} — happy to zoom in on that side of David's work.)`
+      : null;
+  } catch {
+    return null;
   }
 }
-function C(e) {
+let h = !1;
+async function k() {
+  if (h) return;
+  h = !0;
+  const e = C();
+  e && (c('recruiter', e), await a(i ? 0 : 400));
+  for (const t of y)
+    c('recruiter', t.question),
+      await a(i ? 0 : 400),
+      await w(t.answer, t.source),
+      await a(i ? 0 : 500);
+}
+function x(e) {
   p.innerHTML = '';
-  for (const n of e) {
-    const t = document.createElement('button');
-    (t.type = 'button'),
-      (t.className = 'chip'),
-      (t.textContent = n),
-      t.addEventListener('click', () => w(n)),
-      p.appendChild(t);
+  for (const t of e) {
+    const n = document.createElement('button');
+    (n.type = 'button'),
+      (n.className = 'chip'),
+      (n.textContent = t),
+      n.addEventListener('click', () => I(t)),
+      p.appendChild(n);
   }
 }
-async function w(e) {
-  (y.value = ''), l('user', e);
-  const n = v(e),
-    t = n ? b(n) : null;
-  await c(i ? 0 : 300),
-    t ? await g(t.answer, t.source) : (await f(), l('david', E));
+async function I(e) {
+  (g.value = ''), c('user', e);
+  const t = A(e),
+    n = t ? b(t) : null;
+  await a(i ? 0 : 300),
+    n ? await w(n.answer, n.source) : (await f(), c('david', L));
 }
-L.addEventListener('submit', (e) => {
+S.addEventListener('submit', (e) => {
   e.preventDefault();
-  const n = y.value.trim();
-  n && w(n);
+  const t = g.value.trim();
+  t && I(t);
 });
-C(A);
-S();
-//# sourceMappingURL=index-BeCltT-x.js.map
+x(E);
+k();
+//# sourceMappingURL=index-B8nhHAwf.js.map

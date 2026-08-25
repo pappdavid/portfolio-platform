@@ -3,8 +3,8 @@
     {
       "slug": "self-interview",
       "repo": "github.com/pappdavid/self-interview",
-      "commit": "b41c7ba",
-      "built_at": "2026-08-25T17:13:56Z",
+      "commit": "2e8f7c9",
+      "built_at": "2026-08-25T17:28:55Z",
       "entry": "index.html"
     },
     {
@@ -17,8 +17,8 @@
     {
       "slug": "rolefit-quiz",
       "repo": "github.com/pappdavid/rolefit-quiz",
-      "commit": "27cf718",
-      "built_at": "2026-08-25T17:13:56Z",
+      "commit": "793a1e6",
+      "built_at": "2026-08-25T17:28:55Z",
       "entry": "index.html"
     }
   ]
