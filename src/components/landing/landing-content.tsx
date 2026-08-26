@@ -4,10 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { MarkDownRenderer, ThemeProvider as CrayonThemeProvider } from '@crayonai/react-ui';
 import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personalization';
-import {
-  buildReferralPresentation,
-  prioritizeReferralProjects
-} from '@/lib/referral-personalization';
+import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
+import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
 
 function Typewriter({
   text,
@@ -164,25 +162,24 @@ const PROJECTS: Project[] = [
   }
 ];
 
-const SUGGESTIONS = [
-  'is David available to start?',
-  "what is David's tech stack?",
-  'what did David build at WEBINFORM?',
-  'tell me about AgentSec Suite'
-];
-
 // ============================================================
 // Unified Landing Page Component
 // ============================================================
 
 export function LandingContent({
-  referral
+  referral,
+  view
 }: {
-  referral: ReferralPersonalizationSnapshot | null;
+  referral?: ReferralPersonalizationSnapshot | null;
+  /** Prebuilt site view (job-type variant pages). Falls back to general site. */
+  view?: JobTypeSiteView | null;
 }) {
   const [active, setActive] = useState('home');
   const scrollRef = useRef<HTMLDivElement>(null);
-  const referralView = buildReferralPresentation(referral);
+  const siteView =
+    view ?? getJobTypeSiteView(null, referral ?? null);
+  const jobType = siteView.profile;
+  const hasContext = Boolean(referral || jobType);
 
   const [repoCount, setRepoCount] = useState<number | null>(null);
   const [themeProfile, setThemeProfile] = useState<string>('green');
@@ -464,13 +461,13 @@ export function LandingContent({
                 </div>
 
                 <h1 className='hero-name'>David&nbsp;Papp</h1>
-                <p className='hero-role'>AI solution developer</p>
+                <p className='hero-role'>{siteView.heroRole}</p>
                 <div className='hero-tag'>
                   <span className='prompt'>&gt; </span>
-                  {referral ? (
-                    <span>{referralView.heroTag}</span>
+                  {hasContext ? (
+                    <span>{siteView.heroTag}</span>
                   ) : (
-                    <Typewriter text={referralView.heroTag} />
+                    <Typewriter text={siteView.heroTag} />
                   )}
                 </div>
 
@@ -510,7 +507,7 @@ export function LandingContent({
                     onClick={() => nav('work')}
                     className='cta glitch-hover'
                   >
-                    {referralView.projectsCta}
+                    {siteView.projectsCta}
                   </button>
                   <button
                     onClick={() => nav('skills')}
@@ -539,24 +536,24 @@ export function LandingContent({
                           Amsterdam · Rotterdam, NL · remote
                         </td>
                       </tr>
-                      {referral && (
+                      {siteView.target && (
                         <tr>
                           <td className='mk'>TARGET</td>
                           <td className='ms'>:</td>
-                          <td className='mv'>{referralView.target}</td>
+                          <td className='mv'>{siteView.target}</td>
                         </tr>
                       )}
-                      {referralView.roleFocus && (
+                      {siteView.roleFocus && (
                         <tr>
                           <td className='mk'>ROLE FOCUS</td>
                           <td className='ms'>:</td>
-                          <td className='mv'>{referralView.roleFocus}</td>
+                          <td className='mv'>{siteView.roleFocus}</td>
                         </tr>
                       )}
                       <tr>
                         <td className='mk'>FOCUS</td>
                         <td className='ms'>:</td>
-                        <td className='mv'>ai agents · rag · solution dev</td>
+                        <td className='mv'>{siteView.focusLine}</td>
                       </tr>
                       <tr>
                         <td className='mk'>CURRENTLY</td>
@@ -605,12 +602,16 @@ export function LandingContent({
           <div className='divider' />
 
           {/* ============ SECTION 2: WORK ============ */}
-          <WorkSection triggerFocus={triggerFocus} referral={referral} />
+          <WorkSection
+            triggerFocus={triggerFocus}
+            referral={referral ?? null}
+            jobType={jobType}
+          />
 
           <div className='divider' />
 
           {/* ============ SECTION 3: SKILLS ============ */}
-          <SkillsSection />
+          <SkillsSection pitch={jobType?.pitch ?? null} />
 
           <div className='divider' />
 
@@ -624,7 +625,7 @@ export function LandingContent({
             themeProfile={themeProfile}
             changeThemeProfile={changeThemeProfile}
             triggerFocus={triggerFocus}
-            referral={referral}
+            siteView={siteView}
           />
 
           <div style={{ height: '48px' }} />
@@ -692,15 +693,20 @@ export function LandingContent({
 interface WorkSectionProps {
   triggerFocus: (id: string | null) => void;
   referral: ReferralPersonalizationSnapshot | null;
+  jobType?: JobTypeProfile | null;
 }
 
-function WorkSection({ triggerFocus, referral }: WorkSectionProps) {
+function WorkSection({ triggerFocus, referral, jobType }: WorkSectionProps) {
   const [hover, setHover] = useState(-1);
   const [open, setOpen] = useState(-1); // all closed by default
-  const projects = prioritizeReferralProjects(PROJECTS, referral);
+  const projects = prioritizeProjects(PROJECTS, { referral, jobType });
   const referralFeatured = new Set(
     (referral?.featuredProjects || []).map((name) => name.toLowerCase())
   );
+  const jobTypeFeatured = new Set(
+    (jobType?.featuredProjects || []).map((name) => name.toLowerCase())
+  );
+  const prioritized = referralFeatured.size > 0 || jobTypeFeatured.size > 0;
   const badgeColor = {
     live: 'var(--dp-accent)',
     wip: 'var(--warn)',
@@ -716,7 +722,7 @@ function WorkSection({ triggerFocus, referral }: WorkSectionProps) {
       </div>
       <p className='sub-note'>
         {projects.length} active nodes found — click row to expand case study
-        {referralFeatured.size > 0 ? ' · role matches prioritized' : ''}
+        {prioritized ? ' · role matches prioritized' : ''}
       </p>
 
       <div className='fs-table'>
@@ -761,6 +767,12 @@ function WorkSection({ triggerFocus, referral }: WorkSectionProps) {
                       ★ ROLE MATCH
                     </span>
                   )}
+                  {!referralFeatured.has(p.name.toLowerCase()) &&
+                    jobTypeFeatured.has(p.name.toLowerCase()) && (
+                      <span className='ml-2 border border-[var(--dp-border)] px-1 py-0 text-[10px] font-extrabold text-[var(--dp-accent-muted)] select-none'>
+                        ★ ROLE RELEVANT
+                      </span>
+                    )}
                 </span>
                 <span className='ml-3 hidden shrink-0 items-center gap-1.5 text-xs text-[var(--dp-text-dim)] sm:flex'>
                   {p.repoUrl && (
@@ -907,7 +919,7 @@ function WorkSection({ triggerFocus, referral }: WorkSectionProps) {
   );
 }
 
-function SkillsSection() {
+function SkillsSection({ pitch }: { pitch?: string | null }) {
   return (
     <section className='block' id='skills'>
       <div className='sec-head'>
@@ -922,6 +934,13 @@ function SkillsSection() {
         I&apos;m looking for full-time AI engineering, AI solutions,
         integration, automation, or agent-infrastructure roles.
       </p>
+
+      {pitch && (
+        <>
+          <p className='sub-note'>{'// role-tuned summary'}</p>
+          <p className='prose'>{pitch}</p>
+        </>
+      )}
 
       <div className='resume'>
         <div className='sec-head'>
@@ -1185,7 +1204,7 @@ interface ContactSectionProps {
   themeProfile: string;
   changeThemeProfile: (profile: string) => void;
   triggerFocus: (id: string | null) => void;
-  referral: ReferralPersonalizationSnapshot | null;
+  siteView: JobTypeSiteView;
 }
 
 type ChatEvidence = {
@@ -1244,13 +1263,12 @@ function ContactSection({
   themeProfile,
   changeThemeProfile,
   triggerFocus,
-  referral
+  siteView
 }: ContactSectionProps) {
-  const referralView = buildReferralPresentation(referral);
   const [msgs, setMsgs] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text: referralView.chatGreeting
+      text: siteView.chatGreeting
     }
   ]);
   const [val, setVal] = useState('');
@@ -1403,7 +1421,7 @@ Email is fastest.`}
           <span className='chat-status'>
             <span className='sb-dot' /> PORTFOLIO_ASSISTANT: ready
           </span>
-          <span className='chat-conv'>{referralView.chatContextLabel}</span>
+          <span className='chat-conv'>{siteView.chatContextLabel}</span>
         </div>
 
         <div className='chat-body' ref={bodyRef}>
@@ -1438,7 +1456,7 @@ Email is fastest.`}
           style={{ background: 'var(--dp-bg-raised)' }}
         >
           <div className='flex flex-wrap gap-1.5'>
-            {SUGGESTIONS.map((s) => (
+            {siteView.suggestions.map((s) => (
               <button
                 key={s}
                 onClick={() => handleSuggestion(s)}

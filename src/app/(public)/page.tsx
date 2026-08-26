@@ -1,9 +1,15 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { LandingContent } from '@/components/landing/landing-content';
 import { ReferralBanner } from '@/components/landing/referral-banner';
 import { getReferralPersonalization } from '@/lib/referral-context';
 import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
+import {
+  JOB_TYPES,
+  getJobTypeSiteView,
+  resolveJobTypeFromSearchParams
+} from '@/lib/job-type';
 
 export const metadata: Metadata = {
   title: 'David Papp — AI Solutions Developer',
@@ -22,7 +28,20 @@ export const metadata: Metadata = {
   }
 };
 
-export default async function LandingPage() {
+export default async function LandingPage({
+  searchParams
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  // ?role=<job type> personalizes the landing page for a class of roles.
+  // Canonical URLs live at /roles/<id>; the query form redirects there so the
+  // personalized variant stays linkable and prerenderable.
+  const params = (await searchParams) ?? {};
+  const jobType = resolveJobTypeFromSearchParams(params);
+  if (jobType) {
+    redirect(`/roles/${jobType.id}`);
+  }
+
   const cookieStore = await cookies();
   const token = cookieStore.get(REFERRAL_COOKIE)?.value;
   const referral = await getReferralPersonalization(token);
