@@ -8,8 +8,8 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
-  title: 'Dashboard — Portfolio Platform',
-  description: 'Portfolio platform dashboard',
+  title: 'Dashboard | David Papp — AI Engineering',
+  description: 'AI Engineering Portfolio dashboard — MCP Sentinel, Custom Training, RAG + 3D Chat',
   robots: {
     index: false,
     follow: false
