@@ -5,11 +5,8 @@ import { LandingContent } from '@/components/landing/landing-content';
 import { ReferralBanner } from '@/components/landing/referral-banner';
 import { getReferralPersonalization } from '@/lib/referral-context';
 import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
-import {
-  JOB_TYPES,
-  getJobTypeSiteView,
-  resolveJobTypeFromSearchParams
-} from '@/lib/job-type';
+import { mergeReferralWithCompanySlug } from '@/lib/company-slug';
+import { resolveJobTypeFromSearchParams } from '@/lib/job-type';
 
 export const metadata: Metadata = {
   title: 'David Papp — AI Solutions Developer',
@@ -44,7 +41,11 @@ export default async function LandingPage({
 
   const cookieStore = await cookies();
   const token = cookieStore.get(REFERRAL_COOKIE)?.value;
-  const referral = await getReferralPersonalization(token);
+  const cookieReferral = await getReferralPersonalization(token);
+  // Hunt CVs use /?c=<company-slug> until a native /r/<token> is bound.
+  // Cookie-backed referral still wins. The slug only frames the audience —
+  // it does not invent facts about the company.
+  const referral = mergeReferralWithCompanySlug(cookieReferral, params.c);
 
   return (
     <>

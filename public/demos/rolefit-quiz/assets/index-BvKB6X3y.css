@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html,
+body {
+  @apply bg-[#0b0c10] text-[#e6e7ea];
+}
+#root {
+  min-height: 100vh;
+}
+.bubble {
+  @apply inline-block rounded-[18px] px-4 py-3 text-[15px] leading-snug;
+}
+.bubble-human {
+  @apply rounded-br-none bg-[#1f232b];
+}
+.bubble-bot {
+  @apply rounded-bl-none bg-[#16202c];
+}
+.chip {
+  @apply flex items-center justify-center rounded-xl border border-[#2a2f3a] bg-[#181c24] px-3 py-2 text-[14px] font-medium text-[#e6e7ea] transition-all active:scale-[.98] active:bg-[#202530];
+  cursor: pointer;
+}
+.chip.selected {
+  @apply border-[#3b82f6] bg-[#3b82f6] text-white;
+}
+.card-frame {
+  @apply rounded-[22px] p-5 text-center;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2f3a;
+  border-radius: 10px;
+}

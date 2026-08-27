@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
     ]
   },
   transpilePackages: ['geist'],
+  async rewrites() {
+    // Directory URLs without a trailing slash otherwise drop Vite's ./assets
+    // onto /demos/assets (404). Serve the real index.html for both spellings.
+    return [
+      {
+        source: '/demos/:slug',
+        destination: '/demos/:slug/index.html'
+      }
+    ];
+  },
   async redirects() {
     // Routes shared externally in earlier versions of the site. The pages
     // they pointed at described projects that no longer exist in that form,
@@ -38,7 +48,20 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Vendored demo bundles must be embeddable in the portfolio site's
+        // iframe strip, so they use SAMEORIGIN instead of the strict
+        // no-frame guard below.
+        source: '/demos/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          }
+        ]
+      },
+      {
+        // Every other route stays framed-down: no embedding anywhere.
+        source: '/:path*',
         headers: [
           {
             key: 'X-Frame-Options',

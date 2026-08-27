@@ -5,6 +5,7 @@ import { LandingContent } from '@/components/landing/landing-content';
 import { ReferralBanner } from '@/components/landing/referral-banner';
 import { getReferralPersonalization } from '@/lib/referral-context';
 import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
+import { mergeReferralWithCompanySlug } from '@/lib/company-slug';
 import {
   JOB_TYPES,
   getJobTypeSiteView,
@@ -13,6 +14,7 @@ import {
 
 interface RolePageProps {
   params: Promise<{ role: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export function generateStaticParams() {
@@ -54,14 +56,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function JobTypeLandingPage({ params }: RolePageProps) {
+export default async function JobTypeLandingPage({
+  params,
+  searchParams
+}: RolePageProps) {
   const { role } = await params;
   const jobType = resolveJobType(role);
   if (!jobType) notFound();
 
+  const query = (await searchParams) ?? {};
   const cookieStore = await cookies();
   const token = cookieStore.get(REFERRAL_COOKIE)?.value;
-  const referral = await getReferralPersonalization(token);
+  const cookieReferral = await getReferralPersonalization(token);
+  const referral = mergeReferralWithCompanySlug(cookieReferral, query.c);
 
   // Referral copy (tracked recruiter links) stays the most specific override;
   // otherwise the job-type profile shapes hero, focus, chat, and CTAs.
