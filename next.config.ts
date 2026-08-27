@@ -38,7 +38,20 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Vendored demo bundles must be embeddable in the portfolio site's
+        // iframe strip, so they use SAMEORIGIN instead of the strict
+        // no-frame guard below.
+        source: '/demos/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          }
+        ]
+      },
+      {
+        // Every other route stays framed-down: no embedding anywhere.
+        source: '/:path*',
         headers: [
           {
             key: 'X-Frame-Options',

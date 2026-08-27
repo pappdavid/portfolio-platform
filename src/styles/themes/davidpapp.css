@@ -737,6 +737,40 @@ body::before {
   background: rgba(0, 255, 136, 0.14);
 }
 
+/* ---- Demo strip (iframe integration) ---- */
+.demo-strip {
+  font-size: 13px;
+}
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.demo-card {
+  border: 1px solid var(--dp-border);
+  padding: var(--sp-4);
+}
+.demo-card-featured {
+  border-color: var(--dp-accent);
+}
+.demo-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-hud-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dp-text-dim);
+  margin-bottom: var(--sp-2);
+}
+.demo-badge {
+  border: 1px solid;
+  padding: 1px 6px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
 /* ---- Prose & Resume ---- */
 .prose {
   font-size: var(--fs-body);

@@ -1,0 +1,25 @@
+{
+  "demos": [
+    {
+      "slug": "self-interview",
+      "repo": "github.com/pappdavid/self-interview",
+      "commit": "2e8f7c9",
+      "built_at": "2026-08-25T17:28:55Z",
+      "entry": "index.html"
+    },
+    {
+      "slug": "task-to-flow",
+      "repo": "github.com/pappdavid/task-to-flow",
+      "commit": "1edc1d8",
+      "built_at": "2026-08-25T17:13:56Z",
+      "entry": "index.html"
+    },
+    {
+      "slug": "rolefit-quiz",
+      "repo": "github.com/pappdavid/rolefit-quiz",
+      "commit": "793a1e6",
+      "built_at": "2026-08-25T17:28:55Z",
+      "entry": "index.html"
+    }
+  ]
+}

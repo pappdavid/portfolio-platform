@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Task-to-Flow — describe a task, watch a workflow assemble</title>
+<meta name="description" content="Describe a repetitive task in plain language and watch an illustrative automation workflow assemble itself. A deterministic demo — no AI, no accounts." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main class="app" aria-label="Task-to-Flow demo">
+  <header class="topbar">
+    <span class="brand">task<span class="brand-accent">→</span>flow</span>
+    <span class="attribution">by David Papp · AI Solutions Developer</span>
+  </header>
+
+  <section id="thread" class="thread" aria-live="polite"></section>
+
+  <footer class="composer">
+    <form id="ask-form" autocomplete="off">
+      <label class="visually-hidden" for="ask-input">Describe a repetitive task</label>
+      <input id="ask-input" type="text" maxlength="280"
+             placeholder="Describe a repetitive task in your team…" />
+      <button type="submit" aria-label="Send">➤</button>
+    </form>
+    <div id="chips" class="chips" role="group" aria-label="Example tasks"></div>
+  </footer>
+</main>
+
+<template id="tpl-user-bubble">
+  <div class="row row-user"><div class="bubble bubble-user"></div></div>
+</template>
+<template id="tpl-assistant">
+  <div class="row row-bot">
+    <div class="bubble bubble-bot">
+      <div class="confirm"></div>
+      <p class="honesty-note">Illustrative example — how David typically automates this kind of task.</p>
+      <ol class="flow"></ol>
+      <div class="savings">
+        <div class="savings-count"><span class="hours">0</span><span class="unit"> hrs / month</span></div>
+        <div class="sliders">
+          <label>Tasks per day
+            <input type="range" class="slider-day" min="1" max="100" value="10" />
+            <output class="out-day">10</output>
+          </label>
+          <label>Minutes per task
+            <input type="range" class="slider-min" min="1" max="60" value="15" />
+            <output class="out-min">15</output>
+          </label>
+        </div>
+        <p class="assumption-note">Based on your assumptions above — not a measured result.</p>
+        <a class="cta" href="#" data-cta>See how David builds this →</a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
