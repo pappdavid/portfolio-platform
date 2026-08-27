@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { type DemoEntry, getDemosForRole } from '@/config/demos';
+import { demoIframeSrc } from '@/config/demo-urls';
 
 interface DemoStripProps {
   roleId: string | null | undefined;
@@ -43,9 +44,7 @@ export function DemoStrip({ roleId }: DemoStripProps) {
       <div className='demo-grid'>
         {demos.map((demo, index) => {
           const isOpen = openId === demo.slug;
-          const src = `/demos/${demo.slug}/?role=${encodeURIComponent(
-            roleId ?? ''
-          )}`;
+          const src = demoIframeSrc(demo.slug, roleId);
           return (
             <DemoCard
               key={demo.slug}

@@ -10,7 +10,11 @@ export function ReferralBanner({ referral }: ReferralBannerProps) {
   return (
     <div className='relative z-20 border-b border-[var(--dp-border)] bg-[rgba(10,10,10,0.92)] px-4 py-2 font-mono text-xs text-[var(--dp-text-dim)] backdrop-blur'>
       <div className='mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1'>
-        <span className='font-bold text-[var(--dp-accent)]'>REFERRAL_CONTEXT</span>
+        <span className='font-bold text-[var(--dp-accent)]'>
+          {referral.applicationId || referral.role || referral.featuredProjects?.length
+            ? 'REFERRAL_CONTEXT'
+            : 'VISITOR_CONTEXT'}
+        </span>
         <span>{'//'}</span>
         <span className='text-[var(--dp-text)]'>{referral.company}</span>
         {referral.role && (

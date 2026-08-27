@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
     ]
   },
   transpilePackages: ['geist'],
+  async rewrites() {
+    // Directory URLs without a trailing slash otherwise drop Vite's ./assets
+    // onto /demos/assets (404). Serve the real index.html for both spellings.
+    return [
+      {
+        source: '/demos/:slug',
+        destination: '/demos/:slug/index.html'
+      }
+    ];
+  },
   async redirects() {
     // Routes shared externally in earlier versions of the site. The pages
     // they pointed at described projects that no longer exist in that form,
