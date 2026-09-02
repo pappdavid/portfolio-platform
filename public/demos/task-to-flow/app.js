@@ -9,7 +9,12 @@ const reducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)'
 ).matches;
 
-const CTA_URL = 'https://davidpapp.dev';
+// The demo is embedded in /roles/<id> on davidpapp.dev — a bare link to the
+// domain is circular there (the recruiter is already on the site; hovering it
+// shows a pointless self-referential preview). The CTA should land on the
+// contact section of the page the demo is embedded in. target="_top" escapes
+// the iframe; from the standalone /demos/… route it simply navigates home.
+const CTA_URL = 'https://davidpapp.dev/#contact';
 
 // Sample chips from pattern samples.
 for (const p of PATTERNS) {
@@ -90,7 +95,10 @@ function addAssistantBubble(matchedPattern, isFallback) {
 
   sliderDay.addEventListener('input', () => updateHours(false));
   sliderMin.addEventListener('input', () => updateHours(false));
-  node.querySelector('.cta').href = CTA_URL;
+  const cta = node.querySelector('.cta');
+  cta.href = CTA_URL;
+  // Escape the iframe: navigate the parent page, not the demo itself.
+  cta.target = '_top';
 
   return { node, updateHours };
 }
@@ -120,7 +128,10 @@ async function run(text) {
   }
 
   // Stagger step reveal (~2s total), then animate the savings counter.
-  const steps = node.querySelectorAll('.flow li');
+  // Query the LIVE DOM, not `node`: appendChild(node) moves the fragment's
+  // children out, so node.querySelectorAll('.flow li') returns an empty list
+  // and the reveal never runs (steps stayed opacity:0 forever).
+  const steps = thread.querySelectorAll('.flow li');
   steps.forEach((li, i) =>
     setTimeout(
       () => {

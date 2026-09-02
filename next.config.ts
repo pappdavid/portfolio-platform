@@ -48,19 +48,14 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Vendored demo bundles must be embeddable in the portfolio site's
-        // iframe strip, so they use SAMEORIGIN instead of the strict
-        // no-frame guard below.
-        source: '/demos/:path*',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
-          }
-        ]
-      },
-      {
         // Every other route stays framed-down: no embedding anywhere.
+        // NOTE: this catch-all MUST stay BEFORE the /demos/:path* rule —
+        // when two sources match the same route, the later rule's value
+        // wins for a repeated key. With the old order the DENY here
+        // overrode the demos' SAMEORIGIN, so every demo iframe on
+        // /roles/<id> was blocked (ERR_BLOCKED_BY_RESPONSE) and rendered
+        // as an empty box (verified locally + on the live Vercel deploy
+        // 2026-09-02).
         source: '/:path*',
         headers: [
           {
@@ -87,6 +82,19 @@ const nextConfig: NextConfig = {
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload'
+          }
+        ]
+      },
+      {
+        // Vendored demo bundles must be embeddable in the portfolio site's
+        // iframe strip, so they use SAMEORIGIN instead of the strict
+        // no-frame guard above. Order matters: this must come after the
+        // catch-all or DENY wins.
+        source: '/demos/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
           }
         ]
       }
