@@ -49,3 +49,27 @@
   /* Apply the reveal animation */
   animation: reveal 0.4s ease-in-out forwards;
 }
+
+/* ============================================================
+   Deterministic capture mode
+   LandingContent sets <html data-capture="1"> when ?capture=1 is
+   present or the user prefers reduced motion. Every decorative
+   animation renders in its FINAL state immediately so consecutive
+   evidence screenshots are byte-stable. Content variation across
+   role pages (heroRole, demo order) is intentionally NOT frozen.
+   ============================================================ */
+html[data-capture='1'] *,
+html[data-capture='1'] *::before,
+html[data-capture='1'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-capture]) *,
+  html:not([data-capture]) *::before,
+  html:not([data-capture]) *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

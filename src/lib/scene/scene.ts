@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { ModuleId, SceneHandle } from './types';
+import { isCaptureMode } from '@/lib/capture-mode';
 
 // Procedural texture generator for glowing circular particles
 function createCircleTexture(): THREE.Texture {
@@ -281,8 +282,13 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   };
   window.addEventListener('mousemove', onMove);
 
+  // Capture mode (?capture=1 or reduced motion): render exactly one frame
+  // at the fixed t=0 pose instead of a continuous rAF loop, so every
+  // screenshot shows the identical constellation.
+  const capture = isCaptureMode();
+
   function tick(): void {
-    const t = (performance.now() - start) / 1000;
+    const t = capture ? 0 : (performance.now() - start) / 1000;
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
 
@@ -473,7 +479,9 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
     camera.lookAt(activeLook);
 
     renderer.render(scene, camera);
-    raf = requestAnimationFrame(tick);
+    if (!capture) {
+      raf = requestAnimationFrame(tick);
+    }
   }
   tick();
 

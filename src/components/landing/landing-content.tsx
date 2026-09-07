@@ -10,6 +10,7 @@ import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personaliza
 import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
 import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
 import { DemoStrip } from '@/components/demos/demo-strip';
+import { applyCaptureAttribute, isCaptureMode } from '@/lib/capture-mode';
 
 function Typewriter({
   text,
@@ -25,8 +26,9 @@ function Typewriter({
     const isVisited =
       typeof window !== 'undefined' &&
       sessionStorage.getItem('dp_visited') === 'true';
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (isVisited || mediaQuery.matches) {
+    // Capture mode (?capture=1 or reduced motion): render the FINAL state
+    // immediately — no typewriter race with the screenshot budget.
+    if (isVisited || isCaptureMode()) {
       setN(text.length);
       return;
     }
@@ -225,9 +227,19 @@ export function LandingContent({
   const [repoCount, setRepoCount] = useState<number | null>(null);
   const [themeProfile, setThemeProfile] = useState<string>('green');
   // Decorative terminal-UI values. Labelled SIM in the status bar — not
-  // real telemetry.
-  const [latency, setLatency] = useState<string>('5.2ms');
-  const [memLoad, setMemLoad] = useState<string>('43.1%');
+  // real telemetry. Frozen to fixed values in capture mode.
+  const [latency, setLatency] = useState<string>(() =>
+    isCaptureMode() ? '5.2ms' : '5.2ms'
+  );
+  const [memLoad, setMemLoad] = useState<string>(() =>
+    isCaptureMode() ? '43.1%' : '43.1%'
+  );
+
+  // Capture mode: flag the document so CSS freezes every animation
+  // (entrance fades, CRT flicker, cursor blink, pulses) at final state.
+  useEffect(() => {
+    applyCaptureAttribute();
+  }, []);
 
   // Load and apply initial theme profile from localStorage
   useEffect(() => {
@@ -261,8 +273,10 @@ export function LandingContent({
     document.documentElement.setAttribute('data-theme-profile', profile);
   }, []);
 
-  // Decorative status-bar animation timers (labelled SIM in the UI)
+  // Decorative status-bar animation timers (labelled SIM in the UI).
+  // Skipped entirely in capture mode so values stay fixed.
   useEffect(() => {
+    if (isCaptureMode()) return;
     const lInterval = setInterval(() => {
       const ms = (4.8 + Math.random() * 4.4).toFixed(1);
       setLatency(`${ms}ms`);
