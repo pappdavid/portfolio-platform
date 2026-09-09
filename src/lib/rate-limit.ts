@@ -63,3 +63,13 @@ export const amaPublicRateLimit = createLimiter(
   'ratelimit:ama:public'
 );
 export const amaAuthRateLimit = createLimiter(20, '1 h', 'ratelimit:ama:auth');
+export const refMintRateLimit = createLimiter(
+  10,
+  '1 h',
+  'ratelimit:ref:mint'
+);
+export const refVisitRateLimit = createLimiter(
+  30,
+  '1 m',
+  'ratelimit:ref:visit'
+);

@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
+import { refVisitRateLimit } from '@/lib/rate-limit';
+import { purgeExpiredRefEvents } from '@/lib/ref-events-retention';
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
+
+  const visitIp =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anon';
+  const { success: visitAllowed } = await refVisitRateLimit.limit(visitIp);
+  if (!visitAllowed) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
 
   const { data: link } = await supabaseAdmin
     .from('ref_links')
@@ -30,6 +39,10 @@ export async function GET(
     user_agent: req.headers.get('user-agent') || null,
     ip_trunc: ipTrunc || null,
     country: req.headers.get('x-vercel-ip-country') || null
+  });
+
+  purgeExpiredRefEvents().catch(() => {
+    // retention purge is best-effort; never block a visit
   });
 
   const response = NextResponse.redirect(new URL('/', req.url));
