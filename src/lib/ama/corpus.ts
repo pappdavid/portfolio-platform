@@ -1,6 +1,6 @@
 export const amaCorpus: string = `
 # About David Papp
-AI Solutions Developer (contract/freelance) at WEBINFORM IT Ltd since October 2024, and BSc Artificial Intelligence student at Vrije Universiteit Amsterdam (2024-2027 expected). Based in the Rotterdam area, Netherlands. Hungarian citizen with NL/EU work authorization - no sponsorship required.
+AI Solutions Developer (contract/freelance) at WEBINFORM IT Ltd since October 2024, and studying Econometrics and Data Science at Vrije Universiteit Amsterdam (started September 2026, expected graduation 2028), building on prior study in artificial intelligence, machine learning, and statistics. Based in the Rotterdam area, Netherlands. Hungarian citizen with NL/EU work authorization - no sponsorship required.
 
 Open to: full-time AI engineering, AI solutions, integration, automation, agent infrastructure, and technically oriented product/project roles.
 Contact: contact@davidpapp.dev

@@ -11,7 +11,7 @@ import { resolveJobTypeFromSearchParams } from '@/lib/job-type';
 export const metadata: Metadata = {
   title: 'David Papp — AI Solutions Developer',
   description:
-    'AI Solutions Developer at WEBINFORM and BSc AI student at VU Amsterdam. Open-source agent-security prototypes: PromptShield, agentsec-hook-pack, mcpguard-lite, agentmap, approveops.',
+    'AI Solutions Developer at WEBINFORM and studying Econometrics and Data Science at VU Amsterdam (started Sept 2026, expected 2028). Open-source agent-security prototypes: PromptShield, agentsec-hook-pack, mcpguard-lite, agentmap, approveops.',
   openGraph: {
     title: 'David Papp — AI Solutions Developer',
     description: 'Open to full-time AI engineering roles.',

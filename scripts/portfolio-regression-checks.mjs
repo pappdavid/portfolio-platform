@@ -101,7 +101,7 @@ assert(!landing.includes('setCommitCount'), 'landing: generated commit counter m
 
 const cvHtml = read('public/cv.html');
 assert(cvHtml.includes('Oct 2024'), 'cv.html: WEBINFORM start date');
-assert(cvHtml.includes('2024 – 2027 (expected)'), 'cv.html: VU Amsterdam dates');
+assert(cvHtml.includes('2026 – 2028 (expected)'), 'cv.html: VU Amsterdam dates');
 assert(cvHtml.includes('roughly 40%'), 'cv.html: approximate cost reduction wording');
 assert(cvHtml.includes('page-break-inside: avoid'), 'cv.html: print pagination guard');
 

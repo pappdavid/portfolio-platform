@@ -21,7 +21,7 @@
 
 ## About
 
-Personal portfolio site of **David Papp** — AI Solutions Developer at WEBINFORM IT Ltd and BSc Artificial Intelligence student at VU Amsterdam. The site presents professional experience, open-source projects, a downloadable CV, and a small RAG-grounded assistant, wrapped in a terminal-OS ("DavidOS") visual identity.
+Personal portfolio site of **David Papp** — AI Solutions Developer at WEBINFORM IT Ltd and studying Econometrics and Data Science at Vrije Universiteit Amsterdam (started September 2026, expected graduation 2028), building on prior study in artificial intelligence, machine learning, and statistics. The site presents professional experience, open-source projects, a downloadable CV, and a small RAG-grounded assistant, wrapped in a terminal-OS ("DavidOS") visual identity.
 
 Project descriptions distinguish professional production work, public prototypes, local developer tools, and experiments. Decorative terminal status values are explicitly marked `SIM` (simulated), and CI checks recruiter-facing content for consistency.
 

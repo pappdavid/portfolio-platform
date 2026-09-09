@@ -977,7 +977,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         features, APIs, and automation for web applications and ERP-integrated
         systems — and, on my own time, local-first context infrastructure, agent
         orchestration tooling, and the integrated AgentSec security suite.
-        I&apos;m a BSc AI student at VU Amsterdam and I&apos;m looking for
+        I&apos;m studying Econometrics and Data Science at VU Amsterdam (started September 2026, expected graduation 2028), building on prior study in artificial intelligence, machine learning, and statistics, and I&apos;m looking for
         full-time AI engineering, AI solutions, integration, automation, or
         agent-infrastructure roles.
       </p>
@@ -1000,7 +1000,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         </div>
         <div className='mb-6 flex flex-wrap gap-4 text-xs font-semibold text-[var(--dp-accent-muted)]'>
           <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
-            🏛️ VU AMSTERDAM (BSc Artificial Intelligence)
+            🏛️ VU AMSTERDAM (Econometrics and Data Science)
           </span>
           <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
             💻 WEBINFORM (AI Solution Delivery)
@@ -1038,12 +1038,12 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
 
         <div className='rs-row'>
           <div className='rs-line'>
-            <span className='rs-role'>BSc Artificial Intelligence</span>
+            <span className='rs-role'>Econometrics and Data Science</span>
             <span className='rs-meta'>| VU Amsterdam</span>
-            <span className='rs-meta rs-dates'>2024 — 2027 (Expected)</span>
+            <span className='rs-meta rs-dates'>2026 — 2028 (Expected)</span>
           </div>
           <div className='rs-meta mt-1' style={{ textTransform: 'none' }}>
-            Expected grad: 2027
+            Expected grad: 2028
           </div>
           <ul className='rs-bullets'>
             <li>
