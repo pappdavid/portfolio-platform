@@ -10,6 +10,7 @@ import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personaliza
 import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
 import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
 import { DemoStrip } from '@/components/demos/demo-strip';
+import FIELD_NOTES from '@/data/field-notes.json';
 import { applyCaptureAttribute, isCaptureMode } from '@/lib/capture-mode';
 
 function Typewriter({
@@ -614,8 +615,8 @@ export function LandingContent({
                         <td className='mk'>CURRENTLY</td>
                         <td className='ms'>:</td>
                         <td className='mv'>
-                          building AI solutions at WEBINFORM & studying AI at VU
-                          Amsterdam
+                          building AI solutions at WEBINFORM &amp; studying
+                          Econometrics and Data Science at VU Amsterdam
                         </td>
                       </tr>
                       <tr>
@@ -666,7 +667,7 @@ export function LandingContent({
           <div className='divider' />
 
           {/* ============ SECTION 2b: DEMO STRIP ============ */}
-          {jobType && <DemoStrip roleId={jobType.id} />}
+          <DemoStrip roleId={jobType?.id ?? null} />
 
           <div className='divider' />
 
@@ -991,7 +992,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         features, APIs, and automation for web applications and ERP-integrated
         systems — and, on my own time, local-first context infrastructure, agent
         orchestration tooling, and the integrated AgentSec security suite.
-        I&apos;m a BSc AI student at VU Amsterdam and I&apos;m looking for
+        I&apos;m studying Econometrics and Data Science at VU Amsterdam (started September 2026, expected graduation 2028), building on prior study in artificial intelligence, machine learning, and statistics, and I&apos;m looking for
         full-time AI engineering, AI solutions, integration, automation, or
         agent-infrastructure roles.
       </p>
@@ -1014,7 +1015,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         </div>
         <div className='mb-6 flex flex-wrap gap-4 text-xs font-semibold text-[var(--dp-accent-muted)]'>
           <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
-            🏛️ VU AMSTERDAM (BSc Artificial Intelligence)
+            🏛️ VU AMSTERDAM (Econometrics and Data Science)
           </span>
           <span className='border border-[var(--dp-border)] bg-[#0d0d0d] px-3 py-1.5 select-none'>
             💻 WEBINFORM (AI Solution Delivery)
@@ -1052,12 +1053,12 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
 
         <div className='rs-row'>
           <div className='rs-line'>
-            <span className='rs-role'>BSc Artificial Intelligence</span>
+            <span className='rs-role'>Econometrics and Data Science</span>
             <span className='rs-meta'>| VU Amsterdam</span>
-            <span className='rs-meta rs-dates'>2024 — 2027 (Expected)</span>
+            <span className='rs-meta rs-dates'>2026 — 2028 (Expected)</span>
           </div>
           <div className='rs-meta mt-1' style={{ textTransform: 'none' }}>
-            Expected grad: 2027
+            Expected grad: 2028
           </div>
           <ul className='rs-bullets'>
             <li>
@@ -1205,6 +1206,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
 }
 
 function NotesSection() {
+  const notes = FIELD_NOTES;
   return (
     <section className='block' id='notes'>
       <div className='sec-head'>
@@ -1216,46 +1218,27 @@ function NotesSection() {
         repository where the pattern is implemented
       </p>
       <div className='flex flex-col gap-3 font-mono text-sm'>
-        <a
-          href='https://github.com/pappdavid/agentsec-hook-pack'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
-        >
-          <div className='flex flex-wrap items-baseline justify-between gap-2'>
-            <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-              Gating agent tool calls with PreToolUse hooks
-            </span>
-            <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-              agentsec-hook-pack
-            </span>
-          </div>
-          <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
-            Fail-closed decision hooks for Claude Code and Codex: safe-command
-            fast paths, chained-command bypass protection, and
-            observe/prompt/enforce modes. Implemented and tested in the repo.
-          </p>
-        </a>
-        <a
-          href='https://github.com/pappdavid/agent-cli-mcp-rust'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
-        >
-          <div className='flex flex-wrap items-baseline justify-between gap-2'>
-            <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-              Directory guarding & secret scrubbing for stdio MCP servers
-            </span>
-            <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-              agent-cli-mcp-rust
-            </span>
-          </div>
-          <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
-            Allowed-roots path validation, destructive-command deny patterns,
-            and regex credential redaction of subprocess output — the policy and
-            redaction modules carry the unit tests.
-          </p>
-        </a>
+        {notes.map((note) => (
+          <a
+            key={note.repo}
+            href={note.url}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
+          >
+            <div className='flex flex-wrap items-baseline justify-between gap-2'>
+              <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
+                {note.title}
+              </span>
+              <span className='shrink-0 text-xs text-[var(--text-dim)]'>
+                {note.repo}
+              </span>
+            </div>
+            <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
+              {note.summary}
+            </p>
+          </a>
+        ))}
       </div>
     </section>
   );
