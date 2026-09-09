@@ -1,5 +1,6 @@
 import { createHmac } from 'crypto';
 import { NextResponse } from 'next/server';
+import { refMintRateLimit } from '@/lib/rate-limit';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import {
   normalizeReferralPersonalization,
@@ -7,6 +8,16 @@ import {
 } from '@/lib/referral-personalization';
 
 export async function POST(req: Request) {
+  const mintIp =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anon';
+  const { success: mintAllowed } = await refMintRateLimit.limit(mintIp);
+  if (!mintAllowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded (10/hour)' },
+      { status: 429 }
+    );
+  }
+
   const body = await req.json();
   const { company, notes, personalization } = body as {
     company?: string;

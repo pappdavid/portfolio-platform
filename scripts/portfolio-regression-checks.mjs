@@ -99,6 +99,38 @@ assert(landing.includes('students aged 10–16'), 'landing: Logiscool age range'
 assert(landing.includes('SIM.LATENCY'), 'landing: decorative telemetry must stay labelled SIM');
 assert(!landing.includes('setCommitCount'), 'landing: generated commit counter must not return');
 
+// Education framing must present the AI BSc years in the intro, not only as an
+// education line — and never claim the AI programme is the current one.
+assert(
+  landing.includes('studying\n                          Econometrics and Data Science at VU Amsterdam') ||
+    /studying\s+Econometrics and Data Science at VU Amsterdam/.test(landing),
+  'landing: CURRENTLY hero must name the current programme (Econometrics and Data Science)'
+);
+assert(
+  !/studying AI at VU/.test(landing),
+  'landing: stale "studying AI" hero claim must not return'
+);
+assert(
+  /Econometrics and Data Science/.test(landing),
+  'landing: current programme must appear in the copy'
+);
+assert(
+  !/BSc AI 2024[–-]2027|2024\s*[–-]\s*2027/.test(landing),
+  'landing: superseded AI 2024-2027 graduation claim must not return'
+);
+
+// Field notes must be data-driven and every entry must link a real public repo.
+const fieldNotes = JSON.parse(read('src/data/field-notes.json'));
+assert(Array.isArray(fieldNotes) && fieldNotes.length >= 4, 'field-notes: at least 4 notes');
+for (const note of fieldNotes) {
+  assert(note.title && note.repo && note.url && note.summary, `field-notes: incomplete entry ${note.repo}`);
+  assert(
+    note.url === `https://github.com/pappdavid/${note.repo}`,
+    `field-notes: ${note.repo} URL must point at pappdavid/${note.repo}`
+  );
+  assert(!/undefined|\{\{/.test(note.summary), `field-notes: ${note.repo} summary has placeholder text`);
+}
+
 const cvHtml = read('public/cv.html');
 assert(cvHtml.includes('Oct 2024'), 'cv.html: WEBINFORM start date');
 assert(cvHtml.includes('2026 – 2028 (expected)'), 'cv.html: VU Amsterdam dates');

@@ -1,0 +1,81 @@
+{
+  "task": "t_274179d1",
+  "date": "2026-09-07",
+  "profile": "correspondent",
+  "run_id": 16,
+  "repo": "/home/davidpapp/repos/portfolio-platform",
+  "base": {
+    "branch": "main",
+    "head_before": "5b7d24b",
+    "dirty_before": ["graphify-out/ (untracked, pre-existing, preserved untouched)"]
+  },
+  "branch": {
+    "name": "deterministic-capture",
+    "created_from": "main@5b7d24b",
+    "commit": "ca0f51a",
+    "commit_message": "feat: deterministic capture mode for evidence screenshots",
+    "commit_stat": "6 files changed, 313 insertions(+), 8 deletions(-)",
+    "pushed": true,
+    "push_output": "branch 'deterministic-capture' set up to track 'origin/deterministic-capture'"
+  },
+  "files_committed": [
+    "src/lib/capture-mode.ts",
+    "src/components/landing/landing-content.tsx",
+    "src/lib/scene/scene.ts",
+    "src/styles/globals.css",
+    "tools/hunt/shoot_demo_screens.sh",
+    "hunt-pipeline-ops/references/evidence-packet-screenshots.md"
+  ],
+  "content_verification": {
+    "method": "full-text read-back comparison against t_12f4ef6e attachments and recovered diffs (no execution toolset available for hashing)",
+    "results": [
+      {"file": "src/lib/capture-mode.ts", "compared_to": "attachment capture-mode.ts", "result": "MATCH"},
+      {"file": "src/components/landing/landing-content.tsx", "compared_to": "recovered/diffs/landing-content.tsx.diff", "result": "HUNKS_MATCH (capture import, Typewriter final-state, frozen SIM initializers, applyCaptureAttribute effect, timer-skip guard)"},
+      {"file": "src/lib/scene/scene.ts", "compared_to": "recovered/diffs/scene.ts.diff", "result": "HUNKS_MATCH (import, capture const, t=0 ternary, rAF guard)"},
+      {"file": "src/styles/globals.css", "compared_to": "recovered/diffs/globals.css.diff", "result": "MATCH (capture block identical)"},
+      {"file": "tools/hunt/shoot_demo_screens.sh", "compared_to": "attachment shoot_demo_screens.sh", "result": "MATCH (93 lines identical)"},
+      {"file": "hunt-pipeline-ops/references/evidence-packet-screenshots.md", "compared_to": "card step-5 requirements", "result": "COMPLETE (protocol wording present)"}
+    ]
+  },
+  "sha256_certification": {
+    "status": "NOT_EXECUTED",
+    "reason": "no sha256/execution toolset in correspondent profile",
+    "targets_from_transcript": {
+      "src/components/landing/landing-content.tsx": "07a8bb973b2d218af6b2138262990f306c09d58b0aab7f0a78b6cb11d5f56c25",
+      "src/lib/capture-mode.ts": "2e4d93bfa8c5347b6b057803e4c61086af7de69923aae4cb9f9f902fdbe61d79",
+      "src/lib/scene/scene.ts": "1987feb0b48dc84e010745aced6316ccfbddf53331409be17529c53b79890678",
+      "src/styles/globals.css": "f56f0dd09586a53097a952de1255013f78855321d050f9fa53e1f9b6aa10c767",
+      "tools/hunt/shoot_demo_screens.sh": "2e3a227c759f380fc86e9c773651593a2b37c46e0db2753ee0e36c021a8d7716"
+    },
+    "expected_mismatch": "tools/hunt/shoot_demo_screens.sh is RECONSTRUCTED (not byte-guaranteed) per recovery-review.md — a hash mismatch there is expected and must be recorded as such, never faked as byte-exact"
+  },
+  "tsc": {
+    "status": "NOT_EXECUTED",
+    "reason": "no tsc/shell on this profile",
+    "corroboration_path": "GitHub CI runs `npm run typecheck` on the pushed branch (pull_request trigger); PR creation blocked on interactive GitKraken auth",
+    "prior_evidence": "tsc exit 0 corroborated from implementer session transcript (recovery-review.md section 3)"
+  },
+  "determinism_run": {
+    "status": "NOT_EXECUTED",
+    "reason": "no chrome/chromium access from this profile; no execution toolset",
+    "protocol": "3 captures per role, independent temp profiles, sha256 byte-identical required, DOM validity guard, zero-arg refusal",
+    "note": "first actual determinism run remains unclaimed"
+  },
+  "deploy_verification": {
+    "status": "HANDOFF",
+    "reason": "no deploy authorization from this worker; no curl/HTTP toolset loaded",
+    "handoff": "host push lane / implementer: deploy per existing authorization, then curl /roles/* expecting 200 and capture-mode-reflected content"
+  },
+  "commands_executed": [
+    {"tool": "gitkraken git_branch create", "args": {"branch_name": "deterministic-capture"}, "exit": "ok (empty output)"},
+    {"tool": "gitkraken git_checkout", "args": {"branch": "deterministic-capture"}, "output": "M\tsrc/lib/scene/scene.ts"},
+    {"tool": "gitkraken git_add_or_commit add", "args": {"files": ["6 recovered files"]}, "exit": "ok (empty output)"},
+    {"tool": "gitkraken git_add_or_commit commit", "output": "[deterministic-capture ca0f51a] feat: deterministic capture mode for evidence screenshots — 6 files changed, 313 insertions(+), 8 deletions(-)"},
+    {"tool": "gitkraken git_push", "output": "branch 'deterministic-capture' set up to track 'origin/deterministic-capture'"},
+    {"tool": "gitkraken pull_request_create", "exit": "FAILED — requires interactive GitKraken account login (headless-impossible)"}
+  ],
+  "anomalies": [
+    "External writer materialized the recovered tree + hunt-pipeline-ops doc into the repo working tree during this run, between status checks at 03:59 and 04:00 local (file mtimes 04:00:14). Attributed 04:10 to the worker on superseded card t_b32591df (completed 04:05, same 6 files). All content verified by read-back before commit. Hotspot flagged; t_274179d1 is the sole coordination card for these files.",
+    "First git status showed a clean main tree; the same tool call pattern minutes later showed the full change set — the initial call's output is believed stale/cached, recorded here for the audit trail."
+  ]
+}

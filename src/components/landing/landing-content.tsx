@@ -10,6 +10,8 @@ import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personaliza
 import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
 import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
 import { DemoStrip } from '@/components/demos/demo-strip';
+import FIELD_NOTES from '@/data/field-notes.json';
+import { applyCaptureAttribute, isCaptureMode } from '@/lib/capture-mode';
 
 function Typewriter({
   text,
@@ -25,8 +27,9 @@ function Typewriter({
     const isVisited =
       typeof window !== 'undefined' &&
       sessionStorage.getItem('dp_visited') === 'true';
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (isVisited || mediaQuery.matches) {
+    // Capture mode (?capture=1 or reduced motion): render the FINAL state
+    // immediately — no typewriter race with the screenshot budget.
+    if (isVisited || isCaptureMode()) {
       setN(text.length);
       return;
     }
@@ -225,9 +228,19 @@ export function LandingContent({
   const [repoCount, setRepoCount] = useState<number | null>(null);
   const [themeProfile, setThemeProfile] = useState<string>('green');
   // Decorative terminal-UI values. Labelled SIM in the status bar — not
-  // real telemetry.
-  const [latency, setLatency] = useState<string>('5.2ms');
-  const [memLoad, setMemLoad] = useState<string>('43.1%');
+  // real telemetry. Frozen to fixed values in capture mode.
+  const [latency, setLatency] = useState<string>(() =>
+    isCaptureMode() ? '5.2ms' : '5.2ms'
+  );
+  const [memLoad, setMemLoad] = useState<string>(() =>
+    isCaptureMode() ? '43.1%' : '43.1%'
+  );
+
+  // Capture mode: flag the document so CSS freezes every animation
+  // (entrance fades, CRT flicker, cursor blink, pulses) at final state.
+  useEffect(() => {
+    applyCaptureAttribute();
+  }, []);
 
   // Load and apply initial theme profile from localStorage
   useEffect(() => {
@@ -261,8 +274,10 @@ export function LandingContent({
     document.documentElement.setAttribute('data-theme-profile', profile);
   }, []);
 
-  // Decorative status-bar animation timers (labelled SIM in the UI)
+  // Decorative status-bar animation timers (labelled SIM in the UI).
+  // Skipped entirely in capture mode so values stay fixed.
   useEffect(() => {
+    if (isCaptureMode()) return;
     const lInterval = setInterval(() => {
       const ms = (4.8 + Math.random() * 4.4).toFixed(1);
       setLatency(`${ms}ms`);
@@ -600,8 +615,8 @@ export function LandingContent({
                         <td className='mk'>CURRENTLY</td>
                         <td className='ms'>:</td>
                         <td className='mv'>
-                          building AI solutions at WEBINFORM & studying AI at VU
-                          Amsterdam
+                          building AI solutions at WEBINFORM &amp; studying
+                          Econometrics and Data Science at VU Amsterdam
                         </td>
                       </tr>
                       <tr>
@@ -652,7 +667,7 @@ export function LandingContent({
           <div className='divider' />
 
           {/* ============ SECTION 2b: DEMO STRIP ============ */}
-          {jobType && <DemoStrip roleId={jobType.id} />}
+          <DemoStrip roleId={jobType?.id ?? null} />
 
           <div className='divider' />
 
@@ -1191,6 +1206,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
 }
 
 function NotesSection() {
+  const notes = FIELD_NOTES;
   return (
     <section className='block' id='notes'>
       <div className='sec-head'>
@@ -1202,46 +1218,27 @@ function NotesSection() {
         repository where the pattern is implemented
       </p>
       <div className='flex flex-col gap-3 font-mono text-sm'>
-        <a
-          href='https://github.com/pappdavid/agentsec-hook-pack'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
-        >
-          <div className='flex flex-wrap items-baseline justify-between gap-2'>
-            <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-              Gating agent tool calls with PreToolUse hooks
-            </span>
-            <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-              agentsec-hook-pack
-            </span>
-          </div>
-          <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
-            Fail-closed decision hooks for Claude Code and Codex: safe-command
-            fast paths, chained-command bypass protection, and
-            observe/prompt/enforce modes. Implemented and tested in the repo.
-          </p>
-        </a>
-        <a
-          href='https://github.com/pappdavid/agent-cli-mcp-rust'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
-        >
-          <div className='flex flex-wrap items-baseline justify-between gap-2'>
-            <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-              Directory guarding & secret scrubbing for stdio MCP servers
-            </span>
-            <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-              agent-cli-mcp-rust
-            </span>
-          </div>
-          <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
-            Allowed-roots path validation, destructive-command deny patterns,
-            and regex credential redaction of subprocess output — the policy and
-            redaction modules carry the unit tests.
-          </p>
-        </a>
+        {notes.map((note) => (
+          <a
+            key={note.repo}
+            href={note.url}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
+          >
+            <div className='flex flex-wrap items-baseline justify-between gap-2'>
+              <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
+                {note.title}
+              </span>
+              <span className='shrink-0 text-xs text-[var(--text-dim)]'>
+                {note.repo}
+              </span>
+            </div>
+            <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
+              {note.summary}
+            </p>
+          </a>
+        ))}
       </div>
     </section>
   );

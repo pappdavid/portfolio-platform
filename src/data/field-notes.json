@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Gating agent tool calls with PreToolUse hooks",
+    "repo": "agentsec-hook-pack",
+    "url": "https://github.com/pappdavid/agentsec-hook-pack",
+    "summary": "Fail-closed decision hooks for Claude Code and Codex: safe-command fast paths, chained-command bypass protection, and observe/prompt/enforce modes. Implemented and tested in the repo."
+  },
+  {
+    "title": "Directory guarding & secret scrubbing for stdio MCP servers",
+    "repo": "agent-cli-mcp-rust",
+    "url": "https://github.com/pappdavid/agent-cli-mcp-rust",
+    "summary": "Allowed-roots path validation, destructive-command deny patterns, and regex credential redaction of subprocess output — the policy and redaction modules carry the unit tests."
+  },
+  {
+    "title": "Deterministic risk analysis for MCP tool manifests",
+    "repo": "mcpguard-lite",
+    "url": "https://github.com/pappdavid/mcpguard-lite",
+    "summary": "Accepts a raw MCP tools/list response and returns capability risks, severity, and missing security controls using transparent, explainable rules — it never executes or probes the listed tools."
+  },
+  {
+    "title": "Explainable risk scoring for AI-agent inventories",
+    "repo": "agentmap",
+    "url": "https://github.com/pappdavid/agentmap",
+    "summary": "Stores declared agent metadata and computes a 0-100 risk score from permissions, data access, and tool descriptions — readiness labels and human-readable factors, not runtime enforcement."
+  },
+  {
+    "title": "Human approval queues for agent actions",
+    "repo": "approveops",
+    "url": "https://github.com/pappdavid/approveops",
+    "summary": "Classifies an action's risk deterministically, queues it for a human decision, and records approve/reject with reasons — the calling system waits for and enforces the recorded decision."
+  },
+  {
+    "title": "Deterministic prompt-risk scanning",
+    "repo": "PromptShield",
+    "url": "https://github.com/pappdavid/PromptShield",
+    "summary": "A small rule set flags instruction overrides, jailbreak markers, and exfiltration intent with evidence excerpts and remediation guidance — an auditable first-pass filter, honestly labelled heuristic."
+  }
+]
