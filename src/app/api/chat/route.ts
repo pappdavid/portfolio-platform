@@ -138,6 +138,11 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model,
+    // ponytail: mercury-2.5 defaults to reasoning; site chat wants fast plain text.
+    // Drop this providerOptions block if the default model stops reasoning by default.
+    providerOptions: {
+      openrouter: { reasoning: { enabled: false } }
+    },
     system: referral
       ? `${SYSTEM_PROMPT}\n\n${buildReferralChatContext(referral)}`
       : SYSTEM_PROMPT,

@@ -4,7 +4,7 @@ export const PORTFOLIO_GATEWAY_MODEL_ID =
   process.env.PORTFOLIO_CHAT_MODEL || 'deepseek/deepseek-v4-flash-0731';
 
 export const PORTFOLIO_OPENROUTER_MODEL_ID =
-  process.env.PORTFOLIO_OPENROUTER_MODEL || 'openrouter/free';
+  process.env.PORTFOLIO_OPENROUTER_MODEL || 'inception/mercury-2.5';
 
 export function getPortfolioModel() {
   const apiKey = process.env.OPENROUTER_API_KEY;
