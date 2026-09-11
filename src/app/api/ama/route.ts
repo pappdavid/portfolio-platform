@@ -117,6 +117,10 @@ export async function POST(req: Request) {
   try {
     const { text: raw } = await generateText({
       model,
+      // ponytail: mercury-2.5 reasons by default; ama wants plain JSON text.
+      providerOptions: {
+        openrouter: { reasoning: { enabled: false } }
+      },
       system: SYSTEM_PROMPT,
       prompt: `Context:\n${context}\n\nQuestion: ${question}`
     });
