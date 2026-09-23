@@ -201,15 +201,18 @@ export function resolveJobType(input: unknown): JobTypeProfile | null {
   const normalized = normalizeJobTypeInput(input);
   if (!normalized) return null;
 
-  const direct = normalized.replace(/ /g, '-') as JobTypeId;
+  // Canonicalize to a hyphenated token so spaced aliases ("ai engineer") and
+  // hyphenated deep links ("?role=ai-engineer") resolve the same profile.
+  const token = normalized.replace(/ /g, '-');
+  const direct = token as JobTypeId;
   if (direct in JOB_TYPES) return JOB_TYPES[direct];
 
   for (const [id, aliases] of Object.entries(JOB_TYPE_ALIASES) as [
     JobTypeId,
     string[]
   ][]) {
-    const candidates = [id.replace(/-/g, ' '), ...aliases];
-    if (candidates.some((alias) => alias === normalized)) {
+    const candidates = [id, ...aliases].map((alias) => alias.replace(/ /g, '-'));
+    if (candidates.includes(token)) {
       return JOB_TYPES[id];
     }
   }

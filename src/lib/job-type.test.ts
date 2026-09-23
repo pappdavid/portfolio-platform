@@ -26,6 +26,11 @@ test('resolves every canonical id, label, and common alias', () => {
   assert.equal(resolveJobType('erp')?.id, 'ai-integration');
   assert.equal(resolveJobType('rpa')?.id, 'automation');
   assert.equal(resolveJobType('full-stack')?.id, 'product-engineering');
+  // Hyphenated shorthand resolves the same profile as its spaced alias, so
+  // /?role=ai-engineer personalizes like /?role=ai-engineering instead of
+  // falling through to the general landing page.
+  assert.equal(resolveJobType('ai-engineer')?.id, 'ai-engineering');
+  assert.equal(resolveJobType('ml-engineer')?.id, 'ai-engineering');
 });
 
 test('unknown or empty input falls back to null so callers render the general site', () => {
