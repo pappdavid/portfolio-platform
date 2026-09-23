@@ -1,0 +1,27 @@
+--- a/node_modules/@crayonai/react-ui/dist/polyfills/react-17.js
++++ b/node_modules/@crayonai/react-ui/dist/polyfills/react-17.js
+@@ -1,11 +1,16 @@
+-import { useRef } from "react";
+-// Polyfill for useId (React 18+)
+-let globalIdCounter = 0;
++import * as React from "react";
++// PATCHED (t_00d05f62 hydration fix): the shipped polyfill used a module-global
++// counter (`uid-${++globalIdCounter}`), which diverges between SSR and the
++// client bundle and guarantees a hydration mismatch (React #418) on every
++// ThemeProvider render. Delegate to React's real useId (SSR-stable). React's
++// ids contain colons/tildes, so sanitize to a CSS-safe token for use in
++// class names. Falls back to React 17-safe counter ONLY if React.useId is
++// unavailable (it never is on React 18/19 here).
+ export function useId() {
+-    const idRef = useRef(null);
+-    if (!idRef.current) {
+-        idRef.current = `uid-${++globalIdCounter}`;
++    const reactId = React.useId();
++    const idRef = React.useRef(null);
++    if (idRef.current === null) {
++        idRef.current = `uid-${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+     }
+     return idRef.current;
+ }
+-//# sourceMappingURL=react-17.js.map
+\ No newline at end of file
