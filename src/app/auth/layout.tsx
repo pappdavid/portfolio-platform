@@ -1,3 +1,4 @@
+import '@/styles/themes/davidpapp.css';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

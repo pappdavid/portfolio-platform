@@ -798,8 +798,19 @@ function WorkSection({ triggerFocus, referral, jobType }: WorkSectionProps) {
           <div key={p.name} className='fs-cell'>
             <div
               className='fs-row'
+              role='button'
+              tabIndex={0}
+              aria-label={`${open === i ? 'Collapse' : 'Expand'} ${p.name} case study`}
               aria-expanded={open === i}
               aria-controls={`expand-${p.name}`}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  const nextOpen = open === i ? -1 : i;
+                  setOpen(nextOpen);
+                  triggerFocus(nextOpen !== -1 ? p.name : null);
+                }
+              }}
               onMouseEnter={() => {
                 setHover(i);
                 triggerFocus(p.name);
@@ -992,9 +1003,11 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         features, APIs, and automation for web applications and ERP-integrated
         systems — and, on my own time, local-first context infrastructure, agent
         orchestration tooling, and the integrated AgentSec security suite.
-        I&apos;m studying Econometrics and Data Science at VU Amsterdam (started September 2026, expected graduation 2028), building on prior study in artificial intelligence, machine learning, and statistics, and I&apos;m looking for
-        full-time AI engineering, AI solutions, integration, automation, or
-        agent-infrastructure roles.
+        I&apos;m studying Econometrics and Data Science at VU Amsterdam (started
+        September 2026, expected graduation 2028), building on prior study in
+        artificial intelligence, machine learning, and statistics, and I&apos;m
+        looking for full-time AI engineering, AI solutions, integration,
+        automation, or agent-infrastructure roles.
       </p>
 
       {pitch && (

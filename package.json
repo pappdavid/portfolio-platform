@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --quiet src",
     "lint:fix": "eslint src --fix && npm run format",
     "lint:strict": "ESLINT_USE_FLAT_CONFIG=true eslint --quiet src",
     "format": "prettier --write .",

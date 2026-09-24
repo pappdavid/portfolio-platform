@@ -29,10 +29,12 @@ const projects: Project[] = [
     id: 'voidarch-context',
     title: 'VoidArch Context',
     status: 'Active project · local-first CLI and engine',
-    description: 'Persistent repo memory, document and code-graph retrieval, local embeddings, and deterministic token-budgeted context packs for coding agents.',
+    description:
+      'Persistent repo memory, document and code-graph retrieval, local embeddings, and deterministic token-budgeted context packs for coding agents.',
     tags: ['TypeScript', 'SurrealDB', 'Tree-sitter', 'ONNX', 'BM25'],
     tabs: {
-      overview: 'VoidArch Context is a standalone, agent-neutral context engine. It indexes repository files and documentation into embedded SurrealDB, stores durable memories and task state, builds a Tree-sitter code graph, supports local ONNX embeddings, and fuses available channels into a token-budgeted Markdown or JSON context pack. It runs locally without Docker or Python. Current limitations include single-process database access and an explicit embed pass for vector retrieval.',
+      overview:
+        'VoidArch Context is a standalone, agent-neutral context engine. It indexes repository files and documentation into embedded SurrealDB, stores durable memories and task state, builds a Tree-sitter code graph, supports local ONNX embeddings, and fuses available channels into a token-budgeted Markdown or JSON context pack. It runs locally without Docker or Python. Current limitations include single-process database access and an explicit embed pass for vector retrieval.',
       code: {
         snippet: `voidarch-context init
 voidarch-context ingest
@@ -58,10 +60,12 @@ voidarch-context context "fix the auth token refresh bug"`,
     id: 'voidarch-studio',
     title: 'VoidArch Studio',
     status: 'Active development · local orchestration control room',
-    description: 'Daemon-owned agent sessions, worktrees, runs, routing, safety hooks, observability, and a Tauri desktop shell.',
+    description:
+      'Daemon-owned agent sessions, worktrees, runs, routing, safety hooks, observability, and a Tauri desktop shell.',
     tags: ['TypeScript', 'Node.js', 'PTY', 'WebSocket', 'xterm.js', 'Tauri'],
     tabs: {
-      overview: 'VoidArch Studio is the orchestration layer built on Context. The current repository includes a localhost dashboard, daemon-owned PTY sessions for Claude, Codex, and shell, worktree and run management, transcript and resume metadata, safety hooks, observability, and a thin Tauri v2 desktop shell. It is in active development and is not presented as a released hosted service.',
+      overview:
+        'VoidArch Studio is the orchestration layer built on Context. The current repository includes a localhost dashboard, daemon-owned PTY sessions for Claude, Codex, and shell, worktree and run management, transcript and resume metadata, safety hooks, observability, and a thin Tauri v2 desktop shell. It is in active development and is not presented as a released hosted service.',
       code: {
         snippet: `pnpm dfc:dashboard --repo-root /path/to/repo
 # localhost control room: sessions, worktrees, runs, memory, metrics
@@ -82,18 +86,26 @@ voidarch-context context "fix the auth token refresh bug"`,
     id: 'agentsec-suite',
     title: 'AgentSec Suite',
     status: 'Working integrated suite · live demo',
-    description: 'One integrated interface for prompt scanning, MCP manifest analysis, agent risk mapping, approval workflows, and local runtime hooks.',
+    description:
+      'One integrated interface for prompt scanning, MCP manifest analysis, agent risk mapping, approval workflows, and local runtime hooks.',
     tags: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Vitest', 'Node.js'],
     liveUrl: 'https://promptshield-cyan.vercel.app',
     componentLinks: [
-        { label: 'PromptShield', url: 'https://github.com/pappdavid/PromptShield' },
-        { label: 'Hook Pack', url: 'https://github.com/pappdavid/agentsec-hook-pack' },
-        { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
-        { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
-        { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
-      ],
+      {
+        label: 'PromptShield',
+        url: 'https://github.com/pappdavid/PromptShield'
+      },
+      {
+        label: 'Hook Pack',
+        url: 'https://github.com/pappdavid/agentsec-hook-pack'
+      },
+      { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
+      { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
+      { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
+    ],
     tabs: {
-      overview: 'AgentSec Suite combines four web modules and one local enforcement package: PromptShield scans prompts and proposed actions; MCPGuard analyzes declared MCP tool manifests; AgentMap scores declared agent permissions and data access; ApproveOps manages owner-scoped approval decisions and audit writes; and the hook pack gates Claude Code and Codex tool calls. The integrated deployment is the public demo. Component repositories are linked as supporting evidence rather than presented as five separate products.',
+      overview:
+        'AgentSec Suite combines four web modules and one local enforcement package: PromptShield scans prompts and proposed actions; MCPGuard analyzes declared MCP tool manifests; AgentMap scores declared agent permissions and data access; ApproveOps manages owner-scoped approval decisions and audit writes; and the hook pack gates Claude Code and Codex tool calls. The integrated deployment is the public demo. Component repositories are linked as supporting evidence rather than presented as five separate products.',
       code: {
         snippet: `const modules = [
   { slug: 'promptshield', name: 'PromptShield' },
@@ -120,10 +132,19 @@ voidarch-context context "fix the auth token refresh bug"`,
     id: 'saas-core',
     title: 'saas-core',
     status: 'Private engineering infrastructure',
-    description: 'Modular Next.js scaffold and product-factory tooling with typed presets, environment validation, rendering, and CI workflows.',
-    tags: ['Next.js', 'TypeScript', 'Prisma', 'Clerk', 'Stripe', 'GitHub Actions'],
+    description:
+      'Modular Next.js scaffold and product-factory tooling with typed presets, environment validation, rendering, and CI workflows.',
+    tags: [
+      'Next.js',
+      'TypeScript',
+      'Prisma',
+      'Clerk',
+      'Stripe',
+      'GitHub Actions'
+    ],
     tabs: {
-      overview: 'saas-core is a private engineering repository used as supporting infrastructure. The codebase contains a modular Next.js scaffold, typed module and preset planning, environment validation, product rendering scripts, CI workflows, and provider adapters. It is shown as an engineering system, not as a public product or live demo; no provisioning or integration claim is made beyond what the repository implements.',
+      overview:
+        'saas-core is a private engineering repository used as supporting infrastructure. The codebase contains a modular Next.js scaffold, typed module and preset planning, environment validation, product rendering scripts, CI workflows, and provider adapters. It is shown as an engineering system, not as a public product or live demo; no provisioning or integration claim is made beyond what the repository implements.',
       code: {
         snippet: `"factory:plan": "tsx scripts/factory/plan-product.ts",
 "factory:render": "tsx scripts/factory/render-product.ts",
@@ -167,9 +188,10 @@ export function ProjectsContent() {
             Selected engineering projects
           </h1>
           <p className='mt-4 max-w-2xl text-lg leading-relaxed text-[var(--dp-text-dim)]'>
-            Four current systems spanning local-first context, agent orchestration,
-            security controls, and reusable product infrastructure. Public links are
-            shown only where a repository or working demo is actually accessible.
+            Four current systems spanning local-first context, agent
+            orchestration, security controls, and reusable product
+            infrastructure. Public links are shown only where a repository or
+            working demo is actually accessible.
           </p>
         </div>
       </section>
@@ -211,6 +233,13 @@ export function ProjectsContent() {
                   </div>
                 </button>
                 <div className='mt-2 flex justify-center gap-4 text-xs'>
+                  <a
+                    href='#project-case-study'
+                    onClick={() => setActiveProject(p.id)}
+                    className='text-[var(--dp-accent)] underline-offset-2 hover:underline'
+                  >
+                    Case study ↓
+                  </a>
                   {p.repoUrl && (
                     <a
                       href={p.repoUrl}
@@ -239,7 +268,10 @@ export function ProjectsContent() {
       </section>
 
       {/* Active Project Detail */}
-      <section className='border-t border-[var(--dp-border)] py-12'>
+      <section
+        id='project-case-study'
+        className='border-t border-[var(--dp-border)] py-12'
+      >
         <div className='mx-auto max-w-4xl px-4'>
           <h2 className='mb-6 text-2xl font-bold text-[var(--dp-text)]'>
             {project.title}
