@@ -24,9 +24,7 @@ function Typewriter({
 }) {
   const [n, setN] = useState(0);
   useEffect(() => {
-    const isVisited =
-      typeof window !== 'undefined' &&
-      sessionStorage.getItem('dp_visited') === 'true';
+    const isVisited = typeof window !== 'undefined' && false;
     // Capture mode (?capture=1 or reduced motion): render the FINAL state
     // immediately — no typewriter race with the screenshot budget.
     if (isVisited || isCaptureMode()) {
@@ -42,9 +40,6 @@ function Typewriter({
         setN(i);
         if (i >= text.length) {
           clearInterval(t);
-          if (typeof window !== 'undefined') {
-            sessionStorage.setItem('dp_visited', 'true');
-          }
         }
       }, speed);
     }, startDelay);
@@ -244,7 +239,7 @@ export function LandingContent({
 
   // Load and apply initial theme profile from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('theme-profile') || 'green';
+    const saved = 'green';
     setThemeProfile(saved);
     document.documentElement.setAttribute('data-theme-profile', saved);
   }, []);
@@ -270,7 +265,7 @@ export function LandingContent({
 
   const changeThemeProfile = useCallback((profile: string) => {
     setThemeProfile(profile);
-    localStorage.setItem('theme-profile', profile);
+
     document.documentElement.setAttribute('data-theme-profile', profile);
   }, []);
 
@@ -1002,12 +997,11 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         I build AI solutions professionally at WEBINFORM — production LLM
         features, APIs, and automation for web applications and ERP-integrated
         systems — and, on my own time, local-first context infrastructure, agent
-        orchestration tooling, and the integrated AgentSec security suite.
-        I began university studies in 2024 and changed to Econometrics and Data
+        orchestration tooling, and the integrated AgentSec security suite. I
+        began university studies in 2024 and changed to Econometrics and Data
         Science at VU Amsterdam in September 2026; graduation is expected in
-        2028. I&apos;m
-        looking for full-time AI engineering, AI solutions, integration,
-        automation, or agent-infrastructure roles.
+        2028. I&apos;m looking for full-time AI engineering, AI solutions,
+        integration, automation, or agent-infrastructure roles.
       </p>
 
       {pitch && (
@@ -1056,9 +1050,10 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
               integrations, repaired it, and cut LLM API costs by roughly 40%.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Delivered client websites and webshops, internal systems, user-facing AI
-              functionality, and ERP/AI integrations, with direct involvement
-              in discovery, solution design, client coordination, and pricing.
+              <span className='li-mark'>&gt;</span> Delivered client websites
+              and webshops, internal systems, user-facing AI functionality, and
+              ERP/AI integrations, with direct involvement in discovery,
+              solution design, client coordination, and pricing.
             </li>
           </ul>
         </div>
@@ -1070,8 +1065,8 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
             <span className='rs-meta rs-dates'>2024 — 2028 (Expected)</span>
           </div>
           <div className='rs-meta mt-1' style={{ textTransform: 'none' }}>
-            University studies began in 2024; changed programme in September 2026.
-            Expected graduation: 2028
+            University studies began in 2024; changed programme in September
+            2026. Expected graduation: 2028
           </div>
           <ul className='rs-bullets'>
             <li>
@@ -1360,6 +1355,9 @@ function ContactSection({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            referralToken:
+              new URLSearchParams(window.location.search).get('ref') ||
+              undefined,
             messages: msgs
               .filter((m) => !m.isCustomCard)
               .map((m) => ({

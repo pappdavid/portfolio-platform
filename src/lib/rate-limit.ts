@@ -1,3 +1,4 @@
+import { createHmac } from 'crypto';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -30,13 +31,21 @@ function createLimiter(
   const limiter = new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(window, duration),
-    analytics: true,
+    analytics: false,
     prefix
   });
   return {
     limit: async (identifier: string): Promise<RateLimitResult> => {
       try {
-        return await limiter.limit(identifier);
+        const key = createHmac(
+          'sha256',
+          process.env.MCP_HMAC_SECRET ||
+            process.env.UPSTASH_REDIS_REST_TOKEN ||
+            'local-only'
+        )
+          .update(`${new Date().toISOString().slice(0, 10)}:${identifier}`)
+          .digest('hex');
+        return await limiter.limit(key);
       } catch {
         // Redis unreachable — degrade gracefully, allow request through
         return { success: true, limit: 0, remaining: 0 };
@@ -63,11 +72,7 @@ export const amaPublicRateLimit = createLimiter(
   'ratelimit:ama:public'
 );
 export const amaAuthRateLimit = createLimiter(20, '1 h', 'ratelimit:ama:auth');
-export const refMintRateLimit = createLimiter(
-  10,
-  '1 h',
-  'ratelimit:ref:mint'
-);
+export const refMintRateLimit = createLimiter(10, '1 h', 'ratelimit:ref:mint');
 export const refVisitRateLimit = createLimiter(
   30,
   '1 m',

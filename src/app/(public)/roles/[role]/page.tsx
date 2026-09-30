@@ -1,16 +1,11 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { LandingContent } from '@/components/landing/landing-content';
+import { ReferralPrivacy } from '@/components/landing/referral-privacy';
 import { ReferralBanner } from '@/components/landing/referral-banner';
 import { getReferralPersonalization } from '@/lib/referral-context';
-import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
 import { mergeReferralWithCompanySlug } from '@/lib/company-slug';
-import {
-  JOB_TYPES,
-  getJobTypeSiteView,
-  resolveJobType
-} from '@/lib/job-type';
+import { JOB_TYPES, getJobTypeSiteView, resolveJobType } from '@/lib/job-type';
 
 interface RolePageProps {
   params: Promise<{ role: string }>;
@@ -65,10 +60,9 @@ export default async function JobTypeLandingPage({
   if (!jobType) notFound();
 
   const query = (await searchParams) ?? {};
-  const cookieStore = await cookies();
-  const token = cookieStore.get(REFERRAL_COOKIE)?.value;
-  const cookieReferral = await getReferralPersonalization(token);
-  const referral = mergeReferralWithCompanySlug(cookieReferral, query.c);
+  const token = typeof query.ref === 'string' ? query.ref : undefined;
+  const pageReferral = await getReferralPersonalization(token);
+  const referral = mergeReferralWithCompanySlug(pageReferral, query.c);
 
   // Referral copy (tracked recruiter links) stays the most specific override;
   // otherwise the job-type profile shapes hero, focus, chat, and CTAs.
@@ -77,6 +71,7 @@ export default async function JobTypeLandingPage({
   return (
     <>
       <ReferralBanner referral={referral} />
+      {pageReferral && token && <ReferralPrivacy key={token} token={token} />}
       <LandingContent view={view} />
     </>
   );

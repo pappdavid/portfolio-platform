@@ -1,6 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { streamText } from 'ai';
 import fs from 'fs';
 import path from 'path';
@@ -17,8 +16,7 @@ import {
 import { getReferralPersonalization } from '@/lib/referral-context';
 import {
   buildReferralChatContext,
-  buildReferralRetrievalQuery,
-  REFERRAL_COOKIE
+  buildReferralRetrievalQuery
 } from '@/lib/referral-personalization';
 import {
   checkAndConsumeQuota,
@@ -98,12 +96,10 @@ export async function POST(req: Request) {
     }
   }
 
-  const cookieStore = await cookies();
-  const referral = await getReferralPersonalization(
-    cookieStore.get(REFERRAL_COOKIE)?.value
-  );
-
   const body = await req.json();
+  const referral = await getReferralPersonalization(
+    typeof body.referralToken === 'string' ? body.referralToken : undefined
+  );
   const { messages } = body as {
     messages: ChatMessage[];
   };

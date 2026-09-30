@@ -18,5 +18,10 @@ export async function getReferralPersonalization(
     .maybeSingle();
 
   if (error || !data) return null;
-  return parseReferralNotes(data.notes, data.company) ?? { company: data.company };
+  const snapshot: ReferralPersonalizationSnapshot = parseReferralNotes(
+    data.notes,
+    data.company
+  ) ?? { company: data.company };
+  delete snapshot.applicationId; // internal ledger identifier is unnecessary visitor context
+  return snapshot;
 }

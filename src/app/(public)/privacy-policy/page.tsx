@@ -1,94 +1,104 @@
 import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Privacy Policy'
-};
-
+export const metadata: Metadata = { title: 'Privacy and optional counting' };
 export default function PrivacyPolicyPage() {
   return (
     <div className='py-20'>
       <article className='prose dark:prose-invert mx-auto max-w-3xl px-4'>
-        <h1>Privacy Policy</h1>
-        <p className='lead'>Last updated: September 2026</p>
-
-        <h2>Data We Collect</h2>
-        <p>When you use this site, the following data may be collected:</p>
-        <ul>
-          <li>
-            <strong>Account data</strong> — email address and profile
-            information provided via Clerk authentication.
-          </li>
-          <li>
-            <strong>Referral visits</strong> — when you arrive via a referral
-            link (<code>/r/&lt;token&gt;</code>), the site records the visit
-            for the link owner: a truncated IP address (last octet removed,
-            IPv4; equivalent truncation for IPv6), your browser user-agent
-            string, and the country derived from the request. No full IP
-            addresses are stored, and no cross-site tracking occurs.
-          </li>
-          <li>
-            <strong>Referral cookie</strong> — a referral link sets one
-            first-party, HTTP-only cookie (<code>dp_ref</code>) lasting 30
-            days so the site can show you the role-relevant version of the
-            page. It contains the referral token only, is not used for
-            advertising, and is not shared with third parties.
-          </li>
-          <li>
-            <strong>Demo usage</strong> — when a signed-in recruiter uses a
-            demo, the demo type and account are logged to enforce demo
-            quotas.
-          </li>
-          <li>
-            <strong>Rate-limit counters</strong> — short-lived request
-            counters for the assistant and referral endpoints. Assistant
-            conversations themselves are not persisted by this site.
-          </li>
-        </ul>
-
-        <h2>How We Use Your Data</h2>
-        <ul>
-          <li>To provide and maintain the site.</li>
-          <li>To show referral recipients the most relevant version of the
-            site content.</li>
-          <li>To enforce rate limits, demo quotas, and prevent abuse.</li>
-          <li>To improve the site based on aggregate usage patterns.</li>
-        </ul>
-
-        <h2>Retention</h2>
+        <h1>Privacy and optional counting</h1>
         <p>
-          Referral visit records are deleted automatically after 90 days.
-          Rate-limit counters expire within hours. Account data is kept until
-          you delete your account. Demo quota records are kept while the
-          quota is active and expire with it.
+          Updated 30 September 2026. This portfolio is operated by David Papp.
+          Privacy contact:{' '}
+          <a href='mailto:contact@davidpapp.dev'>contact@davidpapp.dev</a>.
         </p>
-
-        <h2>Data Storage</h2>
+        <h2>Referral links and your choice</h2>
         <p>
-          All data is stored in Supabase with row-level security (RLS)
-          enabled. Authentication is managed by Clerk. No data is sold, and
-          no analytics or advertising scripts are used.
+          A referral link selects company and role content for the current page.
+          The URL contains the application link token. Opening it does not
+          record a visit, set a persistent referral cookie, or collect browsing
+          activity. Do not share the link if you want to keep that application
+          context private. Outgoing links use a no-referrer policy.
         </p>
-
-        <h2>Your Rights</h2>
         <p>
-          You may request access to, correction of, or deletion of your
-          personal data by contacting us. Account deletion can be initiated
-          through the dashboard profile settings. Because referral visit
-          records contain no full IP addresses or direct identifiers, they
-          cannot normally be linked back to you; deletion requests will
-          nonetheless be honoured where feasible.
+          Optional counting is off by default. The page offers equally
+          accessible “Reject counting” and “Allow this count” buttons. Rejection
+          does not affect the content or assistant. Allowing increases a counter
+          for that application link once. The site stores only an aggregate
+          count and coarse calendar dates, without an IP address, browser
+          user-agent, country, visitor fingerprint, page trail or time-on-page
+          measurement.
         </p>
-
-        <h2>Cookies</h2>
         <p>
-          We use essential cookies for authentication (Clerk session) and
-          theme preference, plus the first-party referral cookie described
-          above. No tracking or advertising cookies are used, and there is no
-          third-party analytics on this site.
+          After allowing, “Withdraw and remove count” is available on the same
+          page. A random withdrawal receipt is held only in the page’s memory;
+          the server stores its hash and link association for up to 24 hours of
+          withdrawal access. Closing or reloading loses that receipt, and the
+          aggregate cannot then be matched to an individual visitor. Expired
+          receipts are removed on later counting/withdrawal requests and by the
+          existing daily sync job; deletion may be delayed if those operations
+          fail. Every new page starts with counting off.
         </p>
-
-        <h2>Contact</h2>
-        <p>For privacy-related questions, contact contact@davidpapp.dev.</p>
+        <p>
+          Old request-level referral records were replaced with explicitly
+          labelled legacy totals and coarse dates. Their raw IP, browser and
+          country fields were removed. Those historical counts are not evidence
+          of consent or unique people. Aggregates remain with their application
+          link until that link is deleted or a review determines they are no
+          longer needed.
+        </p>
+        <h2>Security processing and preferences</h2>
+        <p>
+          Hosting necessarily processes network requests, including IP
+          addresses. Vercel and other processors may retain security and service
+          logs under their policies. This is separate from optional referral
+          counting. Rate limits use a server-hashed identifier with a daily key
+          rotation before sending it to Upstash Redis. Upstash rate-limit
+          analytics are disabled for new requests. Rate-limit counters have
+          short operational windows; provider backups and historical logs
+          require separate retention review.
+        </p>
+        <p>
+          Referral and automatic theme cookies are no longer set. Previously
+          issued referral/theme cookies are expired when you revisit the site.
+          Theme choices on the public page stay in page memory. Authentication
+          and dashboard features may use Clerk session cookies and preference
+          storage; these are not represented as blanket-exempt cookies. Their
+          purposes, necessity and processor settings require review before
+          expanding their use.
+        </p>
+        <h2>AI assistant and demos</h2>
+        <p>
+          When you ask the assistant a question, the conversation and relevant
+          portfolio context are sent to the configured AI service, through
+          Vercel AI Gateway or OpenRouter and its model provider. Do not submit
+          sensitive personal information. The application does not write raw
+          conversations into its own database, but this does not guarantee that
+          providers keep no logs. Provider retention, international transfers,
+          contractual terms and any zero-retention option must be reviewed.
+        </p>
+        <p>
+          Account features can process email and profile information through
+          Clerk. Demo quota/event tables are not active in this site’s current
+          database. Enabling account/demo usage recording requires a separate
+          retention and related-account-deletion review; privacy requests can be
+          sent to the contact above.
+        </p>
+        <h2>Storage, access and your rights</h2>
+        <p>
+          Supabase stores application metadata, aggregate counts and temporary
+          withdrawal receipts. Browser access is restricted with row-level
+          security and permissions; trusted server operations use privileged
+          service credentials. Authentication is provided by Clerk, hosting by
+          Vercel and rate limiting by Upstash. No service credential is included
+          in browser code.
+        </p>
+        <p>
+          You can request access, correction, deletion, objection, or
+          information about processing at the privacy contact above. Optional
+          counting uses the explicit page choice described here. Legal bases for
+          necessary hosting, security, account/demo processing, processor
+          agreements and international transfers remain subject to review; this
+          implementation is not a legal compliance certification.
+        </p>
       </article>
     </div>
   );

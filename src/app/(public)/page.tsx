@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { LandingContent } from '@/components/landing/landing-content';
+import { ReferralPrivacy } from '@/components/landing/referral-privacy';
 import { ReferralBanner } from '@/components/landing/referral-banner';
 import { getReferralPersonalization } from '@/lib/referral-context';
-import { REFERRAL_COOKIE } from '@/lib/referral-personalization';
 import { mergeReferralWithCompanySlug } from '@/lib/company-slug';
 import { resolveJobTypeFromSearchParams } from '@/lib/job-type';
 
@@ -36,20 +35,22 @@ export default async function LandingPage({
   const params = (await searchParams) ?? {};
   const jobType = resolveJobTypeFromSearchParams(params);
   if (jobType) {
-    redirect(`/roles/${jobType.id}`);
+    redirect(
+      `/roles/${jobType.id}${typeof params.ref === 'string' && /^[a-f0-9]{16}$/.test(params.ref) ? `?ref=${params.ref}` : ''}`
+    );
   }
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get(REFERRAL_COOKIE)?.value;
-  const cookieReferral = await getReferralPersonalization(token);
+  const token = typeof params.ref === 'string' ? params.ref : undefined;
+  const pageReferral = await getReferralPersonalization(token);
   // Hunt CVs use /?c=<company-slug> until a native /r/<token> is bound.
-  // Cookie-backed referral still wins. The slug only frames the audience —
+  // Current-page referral context wins. The slug only frames the audience —
   // it does not invent facts about the company.
-  const referral = mergeReferralWithCompanySlug(cookieReferral, params.c);
+  const referral = mergeReferralWithCompanySlug(pageReferral, params.c);
 
   return (
     <>
       <ReferralBanner referral={referral} />
+      {pageReferral && token && <ReferralPrivacy key={token} token={token} />}
       <LandingContent referral={referral} />
     </>
   );

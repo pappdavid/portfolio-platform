@@ -10,14 +10,6 @@ import {
 
 import { DEFAULT_THEME } from './theme.config';
 
-const COOKIE_NAME = 'active_theme';
-
-function setThemeCookie(theme: string) {
-  if (typeof window === 'undefined') return;
-
-  document.cookie = `${COOKIE_NAME}=${theme}; path=/; max-age=31536000; SameSite=Lax; ${window.location.protocol === 'https:' ? 'Secure;' : ''}`;
-}
-
 type ThemeContextType = {
   activeTheme: string;
   setActiveTheme: (theme: string) => void;
@@ -39,8 +31,6 @@ export function ActiveThemeProvider({
     // Only update if theme has changed
     const currentTheme = document.documentElement.getAttribute('data-theme');
     if (currentTheme !== activeTheme) {
-      setThemeCookie(activeTheme);
-
       // Remove existing data-theme attribute
       document.documentElement.removeAttribute('data-theme');
 
@@ -57,7 +47,6 @@ export function ActiveThemeProvider({
       }
     } else {
       // Still update cookie in case it's missing
-      setThemeCookie(activeTheme);
     }
   }, [activeTheme]);
 
