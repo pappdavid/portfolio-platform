@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import {
+  getPortfolioModel,
+  PORTFOLIO_GATEWAY_MODEL_ID,
+  PORTFOLIO_OPENROUTER_MODEL_ID
+} from '../../../lib/openrouter';
 const route = readFileSync(new URL('./route.ts', import.meta.url), 'utf8');
 const provider = readFileSync(
   new URL('../../../lib/openrouter.ts', import.meta.url),
@@ -16,14 +21,30 @@ test('chat uses the Vercel AI SDK with Gateway fallback and OpenRouter preferenc
   assert.match(route, /streamText/);
   assert.match(provider, /@openrouter\/ai-sdk-provider/);
   assert.match(provider, /OPENROUTER_API_KEY/);
-  assert.match(provider, /openrouter\/free/);
-  assert.match(provider, /deepseek\/deepseek-v4-flash-0731/);
   assert.doesNotMatch(
     `${route}\n${provider}`,
     /OPENAI_API_KEY|from ['\"]openai['\"]|@ai-sdk\/openai/
   );
   assert.match(route, /buildPortfolioKnowledgeBase/);
   assert.match(route, /retrieveKnowledge/);
+});
+
+test('model routing uses configured OpenRouter when a key exists and Gateway otherwise', () => {
+  const previous = process.env.OPENROUTER_API_KEY;
+  try {
+    delete process.env.OPENROUTER_API_KEY;
+    assert.equal(getPortfolioModel(), PORTFOLIO_GATEWAY_MODEL_ID);
+    process.env.OPENROUTER_API_KEY =
+      'synthetic-test-key-not-used-for-inference';
+    const model = getPortfolioModel();
+    assert.notEqual(typeof model, 'string');
+    if (typeof model !== 'string') {
+      assert.equal(model.modelId, PORTFOLIO_OPENROUTER_MODEL_ID);
+    }
+  } finally {
+    if (previous === undefined) delete process.env.OPENROUTER_API_KEY;
+    else process.env.OPENROUTER_API_KEY = previous;
+  }
 });
 
 test('chat emits structured evidence before prose', () => {
