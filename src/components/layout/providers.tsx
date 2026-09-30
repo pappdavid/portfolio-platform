@@ -2,6 +2,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import { useTheme } from 'next-themes';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 import { ActiveThemeProvider } from '../themes/active-theme';
 
@@ -17,7 +18,9 @@ export default function Providers({
 
   // NEXT_PUBLIC_* env vars are inlined at build time, so reading this in a
   // client component is safe. Only enable Clerk when a publishable key exists.
-  const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const pathname = usePathname();
+  const accountPage = pathname.startsWith('/auth') || pathname.startsWith('/dashboard');
+  const clerkEnabled = accountPage && !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
   return (
     <>
