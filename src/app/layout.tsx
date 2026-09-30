@@ -34,7 +34,7 @@ const META_THEME_COLORS = {
 export const metadata: Metadata = {
   title: 'David Papp — AI Solutions Developer',
   description:
-    'Portfolio of David Papp — AI Solutions Developer at WEBINFORM, studying Econometrics and Data Science at VU Amsterdam (Sept 2026 start, 2028 expected), and builder of open-source AI-agent security prototypes.'
+    'Portfolio of David Papp — AI Solutions Developer at WEBINFORM, studying Econometrics and Data Science at VU Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028.'
 };
 
 export const viewport: Viewport = {

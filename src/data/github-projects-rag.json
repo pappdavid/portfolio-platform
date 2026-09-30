@@ -112,7 +112,7 @@
   {
     "id": "about-david",
     "name": "About David Papp",
-    "description": "AI Solutions Developer at WEBINFORM IT Ltd since October 2024 and studying Econometrics and Data Science at Vrije Universiteit Amsterdam (started September 2026, expected graduation 2028), building on prior study in artificial intelligence, machine learning, and statistics. Based in the Rotterdam area with NL/EU work authorization.",
+    "description": "AI Solutions Developer at WEBINFORM IT Ltd since October 2024 and studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Based in the Rotterdam area with NL/EU work authorization.",
     "techStack": [
       "TypeScript",
       "Python",
@@ -123,7 +123,7 @@
     ],
     "keyFeatures": [
       "Production LLM and ERP-integrated systems at WEBINFORM",
-      "20+ websites/webshops and multiple internal systems",
+      "Client websites and webshops, plus internal AI systems",
       "Inherited AI-first service recovery with roughly 40% API-cost reduction",
       "Client discovery, solution design, coordination, proposals, and pricing"
     ],

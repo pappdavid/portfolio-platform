@@ -1003,9 +1003,9 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
         features, APIs, and automation for web applications and ERP-integrated
         systems — and, on my own time, local-first context infrastructure, agent
         orchestration tooling, and the integrated AgentSec security suite.
-        I&apos;m studying Econometrics and Data Science at VU Amsterdam (started
-        September 2026, expected graduation 2028), building on prior study in
-        artificial intelligence, machine learning, and statistics, and I&apos;m
+        I began university studies in 2024 and changed to Econometrics and Data
+        Science at VU Amsterdam in September 2026; graduation is expected in
+        2028. I&apos;m
         looking for full-time AI engineering, AI solutions, integration,
         automation, or agent-infrastructure roles.
       </p>
@@ -1056,9 +1056,8 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
               integrations, repaired it, and cut LLM API costs by roughly 40%.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Delivered 20+
-              websites/webshops, three internal systems, and a user-facing
-              platform; two ERP/AI integration projects with direct involvement
+              <span className='li-mark'>&gt;</span> Delivered client websites and webshops, internal systems, user-facing AI
+              functionality, and ERP/AI integrations, with direct involvement
               in discovery, solution design, client coordination, and pricing.
             </li>
           </ul>
@@ -1068,10 +1067,11 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
           <div className='rs-line'>
             <span className='rs-role'>Econometrics and Data Science</span>
             <span className='rs-meta'>| VU Amsterdam</span>
-            <span className='rs-meta rs-dates'>2026 — 2028 (Expected)</span>
+            <span className='rs-meta rs-dates'>2024 — 2028 (Expected)</span>
           </div>
           <div className='rs-meta mt-1' style={{ textTransform: 'none' }}>
-            Expected grad: 2028
+            University studies began in 2024; changed programme in September 2026.
+            Expected graduation: 2028
           </div>
           <ul className='rs-bullets'>
             <li>

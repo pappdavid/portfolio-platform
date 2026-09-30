@@ -35,6 +35,8 @@ const RECRUITER_FACING = [
   'src/components/landing/three-canvas.tsx',
   'src/app/layout.tsx',
   'public/cv.html',
+  'public/demos/self-interview/assets/index-BpfHuvYO.js',
+  'public/demos/rolefit-quiz/assets/index-f8_0CO-n.js',
   'README.md'
 ];
 
@@ -51,7 +53,8 @@ const DISALLOWED = [
   [/calendly\.com/i, 'stale booking link'],
   [/agentsec\.davidpapp\.dev/i, 'stale deployment link'],
   [/~?7(?:,?300|k)[-\s]?line/i, 'unverified source-line count'],
-  [/\bused daily\b/i, 'unverified usage-frequency claim']
+  [/\bused daily\b/i, 'unverified usage-frequency claim'],
+  [/(?:more than 20|20\+\s+(?:delivered\s+)?websites|20\s+websites?\/webshops?)/i, 'false WEBINFORM delivery-count claim']
 ];
 
 for (const path of RECRUITER_FACING) {
@@ -59,6 +62,13 @@ for (const path of RECRUITER_FACING) {
   for (const [pattern, label] of DISALLOWED) {
     assert(!pattern.test(source), `${path}: disallowed ${label}`);
   }
+}
+
+// Source maps are public but not recruiter-facing copy; check the stale facts
+// without applying page-level contact requirements to embedded source metadata.
+for (const path of ['public/demos/self-interview/assets/index-BpfHuvYO.js.map']) {
+  const source = read(path);
+  assert(!/started September 2026|started Sept 2026|more than 20 websites|20\+\s+(?:delivered\s+)?websites/i.test(source), `${path}: stale candidate education or delivery-count fact`);
 }
 
 // Guard against leaking private execution/session records or incident-specific
@@ -76,7 +86,8 @@ const PRIVATE_TRACE_MARKERS = [
 const trackedFiles = execFileSync('git', ['ls-files', '-z'])
   .toString('utf8')
   .split('\0')
-  .filter(Boolean);
+  .filter(Boolean)
+  .filter((path) => existsSync(resolve(root, path)));
 for (const path of trackedFiles) {
   const bytes = readFileSync(resolve(root, path));
   if (bytes.includes(0)) continue;
@@ -99,12 +110,11 @@ assert(landing.includes('students aged 10–16'), 'landing: Logiscool age range'
 assert(landing.includes('SIM.LATENCY'), 'landing: decorative telemetry must stay labelled SIM');
 assert(!landing.includes('setCommitCount'), 'landing: generated commit counter must not return');
 
-// Education framing must present the AI BSc years in the intro, not only as an
-// education line — and never claim the AI programme is the current one.
+// Education framing uses university study dates and the confirmed programme change.
 assert(
-  landing.includes('studying\n                          Econometrics and Data Science at VU Amsterdam') ||
-    /studying\s+Econometrics and Data Science at VU Amsterdam/.test(landing),
-  'landing: CURRENTLY hero must name the current programme (Econometrics and Data Science)'
+  landing.includes('I began university studies in 2024') &&
+    landing.includes('Science at VU Amsterdam in September 2026'),
+  'landing: education dates must reflect university study since 2024 and the September 2026 programme change'
 );
 assert(
   !/studying AI at VU/.test(landing),
@@ -133,7 +143,28 @@ for (const note of fieldNotes) {
 
 const cvHtml = read('public/cv.html');
 assert(cvHtml.includes('Oct 2024'), 'cv.html: WEBINFORM start date');
-assert(cvHtml.includes('2026 – 2028 (expected)'), 'cv.html: VU Amsterdam dates');
+assert(landing.includes('2024 — 2028 (Expected)'), 'landing: university study dates');
+assert(cvHtml.includes('2024 – 2028 (expected)'), 'cv.html: university study dates');
+assert(cvHtml.includes('changed to this programme in September 2026'), 'cv.html: programme change date');
+
+for (const path of [
+  'src/app/layout.tsx',
+  'src/app/(public)/page.tsx',
+  'src/lib/ama/answer.ts',
+  'src/lib/ama/corpus.ts',
+  'src/data/github-projects-rag.json',
+  'public/cv.html',
+  'README.md'
+]) {
+  const source = read(path);
+  assert(source.includes('2024'), `${path}: university studies must begin in 2024`);
+  assert(source.includes('September 2026'), `${path}: programme change must be dated September 2026`);
+  assert(source.includes('2028'), `${path}: expected graduation year must remain 2028`);
+}
+
+for (const path of RECRUITER_FACING) {
+  assert(!/started September 2026|started Sept 2026|more than 20 websites|20\+\s+(?:delivered\s+)?websites/i.test(read(path)), `${path}: stale candidate education or delivery-count fact`);
+}
 assert(cvHtml.includes('roughly 40%'), 'cv.html: approximate cost reduction wording');
 assert(cvHtml.includes('page-break-inside: avoid'), 'cv.html: print pagination guard');
 

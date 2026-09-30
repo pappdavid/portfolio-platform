@@ -84,7 +84,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Taking AI into ERP-integrated business systems — discovery, solution design, delivery.',
     focusLine: 'erp integrations · llm apis · solution design · delivery',
     pitch:
-      "Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems — 20+ delivered websites/webshops, three internal systems, one user-facing platform, and two ERP/AI integration projects with direct involvement in discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service cut its LLM API costs by roughly 40%.",
+      "Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems. His work includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP/AI integrations, alongside discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service reduced its LLM API costs by roughly 40%.",
     projectsCta: '[delivery case studies]',
     chatGreeting:
       'Session active. Tuned for solutions and integration roles — ask how David runs an ERP + AI integration project or what he delivered at WEBINFORM.',
@@ -128,7 +128,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Shipping user-facing AI products end to end — data, APIs, interface.',
     focusLine: 'user-facing ai · next.js · end-to-end delivery',
     pitch:
-      'Tuned for product engineering roles: David ships user-facing AI interfaces and platforms — 20+ delivered websites/webshops and a user-facing platform at WEBINFORM, plus public prototypes like the integrated AgentSec suite. Delivery stack: Next.js, TypeScript, Prisma, Clerk, Supabase, Tailwind. Personal projects are presented honestly as prototypes; production experience comes from client delivery.',
+      'Tuned for product engineering roles: David builds user-facing AI interfaces and platforms, including client websites and webshops at WEBINFORM, plus public prototypes like the integrated AgentSec suite. Delivery stack: Next.js, TypeScript, Prisma, Clerk, Supabase, Tailwind. Personal projects are presented honestly as prototypes; production experience comes from client delivery.',
     projectsCta: '[shipped products]',
     chatGreeting:
       'Session active. Tuned for product engineering roles — ask which products David has shipped or open the live AgentSec demo.',
