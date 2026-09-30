@@ -51,7 +51,7 @@ export function ReferralPrivacy({ token }: { token: string }) {
   return (
     <aside
       aria-label='Optional visit counting'
-      className='relative z-20 border-b border-[var(--dp-border)] bg-[var(--dp-bg)] px-4 py-3 text-sm text-[var(--dp-text)]'
+      className='fixed bottom-0 left-0 right-0 z-[100] border-t border-[#506068] bg-[#0a0a0a] px-4 py-3 text-sm text-[#e6e6e6]'
     >
       <div className='mx-auto flex max-w-6xl flex-wrap items-center gap-3'>
         <p className='min-w-64 flex-1'>
