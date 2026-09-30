@@ -51,13 +51,20 @@ export function ReferralPrivacy({ token }: { token: string }) {
   return (
     <aside
       aria-label='Optional visit counting'
-      className='fixed bottom-0 left-0 right-0 z-[100] border-t border-[#506068] bg-[#0a0a0a] px-4 py-3 text-sm text-[#e6e6e6]'
+      className='fixed right-0 bottom-[var(--tabbar-h)] left-0 z-[100] max-h-[45vh] overflow-y-auto border-t border-[#506068] bg-[#0a0a0a] px-4 py-3 text-sm text-[#e6e6e6] min-[681px]:bottom-0'
     >
       <div className='mx-auto flex max-w-6xl flex-wrap items-center gap-3'>
         <p className='min-w-64 flex-1'>
-          This link selects company and role content for this page. Counting is
-          optional and off until you allow one aggregate page count. No IP,
-          browser details, tracking cookie, or activity history is saved.{' '}
+          {choice === 'off' ? (
+            <>
+              This link selects company and role content for this page. Counting
+              is optional and off until you allow one aggregate page count. No
+              IP, browser details, tracking cookie, or activity history is
+              saved.
+            </>
+          ) : (
+            <>Optional referral counting settings.</>
+          )}{' '}
           <a className='underline' href='/privacy-policy'>
             Privacy details
           </a>

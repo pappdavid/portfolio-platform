@@ -753,6 +753,14 @@ body::before {
 .demo-card-featured {
   border-color: var(--dp-accent);
 }
+.demo-card-open {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.demo-card-head:focus-visible {
+  outline: 2px solid var(--dp-accent);
+  outline-offset: 4px;
+}
 .demo-card-head {
   display: flex;
   align-items: center;

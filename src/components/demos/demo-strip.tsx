@@ -83,6 +83,7 @@ function DemoCard({
     <div
       className={cn(
         'demo-card',
+        isOpen && 'demo-card-open',
         featured && 'demo-card-featured',
         'border border-[var(--dp-border)] bg-[var(--dp-bg-raised)]'
       )}
@@ -91,7 +92,14 @@ function DemoCard({
         aspectRatio: isOpen ? undefined : '16 / 9'
       }}
     >
-      <div className='demo-card-head' title={demo.slug}>
+      <button
+        type='button'
+        className='demo-card-head w-full cursor-pointer text-left'
+        title={demo.slug}
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={`demo-iframe-${demo.slug}`}
+      >
         <span className='dirname'>
           <span className={cn('caret', isOpen && 'open')}>▶</span>
           <span
@@ -105,7 +113,7 @@ function DemoCard({
           </span>
           {demo.title}
         </span>
-      </div>
+      </button>
 
       <p className='demo-desc text-[11px] leading-relaxed text-[var(--dp-text-dim)]'>
         {demo.description}
@@ -121,6 +129,15 @@ function DemoCard({
         {isOpen ? '[hide]' : '[open]'} See it in action →
       </button>
 
+      <a
+        href={src}
+        target='_blank'
+        rel='noopener noreferrer'
+        className='ml-4 inline-block py-2 text-xs underline underline-offset-4'
+      >
+        Open {demo.title} in a full page
+      </a>
+
       {isOpen && (
         <iframe
           id={`demo-iframe-${demo.slug}`}
@@ -130,7 +147,11 @@ function DemoCard({
           loading='lazy'
           // 375px-first sizing; never autoplay on page load — iframe is only
           // mounted when the user opens the card.
-          style={{ width: '100%', height: '375px' }}
+          style={{
+            width: '100%',
+            height: 'min(720px, 75vh)',
+            minHeight: '480px'
+          }}
         />
       )}
     </div>

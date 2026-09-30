@@ -36,7 +36,7 @@ const RECRUITER_FACING = [
   'src/app/layout.tsx',
   'public/cv.html',
   'public/demos/self-interview/assets/index-BpfHuvYO.js',
-  'public/demos/rolefit-quiz/assets/index-f8_0CO-n.js',
+  'public/demos/rolefit-quiz/assets/index-BnNXBiD2.js',
   'README.md'
 ];
 
@@ -111,9 +111,11 @@ assert(landing.includes('SIM.LATENCY'), 'landing: decorative telemetry must stay
 assert(!landing.includes('setCommitCount'), 'landing: generated commit counter must not return');
 
 // Education framing uses university study dates and the confirmed programme change.
+// JSX source wrapping must not turn correct rendered copy into a false failure.
+const landingCopy = landing.replace(/\s+/g, ' ');
 assert(
-  landing.includes('I began university studies in 2024') &&
-    landing.includes('Science at VU Amsterdam in September 2026'),
+  landingCopy.includes('I began university studies in 2024') &&
+    landingCopy.includes('Science at VU Amsterdam in September 2026'),
   'landing: education dates must reflect university study since 2024 and the September 2026 programme change'
 );
 assert(

@@ -367,7 +367,11 @@ export function LandingContent({
       style={{ color: 'var(--dp-text)', fontFamily: 'var(--font-hud-mono)' }}
     >
       {/* 1. FIXED TOP STATUS BAR */}
-      <div className='statusbar' aria-hidden='true'>
+      <div
+        className='statusbar'
+        role='region'
+        aria-label='Appearance and site status'
+      >
         <div className='sb-scroll'>
           <span className='sb-item sb-item-sysname'>
             <span className='sb-k'>SYS.NAME:</span>
@@ -572,6 +576,9 @@ export function LandingContent({
                   >
                     [contact]
                   </button>
+                  <a href='/privacy-policy' className='cta'>
+                    [privacy]
+                  </a>
                 </div>
 
                 <div className='statustxt'>
@@ -683,6 +690,18 @@ export function LandingContent({
             triggerFocus={triggerFocus}
             siteView={siteView}
           />
+
+          <footer className='mt-8 flex flex-wrap gap-4 border-t border-[var(--dp-border)] py-5 text-xs text-[var(--dp-text-dim)]'>
+            <a href='/privacy-policy' className='underline underline-offset-4'>
+              Privacy and optional referral counting
+            </a>
+            <a
+              href='/terms-of-service'
+              className='underline underline-offset-4'
+            >
+              Terms of use
+            </a>
+          </footer>
 
           <div style={{ height: '48px' }} />
         </div>
