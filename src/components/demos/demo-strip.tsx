@@ -1,9 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 import { cn } from '@/lib/utils';
 import { type DemoEntry, getDemosForRole } from '@/config/demos';
-import { demoIframeSrc } from '@/config/demo-urls';
+import {
+  demoFullPageHref,
+  demoIframeSrc,
+  parseTaskFlowResultHash,
+  taskFlowResultHash,
+  taskFlowResultIdFromMessage
+} from '@/config/demo-urls';
 
 interface DemoStripProps {
   roleId: string | null | undefined;
@@ -20,12 +27,54 @@ interface DemoStripProps {
  */
 export function DemoStrip({ roleId }: DemoStripProps) {
   const [search, setSearch] = useState('');
-  useEffect(() => setSearch(window.location.search), []);
   const demos = getDemosForRole(roleId);
   const featured = demos[0];
   const [openId, setOpenId] = useState<string | null>(
     roleId && demos[0] ? demos[0].slug : null
   );
+  const [resultId, setResultId] = useState<string | null>(null);
+  const [iframeResultId, setIframeResultId] = useState<string | null>(null);
+  const taskFlowFrame = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    const readLocation = () => {
+      const id = parseTaskFlowResultHash(window.location.hash);
+      setResultId(id);
+      setIframeResultId(id);
+      if (id) setOpenId('task-to-flow');
+    };
+
+    const handleResultMessage = (event: MessageEvent<unknown>) => {
+      if (
+        event.origin !== window.location.origin ||
+        event.source !== taskFlowFrame.current?.contentWindow
+      ) {
+        return;
+      }
+
+      const id = taskFlowResultIdFromMessage(event.data);
+      if (!id) return;
+
+      const hash = taskFlowResultHash(id);
+      window.history.replaceState(
+        window.history.state,
+        '',
+        `${window.location.pathname}${window.location.search}${hash}`
+      );
+      // Do not change the mounted iframe src here: it is already displaying
+      // the result, and a src update would reload it before the blueprint opens.
+      setResultId(id);
+    };
+
+    setSearch(window.location.search);
+    readLocation();
+    window.addEventListener('hashchange', readLocation);
+    window.addEventListener('message', handleResultMessage);
+    return () => {
+      window.removeEventListener('hashchange', readLocation);
+      window.removeEventListener('message', handleResultMessage);
+    };
+  }, []);
 
   return (
     <section
@@ -46,7 +95,18 @@ export function DemoStrip({ roleId }: DemoStripProps) {
       <div className='demo-grid'>
         {demos.map((demo, index) => {
           const isOpen = openId === demo.slug;
-          const src = demoIframeSrc(demo.slug, roleId, search);
+          const src = demoIframeSrc(
+            demo.slug,
+            roleId,
+            search,
+            demo.slug === 'task-to-flow' ? iframeResultId : null
+          );
+          const fullPageHref = demoFullPageHref(
+            demo.slug,
+            roleId,
+            search,
+            demo.slug === 'task-to-flow' ? resultId : null
+          );
           return (
             <DemoCard
               key={demo.slug}
@@ -55,7 +115,21 @@ export function DemoStrip({ roleId }: DemoStripProps) {
               featured={featured?.slug === demo.slug}
               isOpen={isOpen}
               src={src}
-              onToggle={() => setOpenId(isOpen ? null : demo.slug)}
+              fullPageHref={fullPageHref}
+              fullPageHasResult={demo.slug === 'task-to-flow' && !!resultId}
+              iframeRef={
+                demo.slug === 'task-to-flow' ? taskFlowFrame : undefined
+              }
+              onToggle={() => {
+                if (isOpen) {
+                  setOpenId(null);
+                  if (demo.slug === 'task-to-flow') {
+                    setIframeResultId(resultId);
+                  }
+                } else {
+                  setOpenId(demo.slug);
+                }
+              }}
             />
           );
         })}
@@ -70,6 +144,9 @@ interface DemoCardProps {
   featured: boolean;
   isOpen: boolean;
   src: string;
+  fullPageHref: string;
+  fullPageHasResult: boolean;
+  iframeRef?: RefObject<HTMLIFrameElement | null>;
   onToggle: () => void;
 }
 
@@ -79,6 +156,9 @@ function DemoCard({
   featured,
   isOpen,
   src,
+  fullPageHref,
+  fullPageHasResult,
+  iframeRef,
   onToggle
 }: DemoCardProps) {
   return (
@@ -132,9 +212,9 @@ function DemoCard({
       </button>
 
       <a
-        href={src}
-        target='_blank'
-        rel='noopener noreferrer'
+        href={fullPageHref}
+        target={fullPageHasResult ? '_self' : '_blank'}
+        rel={fullPageHasResult ? undefined : 'noopener noreferrer'}
         className='ml-4 inline-block py-2 text-xs underline underline-offset-4'
       >
         Open {demo.title} in a full page
@@ -142,6 +222,7 @@ function DemoCard({
 
       {isOpen && (
         <iframe
+          ref={iframeRef}
           id={`demo-iframe-${demo.slug}`}
           className='demo-iframe'
           src={src}

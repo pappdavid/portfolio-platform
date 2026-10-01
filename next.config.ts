@@ -16,17 +16,17 @@ const nextConfig: NextConfig = {
     ]
   },
   transpilePackages: ['geist'],
-  async rewrites() {
-    // Directory URLs without a trailing slash otherwise drop Vite's ./assets
-    // onto /demos/assets (404). Serve the real index.html for both spellings.
-    return [
-      {
-        source: '/demos/:slug',
-        destination: '/demos/:slug/index.html'
-      }
-    ];
-  },
   async redirects() {
+    // Directory URLs otherwise leave relative Vite assets resolving against
+    // /demos/ after Next normalizes away the trailing slash. Canonicalize both
+    // spellings to the actual document URL; query context survives the redirect.
+    const demos = ['rolefit-quiz', 'self-interview', 'task-to-flow'];
+    const demoIndex = demos.map((slug) => ({
+      source: `/demos/${slug}`,
+      destination: `/demos/${slug}/index.html`,
+      permanent: false
+    }));
+
     // Routes shared externally in earlier versions of the site. The pages
     // they pointed at described projects that no longer exist in that form,
     // so they now land on the honest projects index.
@@ -39,11 +39,14 @@ const nextConfig: NextConfig = {
       '/projects/training',
       '/projects/portfolio'
     ];
-    return stale.map((source) => ({
-      source,
-      destination: '/projects',
-      permanent: false
-    }));
+    return [
+      ...demoIndex,
+      ...stale.map((source) => ({
+        source,
+        destination: '/projects',
+        permanent: false
+      }))
+    ];
   },
   async headers() {
     return [
