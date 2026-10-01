@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { ModuleId, SceneHandle } from './types';
 import { isCaptureMode } from '@/lib/capture-mode';
+import { createNebulaTidesMaterial, NEBULA_TIDES } from './nebula-tides';
 
 // Procedural texture generator for glowing circular particles
 function createCircleTexture(): THREE.Texture {
@@ -67,70 +68,48 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   const glowTex = createCircleTexture();
 
   // ============================================================
-  // 1. Core Background Volumetric Stardust (10,000 Particles)
+  // 1. Nebula tides: retain the 9,000-particle double spiral
   // ============================================================
   const STARDUST_COUNT = 9000;
   const sdGeo = new THREE.BufferGeometry();
   const sdPos = new Float32Array(STARDUST_COUNT * 3);
-  const sdColors = new Float32Array(STARDUST_COUNT * 3);
-  const sdSpeeds = new Float32Array(STARDUST_COUNT);
-  const sdAngles = new Float32Array(STARDUST_COUNT);
-  const sdRadii = new Float32Array(STARDUST_COUNT);
-  const sdPhases = new Float32Array(STARDUST_COUNT);
-  const sdTypes = new Uint8Array(STARDUST_COUNT); // 0 = Accent, 1 = Neutral White
+  const sdOrbit = new Float32Array(STARDUST_COUNT * 4);
+  // Stable seeds keep capture/reduced-motion poses identical across reloads.
+  let seed = 619;
+  const random = () => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
 
   for (let i = 0; i < STARDUST_COUNT; i++) {
     // Distribute stardust in double spiral arms
     const isArmA = i % 2 === 0;
     const armAngle = isArmA ? 0 : Math.PI;
     const progress = i / STARDUST_COUNT;
-    const radius = progress * 4.2 + Math.random() * 0.5;
-    const angle =
-      armAngle + progress * Math.PI * 6.5 + (Math.random() - 0.5) * 0.35;
+    const radius = progress * 4.2 + random() * 0.5;
+    const angle = armAngle + progress * Math.PI * 6.5 + (random() - 0.5) * 0.35;
 
     const x = Math.cos(angle) * radius;
     const z = Math.sin(angle) * radius;
-    const y = (Math.random() - 0.5) * 0.3 + Math.sin(radius * 2.5) * 0.2;
+    const y = (random() - 0.5) * 0.3 + Math.sin(radius * 2.5) * 0.2;
 
     sdPos[i * 3] = x;
     sdPos[i * 3 + 1] = y;
     sdPos[i * 3 + 2] = z;
 
-    sdRadii[i] = radius;
-    sdAngles[i] = angle;
-    sdSpeeds[i] = 0.012 + (1.0 - progress) * 0.015;
-    sdPhases[i] = Math.random() * Math.PI * 2;
-
-    // 60% accent, 40% soft neutral white background stars
-    const isAccent = Math.random() < 0.6;
-    sdTypes[i] = isAccent ? 0 : 1;
-
-    if (isAccent) {
-      sdColors[i * 3] = 0.0;
-      sdColors[i * 3 + 1] = 1.0;
-      sdColors[i * 3 + 2] = 0.53;
-    } else {
-      sdColors[i * 3] = 0.55;
-      sdColors[i * 3 + 1] = 0.55;
-      sdColors[i * 3 + 2] = 0.55;
-    }
+    sdOrbit.set(
+      [radius, angle, random() * Math.PI * 2, random() < 0.6 ? 0 : 1],
+      i * 4
+    );
   }
 
   sdGeo.setAttribute('position', new THREE.BufferAttribute(sdPos, 3));
-  sdGeo.setAttribute('color', new THREE.BufferAttribute(sdColors, 3));
-
-  const sdMaterial = new THREE.PointsMaterial({
-    size: 0.024,
-    map: glowTex,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.38,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    sizeAttenuation: true
-  });
+  sdGeo.setAttribute('orbit', new THREE.BufferAttribute(sdOrbit, 4));
+  const sdMaterial = createNebulaTidesMaterial();
 
   const stardust = new THREE.Points(sdGeo, sdMaterial);
+  // Vertex deformation and warp can extend beyond the initial seed positions.
+  stardust.frustumCulled = false;
   rootGroup.add(stardust);
 
   // ============================================================
@@ -173,20 +152,20 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
 
     for (let i = 0; i < NEBULA_PARTICLES; i++) {
       // Swirl around local origin
-      const dist = 0.05 + Math.random() * 0.16;
-      const angle = Math.random() * Math.PI * 2;
+      const dist = 0.05 + random() * 0.16;
+      const angle = random() * Math.PI * 2;
       const x = Math.cos(angle) * dist;
       const z = Math.sin(angle) * dist;
-      const y = (Math.random() - 0.5) * 0.08;
+      const y = (random() - 0.5) * 0.08;
 
       pos[i * 3] = x;
       pos[i * 3 + 1] = y;
       pos[i * 3 + 2] = z;
 
-      pSpeeds[i] = 1.0 + Math.random() * 1.5;
+      pSpeeds[i] = 1.0 + random() * 1.5;
 
       // Color starts at pure white glowing core fading to accent tint
-      const factor = Math.random();
+      const factor = random();
       colors[i * 3] = 0.6 + factor * 0.4;
       colors[i * 3 + 1] = 0.8 + factor * 0.2;
       colors[i * 3 + 2] = 0.7 + factor * 0.3;
@@ -269,7 +248,8 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
 
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   let raf: number;
-  const start = performance.now();
+  let lastFrame = performance.now();
+  let elapsed = 0;
 
   const onResize = () => fit(renderer, camera, canvas);
   window.addEventListener('resize', onResize);
@@ -288,9 +268,14 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   const capture = isCaptureMode();
 
   function tick(): void {
-    const t = capture ? 0 : (performance.now() - start) / 1000;
-    mouse.x += (mouse.tx - mouse.x) * 0.05;
-    mouse.y += (mouse.ty - mouse.y) * 0.05;
+    const now = performance.now();
+    const delta = Math.min((now - lastFrame) / 1000, 0.05);
+    lastFrame = now;
+    if (!capture) elapsed += delta * NEBULA_TIDES.speed;
+    const t = elapsed;
+    const smoothing = capture ? 0 : 1 - Math.exp(-delta * 3);
+    mouse.x += (mouse.tx - mouse.x) * smoothing;
+    mouse.y += (mouse.ty - mouse.y) * smoothing;
 
     // Smooth warp speed decay
     warpFactor += (targetWarpFactor - warpFactor) * 0.05;
@@ -310,64 +295,16 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
     }
     const activeColor = new THREE.Color(hexColor);
 
-    // 2. Animate Stardust background cloud
-    const posAttr = stardust.geometry.attributes[
-      'position'
-    ] as THREE.BufferAttribute;
-    const colorAttr = stardust.geometry.attributes[
-      'color'
-    ] as THREE.BufferAttribute;
-    const sdPosArr = posAttr.array as Float32Array;
-    const sdColorsArr = colorAttr.array as Float32Array;
+    // GPU tide deformation: only uniforms change, never 9,000 CPU positions/colors.
+    sdMaterial.uniforms.uTime.value = t;
+    sdMaterial.uniforms.uMouse.value.set(mouse.x, -mouse.y);
+    sdMaterial.uniforms.uAccent.value.copy(activeColor);
+    sdMaterial.uniforms.uWarp.value = warpFactor;
+    sdMaterial.uniforms.uPixelRatio.value = renderer.getPixelRatio();
+    sdMaterial.uniforms.uHeight.value = canvas.clientHeight;
 
-    for (let i = 0; i < STARDUST_COUNT; i++) {
-      const originalAngle = sdAngles[i];
-      const r = sdRadii[i];
-      const speed = sdSpeeds[i];
-      const phase = sdPhases[i];
-      const type = sdTypes[i];
-
-      // Orbit math with warpFactor speed
-      const curAngle = originalAngle + t * speed * warpFactor;
-      let warpStretch = 1.0 + (warpFactor - 1.0) * 0.04;
-      let x = Math.cos(curAngle) * r * warpStretch;
-      let z = Math.sin(curAngle) * r * warpStretch;
-      let y =
-        (Math.sin(t * 0.6 + phase) * 0.12 +
-          Math.sin(r * 2.0 + t * 0.4) * 0.15) *
-        (1.0 + (warpFactor - 1.0) * 0.2);
-
-      // Mouse drag warp effect (Gravitational push/pull ripple)
-      const dx = x - mouse.x * 2.2;
-      const dz = z - mouse.y * 1.5;
-      const mDist = Math.sqrt(dx * dx + dz * dz);
-      if (mDist < 1.1) {
-        const pushFactor = (1.1 - mDist) * 0.28;
-        x += dx * pushFactor;
-        z += dz * pushFactor;
-      }
-
-      sdPosArr[i * 3] = x;
-      sdPosArr[i * 3 + 1] = y;
-      sdPosArr[i * 3 + 2] = z;
-
-      // Update accent colors dynamically inside the float buffer
-      if (type === 0) {
-        sdColorsArr[i * 3] = activeColor.r;
-        sdColorsArr[i * 3 + 1] = activeColor.g;
-        sdColorsArr[i * 3 + 2] = activeColor.b;
-      }
-    }
-    posAttr.needsUpdate = true;
-    colorAttr.needsUpdate = true;
-
-    // Stardust material size & opacity swell during warp speed
-    sdMaterial.size = 0.024 * (1.0 + (warpFactor - 1.0) * 0.15);
-    sdMaterial.opacity = 0.38 + (warpFactor - 1.0) * 0.03;
-
-    // Slow spin the entire stardust galaxy
-    rootGroup.rotation.y = t * 0.02 + mouse.x * 0.06;
-    rootGroup.rotation.x = mouse.y * 0.04;
+    rootGroup.rotation.y = t * 0.015 + mouse.x * 0.025;
+    rootGroup.rotation.x = -0.17 + mouse.y * 0.04;
 
     // 3. Animate Project Mini-Nebulae
     nebulae.forEach((n) => {

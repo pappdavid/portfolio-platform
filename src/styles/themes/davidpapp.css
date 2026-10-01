@@ -1138,9 +1138,6 @@ body::before {
 
 /* Responsive Overrides & Desktop top navigation */
 @media (min-width: 681px) {
-  .portfolio-background {
-    opacity: 0.3;
-  }
   .tabbar {
     top: var(--statusbar-h);
     bottom: auto;
