@@ -43,3 +43,18 @@ test('vendored assets resolve inside their demo directory from index.html', () =
     }
   }
 });
+
+test('custom demo links retain only the supported audience context', () => {
+  const url = new URL(
+    demoIframeSrc(
+      'task-to-flow',
+      'ai-integration',
+      '?ref=69f28b66d40dfd22&c=odoo&unrelated=omit'
+    ),
+    'https://davidpapp.dev'
+  );
+  assert.equal(url.searchParams.get('ref'), '69f28b66d40dfd22');
+  assert.equal(url.searchParams.get('c'), 'odoo');
+  assert.equal(url.searchParams.get('role'), 'ai-integration');
+  assert.equal(url.searchParams.has('unrelated'), false);
+});

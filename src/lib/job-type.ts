@@ -84,7 +84,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Taking AI into ERP-integrated business systems — discovery, solution design, delivery.',
     focusLine: 'erp integrations · llm apis · solution design · delivery',
     pitch:
-      "Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems. His work includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP/AI integrations, alongside discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service reduced its LLM API costs by roughly 40%.",
+      "Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems. His work includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP/AI integrations, alongside discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service was associated with a candidate-reported approximate 40% reduction in LLM API costs.",
     projectsCta: '[delivery case studies]',
     chatGreeting:
       'Session active. Tuned for solutions and integration roles — ask how David runs an ERP + AI integration project or what he delivered at WEBINFORM.',

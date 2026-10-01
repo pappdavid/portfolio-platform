@@ -4,7 +4,10 @@ import { LandingContent } from '@/components/landing/landing-content';
 import { ReferralPrivacy } from '@/components/landing/referral-privacy';
 import { ReferralBanner } from '@/components/landing/referral-banner';
 import { getReferralPersonalization } from '@/lib/referral-context';
-import { mergeReferralWithCompanySlug } from '@/lib/company-slug';
+import {
+  mergeReferralWithCompanySlug,
+  parseCompanySlug
+} from '@/lib/company-slug';
 import { resolveJobTypeFromSearchParams } from '@/lib/job-type';
 
 export const metadata: Metadata = {
@@ -35,9 +38,14 @@ export default async function LandingPage({
   const params = (await searchParams) ?? {};
   const jobType = resolveJobTypeFromSearchParams(params);
   if (jobType) {
-    redirect(
-      `/roles/${jobType.id}${typeof params.ref === 'string' && /^[a-f0-9]{16}$/.test(params.ref) ? `?ref=${params.ref}` : ''}`
-    );
+    const context = new URLSearchParams();
+    if (typeof params.ref === 'string' && /^[a-f0-9]{16}$/.test(params.ref)) {
+      context.set('ref', params.ref);
+    }
+    const company = parseCompanySlug(params.c);
+    if (company) context.set('c', company);
+    const query = context.toString();
+    redirect(`/roles/${jobType.id}${query ? `?${query}` : ''}`);
   }
 
   const token = typeof params.ref === 'string' ? params.ref : undefined;

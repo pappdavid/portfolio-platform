@@ -11,17 +11,22 @@ export async function getReferralPersonalization(
 ): Promise<ReferralPersonalizationSnapshot | null> {
   if (!token || !TOKEN_RE.test(token)) return null;
 
-  const { data, error } = await supabaseAdmin
-    .from('ref_links')
-    .select('company, notes')
-    .eq('token', token)
-    .maybeSingle();
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('ref_links')
+      .select('company, notes')
+      .eq('token', token)
+      .maybeSingle();
 
-  if (error || !data) return null;
-  const snapshot: ReferralPersonalizationSnapshot = parseReferralNotes(
-    data.notes,
-    data.company
-  ) ?? { company: data.company };
-  delete snapshot.applicationId; // internal ledger identifier is unnecessary visitor context
-  return snapshot;
+    if (error || !data) return null;
+    const snapshot: ReferralPersonalizationSnapshot = parseReferralNotes(
+      data.notes,
+      data.company
+    ) ?? { company: data.company };
+    delete snapshot.applicationId; // internal ledger identifier is unnecessary visitor context
+    return snapshot;
+  } catch {
+    // Referral context is optional; storage failure should keep the page generic.
+    return null;
+  }
 }
