@@ -9,7 +9,7 @@ export default function PublicLayout({
   return (
     <div className='crt-flicker relative min-h-screen overflow-hidden bg-[#0a0a0a] text-[#e8e8e8] selection:bg-[rgba(0,255,136,0.25)] selection:text-white'>
       {/* Fullscreen ThreeJS Constellation Background */}
-      <div className='pointer-events-none fixed inset-0 z-0'>
+      <div className='portfolio-background pointer-events-none fixed inset-0 z-0'>
         <ThreeCanvas className='h-full w-full' />
       </div>
 

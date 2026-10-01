@@ -269,6 +269,22 @@ export function LandingContent({
     document.documentElement.setAttribute('data-theme-profile', profile);
   }, []);
 
+  // Follow direct section URLs, including CTAs escaping embedded demos.
+  useEffect(() => {
+    const followHash = () => {
+      const id = window.location.hash.slice(1);
+      if (!['home', 'work', 'skills', 'notes', 'contact'].includes(id)) return;
+      const el = document.getElementById(id);
+      scrollRef.current?.scrollTo({
+        top: Math.max(0, (el?.offsetTop ?? 0) - 16)
+      });
+      setActive(id);
+    };
+    followHash();
+    window.addEventListener('hashchange', followHash);
+    return () => window.removeEventListener('hashchange', followHash);
+  }, []);
+
   // Decorative status-bar animation timers (labelled SIM in the UI).
   // Skipped entirely in capture mode so values stay fixed.
   useEffect(() => {
@@ -1066,7 +1082,8 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
               <span className='li-mark'>&gt;</span> Took over an inherited
               AI-first service with architecture, security, compliance, and
               prompt-injection problems — reverse-engineered its undocumented
-              integrations, repaired it, and cut LLM API costs by roughly 40%.
+              integrations, repaired it, and cut LLM API costs by roughly 40%
+              (candidate-reported professional result).
             </li>
             <li>
               <span className='li-mark'>&gt;</span> Delivered client websites

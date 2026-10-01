@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { type DemoEntry, getDemosForRole } from '@/config/demos';
 import { demoIframeSrc } from '@/config/demo-urls';
@@ -19,6 +19,8 @@ interface DemoStripProps {
  * mobile width.
  */
 export function DemoStrip({ roleId }: DemoStripProps) {
+  const [search, setSearch] = useState('');
+  useEffect(() => setSearch(window.location.search), []);
   const demos = getDemosForRole(roleId);
   const featured = demos[0];
   const [openId, setOpenId] = useState<string | null>(
@@ -44,7 +46,7 @@ export function DemoStrip({ roleId }: DemoStripProps) {
       <div className='demo-grid'>
         {demos.map((demo, index) => {
           const isOpen = openId === demo.slug;
-          const src = demoIframeSrc(demo.slug, roleId);
+          const src = demoIframeSrc(demo.slug, roleId, search);
           return (
             <DemoCard
               key={demo.slug}

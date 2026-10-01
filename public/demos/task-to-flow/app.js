@@ -14,7 +14,42 @@ const reducedMotion = window.matchMedia(
 // shows a pointless self-referential preview). The CTA should land on the
 // contact section of the page the demo is embedded in. target="_top" escapes
 // the iframe; from the standalone /demos/… route it simply navigates home.
-const CTA_URL = 'https://davidpapp.dev/#contact';
+// Preserve the actual custom entry when embedded. Standalone demo links carry
+// only the supported role/company/referral query fields from the portfolio.
+function contactUrl() {
+  try {
+    if (
+      window.parent !== window &&
+      window.parent.location.origin === location.origin
+    ) {
+      const parentUrl = new URL(window.parent.location.href);
+      parentUrl.hash = 'contact';
+      return parentUrl.href;
+    }
+  } catch {
+    /* Cross-origin embeds use the standalone context below. */
+  }
+  const query = new URLSearchParams(location.search);
+  const role = query.get('role');
+  const roles = [
+    'ai-engineering',
+    'ai-integration',
+    'automation',
+    'product-engineering'
+  ];
+  const url = new URL(
+    role && roles.includes(role) ? `/roles/${role}` : '/',
+    location.origin
+  );
+  const ref = query.get('ref');
+  const company = query.get('c');
+  if (ref && /^[a-f0-9]{16}$/.test(ref)) url.searchParams.set('ref', ref);
+  if (company && /^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$/.test(company))
+    url.searchParams.set('c', company);
+  url.hash = 'contact';
+  return url.href;
+}
+const CTA_URL = contactUrl();
 
 // Sample chips from pattern samples.
 for (const p of PATTERNS) {

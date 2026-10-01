@@ -158,7 +158,8 @@
 }
 
 .crt-flicker {
-  animation: crt-flicker-anim 0.2s infinite;
+  /* Keep the terminal texture stable while visitors read. */
+  animation: none;
 }
 
 @keyframes crt-flicker-anim {
@@ -265,11 +266,13 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  overflow: hidden;
+  overflow-x: auto;
+  scrollbar-width: none;
   flex: 1;
   min-width: 0;
 }
 .sb-item {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1135,6 +1138,9 @@ body::before {
 
 /* Responsive Overrides & Desktop top navigation */
 @media (min-width: 681px) {
+  .portfolio-background {
+    opacity: 0.3;
+  }
   .tabbar {
     top: var(--statusbar-h);
     bottom: auto;
