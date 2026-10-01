@@ -5,12 +5,26 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, statSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 
 const root = process.cwd();
 
 function read(path) {
   return readFileSync(resolve(root, path), 'utf8');
+}
+
+function demoBundlePath(slug) {
+  const html = read(`public/demos/${slug}/index.html`);
+  const script = html.match(/<script[^>]+src=["']([^"']+\.js)["']/i)?.[1];
+  assert(script, `${slug} entry document must reference its built JavaScript`);
+  const pathname = new URL(
+    script,
+    `https://davidpapp.dev/demos/${slug}/index.html`
+  ).pathname;
+  const hostedPath = pathname.startsWith('/assets/')
+    ? `/demos/${slug}${pathname}`
+    : pathname;
+  return `public${hostedPath}`;
 }
 
 const RECRUITER_FACING = [
@@ -35,8 +49,8 @@ const RECRUITER_FACING = [
   'src/components/landing/three-canvas.tsx',
   'src/app/layout.tsx',
   'public/cv.html',
-  'public/demos/self-interview/assets/index-BpfHuvYO.js',
-  'public/demos/rolefit-quiz/assets/index-BnNXBiD2.js',
+  demoBundlePath('self-interview'),
+  demoBundlePath('rolefit-quiz'),
   'README.md'
 ];
 
@@ -54,7 +68,10 @@ const DISALLOWED = [
   [/agentsec\.davidpapp\.dev/i, 'stale deployment link'],
   [/~?7(?:,?300|k)[-\s]?line/i, 'unverified source-line count'],
   [/\bused daily\b/i, 'unverified usage-frequency claim'],
-  [/(?:more than 20|20\+\s+(?:delivered\s+)?websites|20\s+websites?\/webshops?)/i, 'false WEBINFORM delivery-count claim']
+  [
+    /(?:more than 20|20\+\s+(?:delivered\s+)?websites|20\s+websites?\/webshops?)/i,
+    'false WEBINFORM delivery-count claim'
+  ]
 ];
 
 for (const path of RECRUITER_FACING) {
@@ -66,9 +83,28 @@ for (const path of RECRUITER_FACING) {
 
 // Source maps are public but not recruiter-facing copy; check the stale facts
 // without applying page-level contact requirements to embedded source metadata.
-for (const path of ['public/demos/self-interview/assets/index-BpfHuvYO.js.map']) {
-  const source = read(path);
-  assert(!/started September 2026|started Sept 2026|more than 20 websites|20\+\s+(?:delivered\s+)?websites/i.test(source), `${path}: stale candidate education or delivery-count fact`);
+const selfInterviewBundlePath = resolve(root, demoBundlePath('self-interview'));
+const selfInterviewSourceMap = readFileSync(
+  selfInterviewBundlePath,
+  'utf8'
+).match(/\/\/[#@]\s*sourceMappingURL=([^\s]+)/);
+if (selfInterviewSourceMap && !selfInterviewSourceMap[1].startsWith('data:')) {
+  const path = resolve(
+    dirname(selfInterviewBundlePath),
+    selfInterviewSourceMap[1]
+  );
+  if (!existsSync(path)) {
+    throw new Error(
+      'Self-Interview source map reference must resolve to a public file'
+    );
+  }
+  const source = readFileSync(path, 'utf8');
+  assert(
+    !/started September 2026|started Sept 2026|more than 20 websites|20\+\s+(?:delivered\s+)?websites/i.test(
+      source
+    ),
+    `${path}: stale candidate education or delivery-count fact`
+  );
 }
 
 // Guard against leaking private execution/session records or incident-specific
@@ -96,19 +132,36 @@ for (const path of trackedFiles) {
     assert(!text.includes(marker), `${path}: private execution trace detected`);
   }
 }
-const headMessage = execFileSync('git', ['log', '-1', '--pretty=%B']).toString('utf8');
+const headMessage = execFileSync('git', ['log', '-1', '--pretty=%B']).toString(
+  'utf8'
+);
 for (const marker of PRIVATE_TRACE_MARKERS) {
-  assert(!headMessage.includes(marker), 'private execution trace detected in commit metadata');
+  assert(
+    !headMessage.includes(marker),
+    'private execution trace detected in commit metadata'
+  );
 }
 
 // Core professional facts.
 const landing = read('src/components/landing/landing-content.tsx');
-assert(landing.includes('Oct 2024'), 'landing: WEBINFORM start date must be Oct 2024');
+assert(
+  landing.includes('Oct 2024'),
+  'landing: WEBINFORM start date must be Oct 2024'
+);
 assert(landing.includes('WEBINFORM IT Ltd'), 'landing: employer name');
-assert(landing.includes('roughly 40%'), 'landing: cost reduction must stay approximate');
+assert(
+  landing.includes('roughly 40%'),
+  'landing: cost reduction must stay approximate'
+);
 assert(landing.includes('students aged 10–16'), 'landing: Logiscool age range');
-assert(landing.includes('SIM.LATENCY'), 'landing: decorative telemetry must stay labelled SIM');
-assert(!landing.includes('setCommitCount'), 'landing: generated commit counter must not return');
+assert(
+  landing.includes('SIM.LATENCY'),
+  'landing: decorative telemetry must stay labelled SIM'
+);
+assert(
+  !landing.includes('setCommitCount'),
+  'landing: generated commit counter must not return'
+);
 
 // Education framing uses university study dates and the confirmed programme change.
 // JSX source wrapping must not turn correct rendered copy into a false failure.
@@ -133,21 +186,39 @@ assert(
 
 // Field notes must be data-driven and every entry must link a real public repo.
 const fieldNotes = JSON.parse(read('src/data/field-notes.json'));
-assert(Array.isArray(fieldNotes) && fieldNotes.length >= 4, 'field-notes: at least 4 notes');
+assert(
+  Array.isArray(fieldNotes) && fieldNotes.length >= 4,
+  'field-notes: at least 4 notes'
+);
 for (const note of fieldNotes) {
-  assert(note.title && note.repo && note.url && note.summary, `field-notes: incomplete entry ${note.repo}`);
+  assert(
+    note.title && note.repo && note.url && note.summary,
+    `field-notes: incomplete entry ${note.repo}`
+  );
   assert(
     note.url === `https://github.com/pappdavid/${note.repo}`,
     `field-notes: ${note.repo} URL must point at pappdavid/${note.repo}`
   );
-  assert(!/undefined|\{\{/.test(note.summary), `field-notes: ${note.repo} summary has placeholder text`);
+  assert(
+    !/undefined|\{\{/.test(note.summary),
+    `field-notes: ${note.repo} summary has placeholder text`
+  );
 }
 
 const cvHtml = read('public/cv.html');
 assert(cvHtml.includes('Oct 2024'), 'cv.html: WEBINFORM start date');
-assert(landing.includes('2024 — 2028 (Expected)'), 'landing: university study dates');
-assert(cvHtml.includes('2024 – 2028 (expected)'), 'cv.html: university study dates');
-assert(cvHtml.includes('changed to this programme in September 2026'), 'cv.html: programme change date');
+assert(
+  landing.includes('2024 — 2028 (Expected)'),
+  'landing: university study dates'
+);
+assert(
+  cvHtml.includes('2024 – 2028 (expected)'),
+  'cv.html: university study dates'
+);
+assert(
+  cvHtml.includes('changed to this programme in September 2026'),
+  'cv.html: programme change date'
+);
 
 for (const path of [
   'src/app/layout.tsx',
@@ -159,16 +230,36 @@ for (const path of [
   'README.md'
 ]) {
   const source = read(path);
-  assert(source.includes('2024'), `${path}: university studies must begin in 2024`);
-  assert(source.includes('September 2026'), `${path}: programme change must be dated September 2026`);
-  assert(source.includes('2028'), `${path}: expected graduation year must remain 2028`);
+  assert(
+    source.includes('2024'),
+    `${path}: university studies must begin in 2024`
+  );
+  assert(
+    source.includes('September 2026'),
+    `${path}: programme change must be dated September 2026`
+  );
+  assert(
+    source.includes('2028'),
+    `${path}: expected graduation year must remain 2028`
+  );
 }
 
 for (const path of RECRUITER_FACING) {
-  assert(!/started September 2026|started Sept 2026|more than 20 websites|20\+\s+(?:delivered\s+)?websites/i.test(read(path)), `${path}: stale candidate education or delivery-count fact`);
+  assert(
+    !/started September 2026|started Sept 2026|more than 20 websites|20\+\s+(?:delivered\s+)?websites/i.test(
+      read(path)
+    ),
+    `${path}: stale candidate education or delivery-count fact`
+  );
 }
-assert(cvHtml.includes('roughly 40%'), 'cv.html: approximate cost reduction wording');
-assert(cvHtml.includes('page-break-inside: avoid'), 'cv.html: print pagination guard');
+assert(
+  cvHtml.includes('roughly 40%'),
+  'cv.html: approximate cost reduction wording'
+);
+assert(
+  cvHtml.includes('page-break-inside: avoid'),
+  'cv.html: print pagination guard'
+);
 
 // The PDF must be current and usable.
 const cvStat = statSync(resolve(root, 'public/cv.pdf'));
@@ -196,7 +287,10 @@ for (const route of [
   '/projects/training',
   '/projects/portfolio'
 ]) {
-  assert(nextConfig.includes(`'${route}'`), `next.config.ts: missing redirect for ${route}`);
+  assert(
+    nextConfig.includes(`'${route}'`),
+    `next.config.ts: missing redirect for ${route}`
+  );
 }
 for (const gone of [
   'public/og/mcp-sentinel.png',
@@ -208,11 +302,17 @@ for (const gone of [
   'src/components/training/training-content.tsx',
   'src/components/chat/chat-content.tsx'
 ]) {
-  assert(!existsSync(resolve(root, gone)), `${gone}: retired content must stay removed`);
+  assert(
+    !existsSync(resolve(root, gone)),
+    `${gone}: retired content must stay removed`
+  );
 }
 
 const about = read('src/app/(public)/about/page.tsx');
-assert(about.includes('redirect('), '/about should redirect into the current homepage');
+assert(
+  about.includes('redirect('),
+  '/about should redirect into the current homepage'
+);
 
 // Assistant grounding must point to current projects and current routes.
 const ragData = JSON.parse(read('src/data/github-projects-rag.json'));
@@ -232,8 +332,18 @@ assert(
 // The portfolio has exactly four primary projects. AgentSec is one integrated
 // suite, not five competing cards, and only its integrated deployment is linked
 // as a public demo.
-const primaryProjectIds = ['voidarch-context', 'voidarch-studio', 'agentsec-suite', 'saas-core'];
-const primaryProjectNames = ['VoidArch Context', 'VoidArch Studio', 'AgentSec Suite', 'saas-core'];
+const primaryProjectIds = [
+  'voidarch-context',
+  'voidarch-studio',
+  'agentsec-suite',
+  'saas-core'
+];
+const primaryProjectNames = [
+  'VoidArch Context',
+  'VoidArch Studio',
+  'AgentSec Suite',
+  'saas-core'
+];
 const retiredProjectMarkers = [
   'thesys-c1-dashboard',
   'THESYS_C1',
@@ -256,11 +366,17 @@ for (const name of primaryProjectNames) {
 }
 for (const marker of retiredProjectMarkers) {
   for (const path of RECRUITER_FACING) {
-    assert(!read(path).includes(marker), `${path}: retired project marker ${marker}`);
+    assert(
+      !read(path).includes(marker),
+      `${path}: retired project marker ${marker}`
+    );
   }
 }
 for (const marker of standaloneAgentSecIds) {
-  assert(!projectsSource.includes(marker), `projects page: AgentSec component must not be a standalone card (${marker})`);
+  assert(
+    !projectsSource.includes(marker),
+    `projects page: AgentSec component must not be a standalone card (${marker})`
+  );
 }
 assert(
   projectsSource.includes('https://promptshield-cyan.vercel.app'),
@@ -271,12 +387,22 @@ for (const retiredDemo of [
   'https://agentmap-fawn.vercel.app',
   'https://approveops.vercel.app'
 ]) {
-  assert(!projectsSource.includes(retiredDemo), `projects page: component demo must not be a primary CTA (${retiredDemo})`);
-  assert(!landing.includes(retiredDemo), `landing page: component demo must not be a primary CTA (${retiredDemo})`);
+  assert(
+    !projectsSource.includes(retiredDemo),
+    `projects page: component demo must not be a primary CTA (${retiredDemo})`
+  );
+  assert(
+    !landing.includes(retiredDemo),
+    `landing page: component demo must not be a primary CTA (${retiredDemo})`
+  );
 }
 
 const projectEntries = ragData.filter((entry) => entry.id !== 'about-david');
-assert.equal(projectEntries.length, 4, 'RAG data: exactly four project entries required');
+assert.equal(
+  projectEntries.length,
+  4,
+  'RAG data: exactly four project entries required'
+);
 assert.deepEqual(
   projectEntries.map((entry) => entry.id),
   primaryProjectIds,

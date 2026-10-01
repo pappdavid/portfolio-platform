@@ -53,7 +53,7 @@ function addUserBubble(text) {
 
 function addAssistantBubble(matchedPattern, isFallback, record) {
   const tpl = document.getElementById("tpl-assistant");
-  const node = tpl.content.cloneNode(true);
+  const node = tpl.content.firstElementChild.cloneNode(true);
   const bubble = node.querySelector(".bubble-bot");
 
   const confirm = node.querySelector(".confirm");
@@ -123,9 +123,9 @@ function addAssistantBubble(matchedPattern, isFallback, record) {
   const contact = node.querySelector(".contact-link");
   contact.href = "https://davidpapp.dev/#contact";
   node.querySelector(".storage-note").hidden = storageAvailable;
-  node.querySelector(".export")?.addEventListener("click", () => downloadMarkdown(record));
+  node.querySelector(".export").addEventListener("click", () => downloadMarkdown(record));
 
-  return { node, updateHours, record };
+  return { node, bubble, updateHours, record };
 }
 
 function downloadMarkdown(record) {
@@ -138,15 +138,16 @@ function downloadMarkdown(record) {
 
 function restoreBubble(record) {
   thread.replaceChildren(addUserBubble(record.task));
-  const { node, updateHours } = addAssistantBubble(record.pattern, false, record);
+  const { node, bubble, updateHours } = addAssistantBubble(record.pattern, false, record);
   node.querySelectorAll(".flow li").forEach((step) => step.classList.add("visible"));
   thread.appendChild(node);
-  node.querySelector(".slider-day").value = record.assumptions.tasksPerDay;
-  node.querySelector(".slider-min").value = record.assumptions.minutesPerTask;
+  bubble.dataset.resultId = record.id;
+  bubble.querySelector(".slider-day").value = record.assumptions.tasksPerDay;
+  bubble.querySelector(".slider-min").value = record.assumptions.minutesPerTask;
   updateHours(false);
-  node.querySelector(".out-day").textContent = record.assumptions.tasksPerDay;
-  node.querySelector(".out-min").textContent = record.assumptions.minutesPerTask;
-  return node;
+  bubble.querySelector(".out-day").textContent = record.assumptions.tasksPerDay;
+  bubble.querySelector(".out-min").textContent = record.assumptions.minutesPerTask;
+  return bubble;
 }
 
 function renderRoute() {
@@ -261,9 +262,9 @@ async function run(text) {
     tasksPerDay: 10, minutesPerTask: 15, context,
   });
   cacheResult(record);
-  const { node, updateHours } = addAssistantBubble(match.pattern, isFallback, record);
+  const { node, bubble, updateHours } = addAssistantBubble(match.pattern, isFallback, record);
   thread.appendChild(node);
-  node.querySelector(".bubble-bot").dataset.resultId = record.id;
+  bubble.dataset.resultId = record.id;
   history.replaceState(null, "", resultHash(record.id));
   scrollBottom();
 

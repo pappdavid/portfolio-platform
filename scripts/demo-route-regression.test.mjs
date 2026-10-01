@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import nextConfig from '../next.config.ts';
@@ -22,16 +22,30 @@ test('short and slash demo URLs redirect to the canonical index document', async
   }
 });
 
-test('RoleFit assets resolve under their demo directory for all path variants', () => {
+test('RoleFit assets resolve under the canonical index document URL', () => {
   const html = readFileSync(
     resolve(process.cwd(), 'public/demos/rolefit-quiz/index.html'),
     'utf8'
   );
-  assert.match(
-    html,
-    /<base href="\/demos\/rolefit-quiz\/"\s*\/>/,
-    'the source document must anchor relative assets to its own public demo directory'
+  const canonical = new URL(
+    '/demos/rolefit-quiz/index.html',
+    'https://davidpapp.dev'
   );
-  assert.match(html, /src="\.\/assets\//);
-  assert.match(html, /href="\.\/assets\//);
+  const assets = Array.from(
+    html.matchAll(/(?:src|href)=["']([^"']+\.(?:js|css))["']/g),
+    (match) => match[1]
+  );
+  assert(assets.length > 0, 'RoleFit must include its built assets');
+
+  for (const reference of assets) {
+    const asset = new URL(reference, canonical);
+    assert(
+      asset.pathname.startsWith('/demos/rolefit-quiz/assets/'),
+      `${reference} must resolve inside the RoleFit asset directory`
+    );
+    assert(
+      existsSync(resolve(process.cwd(), 'public', asset.pathname.slice(1))),
+      `${asset.pathname} must exist in the vendored source output`
+    );
+  }
 });
