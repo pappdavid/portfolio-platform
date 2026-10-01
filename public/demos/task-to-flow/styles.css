@@ -102,6 +102,12 @@ body {
 }
 .cta:hover { background: #000; }
 .contact-link { display: block; text-align: center; margin: .65rem auto; color: var(--accent); font-size: .84rem; }
+.export {
+  display: block; width: 100%; margin-top: .55rem; padding: .65rem 1rem;
+  border: 1px solid #ddd6cf; border-radius: 999px; background: white;
+  color: var(--ink); font: inherit; font-size: .84rem; cursor: pointer;
+}
+.export:hover { border-color: var(--accent); color: var(--accent); }
 .storage-note { color: var(--amber); font-size: .75rem; }
 .implementation {
   margin-top: 1rem; padding: 1rem; border: 1px solid #d8e7e8;

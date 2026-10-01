@@ -123,7 +123,7 @@ function addAssistantBubble(matchedPattern, isFallback, record) {
   const contact = node.querySelector(".contact-link");
   contact.href = "https://davidpapp.dev/#contact";
   node.querySelector(".storage-note").hidden = storageAvailable;
-  node.querySelector(".export").addEventListener("click", () => downloadMarkdown(record));
+  node.querySelector(".export")?.addEventListener("click", () => downloadMarkdown(record));
 
   return { node, updateHours, record };
 }
