@@ -16,6 +16,7 @@ type Project = {
   repoUrl?: string;
   liveUrl?: string;
   componentLinks?: { label: string; url: string }[];
+  componentLinksLabel?: string;
   tabs: {
     overview: string;
     // Code snippets below are excerpts from the actual repository source.
@@ -162,6 +163,52 @@ voidarch-context context "fix the auth token refresh bug"`,
   Render --> Product[Generated bounded product scaffold]
   Product --> CI[Typecheck, tests, build, readiness checks]`
     }
+  },
+  {
+    id: 'hosted-ai-showcases',
+    title: 'Hosted AI Product Showcases',
+    status: 'Six hosted sample workflows · live',
+    description:
+      'Public product samples for meeting costs, delivery signals, cloud spend, scope review, documentation quality, and stand-up drafting.',
+    tags: ['Next.js', 'TypeScript', 'AI product demos', 'Vercel'],
+    liveUrl: 'https://standup-liar-showcase.vercel.app/',
+    componentLinksLabel: 'Open demo →',
+    componentLinks: [
+      {
+        label: 'StandupLiar',
+        url: 'https://standup-liar-showcase.vercel.app/'
+      },
+      {
+        label: 'MeetingReceipt',
+        url: 'https://meeting-receipt-showcase.vercel.app/'
+      },
+      {
+        label: 'VelocityTruth',
+        url: 'https://velocity-truth-showcase.vercel.app/'
+      },
+      { label: 'CloudShame', url: 'https://cloud-shame-showcase.vercel.app/' },
+      { label: 'Spec.cop', url: 'https://speccop-showcase.vercel.app/' },
+      { label: 'CruelDocs', url: 'https://crueldocs-showcase.vercel.app/' }
+    ],
+    tabs: {
+      overview:
+        'Six independently hosted samples turn supplied or synthetic inputs into a stand-up draft, meeting-cost receipt, delivery-metric view, cloud-cost review, ticket-versus-diff scope check, or code-documentation review. Optional inference is available with a visitor-provided API key or bounded invite access. These deployments do not connect to GitHub, Linear, Jira, calendar, or cloud accounts through OAuth.',
+      code: {
+        snippet: `const showcaseMode = {
+  sampleInputs: 'synthetic or visitor-supplied',
+  visitorInference: 'bring your own key',
+  inviteInference: 'bounded access',
+  connectedAccountOAuth: false
+};`,
+        language: 'typescript',
+        filename: 'Public showcase behavior'
+      },
+      diagram: `graph TD
+  Input[Synthetic sample or visitor-supplied data] --> Workflow[Product sample workflow]
+  Workflow --> Result[Reviewable result]
+  Workflow -. optional BYOK or invite-gated inference .-> Model[Configured inference provider]
+  Accounts[External service accounts] -. no OAuth connection .-> Workflow`
+    }
   }
 ];
 
@@ -188,10 +235,10 @@ export function ProjectsContent() {
             Selected engineering projects
           </h1>
           <p className='mt-4 max-w-2xl text-lg leading-relaxed text-[var(--dp-text-dim)]'>
-            Four current systems spanning local-first context, agent
+            Four engineering systems spanning local-first context, agent
             orchestration, security controls, and reusable product
-            infrastructure. Public links are shown only where a repository or
-            working demo is actually accessible.
+            infrastructure, plus six hosted product samples. Public links are
+            shown where repositories or live demos are available.
           </p>
         </div>
       </section>
@@ -297,7 +344,8 @@ export function ProjectsContent() {
                         rel='noopener noreferrer'
                         className='border border-[var(--dp-border)] px-2 py-1 text-xs text-[var(--dp-accent-muted)] hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
                       >
-                        {component.label} repository →
+                        {component.label}{' '}
+                        {project.componentLinksLabel ?? 'repository →'}
                       </a>
                     ))}
                   </div>
