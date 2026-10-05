@@ -1079,11 +1079,11 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
               user-facing AI interfaces.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Took over an inherited
-              AI-first service with architecture, security, compliance, and
-              prompt-injection problems — reverse-engineered its undocumented
-              integrations, repaired it, and cut LLM API costs by roughly 40%
-              (candidate-reported professional result).
+              <span className='li-mark'>&gt;</span> Recovered an inherited
+              AI-first service by reverse-engineering undocumented integrations,
+              repairing architecture and security issues, and reducing LLM API
+              costs. Addressed a prompt/context-injection vulnerability using
+              deterministic validation and human review.
             </li>
             <li>
               <span className='li-mark'>&gt;</span> Delivered client websites
@@ -1121,12 +1121,12 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
           </div>
           <ul className='rs-bullets'>
             <li>
-              <span className='li-mark'>&gt;</span> Taught programming
-              fundamentals and game development to students aged 10–16.
+              <span className='li-mark'>&gt;</span> Taught Python and Unity
+              using pre-made curricula.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Developed custom curricula
-              and lessons for introductory Python and Scratch courses.
+              <span className='li-mark'>&gt;</span> Taught JavaScript through
+              a visual block-based tool.
             </li>
           </ul>
         </div>
@@ -1139,13 +1139,14 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
           </div>
           <ul className='rs-bullets'>
             <li>
-              <span className='li-mark'>&gt;</span> Supported project managers:
-              ticket preparation and processing, incoming client communication,
-              work coordination, and incident escalation.
+              <span className='li-mark'>&gt;</span> Drafted a first operating
+              procedure for sorting, tracking, and handoff on a warehouse line,
+              from engineer walkthroughs.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Performed cross-system
-              checks and Playwright-based pre-tests before releases.
+              <span className='li-mark'>&gt;</span> Helped trace warehouse-line
+              process gaps and logged findings for the engineers. Supported
+              sorting and distribution handoffs on the warehouse line.
             </li>
           </ul>
         </div>
