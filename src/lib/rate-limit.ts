@@ -12,22 +12,26 @@ const redis = hasRedis
     })
   : null;
 
-type RateLimitResult = { success: boolean; limit: number; remaining: number };
-
-const passthrough = {
-  limit: async (): Promise<RateLimitResult> => ({
-    success: true,
-    limit: 0,
-    remaining: 0
-  })
+type RateLimitResult = {
+  success: boolean;
+  limit: number;
+  remaining: number;
+  unavailable?: boolean;
 };
 
 function createLimiter(
   window: Parameters<typeof Ratelimit.slidingWindow>[0],
   duration: Parameters<typeof Ratelimit.slidingWindow>[1],
-  prefix: string
+  prefix: string,
+  failClosed = false
 ) {
-  if (!redis) return passthrough;
+  const unavailable = (): RateLimitResult => ({
+    success: !failClosed,
+    limit: 0,
+    remaining: 0,
+    unavailable: failClosed
+  });
+  if (!redis) return { limit: async () => unavailable() };
   const limiter = new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(window, duration),
@@ -45,10 +49,12 @@ function createLimiter(
         )
           .update(`${new Date().toISOString().slice(0, 10)}:${identifier}`)
           .digest('hex');
-        return await limiter.limit(key);
+        const result = await limiter.limit(key);
+        // Upstash's default timeout resolves successfully rather than throwing.
+        if (failClosed && result.reason === 'timeout') return unavailable();
+        return result;
       } catch {
-        // Redis unreachable — degrade gracefully, allow request through
-        return { success: true, limit: 0, remaining: 0 };
+        return unavailable();
       }
     }
   };
@@ -57,21 +63,29 @@ function createLimiter(
 export const chatPublicRateLimit = createLimiter(
   2,
   '1 h',
-  'ratelimit:chat:public'
+  'ratelimit:chat:public',
+  true
 );
 export const chatAuthRateLimit = createLimiter(
   50,
   '1 h',
-  'ratelimit:chat:auth'
+  'ratelimit:chat:auth',
+  true
 );
 export const mcpRateLimit = createLimiter(100, '1 m', 'ratelimit:mcp');
 export const trainingRateLimit = createLimiter(5, '1 h', 'ratelimit:training');
 export const amaPublicRateLimit = createLimiter(
   5,
   '1 h',
-  'ratelimit:ama:public'
+  'ratelimit:ama:public',
+  true
 );
-export const amaAuthRateLimit = createLimiter(20, '1 h', 'ratelimit:ama:auth');
+export const amaAuthRateLimit = createLimiter(
+  20,
+  '1 h',
+  'ratelimit:ama:auth',
+  true
+);
 export const refMintRateLimit = createLimiter(10, '1 h', 'ratelimit:ref:mint');
 export const refVisitRateLimit = createLimiter(
   30,

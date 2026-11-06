@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "test:chat": "node --experimental-strip-types --test src/lib/chat/client-stream.test.mjs",
+    "test:api": "node --test tests/api-guards.test.cjs",
     "verify:deployed": "node scripts/verify-deployed.mjs",
     "check:content": "node scripts/portfolio-regression-checks.mjs",
     "cv:pdf": "bash scripts/generate-cv-pdf.sh",
