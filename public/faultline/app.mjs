@@ -37,7 +37,7 @@ function node(tag, className, text) {
 function announce(text) {
   $('#announcement').textContent = text;
 }
-function render() {
+function render(message = '') {
   const { adapter, fault, stableKey } = state.config;
   const fixed = adapter === 'fixed';
   const started = state.phase !== 'ready';
@@ -110,6 +110,40 @@ function render() {
   } else if (!$('#trace .empty-state')) {
     $('#trace').replaceChildren(emptyState.cloneNode(true));
   }
+  if (!state.trace.length) {
+    $('#trace .empty-state h2').textContent =
+      fault === 'none'
+        ? 'Run the control experiment.'
+        : 'Meet the uncertainty window.';
+    $('#trace .empty-state p').textContent =
+      fault === 'none'
+        ? 'Send one request and receive its response. Then retry to inspect the effect.'
+        : fault === 'before'
+          ? 'Send one request and lose it before it reaches the receiver. Then inspect what happened.'
+          : 'Send one request and lose its response. Then inspect what actually happened.';
+    const flow = $('#trace .empty-state .mini-flow');
+    const parts =
+      fault === 'before'
+        ? [
+            ['span', '', 'Request'],
+            ['i', 'broken', '×'],
+            ['span', '', 'Receiver']
+          ]
+        : [
+            ['span', '', 'Request'],
+            ['i', '', '→'],
+            ['span', '', 'Commit'],
+            [
+              'i',
+              fault === 'after' ? 'broken' : '',
+              fault === 'after' ? '×' : '→'
+            ],
+            ['span', '', 'Response']
+          ];
+    flow.replaceChildren(
+      ...parts.map(([tag, className, text]) => node(tag, className, text))
+    );
+  }
   $('#trace').scrollTop = $('#trace').scrollHeight;
   $('#visits').replaceChildren(
     ...state.visits.map((v) => {
@@ -132,7 +166,9 @@ function render() {
         ? 'Send request & drop it →'
         : 'Send request & lose response →'
     : !retried
-      ? `Retry ${state.config.retries === 1 ? 'the request' : `${state.config.retries} times`} →`
+      ? fault === 'none'
+        ? `Send ${state.config.retries === 1 ? 'the request again' : `${state.config.retries} more requests`} →`
+        : `Retry ${state.config.retries === 1 ? 'the request' : `${state.config.retries} times`} →`
       : fixed
         ? 'Fixed receiver replayed ✓'
         : 'Apply idempotency & replay →';
@@ -145,27 +181,41 @@ function render() {
           'strong',
           '',
           !started
-            ? 'First, create the uncertainty.'
+            ? fault === 'none'
+              ? 'First, run the control.'
+              : 'First, create the uncertainty.'
             : !retried
-              ? 'Now retry. Inspect the effect.'
+              ? fault === 'none'
+                ? 'Send it again. Inspect the effect.'
+                : 'Now retry. Inspect the effect.'
               : fixed
                 ? checks.uniqueness
-                  ? 'Same fault. One committed visit.'
+                  ? fault === 'none'
+                    ? 'Same control. One committed visit.'
+                    : 'Same fault. One committed visit.'
                   : 'The stable-key assumption matters.'
-                : 'Run the identical fault through the fix.'
+                : fault === 'none'
+                  ? 'Run the same control through the fix.'
+                  : 'Run the identical fault through the fix.'
         ),
         node(
           'small',
           '',
           !started
-            ? 'Send the booking through the selected fault.'
+            ? fault === 'none'
+              ? 'Send the booking and observe the response.'
+              : 'Send the booking through the selected fault.'
             : !retried
-              ? 'The client cannot infer receiver state from a timeout.'
+              ? fault === 'none'
+                ? 'The client received confirmation. Send again to inspect the extra effect.'
+                : 'The client cannot infer receiver state from a timeout.'
               : fixed
                 ? baseline
                   ? `Baseline: ${baseline.visits.length} visits / ${baseline.attempts} attempts. Fixed: ${state.visits.length} visits / ${state.attempts} attempts. Independent runs.`
                   : 'Inspect the contract below.'
-                : 'Fresh receiver state. Same fault and retry count.'
+                : fault === 'none'
+                  ? 'Fresh receiver state. Same control and number of extra requests.'
+                  : 'Fresh receiver state. Same fault and retry count.'
         )
       );
       return span;
@@ -179,12 +229,15 @@ function render() {
     ? '409 received. Original visit preserved.'
     : '';
   announce(
-    !started
-      ? 'Experiment reset.'
-      : `${fixed ? 'Fixed receiver' : 'Baseline'}: ${state.visits.length} visits committed. Completion ${checks.completion ? 'passes' : 'fails'}. Uniqueness ${checks.uniqueness ? 'passes' : 'fails'}.`
+    message ||
+      (!started
+        ? 'Experiment reset.'
+        : `${fixed ? 'Fixed receiver' : 'Baseline'}: ${state.visits.length} visits committed. Completion ${checks.completion ? 'passes' : 'fails'}. Uniqueness ${checks.uniqueness ? 'passes' : 'fails'}.`)
   );
 }
 $('#primary').addEventListener('click', () => {
+  const moveFocus =
+    document.activeElement === $('#primary') && state.phase === 'retried';
   if (state.phase === 'ready') state = sendFirst(state);
   else if (state.phase === 'sent') state = retry(state);
   else if (state.config.adapter === 'baseline') {
@@ -192,14 +245,17 @@ $('#primary').addEventListener('click', () => {
     state = replayFixed(state);
   }
   render();
+  if (moveFocus && $('#primary').disabled) $('#retry-more').focus();
 });
 $('#retry-more').addEventListener('click', () => {
   state = retry(state);
   render();
 });
 $('#probe').addEventListener('click', () => {
+  const moveFocus = document.activeElement === $('#probe');
   state = probeConflict(state);
-  render();
+  render(state.conflict ? '409 received. Original visit preserved.' : '');
+  if (moveFocus && $('#probe').disabled) $('#retry-more').focus();
 });
 $('#reset').addEventListener('click', reset);
 for (const button of document.querySelectorAll('[data-fault]'))
