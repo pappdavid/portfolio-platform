@@ -23,7 +23,7 @@
     "typecheck": "tsc --noEmit",
     "postinstall": "npx --yes patch-package@8.0.1",
     "test:visual": "node scripts/verify-visual-layout.cjs",
-    "test:showcases": "node --test scripts/field-notes.test.mjs scripts/mercury-renderer.test.mjs scripts/faultline/engine.test.mjs"
+    "test:showcases": "node --test scripts/field-notes.test.mjs scripts/mercury-renderer.test.mjs scripts/faultline/engine.test.mjs scripts/faultline/app.test.mjs"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [
