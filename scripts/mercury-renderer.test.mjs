@@ -84,3 +84,24 @@ test('full-state replacement removes every adjacent stale SVG node', () => {
     ['keep']
   );
 });
+
+for (const [id, label, tag] of [
+  ['scene', 'Composition', 'select'],
+  ['frame', 'Scrub the full-state stream', 'input']
+]) {
+  test(`${id} has an explicit accessible name at responsive widths`, async () => {
+    const { readFile } = await import('node:fs/promises');
+    const html = await readFile(
+      new URL('../public/demos/mercury/index.html', import.meta.url),
+      'utf8'
+    );
+    const control = html.match(
+      new RegExp(`<${tag}\\b[^>]*\\bid="${id}"[^>]*>`)
+    )?.[0];
+    assert.ok(control, `${id} control exists`);
+    assert.ok(
+      control.includes(`aria-label="${label}"`),
+      `${id} retains its accessible name when the visual label is hidden`
+    );
+  });
+}
