@@ -1429,7 +1429,7 @@
     table-layout: fixed;
   }
   .meta-table .mk {
-    width: 82px;
+    width: calc(12ch + 4px);
     letter-spacing: 0;
   }
   .meta-table .ms {
