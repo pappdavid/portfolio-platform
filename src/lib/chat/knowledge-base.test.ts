@@ -19,11 +19,7 @@ test('BM25 retrieval finds work, availability, and exact technical projects', ()
     'Professional work at WEBINFORM'
   );
   assert.equal(
-    kb.retrieveKnowledge(
-      'work authorization sponsorship availability',
-      docs,
-      3
-    )[0].doc.title,
+    kb.retrieveKnowledge('full-time Rotterdam', docs, 3)[0].doc.title,
     'About David Papp'
   );
   assert.equal(

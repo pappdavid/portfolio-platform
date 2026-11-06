@@ -1,0 +1,47 @@
+/* Portfolio-owned embedding layout; leaves upstream content and bundles intact.
+   The transcript has its own row so input and contact never cover an answer. */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+.app {
+  height: 100dvh;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+}
+header, .chips, .composer, .contact-link {
+  min-width: 0;
+}
+.chat {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-padding-block: 12px;
+}
+.msg {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.composer {
+  position: static;
+  background: var(--bg);
+  border-top: 1px solid var(--chip-border);
+}
+.contact-link {
+  display: block;
+  position: static;
+  background: var(--bg);
+  padding: 8px 16px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.receipt {
+  font-size: 13px;
+}
+
+.guided-start { padding: 7px 12px; margin-top: 8px; border: 1px solid var(--chip-border); border-radius: 12px; background: var(--bg); color: var(--accent); font: inherit; font-size: 14px; cursor: pointer; }

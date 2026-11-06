@@ -1,15 +1,42 @@
 [
   {
+    "id": "faultline",
+    "name": "Faultline",
+    "description": "Executable deterministic browser simulation of retries, duplicate effects, and idempotency for a fictional booking.",
+    "techStack": ["JavaScript", "Idempotency", "Fault injection"],
+    "keyFeatures": [
+      "Lost response before or after commit",
+      "Naive versus idempotent in-memory receiver",
+      "Stable-key and changed-payload probes",
+      "Event trace, assertions, and exportable receipt"
+    ],
+    "architecture": "A deterministic engine models client attempts, receiver state, stored receipts, and the resulting completion/uniqueness assertions.",
+    "fileStructure": ["public/faultline/", "scripts/faultline/engine.test.mjs"],
+    "details": "Public no-login simulation at /faultline/index.html. No network calls or real bookings. Atomic effect-plus-receipt storage is an explicit model assumption, not proof of durable distributed behavior."
+  },
+  {
+    "id": "mercury-renderer",
+    "name": "Mercury Renderer Study",
+    "description": "Frontend rendering study using bundled synthetic full-state snapshots; no model calls.",
+    "techStack": ["JavaScript", "SVG", "Schema validation"],
+    "keyFeatures": [
+      "Play, pause, and scrub synthetic sequences",
+      "Malformed-frame rejection with last-valid state retention",
+      "Stable SVG node reconciliation",
+      "Bounded event trace export"
+    ],
+    "architecture": "Bundled fixtures pass through schema validation before text and SVG node updates; invalid frames preserve the last valid composition.",
+    "fileStructure": [
+      "public/demos/mercury/",
+      "scripts/mercury-renderer.test.mjs"
+    ],
+    "details": "Public no-login replay at /demos/mercury/index.html. Inspired by diffusion-style updates; no Mercury model connection, inference, or performance benchmark."
+  },
+  {
     "id": "voidarch-context",
     "name": "VoidArch Context",
     "description": "Local-first, agent-neutral repository memory, query, and context-pack engine.",
-    "techStack": [
-      "TypeScript",
-      "SurrealDB",
-      "Tree-sitter",
-      "BM25",
-      "ONNX"
-    ],
+    "techStack": ["TypeScript", "SurrealDB", "Tree-sitter", "BM25", "ONNX"],
     "keyFeatures": [
       "Embedded per-repository SurrealDB",
       "File and document retrieval with BM25",
@@ -79,7 +106,7 @@
       "Integrated private suite repository",
       "Public component repositories: PromptShield, agentsec-hook-pack, mcpguard-lite, agentmap, approveops"
     ],
-    "details": "Live integrated demo: https://promptshield-cyan.vercel.app. Component repositories are supporting modules rather than separate portfolio products."
+    "details": "Live integrated demo: https://promptshield-cyan.vercel.app/demo. Component repositories are supporting modules rather than separate portfolio products."
   },
   {
     "id": "saas-core",
@@ -112,7 +139,7 @@
   {
     "id": "about-david",
     "name": "About David Papp",
-    "description": "AI Solutions Developer at WEBINFORM IT Ltd since October 2024 and studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Based in the Rotterdam area with NL/EU work authorization.",
+    "description": "AI Solutions Developer at WEBINFORM IT Ltd since October 2024 and studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Based in the Rotterdam area, Netherlands.",
     "techStack": [
       "TypeScript",
       "Python",
@@ -129,6 +156,6 @@
     ],
     "architecture": "Professional AI delivery, university study, and selected personal engineering systems.",
     "fileStructure": [],
-    "details": "Contact: contact@davidpapp.dev. Full-time availability; no sponsorship required."
+    "details": "Contact: contact@davidpapp.dev. Full-time availability."
   }
 ]

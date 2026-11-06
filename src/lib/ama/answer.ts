@@ -1,34 +1,83 @@
+import { asksForWorkEligibility, workEligibilityAnswer } from './eligibility';
+
 export type PortfolioAssistantLink = { label: string; url: string };
-export type PortfolioAssistantAnswer = { answer: string; links: PortfolioAssistantLink[] };
+export type PortfolioAssistantAnswer = {
+  answer: string;
+  links: PortfolioAssistantLink[];
+};
 
 export const portfolioAssistantLinks: PortfolioAssistantLink[] = [
   { label: 'Projects', url: '/projects' },
-  { label: 'AgentSec Suite demo', url: 'https://promptshield-cyan.vercel.app' },
+  {
+    label: 'AgentSec Suite demo',
+    url: 'https://promptshield-cyan.vercel.app/demo'
+  },
   { label: 'GitHub', url: 'https://github.com/pappdavid' },
   { label: 'Contact David', url: '/#contact' },
   { label: 'CV (PDF)', url: '/cv.pdf' }
 ];
 
-function hasAny(query: string, terms: string[]) { return terms.some((term) => query.includes(term)); }
+function hasAny(query: string, terms: string[]) {
+  return terms.some((term) => query.includes(term));
+}
 function link(label: string) {
   const target = portfolioAssistantLinks.find((item) => item.label === label);
   if (!target) throw new Error(`Unknown portfolio assistant link: ${label}`);
   return target;
 }
 
-export function answerPortfolioQuestion(question: string): PortfolioAssistantAnswer {
+export function answerPortfolioQuestion(
+  question: string
+): PortfolioAssistantAnswer {
+  if (asksForWorkEligibility(question)) {
+    return { answer: workEligibilityAnswer, links: [link('Contact David')] };
+  }
   const normalized = question.toLowerCase();
   if (hasAny(normalized, ['role', 'roles', 'open to', 'available'])) {
-    return { answer: 'David is open to full-time AI engineering, AI solutions, integration, automation, and agent-infrastructure roles. He is based in the Rotterdam area (NL), has NL/EU work authorization with no sponsorship required, and email is the fastest way to reach him.', links: [link('Contact David'), link('CV (PDF)')] };
+    return {
+      answer:
+        'David is open to full-time AI engineering, AI solutions, integration, automation, and agent-infrastructure roles. He is based in the Rotterdam area (NL), and email is the fastest way to reach him.',
+      links: [link('Contact David'), link('CV (PDF)')]
+    };
   }
   if (hasAny(normalized, ['webinform', 'work', 'job', 'experience'])) {
-    return { answer: 'Since October 2024 David has worked as an AI Solutions Developer (contract) at WEBINFORM IT Ltd, building internal AI tools and production LLM functionality for web applications and ERP-integrated systems. Delivery includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP integrations, along with repair of an inherited AI-first service associated with a candidate-reported approximate 40% reduction in LLM API costs.', links: [link('CV (PDF)'), link('Contact David')] };
+    return {
+      answer:
+        'Since October 2024 David has worked as an AI Solutions Developer (contract) at WEBINFORM IT Ltd, building internal AI tools and production LLM functionality for web applications and ERP-integrated systems. Delivery includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP integrations, along with repair of an inherited AI-first service including reduced LLM API costs and prompt/context-injection mitigation using deterministic validation and human review.',
+      links: [link('CV (PDF)'), link('Contact David')]
+    };
   }
-  if (hasAny(normalized, ['voidarch', 'context', 'studio', 'agentsec', 'promptshield', 'mcpguard', 'agentmap', 'approveops', 'saas-core', 'security', 'project'])) {
-    return { answer: 'David’s selected projects are VoidArch Context (local-first repo memory and context packs), VoidArch Studio (local agent orchestration), AgentSec Suite (the integrated security suite with a live demo), and saas-core (private modular product infrastructure). PromptShield, the hook pack, MCPGuard, AgentMap, and ApproveOps are linked as AgentSec components rather than separate portfolio products.', links: [link('Projects'), link('AgentSec Suite demo'), link('GitHub')] };
+  if (
+    hasAny(normalized, [
+      'voidarch',
+      'context',
+      'studio',
+      'agentsec',
+      'promptshield',
+      'mcpguard',
+      'agentmap',
+      'approveops',
+      'saas-core',
+      'security',
+      'project'
+    ])
+  ) {
+    return {
+      answer:
+        'David’s selected projects are VoidArch Context (local-first repo memory and context packs), VoidArch Studio (local agent orchestration), AgentSec Suite (the integrated security suite with a live demo), and saas-core (private modular product infrastructure). PromptShield, the hook pack, MCPGuard, AgentMap, and ApproveOps are linked as AgentSec components rather than separate portfolio products.',
+      links: [link('Projects'), link('AgentSec Suite demo'), link('GitHub')]
+    };
   }
   if (hasAny(normalized, ['stack', 'technology', 'tools', 'prefer'])) {
-    return { answer: "David's stack centers on TypeScript, Python, and Rust, with Next.js, Prisma, Postgres, SurrealDB, LLM APIs, MCP, GitHub Actions, and Tauri. Professionally he ships LLM features, APIs, and ERP integrations; personally he builds local-first context, orchestration, and security systems.", links: [link('Projects'), link('GitHub')] };
+    return {
+      answer:
+        "David's stack centers on TypeScript, Python, and Rust, with Next.js, Prisma, Postgres, SurrealDB, LLM APIs, MCP, GitHub Actions, and Tauri. Professionally he ships LLM features, APIs, and ERP integrations; personally he builds local-first context, orchestration, and security systems.",
+      links: [link('Projects'), link('GitHub')]
+    };
   }
-  return { answer: 'David is an AI Solutions Developer at WEBINFORM and is studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; he changed to this programme in September 2026 and expects to graduate in 2028. His current portfolio focuses on VoidArch Context, VoidArch Studio, AgentSec Suite, and saas-core. Ask about his professional work, a specific project, his stack, or his availability — or email contact@davidpapp.dev.', links: [link('Projects'), link('Contact David')] };
+  return {
+    answer:
+      'David is an AI Solutions Developer at WEBINFORM and is studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; he changed to this programme in September 2026 and expects to graduate in 2028. His current portfolio focuses on VoidArch Context, VoidArch Studio, AgentSec Suite, and saas-core. Ask about his professional work, a specific project, his stack, or his availability — or email contact@davidpapp.dev.',
+    links: [link('Projects'), link('Contact David')]
+  };
 }

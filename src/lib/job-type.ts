@@ -71,7 +71,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'what LLM work has David done professionally?',
       'how does the retrieval in this assistant work?',
       'tell me about VoidArch Context',
-      "what ML fundamentals does David study at VU?"
+      'what ML fundamentals does David study at VU?'
     ],
     featuredProjects: ['VoidArch Context', 'VoidArch Studio', 'AgentSec Suite']
   },
@@ -84,7 +84,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Taking AI into ERP-integrated business systems — discovery, solution design, delivery.',
     focusLine: 'erp integrations · llm apis · solution design · delivery',
     pitch:
-      "Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems. His work includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP/AI integrations, alongside discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service was associated with a candidate-reported approximate 40% reduction in LLM API costs.",
+      'Tuned for solutions and integration roles: at WEBINFORM IT Ltd David builds internal AI tools and production LLM functionality for web applications and ERP-integrated systems. His work includes client websites and webshops, internal AI systems, user-facing AI functionality, and ERP/AI integrations, alongside discovery, requirements, solution design, client coordination, proposals, and pricing. Repairing an inherited AI-first service included reducing LLM API costs and addressing a prompt/context-injection vulnerability using deterministic validation and human review.',
     projectsCta: '[delivery case studies]',
     chatGreeting:
       'Session active. Tuned for solutions and integration roles — ask how David runs an ERP + AI integration project or what he delivered at WEBINFORM.',
@@ -109,7 +109,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Tuned for automation roles: professional work spans APIs, backend logic, and automation for web applications and ERP-integrated systems, plus Playwright-based pre-release testing at 4iG. In the lab, the AgentSec hook pack gates Claude Code and Codex tool calls with safe-command fast paths and observe/prompt/enforce modes, and saas-core turns typed presets into validated builds through scripted CI workflows.',
     projectsCta: '[automation work]',
     chatGreeting:
-      "Session active. Tuned for automation roles — ask what David has automated in client delivery or how his hook pack gates agent tool calls.",
+      'Session active. Tuned for automation roles — ask what David has automated in client delivery or how his hook pack gates agent tool calls.',
     chatContextLabel: 'context: reviewed_kb + automation profile',
     suggestions: [
       'what has David automated in client delivery?',
@@ -211,7 +211,9 @@ export function resolveJobType(input: unknown): JobTypeProfile | null {
     JobTypeId,
     string[]
   ][]) {
-    const candidates = [id, ...aliases].map((alias) => alias.replace(/ /g, '-'));
+    const candidates = [id, ...aliases].map((alias) =>
+      alias.replace(/ /g, '-')
+    );
     if (candidates.includes(token)) {
       return JOB_TYPES[id];
     }
@@ -220,10 +222,10 @@ export function resolveJobType(input: unknown): JobTypeProfile | null {
 }
 
 export function resolveJobTypeFromSearchParams(
-  searchParams: Record<
-    string,
-    string | readonly string[] | undefined
-  > | null | undefined
+  searchParams:
+    | Record<string, string | readonly string[] | undefined>
+    | null
+    | undefined
 ): JobTypeProfile | null {
   if (!searchParams) return null;
   const raw = searchParams[JOB_TYPE_QUERY_PARAM];
@@ -315,9 +317,8 @@ export function prioritizeProjects<T extends { name: string }>(
   const tierOf = (item: T): number => {
     const name = item.name.toLowerCase();
     const referralIndex =
-      referral?.featuredProjects?.findIndex(
-        (n) => n.toLowerCase() === name
-      ) ?? -1;
+      referral?.featuredProjects?.findIndex((n) => n.toLowerCase() === name) ??
+      -1;
     if (referralIndex !== -1) return referralIndex;
     const jobTypeIndex = jobType
       ? jobType.featuredProjects.findIndex((n) => n.toLowerCase() === name)
@@ -328,8 +329,6 @@ export function prioritizeProjects<T extends { name: string }>(
 
   return [...projects]
     .map((project, index) => ({ project, index }))
-    .sort(
-      (a, b) => tierOf(a.project) - tierOf(b.project) || a.index - b.index
-    )
+    .sort((a, b) => tierOf(a.project) - tierOf(b.project) || a.index - b.index)
     .map(({ project }) => project);
 }

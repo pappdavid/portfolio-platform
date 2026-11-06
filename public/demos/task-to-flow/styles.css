@@ -163,3 +163,5 @@ body {
   .flow li, .flow li::after { transition: none; opacity: 1; transform: none; }
   .flow li::after { opacity: 1; }
 }
+
+.app { max-width:840px; } .thread { min-height:0; } .topbar { flex-wrap:wrap; gap:6px 16px; } .chips { flex-wrap:wrap; overflow:visible; } .chip { white-space:normal; } .empty-state { max-width:54ch; margin:8vh auto 0; padding:24px; } .empty-state h1 { font-size:clamp(24px,4vw,36px);line-height:1.2; margin:0 0 16px; } .empty-state p {color:var(--ink-soft)} .implementation pre {max-height:none;white-space:pre-wrap;overflow-wrap:anywhere} @media(prefers-reduced-motion:reduce){.flow li{opacity:1;transform:none}}

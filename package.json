@@ -14,12 +14,16 @@
     "lint:fix": "eslint src --fix && npm run format",
     "lint:strict": "ESLINT_USE_FLAT_CONFIG=true eslint --quiet src",
     "format": "prettier --write .",
-    "format:check": "prettier -c -w .",
+    "format:check": "prettier --check .",
     "prepare": "husky",
+    "test:chat": "node --experimental-strip-types --test src/lib/chat/client-stream.test.mjs",
+    "verify:deployed": "node scripts/verify-deployed.mjs",
     "check:content": "node scripts/portfolio-regression-checks.mjs",
     "cv:pdf": "bash scripts/generate-cv-pdf.sh",
     "typecheck": "tsc --noEmit",
-    "postinstall": "npx --yes patch-package@8.0.1"
+    "postinstall": "npx --yes patch-package@8.0.1",
+    "test:visual": "node scripts/verify-visual-layout.cjs",
+    "test:showcases": "node --test scripts/field-notes.test.mjs scripts/mercury-renderer.test.mjs scripts/faultline/engine.test.mjs"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [

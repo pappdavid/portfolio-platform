@@ -32,7 +32,12 @@ const META_THEME_COLORS = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://davidpapp.dev'),
   title: 'David Papp — AI Solutions Developer',
+  other: {
+    'portfolio:commit':
+      process.env.NEXT_PUBLIC_PORTFOLIO_COMMIT_SHA || 'unrecorded'
+  },
   description:
     'Portfolio of David Papp — AI Solutions Developer at WEBINFORM, studying Econometrics and Data Science at VU Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028.'
 };

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useId, useState } from 'react';
-import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 
 export function MermaidDiagram({
@@ -13,14 +12,19 @@ export function MermaidDiagram({
 }) {
   const [svg, setSvg] = useState('');
   const id = useId().replace(/:/g, '');
-  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     let cancelled = false;
     import('mermaid').then(({ default: mermaid }) => {
       mermaid.initialize({
         startOnLoad: false,
-        theme: resolvedTheme === 'dark' ? 'dark' : 'default',
+        // The public surface is always dark (#0a0a0a) regardless of the
+        // system theme, so lines/arrowheads must stay light to be visible.
+        theme: 'dark',
+        themeVariables: {
+          lineColor: '#9ca3af',
+          arrowheadColor: '#9ca3af'
+        },
         securityLevel: 'loose',
         fontFamily: 'inherit'
       });
@@ -34,7 +38,7 @@ export function MermaidDiagram({
     return () => {
       cancelled = true;
     };
-  }, [chart, resolvedTheme, id]);
+  }, [chart, id]);
 
   if (!svg) {
     return (

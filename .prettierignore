@@ -46,3 +46,6 @@ node_modules
 build
 dist
 ico
+
+# Vendored bundles retain their source build hashes and source-map offsets.
+/public/demos/

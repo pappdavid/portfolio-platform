@@ -1,6 +1,6 @@
 export const amaCorpus: string = `
 # About David Papp
-AI Solutions Developer (contract/freelance) at WEBINFORM IT Ltd since October 2024, and studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Based in the Rotterdam area, Netherlands. Hungarian citizen with NL/EU work authorization - no sponsorship required.
+AI Solutions Developer (contract/freelance) at WEBINFORM IT Ltd since October 2024, and studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Based in the Rotterdam area, Netherlands.
 
 Open to: full-time AI engineering, AI solutions, integration, automation, agent infrastructure, and technically oriented product/project roles.
 Contact: contact@davidpapp.dev
@@ -15,7 +15,7 @@ Project Assistant at 4iG Nyrt. (Aug 2022 - Aug 2023): drafted a first operating 
 # Selected engineering projects (personal work, not commercial products)
 VoidArch Context: local-first, agent-neutral repo memory and context engine using embedded SurrealDB, BM25 document retrieval, a Tree-sitter code graph, durable memories, optional local ONNX embeddings, and deterministic token-budgeted context packs. It runs locally; vector retrieval requires an explicit embedding pass and the embedded database is single-process.
 VoidArch Studio: active-development local orchestration control room built on Context, with daemon-owned PTY sessions for Claude, Codex, and shell, worktrees, run management, transcripts, resume metadata, safety hooks, observability, and a thin Tauri desktop shell. It is not a released hosted service.
-AgentSec Suite: working integrated suite combining PromptShield, MCPGuard, AgentMap, ApproveOps, and the AgentSec hook pack. The public integrated demo is https://promptshield-cyan.vercel.app. The five public component repositories are supporting source modules, not five separate portfolio products.
+AgentSec Suite: working integrated suite combining PromptShield, MCPGuard, AgentMap, ApproveOps, and the AgentSec hook pack. The public integrated demo is https://promptshield-cyan.vercel.app/demo. The five public component repositories are supporting source modules, not five separate portfolio products.
 saas-core: private modular Next.js scaffold and factory infrastructure with typed presets, environment validation, product rendering scripts, CI workflows, and provider adapters. It is supporting engineering infrastructure, not a public product or live demo.
 
 # Tech stack

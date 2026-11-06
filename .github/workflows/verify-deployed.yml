@@ -1,0 +1,30 @@
+name: Verify selected deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: Actual HTTPS deployment origin to verify
+        required: true
+        type: string
+      expected_commit:
+        description: Full source commit expected on that deployment
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Verify revision and public routes
+        env:
+          DEPLOYMENT_URL: ${{ inputs.deployment_url }}
+          EXPECTED_COMMIT: ${{ inputs.expected_commit }}
+        run: node scripts/verify-deployed.mjs "$DEPLOYMENT_URL" "$EXPECTED_COMMIT"

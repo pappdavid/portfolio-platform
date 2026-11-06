@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, statSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 
 const root = process.cwd();
 
@@ -57,6 +58,8 @@ const RECRUITER_FACING = [
 // Prevent specific unsupported recruiter-facing claims without mistaking CSS
 // percentages or layout values for performance metrics.
 const DISALLOWED = [
+  [/40\s*%/i, 'superseded quantified cost-reduction claim'],
+  [/students aged 10[–-]16/i, 'superseded teaching age range'],
   [/100%\s*(?:of\s*)?(?:agent\s*)?executions?/i, 'execution-coverage claim'],
   [/99\.9%\s*(?:uptime|availability)/i, 'uptime claim'],
   [/97%\s*(?:token|reduction|savings)/i, 'token-savings claim'],
@@ -150,10 +153,13 @@ assert(
 );
 assert(landing.includes('WEBINFORM IT Ltd'), 'landing: employer name');
 assert(
-  landing.includes('roughly 40%'),
-  'landing: cost reduction must stay approximate'
+  landing.replace(/\s+/g, ' ').includes('reducing LLM API costs'),
+  'landing: retain corrected inherited-service wording'
 );
-assert(landing.includes('students aged 10–16'), 'landing: Logiscool age range');
+assert(
+  landing.includes('pre-made curricula'),
+  'landing: corrected teaching scope'
+);
 assert(
   landing.includes('SIM.LATENCY'),
   'landing: decorative telemetry must stay labelled SIM'
@@ -208,12 +214,12 @@ for (const note of fieldNotes) {
 const cvHtml = read('public/cv.html');
 assert(cvHtml.includes('Oct 2024'), 'cv.html: WEBINFORM start date');
 assert(
-  landing.includes('2024 — 2028 (Expected)'),
-  'landing: university study dates'
+  landing.includes('Sep 2026 — 2028 (Expected)'),
+  'landing: current programme dates'
 );
 assert(
-  cvHtml.includes('2024 – 2028 (expected)'),
-  'cv.html: university study dates'
+  cvHtml.includes('Sep 2026 – 2028 (expected)'),
+  'cv.html: current programme dates'
 );
 assert(
   cvHtml.includes('changed to this programme in September 2026'),
@@ -253,13 +259,28 @@ for (const path of RECRUITER_FACING) {
   );
 }
 assert(
-  cvHtml.includes('roughly 40%'),
-  'cv.html: approximate cost reduction wording'
+  cvHtml.includes('reducing LLM API costs'),
+  'cv.html: corrected inherited-service wording'
 );
 assert(
   cvHtml.includes('page-break-inside: avoid'),
   'cv.html: print pagination guard'
 );
+
+// Public profile and default retrieval copy must not volunteer eligibility facts.
+for (const path of [
+  'src/components/landing/landing-content.tsx',
+  'src/data/github-projects-rag.json',
+  'src/lib/ama/corpus.ts',
+  'public/cv.html'
+]) {
+  assert(
+    !/sponsor|work authori[sz]ation|work permit|right to work/i.test(
+      read(path)
+    ),
+    path + ': unsolicited work-eligibility copy'
+  );
+}
 
 // The PDF must be current and usable.
 const cvStat = statSync(resolve(root, 'public/cv.pdf'));
@@ -329,9 +350,9 @@ assert(
   'assistant corpus: personal projects must stay framed as prototypes'
 );
 
-// The portfolio has exactly four primary projects. AgentSec is one integrated
-// suite, not five competing cards, and only its integrated deployment is linked
-// as a public demo.
+// Four primary projects remain intact alongside two executable browser studies.
+// AgentSec is one integrated suite, not five competing cards, and only its
+// integrated deployment is linked as a public demo.
 const primaryProjectIds = [
   'voidarch-context',
   'voidarch-studio',
@@ -397,7 +418,22 @@ for (const retiredDemo of [
   );
 }
 
-const projectEntries = ragData.filter((entry) => entry.id !== 'about-david');
+const studyIds = ['faultline', 'mercury-renderer'];
+const studyEntries = ragData.filter((entry) => studyIds.includes(entry.id));
+assert.deepEqual(
+  studyEntries.map((entry) => entry.id),
+  studyIds
+);
+for (const study of studyEntries) {
+  assert.match(
+    study.details,
+    /no (network calls|Mercury model connection)/i,
+    `${study.id}: browser study must disclose simulation boundaries`
+  );
+}
+const projectEntries = ragData.filter(
+  (entry) => entry.id !== 'about-david' && !studyIds.includes(entry.id)
+);
 assert.equal(
   projectEntries.length,
   4,
@@ -409,4 +445,54 @@ assert.deepEqual(
   'RAG data: project order and identities must match the approved portfolio'
 );
 
+// CV case-study anchors: public projects link their verified repository;
+// private projects never link a public source repository.
+const anchoredProjects = {
+  'active-companion': 'https://github.com/pappdavid/active-companion',
+  'voidarch-context': 'https://github.com/VoidArch-Labs/voidarch-context',
+  'voidarch-router': null,
+  'client-studio': null
+};
+for (const [id, repoUrl] of Object.entries(anchoredProjects)) {
+  const entry = projectsSource
+    .split(/\n  \{\n    id: /)
+    .find((chunk) => chunk.startsWith(`'${id}'`));
+  assert(entry, `projects page: missing #${id} anchor`);
+  const linked = entry.match(/repoUrl: '([^']+)'/)?.[1] ?? null;
+  assert.equal(linked, repoUrl, `projects page: #${id} repository link`);
+}
+
+// /#projects is the work-section alias, so it must activate the PROJECTS tab.
+assert.match(
+  landing,
+  /hash === 'projects' \? 'work' : hash/,
+  'landing: #projects must select the work section'
+);
+// The public surface is always dark; diagram lines must not follow the
+// system theme into Mermaid's light-theme dark-gray arrows.
+const mermaidSource = read('src/components/shared/mermaid-diagram.tsx');
+assert.match(mermaidSource, /theme: 'dark',/, 'mermaid: fixed dark theme');
+assert.match(mermaidSource, /lineColor: '#9ca3af'/, 'mermaid: light lines');
+
 console.log('portfolio content consistency checks passed');
+
+// Source provenance must remain inspectable without publishing separate repos.
+const demoLock = JSON.parse(read('demos.lock.json'));
+for (const demo of demoLock.demos) {
+  assert(
+    /^[a-f0-9]{40}$/.test(demo.commit),
+    `${demo.slug}: full upstream source revision required`
+  );
+  if (!demo.source_patch) continue;
+  assert(
+    demo.source_patch.path.startsWith('patches/demos/') &&
+      !demo.source_patch.path.includes('..'),
+    `${demo.slug}: patch must stay in the repository's demo patch directory`
+  );
+  const patch = readFileSync(resolve(root, demo.source_patch.path));
+  assert.equal(
+    createHash('sha256').update(patch).digest('hex'),
+    demo.source_patch.sha256,
+    `${demo.slug}: demo source patch hash must match`
+  );
+}

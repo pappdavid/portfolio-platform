@@ -12,6 +12,12 @@ import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
 import { DemoStrip } from '@/components/demos/demo-strip';
 import FIELD_NOTES from '@/data/field-notes.json';
 import { applyCaptureAttribute, isCaptureMode } from '@/lib/capture-mode';
+import {
+  readPortfolioReply,
+  validateChatEvidence,
+  PortfolioReplyError,
+  type ChatEvidence
+} from '@/lib/chat/client-stream';
 
 function Typewriter({
   text,
@@ -117,6 +123,63 @@ type Project = {
 
 const PROJECTS: Project[] = [
   {
+    name: 'Faultline',
+    stage: 'BETA',
+    mod: '2026-11',
+    badge: 'live',
+    desc: 'Run a lost-response retry, inspect duplicate effects, and compare an idempotent receiver',
+    body: 'An executable browser simulation of a booking request whose response is lost after commit. Retry the same operation, compare a naive receiver with a receiver that stores an idempotency receipt, and probe changed payloads or unstable keys. The trace and assertions come from the running in-memory model. All booking data is fictional; there is no network request or real booking. Atomic effect-and-receipt storage is an explicit model assumption, not proof of durable distributed behavior.',
+    tech: ['JavaScript', 'Idempotency', 'Fault injection', 'Executable model'],
+    liveUrl: '/faultline/index.html',
+    repoUrl:
+      'https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline',
+    repoName: 'portfolio-platform / public/faultline'
+  },
+  {
+    name: 'Mercury Renderer Study',
+    stage: 'BETA',
+    mod: '2026-11',
+    badge: 'live',
+    desc: 'A synthetic full-state rendering stream with validation, recovery, and an inspectable trace',
+    body: 'A frontend rendering study using bundled synthetic snapshots. Play or scrub three sequences, inject a malformed frame, interrupt the stream, and inspect the retained last-valid composition. Stable SVG node identities survive valid replacements, and a bounded exportable trace records accepted and rejected frames. This is a local browser replay inspired by diffusion-style generation, not a connection to a Mercury model, hosted inference, or a measured performance benchmark.',
+    tech: ['JavaScript', 'SVG', 'Schema validation', 'Synthetic replay'],
+    liveUrl: '/demos/mercury/index.html',
+    repoUrl:
+      'https://github.com/pappdavid/portfolio-platform/tree/main/public/demos/mercury',
+    repoName: 'portfolio-platform / public/demos/mercury'
+  },
+  {
+    name: 'Active Companion',
+    stage: 'BETA',
+    mod: '2026-10',
+    badge: 'live',
+    desc: 'Scripted retrieval replay over fictional conversations; inspect evidence cards',
+    body: 'A conversation-context prototype with a public scripted retrieval replay and scenario harness. The hosted replay advances bundled fictional utterances and displays retrieval evidence cards. It uses no live microphone or hosted inference. The public repository is linked for inspection.',
+    tech: ['Retrieval', 'Scenario harness', 'Scripted replay'],
+    liveUrl: 'https://active-companion-replay.vercel.app',
+    repoUrl: 'https://github.com/pappdavid/active-companion',
+    repoName: 'pappdavid/active-companion'
+  },
+  {
+    name: 'VoidArch Router',
+    stage: 'BETA',
+    mod: '2026-10',
+    badge: 'private',
+    desc: 'Offline-testable capability, prerequisite and workflow routing with explainable plans',
+    body: 'A standalone personal TypeScript tool. Its private repository documents compilation of capability and workflow metadata, task classification, declared prerequisite checks, trusted implementation selection, and explainable route plans. Offline fixtures are included. The router does not execute workflows, read credentials, call models, or host a service; live Hermes and Studio adapters remain deferred interfaces.',
+    tech: ['TypeScript', 'Offline fixtures', 'Workflow routing']
+  },
+  {
+    name: 'Client Studio',
+    stage: 'BETA',
+    mod: '2026-10',
+    badge: 'private',
+    desc: 'Source-excerpt demo with fictional intake, review and activation; no AI calls',
+    body: 'The public demo supports fictional text intake, source-excerpt review, unresolved questions, review and activation states, and runtime reload recovery. This hosted mode makes no AI calls. Source is private and no public repository is claimed.',
+    tech: ['Source excerpts', 'Review workflow', 'Fictional intake'],
+    liveUrl: 'https://client-studio-psi.vercel.app'
+  },
+  {
     name: 'VoidArch Context',
     stage: 'BETA',
     mod: '2026-07',
@@ -132,7 +195,9 @@ const PROJECTS: Project[] = [
       'BM25',
       'Claude Code',
       'Codex'
-    ]
+    ],
+    repoUrl: 'https://github.com/VoidArch-Labs/voidarch-context',
+    repoName: 'VoidArch-Labs/voidarch-context'
   },
   {
     name: 'VoidArch Studio',
@@ -167,7 +232,7 @@ const PROJECTS: Project[] = [
       'Node.js',
       'Vercel'
     ],
-    liveUrl: 'https://promptshield-cyan.vercel.app',
+    liveUrl: 'https://promptshield-cyan.vercel.app/demo',
     image: '/saas-screenshots/promptshield.png',
     componentLinks: [
       {
@@ -272,7 +337,9 @@ export function LandingContent({
   // Follow direct section URLs, including CTAs escaping embedded demos.
   useEffect(() => {
     const followHash = () => {
-      const id = window.location.hash.slice(1);
+      const hash = window.location.hash.slice(1);
+      // #projects is the public alias of the work section.
+      const id = hash === 'projects' ? 'work' : hash;
       if (!['home', 'work', 'skills', 'notes', 'contact'].includes(id)) return;
       const el = document.getElementById(id);
       scrollRef.current?.scrollTo({
@@ -572,7 +639,7 @@ export function LandingContent({
                     rel='noopener'
                     className='cta cta-resume glitch-hover'
                   >
-                    [view resume — Jul 2026]
+                    [view resume — PDF]
                   </a>
                   <button
                     onClick={() => nav('work')}
@@ -641,13 +708,6 @@ export function LandingContent({
                         <td className='mk'>AVAILABILITY</td>
                         <td className='ms'>:</td>
                         <td className='mv'>Full-time</td>
-                      </tr>
-                      <tr>
-                        <td className='mk'>WORK AUTH</td>
-                        <td className='ms'>:</td>
-                        <td className='mv'>
-                          NL / EU Work Authorization (No sponsorship required)
-                        </td>
                       </tr>
                       <tr>
                         <td className='mk'>WORK MODE</td>
@@ -738,7 +798,10 @@ export function LandingContent({
           aria-current={active === 'home' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'home' && 'active')}
         >
-          01._HOME
+          <span className='tab-index' aria-hidden='true'>
+            01._
+          </span>
+          <span>HOME</span>
         </button>
         <button
           onClick={() => nav('work')}
@@ -746,7 +809,10 @@ export function LandingContent({
           aria-current={active === 'work' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'work' && 'active')}
         >
-          02._PROJECTS
+          <span className='tab-index' aria-hidden='true'>
+            02._
+          </span>
+          <span>PROJECTS</span>
         </button>
         <button
           onClick={() => nav('skills')}
@@ -754,7 +820,10 @@ export function LandingContent({
           aria-current={active === 'skills' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'skills' && 'active')}
         >
-          03._SKILLS
+          <span className='tab-index' aria-hidden='true'>
+            03._
+          </span>
+          <span>SKILLS</span>
         </button>
         <button
           onClick={() => nav('notes')}
@@ -762,7 +831,10 @@ export function LandingContent({
           aria-current={active === 'notes' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'notes' && 'active')}
         >
-          04._NOTES
+          <span className='tab-index' aria-hidden='true'>
+            04._
+          </span>
+          <span>NOTES</span>
         </button>
         <button
           onClick={() => nav('contact')}
@@ -770,7 +842,10 @@ export function LandingContent({
           aria-current={active === 'contact' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'contact' && 'active')}
         >
-          05._CONTACT
+          <span className='tab-index' aria-hidden='true'>
+            05._
+          </span>
+          <span>CONTACT</span>
         </button>
       </div>
     </div>
@@ -807,8 +882,9 @@ function WorkSection({ triggerFocus, referral, jobType }: WorkSectionProps) {
 
   return (
     <section className='block' id='work'>
+      <span id='projects' className='scroll-mt-6' />
       <div className='sec-head'>
-        <span className='sec-cmd'>ls -la /projects/</span>
+        <h2 className='sec-cmd'>ls -la /projects/</h2>
         <span className='sec-note'>FILESYSTEM</span>
       </div>
       <p className='sub-note'>
@@ -825,7 +901,11 @@ function WorkSection({ triggerFocus, referral, jobType }: WorkSectionProps) {
         </div>
 
         {projects.map((p, i) => (
-          <div key={p.name} className='fs-cell'>
+          <div
+            key={p.name}
+            id={p.name.toLowerCase().replaceAll(' ', '-')}
+            className='fs-cell'
+          >
             <div
               className='fs-row'
               role='button'
@@ -1025,7 +1105,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
   return (
     <section className='block' id='skills'>
       <div className='sec-head'>
-        <span className='sec-cmd'>cat about.md</span>
+        <h2 className='sec-cmd'>cat about.md</h2>
         <span className='sec-note'>PROSE</span>
       </div>
       <p className='prose'>
@@ -1048,7 +1128,7 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
 
       <div className='resume'>
         <div className='sec-head'>
-          <span className='sec-cmd'>cat resume.txt</span>
+          <h3 className='sec-cmd'>cat resume.txt</h3>
           <span className='sec-note'>HISTORY</span>
         </div>
 
@@ -1098,11 +1178,12 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
           <div className='rs-line'>
             <span className='rs-role'>Econometrics and Data Science</span>
             <span className='rs-meta'>| VU Amsterdam</span>
-            <span className='rs-meta rs-dates'>2024 — 2028 (Expected)</span>
+            <span className='rs-meta rs-dates'>Sep 2026 — 2028 (Expected)</span>
           </div>
           <div className='rs-meta mt-1' style={{ textTransform: 'none' }}>
-            University studies began in 2024; changed programme in September
-            2026. Expected graduation: 2028
+            University studies since 2024; previously Artificial Intelligence
+            (2024–2026, no degree awarded). Changed to this programme in
+            September 2026. Expected graduation: 2028
           </div>
           <ul className='rs-bullets'>
             <li>
@@ -1125,8 +1206,8 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
               using pre-made curricula.
             </li>
             <li>
-              <span className='li-mark'>&gt;</span> Taught JavaScript through
-              a visual block-based tool.
+              <span className='li-mark'>&gt;</span> Taught JavaScript through a
+              visual block-based tool.
             </li>
           </ul>
         </div>
@@ -1255,20 +1336,18 @@ function NotesSection() {
   return (
     <section className='block' id='notes'>
       <div className='sec-head'>
-        <span className='sec-cmd'>ls -la /notes/</span>
+        <h2 className='sec-cmd'>ls -la /notes/</h2>
         <span className='sec-note'>FIELD NOTES</span>
       </div>
       <p className='sub-note'>
-        Engineering notes from building the projects above — each links to the
-        repository where the pattern is implemented
+        Implementation choices, failure cases, and limits from the public
+        projects. Each note includes a source revision you can inspect.
       </p>
       <div className='flex flex-col gap-3 font-mono text-sm'>
         {notes.map((note) => (
           <a
             key={note.repo}
-            href={note.url}
-            target='_blank'
-            rel='noopener noreferrer'
+            href={`/notes/${note.slug}`}
             className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
           >
             <div className='flex flex-wrap items-baseline justify-between gap-2'>
@@ -1279,9 +1358,12 @@ function NotesSection() {
                 {note.repo}
               </span>
             </div>
-            <p className='mt-1.5 text-xs text-[var(--text-dim)]'>
+            <p className='mt-1.5 text-sm leading-relaxed text-[var(--text-dim)]'>
               {note.summary}
             </p>
+            <span className='mt-3 inline-block text-xs text-[var(--accent)]'>
+              Read engineering note →
+            </span>
           </a>
         ))}
       </div>
@@ -1296,20 +1378,12 @@ interface ContactSectionProps {
   siteView: JobTypeSiteView;
 }
 
-type ChatEvidence = {
-  id: string;
-  title: string;
-  kind: string;
-  summary: string;
-  href?: string;
-  score: number;
-};
-
 type ChatMsg = {
   role: 'bot' | 'user';
   text: string;
   isCustomCard?: boolean;
   evidence?: ChatEvidence[];
+  isError?: boolean;
 };
 
 function EvidenceCards({ items }: { items: ChatEvidence[] }) {
@@ -1317,7 +1391,7 @@ function EvidenceCards({ items }: { items: ChatEvidence[] }) {
     <div className='chat-msg bot'>
       <span className='msg-tag'>RETRIEVED</span>
       <div className='grid w-full gap-2 sm:grid-cols-2'>
-        {items.map((item, index) => (
+        {validateChatEvidence(items).map((item, index) => (
           <a
             key={item.id}
             href={item.href || '#'}
@@ -1369,34 +1443,54 @@ function ContactSection({
   const [val, setVal] = useState('');
   const [typing, setTyping] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const sendingRef = useRef(false);
+  const activeRequest = useRef<AbortController | null>(null);
+  const lastMessage = msgs[msgs.length - 1];
+  const waitingForReply =
+    typing && (lastMessage?.role !== 'bot' || !lastMessage.text);
+
+  useEffect(
+    () => () => {
+      const request = activeRequest.current;
+      activeRequest.current = null;
+      request?.abort();
+    },
+    []
+  );
 
   // Auto-scroll chat body
   useEffect(() => {
     if (bodyRef.current) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
-  }, [msgs, typing]);
+  }, [msgs]);
 
   const send = useCallback(
     async (text: string) => {
       const q = text.trim().slice(0, 500);
-      if (!q || typing) return;
+      if (!q || sendingRef.current) return;
+      sendingRef.current = true;
 
       // Add user message
       setMsgs((m) => [...m, { role: 'user', text: q }]);
       setVal('');
       setTyping(true);
+      const controller = new AbortController();
+      activeRequest.current = controller;
+      const replyStart = msgs.length + 1;
+      const timeout = setTimeout(() => controller.abort(), 30_000);
 
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
+          signal: controller.signal,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             referralToken:
               new URLSearchParams(window.location.search).get('ref') ||
               undefined,
             messages: msgs
-              .filter((m) => !m.isCustomCard)
+              .filter((m) => !m.isCustomCard && !m.isError && m.text)
               .map((m) => ({
                 role: m.role === 'bot' ? 'assistant' : 'user',
                 content: m.text
@@ -1405,76 +1499,50 @@ function ContactSection({
           })
         });
 
-        if (!res.ok) throw new Error('API query error');
-
-        const reader = res.body?.getReader();
-        const decoder = new TextDecoder();
-        setTyping(false);
-
-        // Seed empty assistant bubble
         setMsgs((m) => [...m, { role: 'bot', text: '' }]);
-
-        if (reader) {
-          let buffer = '';
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            let boundary = buffer.indexOf('\n\n');
-            while (boundary !== -1) {
-              const frame = buffer.slice(0, boundary);
-              buffer = buffer.slice(boundary + 2);
-              const dataLine = frame
-                .split('\n')
-                .find((line) => line.startsWith('data: '));
-              if (dataLine) {
-                const payload = dataLine.slice(6).trim();
-                if (payload !== '[DONE]') {
-                  try {
-                    const parsed = JSON.parse(payload) as
-                      | { type: 'evidence'; items: ChatEvidence[] }
-                      | { type: 'delta'; content: string };
-                    if (parsed.type === 'evidence' && parsed.items.length > 0) {
-                      setMsgs((prev) => {
-                        const updated = [...prev];
-                        updated.splice(Math.max(0, updated.length - 1), 0, {
-                          role: 'bot',
-                          text: '',
-                          isCustomCard: true,
-                          evidence: parsed.items
-                        });
-                        return updated;
-                      });
-                    } else if (parsed.type === 'delta' && parsed.content) {
-                      setMsgs((prev) => {
-                        const updated = [...prev];
-                        const last = updated[updated.length - 1];
-                        if (last && last.role === 'bot' && !last.isCustomCard)
-                          last.text += parsed.content;
-                        return updated;
-                      });
-                    }
-                  } catch {
-                    // Ignore malformed frames; complete SSE frames remain isolated.
-                  }
-                }
-              }
-              boundary = buffer.indexOf('\n\n');
-            }
+        await readPortfolioReply(
+          res,
+          (content) =>
+            setMsgs((prev) => {
+              const last = prev[prev.length - 1];
+              if (!last || last.role !== 'bot' || last.isCustomCard)
+                return prev;
+              return [
+                ...prev.slice(0, -1),
+                { ...last, text: last.text + content }
+              ];
+            }),
+          (items) => {
+            if (!items.length) return;
+            setMsgs((prev) => [
+              ...prev.slice(0, -1),
+              { role: 'bot', text: '', isCustomCard: true, evidence: items },
+              prev[prev.length - 1]
+            ]);
           }
-        }
-      } catch {
-        setTyping(false);
-        setMsgs((m) => [
-          ...m,
-          {
-            role: 'bot',
-            text: 'Error establishing chat streaming. Please try again.'
-          }
+        );
+      } catch (error) {
+        if (activeRequest.current !== controller) return;
+        const message =
+          error instanceof PortfolioReplyError
+            ? error.message
+            : error instanceof Error && error.name === 'AbortError'
+              ? 'The assistant took too long. Please try again or email contact@davidpapp.dev.'
+              : 'The connection was interrupted. Please try again or email contact@davidpapp.dev.';
+        setMsgs((prev) => [
+          ...prev.slice(0, replyStart),
+          { role: 'bot', text: message, isError: true }
         ]);
+      } finally {
+        clearTimeout(timeout);
+        if (activeRequest.current === controller) {
+          activeRequest.current = null;
+          sendingRef.current = false;
+          setTyping(false);
+        }
       }
     },
-    [msgs, typing]
+    [msgs]
   );
 
   const handleSuggestion = (s: string) => {
@@ -1494,7 +1562,7 @@ function ContactSection({
   return (
     <section className='block' id='contact'>
       <div className='sec-head'>
-        <span className='sec-cmd'>cat contact</span>
+        <h2 className='sec-cmd'>cat contact</h2>
         <span className='sec-note'>UTILITIES</span>
       </div>
       <div className='ping-line'>
@@ -1502,7 +1570,7 @@ function ContactSection({
       </div>
       <p className='prose contact-intro whitespace-pre-line'>
         {`I'm open to full-time engineering and AI roles.
-Based in Rotterdam, NL — remote / hybrid. No sponsorship required.
+Based in Rotterdam, NL — remote / hybrid.
 Email is fastest.`}
       </p>
 
@@ -1528,7 +1596,14 @@ Email is fastest.`}
           <span className='chat-conv'>{siteView.chatContextLabel}</span>
         </div>
 
-        <div className='chat-body' ref={bodyRef}>
+        <div
+          className='chat-body'
+          ref={bodyRef}
+          role='log'
+          aria-label='Portfolio conversation'
+          aria-live='polite'
+          aria-busy={typing}
+        >
           {msgs.map((m, i) =>
             m.isCustomCard && m.evidence ? (
               <EvidenceCards key={i} items={m.evidence} />
@@ -1543,11 +1618,11 @@ Email is fastest.`}
               </div>
             )
           )}
-          {typing && (
+          {waitingForReply && (
             <div className='chat-msg bot typing'>
               <span className='msg-tag'>ASSISTANT</span>
               <span className='msg-text'>
-                retrieving reviewed knowledge
+                preparing your reply
                 <span className='ell'>...</span>
               </span>
             </div>
@@ -1564,6 +1639,7 @@ Email is fastest.`}
               <button
                 key={s}
                 onClick={() => handleSuggestion(s)}
+                disabled={typing}
                 className='max-w-full cursor-pointer truncate border border-[var(--dp-border)] bg-[#0d0d0d] px-2 py-1 text-left text-[11px] text-[var(--dp-accent-muted)] transition-all hover:border-[var(--dp-accent)] hover:text-[var(--dp-accent)]'
               >
                 &gt; {s}
@@ -1577,17 +1653,22 @@ Email is fastest.`}
           <input
             className='chat-field'
             placeholder='Ask me a technical question about David...'
+            aria-label='Question for the portfolio assistant'
             value={val}
             maxLength={500}
             onChange={(e) => setVal(e.target.value)}
             onFocus={() => triggerFocus('chat')}
             onBlur={() => triggerFocus(null)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') send(val);
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) send(val);
             }}
             spellCheck={false}
           />
-          <button className='send-btn' onClick={() => send(val)}>
+          <button
+            className='send-btn'
+            disabled={typing || !val.trim()}
+            onClick={() => send(val)}
+          >
             [send]
           </button>
         </div>

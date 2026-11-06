@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="An interactive text-to-graphics diffusion renderer study by David Papp. Synthetic snapshots, real validation and safe rendering. No login."
+    />
+    <meta name="theme-color" content="#efede6" />
+    <title>Mercury · A study in emergence</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <a href="/" class="wordmark">dp<span> / </span>experiments</a
+      ><a href="#about">About this study ↗</a>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">INTERACTIVE SYSTEMS / EXPERIMENT 01</p>
+          <h1>A study in <em>emergence.</em></h1>
+          <p class="lede">
+            What if a page could think out loud? Watch a stream of text
+            snapshots become a visual composition.
+          </p>
+        </div>
+        <div class="edition">
+          <span class="mark">☿</span>
+          <p>MERCURY<br />DIFFUSION RENDERER</p>
+        </div>
+      </section>
+      <div class="source-banner">
+        <span class="status-dot"></span><strong>Synthetic replay</strong
+        ><span
+          >Hand-authored frames. Real validation & rendering. No live AI
+          calls.</span
+        >
+      </div>
+      <section class="lab" aria-label="Interactive diffusion renderer">
+        <div class="workspace">
+          <div class="toolbar">
+            <label for="scene">COMPOSITION</label
+            ><select id="scene">
+              <option value="atlas">01 / Quiet places</option>
+              <option value="orbit">02 / Orbital study</option>
+              <option value="signal">03 / Finding the signal</option></select
+            ><span id="phase-label">FRAME 01 / 16</span>
+          </div>
+          <article class="page" id="page" aria-label="Rendered composition">
+            <div class="page-top">
+              <span id="kicker"></span><span>TEXT → STRUCTURE → FORM</span>
+            </div>
+            <h2 id="title"></h2>
+            <p id="subtitle"></p>
+            <div class="diagram-wrap">
+              <svg
+                id="diagram"
+                viewBox="0 0 720 550"
+                role="img"
+                aria-label="Illustrative network diagram"
+              >
+                <defs>
+                  <pattern
+                    id="dots"
+                    width="22"
+                    height="22"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <circle cx="1" cy="1" r=".7" fill="#bfbdb3" />
+                  </pattern>
+                  <radialGradient id="orb">
+                    <stop stop-color="#fffdf3" />
+                    <stop offset=".7" stop-color="#dad5c7" />
+                    <stop offset="1" stop-color="#a9a495" />
+                  </radialGradient>
+                </defs>
+                <rect width="720" height="550" fill="url(#dots)" />
+                <g class="orbits">
+                  <ellipse
+                    cx="360"
+                    cy="275"
+                    rx="226"
+                    ry="120"
+                    transform="rotate(-24 360 275)"
+                  />
+                  <ellipse
+                    cx="360"
+                    cy="275"
+                    rx="210"
+                    ry="186"
+                    transform="rotate(38 360 275)"
+                  />
+                  <circle cx="360" cy="275" r="170" />
+                </g>
+                <circle cx="360" cy="275" r="102" fill="url(#orb)" />
+                <path
+                  d="M278 220 Q360 300 444 218 M260 270 Q360 355 460 273 M280 330 Q360 380 440 327"
+                  fill="none"
+                  stroke="#f8f5e9"
+                  opacity=".6"
+                />
+                <g id="edges"></g>
+                <g id="nodes"></g>
+                <text x="360" y="280" text-anchor="middle" class="orb-label">
+                  M
+                </text></svg
+              ><span class="diagram-caption"
+                >FIG. 01 / A CONSTELLATION OF POSSIBILITIES</span
+              >
+            </div>
+            <div class="page-bottom">
+              <p id="note"></p>
+              <span id="stage">FORMING</span>
+            </div>
+          </article>
+          <div class="transport">
+            <button id="play" class="primary">▶ Play stream</button
+            ><button id="reset" aria-label="Reset replay">↺ Reset</button
+            ><label class="speed-label"
+              >Speed<select id="speed">
+                <option value="900">0.5×</option>
+                <option value="450" selected>1×</option>
+                <option value="225">2×</option>
+              </select></label
+            ><span id="play-state" role="status">Ready to replay</span>
+          </div>
+          <div class="scrubber">
+            <label for="frame">Scrub the full-state stream</label
+            ><input id="frame" type="range" min="0" max="15" value="0" /><output
+              id="frame-output"
+              for="frame"
+              >01 / 16</output
+            >
+          </div>
+        </div>
+        <aside class="inspector">
+          <p class="eyebrow">UNDER THE SURFACE</p>
+          <h3>Not pixels.<br />Possibilities.</h3>
+          <p>
+            The renderer replaces a complete text snapshot at each step. Stable
+            node IDs keep the composition anchored as content changes.
+          </p>
+          <div class="pipeline">
+            <span>01 / TEXT SNAPSHOT</span><b>↓</b><span>02 / SCHEMA GATE</span
+            ><b>↓</b><span>03 / SAFE SVG + DOM</span>
+          </div>
+          <div class="counts">
+            <div>
+              <strong id="accepted">1</strong><span>accepted frames</span>
+            </div>
+            <div>
+              <strong id="rejected">0</strong><span>rejected frames</span>
+            </div>
+          </div>
+          <p class="small">
+            Counters describe this session, not model performance. Scrubbing
+            validates another snapshot.
+          </p>
+          <h4>Try to break it</h4>
+          <p class="small">
+            An invalid or interrupted frame should never destroy the last valid
+            composition.
+          </p>
+          <div class="faults">
+            <button id="invalid">Inject invalid frame</button
+            ><button id="interrupt">Interrupt stream</button>
+          </div>
+          <p id="gate-status" class="gate" role="status">
+            Schema valid. Composition committed.
+          </p>
+          <details>
+            <summary>Inspect current snapshot</summary>
+            <pre id="raw"></pre>
+          </details>
+          <button id="download" class="download">↓ Export session trace</button>
+        </aside>
+      </section>
+      <section id="about" class="about">
+        <p class="eyebrow">THE ENGINEERING IDEA</p>
+        <h3>Text changes.<br />The frame of reference stays.</h3>
+        <div>
+          <p>
+            Inspired by Mercury’s text-diffusion streaming, this study explores
+            how full-state text updates can drive a non-ASCII visual interface.
+            The stream here is synthetic, not a recording from Mercury or a live
+            model response.
+          </p>
+          <p>
+            The interesting part is the boundary: validate each snapshot,
+            preserve stable identities, render only allowlisted graphics, and
+            retain the last valid state when a frame fails. No generated HTML is
+            executed. No credentials, login, or external requests are needed.
+          </p>
+          <a
+            href="https://docs.inceptionlabs.ai/capabilities/streaming"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Read the streaming documentation ↗</a
+          >
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>DAVID PAPP / INTERACTIVE SYSTEMS</span
+      ><span>A renderer study. Not native graphics diffusion.</span>
+    </footer>
+    <script type="module" src="./app.mjs"></script>
+  </body>
+</html>

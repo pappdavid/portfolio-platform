@@ -2,9 +2,9 @@ import * as THREE from 'three';
 
 /** Settings selected in the Nebula tides motion preview. */
 export const NEBULA_TIDES = {
-  visibility: 2.15,
-  deformation: 1.6,
-  speed: 1.2
+  visibility: 1.0,
+  deformation: 0.9,
+  speed: 0.6
 } as const;
 
 /** Animate the existing spiral seeds on the GPU without rewriting their buffers. */

@@ -1,0 +1,47 @@
+diff --git a/src/facts.js b/src/facts.js
+index faab608..f083a49 100644
+--- a/src/facts.js
++++ b/src/facts.js
+@@ -16,8 +16,8 @@ export const FACTS = {
+     school: "VU Amsterdam"
+   },
+   costSaving: {
+-    fact: "Candidate-reported professional result: repairing an inherited AI-first service was associated with roughly 40% lower LLM API costs; professional work, not a prototype",
+-    qualifier: "roughly",
++    fact: "Candidate-reported professional result: repairing an inherited AI-first service included reducing LLM API costs; professional work, not a prototype",
++    qualifier: "no quantified result claimed",
+     candidateReported: true,
+     context: "professional work, not a prototype",
+     neverInflate: true
+@@ -34,7 +34,7 @@ export const FACTS = {
+    stable anchor so the UI can surface a visible receipt. */
+ export const SOURCES = {
+   profile: "Personal portfolio profile (verified facts only)",
+-  linkedin: "linkedin.com/in/pappdavid",
++  linkedin: "linkedin.com/in/d%C3%A1vid-papp",
+   github: "github.com/pappdavid",
+   resume: "Resume — WEBINFORM IT Ltd (Oct 2024)"
+ }
+diff --git a/src/facts.test.mjs b/src/facts.test.mjs
+index 3c974a6..f9d090c 100644
+--- a/src/facts.test.mjs
++++ b/src/facts.test.mjs
+@@ -16,3 +16,5 @@ assert.match(getAnswerById('cost-saving').answer, /professional work, not a prot
+ assert.doesNotMatch(INTERVIEW_SCRIPT.find((entry) => entry.id === 'production-vs-prototype').answer, /40%/i);
+ 
+ console.log('fact intent boundary and verified integration alias tests passed');
++
++assert.doesNotMatch(JSON.stringify(FACTS) + JSON.stringify(INTERVIEW_SCRIPT), /40\s*%/i, 'superseded cost percentage must not be restored');
+diff --git a/src/script-data.js b/src/script-data.js
+index afbb87b..795a560 100644
+--- a/src/script-data.js
++++ b/src/script-data.js
+@@ -27,7 +27,7 @@ export const INTERVIEW_SCRIPT = [
+   {
+     id: "cost-saving",
+     question: "Can he actually save us money?",
+-    answer: "One candidate-reported professional result: after I repaired an inherited AI-first service instead of rebuilding it, LLM API costs were roughly 40% lower. This is professional work, not a prototype. I keep 'roughly' because the figure is approximate.",
++    answer: "One candidate-reported professional result: I repaired an inherited AI-first service by reverse-engineering undocumented integrations, fixing architecture and security issues, and reducing LLM API costs. This is professional work, not a prototype; no quantified saving is claimed.",
+     source: "Inherited AI service repair",
+     tags: ["cost-saving"]
+   },

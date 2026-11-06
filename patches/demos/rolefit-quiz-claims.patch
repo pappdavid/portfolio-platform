@@ -1,0 +1,22 @@
+diff --git a/src/data.js b/src/data.js
+index 3168722..fd61685 100644
+--- a/src/data.js
++++ b/src/data.js
+@@ -5,7 +5,7 @@
+  * HARD-CONSTRAINT facts (verified, no invented data):
+  *  - David Papp — AI Solutions Developer at WEBINFORM IT Ltd (since Oct 2024)
+  *  - Client work includes ERP/AI integrations, internal systems, and user-facing software
+- *  - Candidate-reported professional result: repairing an inherited AI-first service was associated with roughly 40% lower LLM API costs; professional work, not a prototype
++ *  - Candidate-reported professional result: repairing an inherited AI-first service included reducing LLM API costs; professional work, not a prototype
+  *  - University study began in 2024 in a prior programme; changed to Econometrics and Data Science at VU Amsterdam in September 2026; expected graduation 2028; prior study in AI/ML/statistics
+  *  - Delivery stack: Next.js, TypeScript, Prisma, Clerk, Supabase, Tailwind
+  *  - Public live demo: AgentSec Suite at https://promptshield-cyan.vercel.app
+@@ -80,7 +80,7 @@ export const industryLens = {
+   healthcare: {
+     lens: "Workflow Automaton Designer",
+     experience:
+-      "One candidate-reported professional result: repairing an inherited AI-first service was associated with roughly 40% lower LLM API costs. This is professional work, not a prototype.",
++      "One candidate-reported professional result: repairing an inherited AI-first service included reducing LLM API costs. This is professional work, not a prototype.",
+   },
+   industrial: {
+     lens: "Integration Engineer",

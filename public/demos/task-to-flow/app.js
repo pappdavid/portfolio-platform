@@ -171,7 +171,7 @@ function renderRoute() {
     notifyParent(record.id);
   } else {
     bubble.querySelector(".implementation")?.remove();
-    scrollBottom();
+    focusResult(bubble);
   }
 }
 
@@ -247,6 +247,7 @@ function scrollBottom() {
 }
 
 async function run(text) {
+  thread.querySelector(".empty-state")?.remove();
   form.reset();
   thread.appendChild(addUserBubble(text));
 
@@ -266,16 +267,18 @@ async function run(text) {
   thread.appendChild(node);
   bubble.dataset.resultId = record.id;
   history.replaceState(null, "", resultHash(record.id));
-  scrollBottom();
+  focusResult(bubble);
 
   if (reducedMotion) { updateHours(); return; }
 
   // Stagger step reveal (~2s total), then animate the savings counter.
   const steps = node.querySelectorAll(".flow li");
-  steps.forEach((li, i) => setTimeout(() => { li.classList.add("visible"); scrollBottom(); }, 150 + i * 320));
+  steps.forEach((li, i) => setTimeout(() => { li.classList.add("visible"); }, 150 + i * 320));
   setTimeout(() => updateHours(), 150 + steps.length * 320 + 200);
 }
 
 window.addEventListener("hashchange", renderRoute);
 window.addEventListener("popstate", renderRoute);
 renderRoute();
+
+function focusResult(bubble) { bubble.tabIndex = -1; bubble.focus({preventScroll:true}); thread.scrollTo({top:Math.max(0,bubble.offsetTop-thread.offsetTop-12),behavior:"auto"}); }

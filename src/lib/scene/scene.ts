@@ -251,7 +251,10 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   let lastFrame = performance.now();
   let elapsed = 0;
 
-  const onResize = () => fit(renderer, camera, canvas);
+  const onResize = () => {
+    fit(renderer, camera, canvas);
+    if (capture) renderer.render(scene, camera);
+  };
   window.addEventListener('resize', onResize);
 
   const onMove = (e: MouseEvent) => {
@@ -266,6 +269,14 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
   // at the fixed t=0 pose instead of a continuous rAF loop, so every
   // screenshot shows the identical constellation.
   const capture = isCaptureMode();
+  const onVisibilityChange = () => {
+    cancelAnimationFrame(raf);
+    if (!document.hidden) {
+      lastFrame = performance.now();
+      tick();
+    }
+  };
+  document.addEventListener('visibilitychange', onVisibilityChange);
 
   function tick(): void {
     const now = performance.now();
@@ -367,7 +378,7 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
 
       (tr.line.material as THREE.LineBasicMaterial).color.copy(activeColor);
       (tr.line.material as THREE.LineBasicMaterial).opacity =
-        0.12 + n.focus * 0.35;
+        0.035 + n.focus * 0.08;
     });
 
     // 5. Parallax Viewport camera drift + 3D smooth focus zooming
@@ -383,14 +394,14 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
         const f = n.focus;
         const nPos = n.group.position;
         // Glide target lookAt closer to focused nebula
-        targetLookX += nPos.x * 0.75 * f;
-        targetLookY += nPos.y * 0.75 * f;
-        targetLookZ += nPos.z * 0.75 * f;
+        targetLookX += nPos.x * 0.15 * f;
+        targetLookY += nPos.y * 0.15 * f;
+        targetLookZ += nPos.z * 0.15 * f;
 
         // Shift camera coordinate system closer to nebula
         targetCamX += nPos.x * 0.3 * f;
         targetCamY += nPos.y * 0.3 * f;
-        targetCamZ -= 1.95 * f; // Smooth zoom-in!
+        targetCamZ -= 0.35 * f; // Smooth zoom-in!
       }
     });
 
@@ -416,7 +427,7 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
     camera.lookAt(activeLook);
 
     renderer.render(scene, camera);
-    if (!capture) {
+    if (!capture && !document.hidden) {
       raf = requestAnimationFrame(tick);
     }
   }
@@ -454,6 +465,7 @@ export function mountScene(canvas: HTMLCanvasElement): SceneHandle {
     },
     destroy() {
       cancelAnimationFrame(raf);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('dp-portfolio-warp', onWarp);

@@ -139,23 +139,6 @@
 /* ============================================================
    CRT Effects & Glitch Animations
    ============================================================ */
-.crt-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.18) 50%),
-    linear-gradient(
-      90deg,
-      rgba(255, 0, 0, 0.03),
-      rgba(0, 255, 0, 0.01),
-      rgba(0, 0, 255, 0.03)
-    );
-  background-size:
-    100% 3px,
-    6px 100%;
-  opacity: 0.22;
-}
 
 .crt-flicker {
   /* Keep the terminal texture stable while visitors read. */
@@ -319,20 +302,6 @@
 }
 .sb-commits {
   color: var(--dp-accent);
-}
-
-/* subtle scanline texture overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.012) 0 1px,
-    transparent 1px 3px
-  );
 }
 
 /* ---- Layout & Shell ---- */
@@ -595,6 +564,7 @@ body::before {
   font-family: var(--font-hud-mono);
 }
 .sec-cmd {
+  margin: 0;
   font-size: var(--fs-cmd);
   font-weight: 500;
   color: var(--dp-text);
@@ -790,6 +760,70 @@ body::before {
   max-width: 70ch;
   text-wrap: pretty;
   font-family: var(--font-hud-mono);
+}
+
+/* Long-form reading keeps the terminal identity without terminal density. */
+.field-note-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 64px) max(20px, env(safe-area-inset-left));
+  position: relative;
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.field-note-page nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 56px;
+  font-size: 14px;
+}
+.field-note-page a {
+  color: var(--dp-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.field-note-page h1 {
+  font-size: clamp(28px, 5vw, 42px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 12px 0 24px;
+}
+.field-note-page h2 {
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 650;
+  margin-bottom: 12px;
+}
+.field-note-page section {
+  margin-top: 36px;
+}
+.field-note-kicker {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--dp-accent-muted);
+  letter-spacing: 0.04em;
+}
+.field-note-lead {
+  font-size: 18px;
+  color: var(--dp-text-dim);
+}
+.field-note-limit {
+  border-left: 2px solid var(--dp-accent-muted);
+  background: var(--dp-bg-raised);
+  padding: 20px 24px;
+  margin: 40px 0;
+}
+.field-note-page footer {
+  display: grid;
+  gap: 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--dp-border);
+  color: var(--dp-text-dim);
+  font-size: 14px;
 }
 .resume {
   margin-top: var(--sp-7);
@@ -1275,6 +1309,147 @@ body::before {
   }
 }
 
+/* Reading surfaces stay opaque; the restored galaxy remains in the gutters. */
+.shell {
+  min-height: 100%;
+  background: var(--dp-bg);
+}
+.statusbar,
+.tabbar {
+  background: var(--dp-bg-titlebar);
+}
+.glitch-hover:hover {
+  animation: none;
+  text-shadow: none;
+}
+.sec-head {
+  flex-wrap: wrap;
+}
+.term-titlebar {
+  flex-wrap: wrap;
+}
+.term-title,
+.float-widgets,
+.fw {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.meta-table,
+.rs-meta,
+.rs-divider,
+.skill-cap,
+.sub-note,
+.contact-label,
+.chat-titlebar {
+  font-size: 14px;
+}
+.rs-role {
+  white-space: normal;
+}
+.rs-bullets li,
+.fs-expand-body,
+.chat-msg,
+.chat-field {
+  font-size: 16px;
+  line-height: 1.65;
+}
+.chat-pre,
+.send-btn,
+.open-btn,
+.cta {
+  font-size: 14px;
+}
+.chat-input {
+  flex-wrap: wrap;
+}
+.chat-pre {
+  white-space: normal;
+}
+.chat-field {
+  flex-basis: 160px;
+}
+.fs-row {
+  align-items: start;
+  font-size: 14px;
+}
+.c-name {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.dirname {
+  overflow-wrap: anywhere;
+}
+.c-desc {
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.65;
+}
+.row-link {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 14px;
+}
+.demo-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+.demo-card {
+  min-width: 0;
+}
+.demo-card-head {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.demo-card-head .dirname {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.demo-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .fs-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .fs-row .c-desc {
+    display: block;
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 480px) {
+  .tab {
+    font-size: 12px;
+  }
+  .meta-table {
+    table-layout: fixed;
+  }
+  .meta-table .mk {
+    width: 82px;
+    letter-spacing: 0;
+  }
+  .meta-table .ms {
+    width: 16px;
+  }
+  .meta-table .mv {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 680px) {
+  .tab {
+    min-width: 0;
+    padding-inline: 2px;
+  }
+  .tab-index {
+    display: none;
+  }
+}
+
 /* Focus outlines for keyboard accessibility */
 a:focus-visible,
 button:focus-visible,
@@ -1528,4 +1703,44 @@ iframe[src*='clerk'] {
   visibility: hidden !important;
   height: 0 !important;
   width: 0 !important;
+}
+
+/* Opaque selected surfaces and restrained motion in the gutters. */
+:root {
+  --dp-bg-selected: #102019;
+}
+[data-theme-profile='cyan'] {
+  --dp-bg-selected: #102023;
+}
+[data-theme-profile='amber'] {
+  --dp-bg-selected: #251d10;
+}
+[data-theme-profile='pink'] {
+  --dp-bg-selected: #25101b;
+}
+.projects-surface {
+  background: var(--dp-bg);
+  --background: var(--dp-bg);
+  --foreground: var(--dp-text);
+  --muted: var(--dp-bg-raised);
+  --muted-foreground: var(--dp-text-dim);
+  --border: var(--dp-border);
+}
+.portfolio-background {
+  opacity: 0.58;
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 calc(50% - 560px),
+    transparent calc(50% - 440px),
+    transparent calc(50% + 440px),
+    #000 calc(50% + 560px),
+    #000 100%
+  );
+}
+@media (max-width: 960px) {
+  .portfolio-background {
+    opacity: 0.22;
+    mask-image: none;
+  }
 }

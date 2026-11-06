@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Break a booking workflow, expose a duplicate, and test the idempotency contract that prevents it. A no-login, interactive reliability showcase by David Papp."
+    />
+    <title>Faultline · A retry is not a guarantee</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236e46e8'/%3E%3Cpath d='M10 44 25 23 36 36 54 14' fill='none' stroke='white' stroke-width='7'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/faultline/style.css" />
+    <script type="module" src="/faultline/app.mjs"></script>
+  </head>
+  <body>
+    <a class="skip" href="#workbench">Skip to experiment</a>
+    <header class="topbar">
+      <a class="brand" href="/faultline/index.html" aria-label="Faultline home"
+        ><svg viewBox="0 0 40 32" aria-hidden="true">
+          <path d="M2 28 14 10 23 21 38 3" /></svg
+        >Faultline<span class="version">/ 01</span></a
+      >
+      <nav aria-label="Page">
+        <a href="#contract">The contract</a
+        ><a href="/">David Papp <span aria-hidden="true">→</span></a>
+      </nav>
+    </header>
+    <main>
+      <noscript
+        ><p>
+          This interactive showcase needs JavaScript. No account or external
+          service is required.
+        </p></noscript
+      >
+      <section class="intro" aria-labelledby="headline">
+        <div>
+          <p class="eyebrow">
+            <span class="dot"></span> INTERACTIVE SYSTEMS LAB
+          </p>
+          <h1 id="headline">
+            The booking succeeded.<br /><span>The response didn’t.</span>
+          </h1>
+          <p class="lede">
+            Your client sees a timeout. The service already committed.<br
+              class="desktop"
+            />
+            Retry the same request. How many visits exist now?
+          </p>
+        </div>
+        <div class="intro-note">
+          <span class="note-num">01 / THE COMMIT BOUNDARY</span>
+          <p>A small failure.<br />A very expensive assumption.</p>
+          <span class="pill">No login. No real bookings.</span>
+        </div>
+      </section>
+      <section
+        id="workbench"
+        class="workbench"
+        aria-label="Interactive retry experiment"
+      >
+        <div class="bench-bar">
+          <div>
+            <span class="lab-icon" aria-hidden="true">⌁</span
+            ><strong>Booking workbench</strong
+            ><span class="badge">BROWSER SIMULATION</span>
+          </div>
+          <button id="reset" class="text-button" type="button">
+            ↺ Reset experiment
+          </button>
+        </div>
+        <div class="config">
+          <fieldset>
+            <legend>01 · Place the fault</legend>
+            <div class="segments">
+              <button
+                class="selected"
+                type="button"
+                data-fault="after"
+                aria-pressed="true"
+              >
+                After commit</button
+              ><button type="button" data-fault="before" aria-pressed="false">
+                Before commit</button
+              ><button type="button" data-fault="none" aria-pressed="false">
+                No fault
+              </button>
+            </div>
+          </fieldset>
+          <label class="retry-setting"
+            >02 · Retries per click<select id="retries">
+              <option value="1">1 retry</option>
+              <option value="2">2 retries</option>
+              <option value="3">3 retries</option>
+              <option value="5">5 retries</option>
+            </select></label
+          ><label class="key-setting"
+            ><input id="stable-key" type="checkbox" checked /><span
+              >Keep the same operation key<small
+                >Required for the fix to work</small
+              ></span
+            ></label
+          >
+        </div>
+        <div class="scenario-note" id="scenario-note">
+          The service commits a visit, then the response is dropped. The client
+          sees a timeout.
+        </div>
+        <div class="bench-grid">
+          <div class="trace-panel">
+            <div class="section-label">
+              <span>EXECUTION TRACE</span
+              ><span id="adapter-label" class="adapter"
+                >BASELINE / NO DEDUPLICATION</span
+              >
+            </div>
+            <div class="lane-head">
+              <span>CLIENT / RECEIVER EVENTS</span><span>ORDERED TRACE</span>
+            </div>
+            <ol
+              id="trace"
+              class="trace"
+              tabindex="0"
+              aria-label="Execution trace. Scroll to inspect all events"
+              tabindex="0"
+              aria-label="Execution trace. Scroll to inspect all events"
+            >
+              <li class="empty-state">
+                <div class="empty-symbol" aria-hidden="true">⌁</div>
+                <h2>Meet the uncertainty window.</h2>
+                <p>
+                  Send one request and lose its response.<br />Then inspect what
+                  actually happened.
+                </p>
+                <div class="mini-flow" aria-hidden="true">
+                  <span>Request</span><i>→</i><span>Commit</span
+                  ><i class="broken">×</i><span>Response</span>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <aside class="inspector" aria-label="Receiver state">
+            <div class="section-label">
+              <span>GROUND TRUTH</span><span class="small-tag">IN-MEMORY</span>
+            </div>
+            <div class="visit-count">
+              <strong id="visit-count">0</strong>
+              <div>visits committed<small>One intended booking</small></div>
+            </div>
+            <div id="state-callout" class="state-callout">
+              The receiver is empty. Start the experiment.
+            </div>
+            <dl class="booking">
+              <div>
+                <dt>Operation</dt>
+                <dd>WORK-318</dd>
+              </div>
+              <div>
+                <dt>Seeded request</dt>
+                <dd>Boiler inspection</dd>
+              </div>
+              <div>
+                <dt>Time window</dt>
+                <dd>09:30–10:00</dd>
+              </div>
+            </dl>
+            <div
+              id="visits"
+              class="visits"
+              aria-label="Committed visit records"
+            ></div>
+            <div class="checks">
+              <h3>Assertions against receiver state</h3>
+              <div>
+                <span>Client has a confirmed visit</span
+                ><strong id="completion" class="pending">NOT RUN</strong>
+              </div>
+              <div>
+                <span>Exactly one visit exists</span
+                ><strong id="uniqueness" class="pending">NOT RUN</strong>
+              </div>
+            </div>
+          </aside>
+        </div>
+        <div class="action-bar">
+          <div id="guidance" class="guidance">
+            <span class="step-circle">1</span
+            ><span
+              ><strong>First, create the uncertainty.</strong
+              ><small>Send the booking through the selected fault.</small></span
+            >
+          </div>
+          <div class="actions">
+            <button id="export" class="secondary" type="button" disabled>
+              ↓ Evidence JSON</button
+            ><button id="primary" class="primary" type="button">
+              Send request & lose response <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+        <div class="after-actions">
+          <button id="retry-more" class="text-button" type="button" hidden>
+            Retry again</button
+          ><button id="probe" class="text-button" type="button" hidden>
+            Test a changed payload →</button
+          ><span id="probe-result"></span>
+        </div>
+        <div
+          id="announcement"
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        ></div>
+      </section>
+      <section
+        class="explanation"
+        id="contract"
+        aria-labelledby="contract-title"
+      >
+        <div>
+          <p class="eyebrow">THE FIX IS A RECEIVER CONTRACT</p>
+          <h2 id="contract-title">
+            Remember the operation.<br />Not just the attempt.
+          </h2>
+          <p>
+            A retry is safe only when the receiver can recognize the same
+            intended action. A client-side “success” message is not evidence of
+            one effect.
+          </p>
+          <a
+            href="https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline"
+            >Inspect the source <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="contract-card">
+          <div class="contract-title">
+            <span class="contract-dot"></span> Atomic receiver model
+          </div>
+          <ol>
+            <li>
+              <span>01</span>
+              <div>
+                <strong>Look up the operation key</strong>
+                <p>Same key and payload? Return the saved result.</p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <strong>Commit effect + receipt together</strong>
+                <p>Neither may exist without the other.</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <strong>Reject conflicting reuse</strong>
+                <p>Same key, different payload? Return 409.</p>
+              </div>
+            </li>
+          </ol>
+          <p class="contract-warning">
+            A new key means a new operation. The receiver cannot infer your
+            intent.
+          </p>
+        </div>
+      </section>
+      <section class="disclosure" aria-label="Scope and limitations">
+        <strong>Real execution. Simulated infrastructure.</strong>
+        <p>
+          The state machine, retries, deduplication, assertions, and
+          downloadable traces execute in your browser. The booking and service
+          are seeded fixtures. State lives only in memory and resets on reload.
+          No requests reach a real provider.
+        </p>
+        <p>
+          The fix assumes atomic storage of the effect and receipt, a stable
+          key, and retained receipts. This model does not prove crash
+          durability, cross-process locking, or exactly-once behavior for
+          arbitrary services. A real receiver needs transactional storage,
+          payload validation, a retention policy, and reconciliation when it
+          cannot deduplicate.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <span
+        >Faultline / An engineering showcase by <a href="/">David Papp</a></span
+      ><span>Make the failure visible. Make the claim testable.</span>
+    </footer>
+  </body>
+</html>

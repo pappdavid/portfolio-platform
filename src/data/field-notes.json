@@ -3,36 +3,138 @@
     "title": "Gating agent tool calls with PreToolUse hooks",
     "repo": "agentsec-hook-pack",
     "url": "https://github.com/pappdavid/agentsec-hook-pack",
-    "summary": "Fail-closed decision hooks for Claude Code and Codex: safe-command fast paths, chained-command bypass protection, and observe/prompt/enforce modes. Implemented and tested in the repo."
+    "summary": "Fail-closed decision hooks for Claude Code and Codex: safe-command fast paths, chained-command bypass protection, and observe/prompt/enforce modes. Implemented and tested in the repo.",
+    "slug": "gating-agent-tool-calls",
+    "sections": [
+      {
+        "heading": "The boundary to protect",
+        "body": "A tool-use hook is the point between an agent proposing an action and the client executing it. The hook reads the proposed tool call from standard input and returns a client-specific allow, deny, or approval decision. Keeping that contract small makes the local policy easier to inspect."
+      },
+      {
+        "heading": "Keep the fast path narrow",
+        "body": "A read-only command prefix is not enough to establish safety. A command such as ls; rm -rf / starts with a familiar read command but contains another action. The implementation excludes chaining, redirection, command substitution, and mutating find actions from its safe fast path."
+      },
+      {
+        "heading": "Make the operating mode explicit",
+        "body": "Observe classifies and allows. Prompt requests approval for risky actions or unavailable policy. Enforce denies local blocks, remote denials, and risky actions when policy is unavailable. The default is observe, so installing the hook alone does not establish an enforcement boundary."
+      }
+    ],
+    "limitation": "The rules are intentionally small. Client adapters need checking against the installed CLI version, and a hook is not a substitute for an OS sandbox or narrowly scoped credentials.",
+    "sourceRevision": "df00b3c8dc6d37b287d76e436b4fe3ccd9d132d0"
   },
   {
     "title": "Directory guarding & secret scrubbing for stdio MCP servers",
     "repo": "agent-cli-mcp-rust",
     "url": "https://github.com/pappdavid/agent-cli-mcp-rust",
-    "summary": "Allowed-roots path validation, destructive-command deny patterns, and regex credential redaction of subprocess output — the policy and redaction modules carry the unit tests."
+    "summary": "Allowed-roots path validation, destructive-command deny patterns, and regex credential redaction of subprocess output — the policy and redaction modules carry the unit tests.",
+    "slug": "guarding-mcp-executors",
+    "sections": [
+      {
+        "heading": "Separate transport from execution",
+        "body": "This Rust server exposes installed coding CLIs through JSON-RPC over standard input and output. Session management, policy checks, and subprocess supervision sit behind the MCP transport. Executor tools still need their own installation and authentication."
+      },
+      {
+        "heading": "Check paths before launching a process",
+        "body": "Allowed-root checks reject operations outside configured directories, quarantine markers can block a directory, and selected destructive commands have deny rules. These checks reduce accidental exposure but do not isolate a subprocess at the operating-system level."
+      },
+      {
+        "heading": "Treat output as another data boundary",
+        "body": "Subprocess output can contain credentials even when the original request did not. Redaction targets common database URLs, API keys, JWTs, and service tokens before output returns to the client. Pattern-based redaction cannot establish that every secret has been removed."
+      }
+    ],
+    "limitation": "The transport smoke test covers initialize, tools/list, and resources/list. It does not establish end-to-end compatibility with every third-party executor account or CLI version.",
+    "sourceRevision": "0059a7bbc5017be92c1dc46633a543fe95c89bea"
   },
   {
     "title": "Deterministic risk analysis for MCP tool manifests",
     "repo": "mcpguard-lite",
     "url": "https://github.com/pappdavid/mcpguard-lite",
-    "summary": "Accepts a raw MCP tools/list response and returns capability risks, severity, and missing security controls using transparent, explainable rules — it never executes or probes the listed tools."
+    "summary": "Accepts a raw MCP tools/list response and returns capability risks, severity, and missing security controls using transparent, explainable rules — it never executes or probes the listed tools.",
+    "slug": "reading-mcp-manifests",
+    "sections": [
+      {
+        "heading": "Start with the declared tool surface",
+        "body": "MCPGuard accepts a raw tools/list JSON response and analyzes names, descriptions, and input schemas. It reports capability risks such as command execution, filesystem writes, network access, and secret access without invoking the described tools."
+      },
+      {
+        "heading": "Look for positive control declarations",
+        "body": "A risky manifest may need explicit statements about approval, audit logging, filesystem restrictions, and network egress. Wording such as without approval or no audit logging must not count as evidence that a control exists. The regression tests cover these negative declarations."
+      },
+      {
+        "heading": "Keep the conclusion within the evidence",
+        "body": "The output describes what the supplied manifest declares. A description can omit a real control or claim one that the runtime does not enforce. A report is a review aid, not a runtime security guarantee. The tool-shaped HTTP endpoint is also distinct from a complete MCP transport."
+      }
+    ],
+    "limitation": "Static rules may miss unusual names or misleading descriptions. Runtime authorization, least privilege, sandboxing, and monitoring remain separate controls.",
+    "sourceRevision": "e9b3210dfe9314c2b930f5fb32f28f97b43a962c"
   },
   {
     "title": "Explainable risk scoring for AI-agent inventories",
     "repo": "agentmap",
     "url": "https://github.com/pappdavid/agentmap",
-    "summary": "Stores declared agent metadata and computes a 0-100 risk score from permissions, data access, and tool descriptions — readiness labels and human-readable factors, not runtime enforcement."
+    "summary": "Stores declared agent metadata and computes a 0-100 risk score from permissions, data access, and tool descriptions — readiness labels and human-readable factors, not runtime enforcement.",
+    "slug": "explaining-agent-risk",
+    "sections": [
+      {
+        "heading": "Inventory first, score second",
+        "body": "AgentMap stores declared agent metadata and computes a deterministic score from permissions, data access, integration type, and tool descriptions. The score is accompanied by factors so a reviewer can inspect why an agent needs attention."
+      },
+      {
+        "heading": "Do not confuse ownership with permissions",
+        "body": "The owner field says who is responsible for an agent. It does not grant the agent administrative access. A regression test keeps ownership metadata from inflating permission risk, while sensitive customer-data access is enough to require review."
+      },
+      {
+        "heading": "A readiness label is not enforcement",
+        "body": "The current thresholds label scores below 40 ready, 40–74 needs_review, and 75–100 blocked. These are outputs of the prototype rules. A blocked label does not itself revoke permissions or prevent the external agent from running."
+      }
+    ],
+    "limitation": "The score uses declared metadata and heuristic rules, not runtime observation or a validated formal risk model. Operational governance needs real authorization and monitoring around the agent.",
+    "sourceRevision": "07b7d3302c1cf256f79ea9d3562f84e41c1fa800"
   },
   {
     "title": "Human approval queues for agent actions",
     "repo": "approveops",
     "url": "https://github.com/pappdavid/approveops",
-    "summary": "Classifies an action's risk deterministically, queues it for a human decision, and records approve/reject with reasons — the calling system waits for and enforces the recorded decision."
+    "summary": "Classifies an action's risk deterministically, queues it for a human decision, and records approve/reject with reasons — the calling system waits for and enforces the recorded decision.",
+    "slug": "making-approval-decisions-durable",
+    "sections": [
+      {
+        "heading": "Represent approval as a state transition",
+        "body": "ApproveOps accepts an action, classifies its risk, and stores a pending request. The owner can approve or reject it with a reason. The calling system must wait for that recorded result before carrying out the action."
+      },
+      {
+        "heading": "Write the decision and its audit event together",
+        "body": "A decision without a corresponding audit event leaves an incomplete record. Approval creation and its submission event share a transaction. Approval or rejection and the decision event also share a transaction, so these writes succeed or fail together."
+      },
+      {
+        "heading": "Reject repeated and cross-user decisions",
+        "body": "A decision updates only a pending request owned by the current actor. A stale, repeated, or cross-user request fails instead of silently overwriting the previous result. Tests cover pending-only decisions, ownership, and audit-event creation."
+      }
+    ],
+    "limitation": "The queue is owner-scoped and classification uses a small keyword rule set. External execution still needs to enforce the result; a full organization workflow would also need reviewer roles, expiry, and notifications.",
+    "sourceRevision": "941ede7660c2788c613d58bd9ac096417b4962cf"
   },
   {
     "title": "Deterministic prompt-risk scanning",
     "repo": "PromptShield",
     "url": "https://github.com/pappdavid/PromptShield",
-    "summary": "A small rule set flags instruction overrides, jailbreak markers, and exfiltration intent with evidence excerpts and remediation guidance — an auditable first-pass filter, honestly labelled heuristic."
+    "summary": "A small rule set flags instruction overrides, jailbreak markers, and exfiltration intent with evidence excerpts and remediation guidance — an auditable first-pass filter, honestly labelled heuristic.",
+    "slug": "auditable-prompt-risk-scanning",
+    "sections": [
+      {
+        "heading": "Return evidence rather than a bare verdict",
+        "body": "PromptShield scans prompt text with deterministic rules and returns severity, findings, evidence excerpts, and remediation guidance. A reviewer can trace a result to the matching text instead of relying on an unexplained safe or unsafe flag."
+      },
+      {
+        "heading": "Check benign language as well as attacks",
+        "body": "The rules cover instruction overrides, role hijacking, jailbreak markers, exfiltration, and unsafe tool-use instructions. Benign security discussions can contain the same vocabulary. A regression test ensures ordinary API-key rotation policy language is not treated as data exfiltration."
+      },
+      {
+        "heading": "Use the scanner as one layer",
+        "body": "Regex rules are transparent and easy to test, but they can miss paraphrases and flag legitimate text. The scanner is a first-pass filter. Tool authorization, output validation, sandboxing, and human approval need their own boundaries."
+      }
+    ],
+    "limitation": "No prompt scanner makes an application safe by itself. The public implementation is a heuristic prototype with a small rule set; its HTTP API uses tool-shaped JSON rather than a full MCP transport.",
+    "sourceRevision": "6f28bd750bee9d72d6638b5eecb1d32e93fe1728"
   }
 ]

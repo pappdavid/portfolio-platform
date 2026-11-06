@@ -1,6 +1,12 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_PORTFOLIO_COMMIT_SHA:
+      process.env.VERCEL_GIT_COMMIT_SHA ||
+      process.env.PORTFOLIO_COMMIT_SHA ||
+      ''
+  },
   images: {
     remotePatterns: [
       {
@@ -20,12 +26,17 @@ const nextConfig: NextConfig = {
     // Directory URLs otherwise leave relative Vite assets resolving against
     // /demos/ after Next normalizes away the trailing slash. Canonicalize both
     // spellings to the actual document URL; query context survives the redirect.
-    const demos = ['rolefit-quiz', 'self-interview', 'task-to-flow'];
+    const demos = ['rolefit-quiz', 'self-interview', 'task-to-flow', 'mercury'];
     const demoIndex = demos.map((slug) => ({
       source: `/demos/${slug}`,
       destination: `/demos/${slug}/index.html`,
       permanent: false
     }));
+    demoIndex.push({
+      source: '/faultline',
+      destination: '/faultline/index.html',
+      permanent: false
+    });
 
     // Routes shared externally in earlier versions of the site. The pages
     // they pointed at described projects that no longer exist in that form,

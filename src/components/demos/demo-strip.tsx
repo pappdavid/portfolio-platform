@@ -83,13 +83,50 @@ export function DemoStrip({ roleId }: DemoStripProps) {
       data-role={roleId ?? 'general'}
     >
       <div className='sec-head'>
-        <span className='sec-cmd'>ls -la /demos/</span>
-        <span className='sec-note'>LIVE DEMOS</span>
+        <h2 className='sec-cmd'>ls -la /demos/</h2>
+        <span className='sec-note'>HOSTED DEMOS</span>
       </div>
 
       <p className='sub-note'>
         Interactive portfolio demos — illustrative by design, hosted as
         independent static bundles.
+      </p>
+
+      <p className='sub-note'>
+        <a
+          className='text-[var(--dp-accent)] underline'
+          href='https://active-companion-replay.vercel.app'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          Active Companion — scripted retrieval replay ↗
+        </a>
+        {' · '}
+        <a
+          className='text-[var(--dp-accent)] underline'
+          href='https://github.com/pappdavid/active-companion'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          Public source ↗
+        </a>
+        <br />
+        Fictional scenarios and retrieval output; no live microphone or hosted
+        inference.
+      </p>
+
+      <p className='sub-note'>
+        <a
+          className='text-[var(--dp-accent)] underline'
+          href='https://client-studio-psi.vercel.app'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          Client Studio — source-excerpt demo ↗
+        </a>
+        <br />
+        Fictional intake and reviewed source excerpts; no AI calls. Source is
+        private.
       </p>
 
       <div className='demo-grid'>
@@ -197,7 +234,7 @@ function DemoCard({
         </span>
       </button>
 
-      <p className='demo-desc text-[11px] leading-relaxed text-[var(--dp-text-dim)]'>
+      <p className='demo-desc text-base leading-relaxed text-[var(--dp-text-dim)]'>
         {demo.description}
       </p>
 

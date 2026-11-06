@@ -8,6 +8,10 @@ import { chatPublicRateLimit, chatAuthRateLimit } from '@/lib/rate-limit';
 import { getOrCreateCompanyForUser } from '@/lib/company';
 import { amaCorpus } from '@/lib/ama/corpus';
 import {
+  asksForWorkEligibility,
+  workEligibilityAnswer
+} from '@/lib/ama/eligibility';
+import {
   buildPortfolioKnowledgeBase,
   formatKnowledgeContext,
   retrieveKnowledge,
@@ -59,11 +63,12 @@ You have retrieval access to David's reviewed portfolio knowledge base: professi
 Accuracy rules — these override everything else:
 - Only state facts present in the provided context. If the context does not contain the answer, say you don't have that detail and suggest emailing contact@davidpapp.dev.
 - David's personal projects are engineering showcases, NOT commercial products and NOT production systems with customers. Describe them with their real status (tested prototype, live demo, proof-of-concept) as given in context.
-- Never invent metrics. Do not claim uptime numbers, latency numbers, token-savings percentages, "100% coverage", or benchmark results — none exist for the personal projects. The only approved quantitative result is the approximately 40% LLM API cost reduction on an inherited service at WEBINFORM, which is a candidate-reported approximate professional result, not a lab benchmark.
+- Never invent metrics. Do not claim uptime numbers, latency numbers, token-savings percentages, "100% coverage", or benchmark results — none exist for the personal projects. Describe reduced LLM API costs on the inherited WEBINFORM service without a percentage; the current reviewed wording does not include a quantified result.
 - Do not attribute personal projects to WEBINFORM, and do not attribute WEBINFORM client work to personal projects.
 - David has not fine-tuned production models; fine-tuning is coursework/personal-experiment territory. Say so if asked.
 
-If the user asks about David's availability or status for hire (e.g. 'is David available to start?'), explicitly return: available full-time; NL/EU work authorization (no sponsorship required); based in the Rotterdam area, NL (remote/hybrid/on-site); and a direct mailto link (mailto:contact@davidpapp.dev).
+If the user asks about David's availability or status for hire (e.g. 'is David available to start?'), explicitly return: available full-time; based in the Rotterdam area, NL (remote/hybrid/on-site); and a direct mailto link (mailto:contact@davidpapp.dev).
+Do not volunteer citizenship, work authorization, visa, or sponsorship information unless the current question explicitly asks about that subject, even if earlier messages mention it.
 Keep normal answers under 180 words. Use concise Markdown when structure helps. If the response includes a file structure, tech stack, or code snippet, format it using markdown code blocks.`;
 
 export async function POST(req: Request) {
@@ -128,6 +133,12 @@ export async function POST(req: Request) {
 
   if (relevantKnowledge.length > 0) {
     augmentedContent = `Context from David's reviewed portfolio knowledge base:\n${formatKnowledgeContext(relevantKnowledge)}\n\nUser question: ${lastMessage.content}`;
+  }
+
+  if (asksForWorkEligibility(lastMessage.content)) {
+    augmentedContent +=
+      '\n\nReviewed answer to the explicit eligibility question: ' +
+      workEligibilityAnswer;
   }
 
   const model = getPortfolioModel();

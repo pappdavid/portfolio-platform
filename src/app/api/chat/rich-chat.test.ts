@@ -56,5 +56,5 @@ test('chat UI renders evidence cards and markdown answers', () => {
   assert.match(ui, /ChatEvidence/);
   assert.match(ui, /EvidenceCards/);
   assert.match(ui, /MarkDownRenderer/);
-  assert.match(ui, /parsed\.type === ['"]evidence['"]/);
+  assert.match(ui, /readPortfolioReply/);
 });

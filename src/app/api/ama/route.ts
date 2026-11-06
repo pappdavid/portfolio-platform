@@ -4,6 +4,7 @@ import { generateText } from 'ai';
 import { amaPublicRateLimit, amaAuthRateLimit } from '@/lib/rate-limit';
 import { getPortfolioModel } from '@/lib/openrouter';
 import { amaCorpus } from '@/lib/ama/corpus';
+import { asksForWorkEligibility } from '@/lib/ama/eligibility';
 import projectsData from '@/data/github-projects-rag.json';
 import {
   answerPortfolioQuestion,
@@ -26,6 +27,7 @@ Rules:
 - Be concise (2-4 sentences max)
 - Speak in third person about David ("David built...", "David focuses on...")
 - Only reference facts from the context
+- Do not volunteer citizenship, work authorization, visa, or sponsorship information. Those facts are answered separately only for an explicit question on that subject.
 - Always return valid JSON in this exact format: {"answer":"...","links":[{"label":"...","url":"..."}]}
 - Include 1-3 relevant links from this list: ${JSON.stringify(portfolioAssistantLinks)}
 - If you don't know the answer from context, say "I don't have that detail in my portfolio content."`;
@@ -104,7 +106,11 @@ export async function POST(req: Request) {
 
   // Hiring, work-authorization, and project identity facts must never vary by
   // model output. Return the reviewed deterministic answer even with an API key.
-  if (asksForHiringFacts(question) || asksForProjectFacts(question)) {
+  if (
+    asksForWorkEligibility(question) ||
+    asksForHiringFacts(question) ||
+    asksForProjectFacts(question)
+  ) {
     return NextResponse.json(fallback);
   }
 
