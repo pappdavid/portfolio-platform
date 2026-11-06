@@ -84,8 +84,8 @@ export async function POST(req: Request) {
   const identifier = userId || req.headers.get('x-forwarded-for') || 'anon';
 
   const limiter = userId ? amaAuthRateLimit : amaPublicRateLimit;
-  const { success } = await limiter.limit(identifier);
-  if (!success) {
+  const { success, unavailable } = await limiter.limit(identifier);
+  if (!success && !unavailable) {
     return NextResponse.json(
       { error: `Rate limit exceeded (${userId ? '20' : '5'}/hr)` },
       { status: 429 }
@@ -93,16 +93,23 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => null);
-  const question = body?.question?.trim();
+  const rawQuestion: unknown = body?.question;
+  const question =
+    typeof rawQuestion === 'string' && rawQuestion.length <= 500
+      ? rawQuestion.trim()
+      : '';
   if (!question) {
     return NextResponse.json(
-      { error: 'question is required' },
+      {
+        error: 'question must be a non-empty string of at most 500 characters'
+      },
       { status: 400 }
     );
   }
 
   const fallback = answerPortfolioQuestion(question);
-  const model = getPortfolioModel();
+
+  if (unavailable) return NextResponse.json(fallback);
 
   // Hiring, work-authorization, and project identity facts must never vary by
   // model output. Return the reviewed deterministic answer even with an API key.
@@ -122,7 +129,7 @@ export async function POST(req: Request) {
 
   try {
     const { text: raw } = await generateText({
-      model,
+      model: getPortfolioModel(),
       // ponytail: mercury-2.5 reasons by default; ama wants plain JSON text.
       providerOptions: {
         openrouter: { reasoning: { enabled: false } }
