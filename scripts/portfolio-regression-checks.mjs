@@ -160,10 +160,20 @@ assert(
   landing.includes('pre-made curricula'),
   'landing: corrected teaching scope'
 );
-assert(
-  landing.includes('SIM.LATENCY'),
-  'landing: decorative telemetry must stay labelled SIM'
-);
+// The status bar shows measured values only. Simulated telemetry and
+// invented session labels must not return.
+for (const fake of [
+  'SIM.',
+  'Math.random',
+  'GUEST_ACCESS',
+  'guest_access',
+  'TTY0'
+]) {
+  assert(
+    !landing.includes(fake),
+    `landing: status bar must not show invented values (${fake})`
+  );
+}
 assert(
   !landing.includes('setCommitCount'),
   'landing: generated commit counter must not return'
