@@ -4,7 +4,7 @@
 // project scope or approved professional facts. Run via `npm run check:content`.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 
@@ -411,6 +411,28 @@ for (const path of [
       !source.includes(marker),
       `${path}: withheld project marker ${marker}`
     );
+  }
+}
+// Hosted demos are served as built files, so they are checked as served.
+for (const entry of readdirSync(resolve(root, 'public/demos'), {
+  recursive: true
+})) {
+  const path = `public/demos/${entry}`;
+  if (!/\.(?:js|mjs|html)$/.test(path)) continue;
+  const source = read(path);
+  for (const marker of withheldProjectMarkers) {
+    assert(
+      !source.includes(marker),
+      `${path}: withheld project marker ${marker}`
+    );
+  }
+}
+for (const demo of JSON.parse(read('demos.lock.json')).demos) {
+  if (!demo.host_text_edits) continue;
+  const built = read(demo.host_text_edits.file);
+  for (const edit of demo.host_text_edits.replacements) {
+    assert(built.includes(edit.to), `${demo.slug}: recorded host edit missing`);
+    assert(!built.includes(edit.from), `${demo.slug}: host edit reverted`);
   }
 }
 for (const marker of retiredProjectMarkers) {

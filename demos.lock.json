@@ -10,7 +10,8 @@
         "path": "patches/demos/self-interview-claims.patch",
         "sha256": "72e1af8085bc6336054a722830d9bb8b3f97b16100de3570b9b5b35c7580b78e"
       },
-      "host_ui_source": "public/demos/self-interview/src/main.js"
+      "host_ui_source": "public/demos/self-interview/src/main.js",
+      "host_text_note": "Withheld projects replaced by the three cited projects in src/facts.js and src/script-data.js on 17 Nov 2026; the unused upstream bundle was removed."
     },
     {
       "slug": "task-to-flow",
@@ -32,6 +33,28 @@
       "host_ui_patch": {
         "path": "patches/demos/rolefit-quiz-ux.patch",
         "sha256": "03e4a40a42866f783568bab7580ce9d4a5285e1b024387fbf38d8bba17895759"
+      },
+      "host_text_edits": {
+        "file": "public/demos/rolefit-quiz/assets/index-BRM6quGH.js",
+        "reason": "Withheld projects removed from the built bundle on 17 Nov 2026; not a clean upstream rebuild.",
+        "replacements": [
+          {
+            "from": "href:\"https://promptshield-cyan.vercel.app/demo\",target:\"_blank\",rel:\"noreferrer\",children:\"AgentSec Suite\"",
+            "to": "href:\"https://davidpapp.dev/faultline/index.html\",target:\"_blank\",rel:\"noreferrer\",children:\"Faultline\""
+          },
+          {
+            "from": "Client software delivery plus AgentSec Suite, a personal prototype.",
+            "to": "Client software delivery plus Client Studio, a personal prototype."
+          },
+          {
+            "from": "Customer-facing AI feature (AgentSec-style)",
+            "to": "Customer-facing AI feature\","
+          },
+          {
+            "from": "Ship a single guardrail first (prompt-shield style) then expand.",
+            "to": "Ship a single guardrail first, then expand."
+          }
+        ]
       }
     }
   ]

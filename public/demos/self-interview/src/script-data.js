@@ -20,7 +20,7 @@ export const INTERVIEW_SCRIPT = [
   {
     id: "production-vs-prototype",
     question: "What's actually production vs prototype?",
-    answer: "At WEBINFORM IT, I contribute to client ERP/AI integrations and related internal and user-facing systems. My personal projects — VoidArch Context, VoidArch Studio, AgentSec Suite, and saas-core — are prototypes. AgentSec Suite has a public live demo you can click through right now.",
+    answer: "At WEBINFORM IT, I contribute to client ERP/AI integrations and related internal and user-facing systems. My personal projects — Client Studio, Active Companion, and Faultline — are prototypes. Each has a public live demo you can click through right now.",
     source: "Project inventory",
     tags: ["prototypes"]
   },
@@ -48,8 +48,8 @@ export const INTERVIEW_SCRIPT = [
   {
     id: "demo",
     question: "Can I see something live right now?",
-    answer: "Yes — AgentSec Suite is publicly reachable at promptshield-cyan.vercel.app. Click through it yourself; no sales call required. It's a personal project, so: prototype, proudly.",
-    source: "promptshield-cyan.vercel.app",
+    answer: "Yes — Client Studio is publicly reachable at client-studio-psi.vercel.app. Click through it yourself; no sales call required. It's a personal project, so: prototype, proudly.",
+    source: "client-studio-psi.vercel.app",
     tags: ["demo"]
   },
   {

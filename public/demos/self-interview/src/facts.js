@@ -24,10 +24,10 @@ export const FACTS = {
   },
   stack: ["Next.js", "TypeScript", "Prisma", "Clerk", "Supabase", "Tailwind"],
   liveDemo: {
-    name: "AgentSec Suite",
-    url: "https://promptshield-cyan.vercel.app/demo"
+    name: "Client Studio",
+    url: "https://client-studio-psi.vercel.app/"
   },
-  prototypes: ["VoidArch Context", "VoidArch Studio", "AgentSec Suite", "saas-core"]
+  prototypes: ["Client Studio", "Active Companion", "Faultline"]
 }
 
 /* Source-link map for receipts / fact chips. Each fact that is claimable gets a
