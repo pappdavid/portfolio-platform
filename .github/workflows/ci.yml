@@ -154,15 +154,14 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Repositories linked from engineering notes
+      - name: Repositories linked from the site
         run: |
           set -euo pipefail
           for url in \
-            https://github.com/pappdavid/PromptShield \
-            https://github.com/pappdavid/agentsec-hook-pack \
-            https://github.com/pappdavid/mcpguard-lite \
-            https://github.com/pappdavid/agentmap \
-            https://github.com/pappdavid/approveops; do
+            https://github.com/pappdavid/faultline \
+            https://github.com/pappdavid/active-companion \
+            https://github.com/pappdavid/portfolio-platform \
+            https://github.com/VoidArch-Labs/voidarch-context; do
             code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$url")
             echo "$url -> $code"
             [ "$code" = 200 ]
