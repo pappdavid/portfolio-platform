@@ -472,8 +472,7 @@ assert.deepEqual(
 // CV case-study anchors: public projects link their verified repository;
 // private projects never link a public source repository.
 const anchoredProjects = {
-  faultline:
-    'https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline',
+  faultline: 'https://github.com/pappdavid/faultline',
   'active-companion': 'https://github.com/pappdavid/active-companion',
   'voidarch-context': 'https://github.com/VoidArch-Labs/voidarch-context',
   'voidarch-router': null,

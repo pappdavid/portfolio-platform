@@ -3,6 +3,7 @@
 Executable browser model of retries and idempotency: lose the request before commit or the response after it, see the duplicate effect of a naive retry, then replay against an idempotent receiver. The receiver stores the operation key and payload fingerprint and rejects a changed payload under the same key.
 
 - Live: https://davidpapp.dev/faultline/index.html
+- Standalone repository (MIT): https://github.com/pappdavid/faultline
 - Engine: [`engine.mjs`](engine.mjs) · UI: [`app.mjs`](app.mjs)
 - Tests and the honesty boundary: [`scripts/faultline/`](../../scripts/faultline/), run in CI by `npm run test:showcases`
 

@@ -99,8 +99,7 @@ const projects: Project[] = [
       'Reliability patterns'
     ],
     liveUrl: '/faultline/index.html',
-    repoUrl:
-      'https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline',
+    repoUrl: 'https://github.com/pappdavid/faultline',
     tabs: {
       overview:
         'Atomic effect-and-receipt storage is a model assumption. It is a teaching model in browser JavaScript, not a deployed service or a test of real distributed systems.',
