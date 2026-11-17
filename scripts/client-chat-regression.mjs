@@ -201,28 +201,14 @@ try {
       assert.equal(await page.evaluate(() => window.chatAborted), true);
     });
   await scenario(
-    'projects render six separate hosted sample links',
+    'projects page omits withheld showcase links',
     async (page) => {
       await page.goto(`${origin}/projects`);
-      await page
-        .getByRole('button', { name: /Hosted AI Product Showcases/ })
-        .click();
-      const hosts = [
-        'standup-liar',
-        'meeting-receipt',
-        'velocity-truth',
-        'cloud-shame',
-        'speccop',
-        'crueldocs'
-      ];
-      for (const host of hosts) {
-        assert(
-          (await page
-            .locator(`a[href="https://${host}-showcase.vercel.app/"]`)
-            .count()) > 0,
-          `${host} link missing`
-        );
-      }
+      assert.equal(
+        await page.locator('a[href*="-showcase.vercel.app"]').count(),
+        0,
+        'withheld showcase links must not render'
+      );
     }
   );
 } finally {

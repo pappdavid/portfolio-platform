@@ -8,7 +8,7 @@ test('builds one reviewed KB from profile sections and structured projects', () 
   const docs = kb.buildPortfolioKnowledgeBase(amaCorpus, projects);
   assert.ok(docs.length >= 10);
   assert.ok(docs.some((doc) => doc.title === 'Professional work at WEBINFORM'));
-  assert.ok(docs.some((doc) => doc.title === 'AgentSec Suite'));
+  assert.ok(docs.some((doc) => doc.title === 'Client Studio'));
 });
 
 test('BM25 retrieval finds work, availability, and exact technical projects', () => {
@@ -35,10 +35,10 @@ test('BM25 retrieval finds work, availability, and exact technical projects', ()
 test('configured referral project titles are deterministic retrieval boosts', () => {
   const docs = kb.buildPortfolioKnowledgeBase(amaCorpus, projects);
   const hits = kb.retrieveKnowledge('why is he relevant?', docs, 3, {
-    pinnedTitles: ['AgentSec Suite', 'VoidArch Context']
+    pinnedTitles: ['Client Studio', 'VoidArch Context']
   });
   assert.deepEqual(
     hits.slice(0, 2).map((hit) => hit.doc.title),
-    ['AgentSec Suite', 'VoidArch Context']
+    ['Client Studio', 'VoidArch Context']
   );
 });

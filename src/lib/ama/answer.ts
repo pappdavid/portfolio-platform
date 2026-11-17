@@ -8,10 +8,7 @@ export type PortfolioAssistantAnswer = {
 
 export const portfolioAssistantLinks: PortfolioAssistantLink[] = [
   { label: 'Projects', url: '/projects' },
-  {
-    label: 'AgentSec Suite demo',
-    url: 'https://promptshield-cyan.vercel.app/demo'
-  },
+  { label: 'Client Studio demo', url: 'https://client-studio-psi.vercel.app/' },
   { label: 'GitHub', url: 'https://github.com/pappdavid' },
   { label: 'Contact David', url: '/#contact' },
   { label: 'CV (PDF)', url: '/cv.pdf' }
@@ -64,20 +61,20 @@ export function answerPortfolioQuestion(
   ) {
     return {
       answer:
-        'David’s selected projects are VoidArch Context (local-first repo memory and context packs), VoidArch Studio (local agent orchestration), AgentSec Suite (the integrated security suite with a live demo), and saas-core (private modular product infrastructure). PromptShield, the hook pack, MCPGuard, AgentMap, and ApproveOps are linked as AgentSec components rather than separate portfolio products.',
-      links: [link('Projects'), link('AgentSec Suite demo'), link('GitHub')]
+        'David’s selected projects are Client Studio (a hosted source-excerpt prototype of a company assistant; the hosted demo makes no AI calls), Active Companion (a scripted-replay lab with public source), and Faultline (an executable browser model of retries and idempotency). VoidArch Context (local-first repo memory and context packs) and VoidArch Studio (local agent orchestration) are in active development.',
+      links: [link('Projects'), link('Client Studio demo'), link('GitHub')]
     };
   }
   if (hasAny(normalized, ['stack', 'technology', 'tools', 'prefer'])) {
     return {
       answer:
-        "David's stack centers on TypeScript, Python, and Rust, with Next.js, Prisma, Postgres, SurrealDB, LLM APIs, MCP, GitHub Actions, and Tauri. Professionally he ships LLM features, APIs, and ERP integrations; personally he builds local-first context, orchestration, and security systems.",
+        "David's stack centers on TypeScript, Python, and Rust, with Next.js, Prisma, Postgres, SurrealDB, LLM APIs, MCP, GitHub Actions, and Tauri. Professionally he ships LLM features, APIs, and ERP integrations; personally he builds local-first context and orchestration tooling.",
       links: [link('Projects'), link('GitHub')]
     };
   }
   return {
     answer:
-      'David is an AI Solutions Developer at WEBINFORM and is studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; he changed to this programme in September 2026 and expects to graduate in 2028. His current portfolio focuses on VoidArch Context, VoidArch Studio, AgentSec Suite, and saas-core. Ask about his professional work, a specific project, his stack, or his availability — or email contact@davidpapp.dev.',
+      'David is an AI Solutions Developer at WEBINFORM and is studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; he changed to this programme in September 2026 and expects to graduate in 2028. His current portfolio focuses on Client Studio, Active Companion and Faultline. Ask about his professional work, a specific project, his stack, or his availability — or email contact@davidpapp.dev.',
     links: [link('Projects'), link('Contact David')]
   };
 }

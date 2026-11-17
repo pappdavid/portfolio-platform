@@ -113,7 +113,7 @@ jobs:
           python3 - <<'PY'
           import json
           answer = json.load(open('/tmp/projects-answer.json'))['answer'].lower()
-          for name in ['voidarch context', 'voidarch studio', 'agentsec suite', 'saas-core']:
+          for name in ['client studio', 'active companion', 'faultline']:
               assert name in answer, name
           assert 'five separate' not in answer
           PY
@@ -132,11 +132,12 @@ jobs:
           "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --virtual-time-budget=5000 --dump-dom http://localhost:3000/projects > /tmp/projects-dom.html
           grep -q 'David' /tmp/home-dom.html
-          for name in 'VoidArch Context' 'VoidArch Studio' 'AgentSec Suite' 'saas-core'; do
+          for name in 'Client Studio' 'Active Companion' 'Faultline' 'VoidArch Context' 'VoidArch Studio'; do
             grep -q "$name" /tmp/home-dom.html
             grep -q "$name" /tmp/projects-dom.html
           done
-          grep -q 'https://promptshield-cyan.vercel.app' /tmp/projects-dom.html
+          ! grep -Eq 'AgentSec Suite|saas-core|promptshield-cyan|-showcase\.vercel\.app' \
+            /tmp/home-dom.html /tmp/projects-dom.html
           ! grep -Eqi 'thesys-c1-dashboard|THESYS_C1|voidarch-context-portal|Application error|Internal Server Error' \
             /tmp/home-dom.html /tmp/projects-dom.html
 
@@ -153,7 +154,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: External component repositories and integrated demo
+      - name: Repositories linked from engineering notes
         run: |
           set -euo pipefail
           for url in \
@@ -161,8 +162,7 @@ jobs:
             https://github.com/pappdavid/agentsec-hook-pack \
             https://github.com/pappdavid/mcpguard-lite \
             https://github.com/pappdavid/agentmap \
-            https://github.com/pappdavid/approveops \
-            https://promptshield-cyan.vercel.app; do
+            https://github.com/pappdavid/approveops; do
             code=$(curl -s -o /dev/null -m 30 -L -w '%{http_code}' "$url")
             echo "$url -> $code"
             [ "$code" = 200 ]

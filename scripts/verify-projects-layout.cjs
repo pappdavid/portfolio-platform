@@ -19,7 +19,7 @@ const fs = require('node:fs');
       await p.goto(process.argv[2] + '/projects', { waitUntil: 'networkidle' });
       for (const card of await p
         .getByRole('button', {
-          name: /VoidArch Context|VoidArch Studio|AgentSec Suite|saas-core|Hosted AI Product|Active Companion|Client Studio/
+          name: /Client Studio|Active Companion|Faultline|VoidArch Context|VoidArch Studio/
         })
         .all()) {
         await card.click();

@@ -46,10 +46,11 @@ export interface JobTypeProfile {
 
 /** The only project names a profile may feature (regression-guarded). */
 export const CANONICAL_PROJECT_NAMES = [
+  'Client Studio',
+  'Active Companion',
+  'Faultline',
   'VoidArch Context',
-  'VoidArch Studio',
-  'AgentSec Suite',
-  'saas-core'
+  'VoidArch Studio'
 ] as const;
 
 export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
@@ -62,7 +63,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Engineering AI systems end to end — professional LLM delivery backed by hands-on agent infrastructure.',
     focusLine: 'llm systems · agents · rag · typescript',
     pitch:
-      'Tuned for AI engineering roles: professional delivery covers LLM API integration, prompt and context engineering, and backend logic for ERP-integrated systems, while personal lab work goes deep on local-first context infrastructure (VoidArch Context), agent orchestration (VoidArch Studio), and fail-closed security hooks (AgentSec). VU Amsterdam coursework adds machine learning, computational linguistics, and multi-agent systems underneath.',
+      'Tuned for AI engineering roles: professional delivery covers LLM API integration, prompt and context engineering, and backend logic for ERP-integrated systems, while personal lab work covers a source-excerpt company assistant (Client Studio), a scripted-replay retrieval lab (Active Companion), and local-first context infrastructure (VoidArch Context). VU Amsterdam coursework adds machine learning, computational linguistics, and multi-agent systems underneath.',
     projectsCta: '[engineering projects]',
     chatGreeting:
       "Session active. Tuned for AI engineering roles — ask about David's professional LLM delivery, the retrieval design behind this assistant, or the VoidArch agent stack.",
@@ -73,7 +74,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'tell me about VoidArch Context',
       'what ML fundamentals does David study at VU?'
     ],
-    featuredProjects: ['VoidArch Context', 'VoidArch Studio', 'AgentSec Suite']
+    featuredProjects: ['Client Studio', 'Active Companion', 'Faultline']
   },
   'ai-integration': {
     id: 'ai-integration',
@@ -95,7 +96,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'which stack does David deliver with?',
       'is David available for full-time work?'
     ],
-    featuredProjects: ['saas-core', 'VoidArch Context', 'AgentSec Suite']
+    featuredProjects: ['Client Studio', 'Faultline', 'Active Companion']
   },
   automation: {
     id: 'automation',
@@ -106,18 +107,18 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Automating real workflows with LLM APIs, event glue, and fail-closed guardrails.',
     focusLine: 'workflow automation · llm apis · policy hooks',
     pitch:
-      'Tuned for automation roles: professional work spans APIs, backend logic, and automation for web applications and ERP-integrated systems, plus Playwright-based pre-release testing at 4iG. In the lab, the AgentSec hook pack gates Claude Code and Codex tool calls with safe-command fast paths and observe/prompt/enforce modes, and saas-core turns typed presets into validated builds through scripted CI workflows.',
+      'Tuned for automation roles: professional work spans APIs, backend logic, and automation for web applications and ERP-integrated systems, plus Playwright-based pre-release testing at 4iG. In the lab, Faultline is an executable browser model of retries and idempotency, and VoidArch Studio is an active-development control room for coding-agent sessions.',
     projectsCta: '[automation work]',
     chatGreeting:
-      'Session active. Tuned for automation roles — ask what David has automated in client delivery or how his hook pack gates agent tool calls.',
+      'Session active. Tuned for automation roles — ask what David has automated in client delivery or how Faultline models retries and idempotency.',
     chatContextLabel: 'context: reviewed_kb + automation profile',
     suggestions: [
       'what has David automated in client delivery?',
-      'how does the hook pack gate agent tool calls?',
+      'how does Faultline model retries and idempotency?',
       "what's in David's automation stack?",
-      'tell me about ApproveOps'
+      'tell me about VoidArch Studio'
     ],
-    featuredProjects: ['AgentSec Suite', 'saas-core', 'VoidArch Studio']
+    featuredProjects: ['Faultline', 'Client Studio', 'VoidArch Studio']
   },
   'product-engineering': {
     id: 'product-engineering',
@@ -128,10 +129,10 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'Shipping user-facing AI products end to end — data, APIs, interface.',
     focusLine: 'user-facing ai · next.js · end-to-end delivery',
     pitch:
-      'Tuned for product engineering roles: David builds user-facing AI interfaces and platforms, including client websites and webshops at WEBINFORM, plus public prototypes like the integrated AgentSec suite. Delivery stack: Next.js, TypeScript, Prisma, Clerk, Supabase, Tailwind. Personal projects are presented honestly as prototypes; production experience comes from client delivery.',
+      'Tuned for product engineering roles: David builds user-facing AI interfaces and platforms, including client websites and webshops at WEBINFORM, plus public prototypes like Client Studio, a hosted source-excerpt prototype. Delivery stack: Next.js, TypeScript, Prisma, Clerk, Supabase, Tailwind. Personal projects are presented honestly as prototypes; production experience comes from client delivery.',
     projectsCta: '[shipped products]',
     chatGreeting:
-      'Session active. Tuned for product engineering roles — ask which products David has shipped or open the live AgentSec demo.',
+      'Session active. Tuned for product engineering roles — ask which products David has shipped or open the Client Studio demo.',
     chatContextLabel: 'context: reviewed_kb + product profile',
     suggestions: [
       'which products has David shipped?',
@@ -139,7 +140,7 @@ export const JOB_TYPES: Record<JobTypeId, JobTypeProfile> = {
       'what does the delivery stack look like?',
       'what did David build at WEBINFORM?'
     ],
-    featuredProjects: ['AgentSec Suite', 'saas-core', 'VoidArch Context']
+    featuredProjects: ['Client Studio', 'Active Companion', 'Faultline']
   }
 };
 
@@ -240,7 +241,7 @@ export const DEFAULT_SUGGESTIONS = [
   'is David available to start?',
   "what is David's tech stack?",
   'what did David build at WEBINFORM?',
-  'tell me about AgentSec Suite'
+  'tell me about Client Studio'
 ];
 
 export interface JobTypeSiteView {

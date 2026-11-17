@@ -17,10 +17,7 @@ test('resolves every canonical id, label, and common alias', () => {
     assert.equal(resolveJobType(profile.id)?.id, profile.id);
     assert.equal(resolveJobType(profile.label)?.id, profile.id);
     // URL-style spelling with spaces instead of dashes.
-    assert.equal(
-      resolveJobType(profile.id.replace(/-/g, ' '))?.id,
-      profile.id
-    );
+    assert.equal(resolveJobType(profile.id.replace(/-/g, ' '))?.id, profile.id);
   }
   assert.equal(resolveJobType('ml engineer')?.id, 'ai-engineering');
   assert.equal(resolveJobType('erp')?.id, 'ai-integration');
@@ -63,7 +60,9 @@ test('search-param resolution reads the role param and tolerates arrays', () => 
 });
 
 test('every profile features only canonical project names', () => {
-  const canonical = new Set(CANONICAL_PROJECT_NAMES.map((n) => n.toLowerCase()));
+  const canonical = new Set(
+    CANONICAL_PROJECT_NAMES.map((n) => n.toLowerCase())
+  );
   for (const profile of Object.values(JOB_TYPES)) {
     assert.ok(profile.featuredProjects.length > 0, profile.id);
     for (const name of profile.featuredProjects) {
@@ -75,8 +74,7 @@ test('every profile features only canonical project names', () => {
   }
 });
 
-test('general site (no profile, no referral) reproduces today’s copy exactly', () =>
-{
+test('general site (no profile, no referral) reproduces today’s copy exactly', () => {
   const view = getJobTypeSiteView(null, null);
   assert.equal(view.profile, null);
   assert.equal(view.heroRole, DEFAULT_HERO_ROLE);
@@ -123,8 +121,8 @@ test('prioritization: referral tier first, then job type, then curated order pre
   const projects = [
     { name: 'VoidArch Studio' },
     { name: 'VoidArch Context' },
-    { name: 'AgentSec Suite' },
-    { name: 'saas-core' }
+    { name: 'Client Studio' },
+    { name: 'Faultline' }
   ];
 
   const none = prioritizeProjects(projects, {});
@@ -137,7 +135,7 @@ test('prioritization: referral tier first, then job type, then curated order pre
   // original relative order.
   assert.deepEqual(
     byJobType.map((p) => p.name),
-    ['AgentSec Suite', 'saas-core', 'VoidArch Context', 'VoidArch Studio']
+    ['Client Studio', 'Faultline', 'VoidArch Studio', 'VoidArch Context']
   );
 
   const byReferral = prioritizeProjects(projects, {
@@ -146,12 +144,15 @@ test('prioritization: referral tier first, then job type, then curated order pre
   });
   assert.deepEqual(
     byReferral.map((p) => p.name),
-    ['VoidArch Context', 'AgentSec Suite', 'saas-core', 'VoidArch Studio']
+    ['VoidArch Context', 'Client Studio', 'Faultline', 'VoidArch Studio']
   );
 
   // Unknown featured names are ignored and ties keep original order.
   const unknownOnly = prioritizeProjects(projects, {
-    jobType: { ...JOB_TYPES.automation, featuredProjects: ['Nonexistent Thing'] }
+    jobType: {
+      ...JOB_TYPES.automation,
+      featuredProjects: ['Nonexistent Thing']
+    }
   });
   assert.deepEqual(unknownOnly, projects);
 });

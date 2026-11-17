@@ -46,12 +46,12 @@ test('referral retrieval query includes role focus and explicitly featured proje
     company: 'Attendi',
     role: 'Machine Learning Engineer',
     focus: ['applied ML', 'Python', 'production AI'],
-    featuredProjects: ['VoidArch Context', 'AgentSec Suite']
+    featuredProjects: ['VoidArch Context', 'Client Studio']
   });
   assert.match(query, /Machine Learning Engineer/);
   assert.match(query, /applied ML/);
   assert.match(query, /VoidArch Context/);
-  assert.match(query, /AgentSec Suite/);
+  assert.match(query, /Client Studio/);
 });
 
 test('referral presentation visibly frames the target without claiming company facts', async () => {
@@ -100,11 +100,11 @@ test('featured referral project chunks are selected in configured order', async 
   const chunks = [
     'Project Name: VoidArch Context\nDetails: context',
     'Project Name: VoidArch Studio\nDetails: studio',
-    'Project Name: AgentSec Suite\nDetails: security'
+    'Project Name: Client Studio\nDetails: workspace'
   ];
   const selected = getReferralFeaturedProjectChunks(chunks, {
     company: 'Attendi',
-    featuredProjects: ['AgentSec Suite', 'VoidArch Context']
+    featuredProjects: ['Client Studio', 'VoidArch Context']
   });
   assert.deepEqual(selected, [chunks[2], chunks[0]]);
 });
@@ -112,9 +112,9 @@ test('featured referral project chunks are selected in configured order', async 
 test('chat context names explicitly prioritized referral projects', () => {
   const text = buildReferralChatContext({
     company: 'Attendi',
-    featuredProjects: ['VoidArch Context', 'AgentSec Suite']
+    featuredProjects: ['VoidArch Context', 'Client Studio']
   });
-  assert.match(text, /Prioritized projects: VoidArch Context, AgentSec Suite/);
+  assert.match(text, /Prioritized projects: VoidArch Context, Client Studio/);
 });
 
 test('chat presentation reports the reviewed knowledge base accurately', () => {

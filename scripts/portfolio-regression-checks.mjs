@@ -350,20 +350,32 @@ assert(
   'assistant corpus: personal projects must stay framed as prototypes'
 );
 
-// Four primary projects remain intact alongside two executable browser studies.
-// AgentSec is one integrated suite, not five competing cards, and only its
-// integrated deployment is linked as a public demo.
+// The three cited projects lead, followed by VoidArch Context and Studio.
+// Withheld projects (AgentSec and its components, saas-core and the six
+// hosted showcases) must not reappear on recruiter-facing surfaces.
 const primaryProjectIds = [
+  'client-studio',
+  'active-companion',
   'voidarch-context',
-  'voidarch-studio',
-  'agentsec-suite',
-  'saas-core'
+  'voidarch-studio'
 ];
 const primaryProjectNames = [
+  'Client Studio',
+  'Active Companion',
+  'Faultline',
   'VoidArch Context',
-  'VoidArch Studio',
-  'AgentSec Suite',
-  'saas-core'
+  'VoidArch Studio'
+];
+const withheldProjectMarkers = [
+  'AgentSec',
+  'PromptShield',
+  'MCPGuard',
+  'AgentMap',
+  'ApproveOps',
+  'saas-core',
+  'promptshield-cyan',
+  'Hosted AI Product Showcases',
+  '-showcase.vercel.app'
 ];
 const retiredProjectMarkers = [
   'thesys-c1-dashboard',
@@ -382,8 +394,25 @@ const projectsSource = read('src/components/projects/projects-content.tsx');
 for (const name of primaryProjectNames) {
   assert(projectsSource.includes(name), `projects page: missing ${name}`);
   assert(landing.includes(name), `landing page: missing ${name}`);
-  assert(cvHtml.includes(name), `CV: missing ${name}`);
   assert(corpus.includes(name), `assistant corpus: missing ${name}`);
+}
+// public/cv.html is reviewed separately by the owner; its project list is not
+// asserted here.
+for (const path of [
+  'src/components/projects/projects-content.tsx',
+  'src/components/landing/landing-content.tsx',
+  'src/data/github-projects-rag.json',
+  'src/lib/ama/corpus.ts',
+  'src/lib/job-type.ts',
+  'src/app/api/chat/route.ts'
+]) {
+  const source = read(path);
+  for (const marker of withheldProjectMarkers) {
+    assert(
+      !source.includes(marker),
+      `${path}: withheld project marker ${marker}`
+    );
+  }
 }
 for (const marker of retiredProjectMarkers) {
   for (const path of RECRUITER_FACING) {
@@ -399,10 +428,6 @@ for (const marker of standaloneAgentSecIds) {
     `projects page: AgentSec component must not be a standalone card (${marker})`
   );
 }
-assert(
-  projectsSource.includes('https://promptshield-cyan.vercel.app'),
-  'projects page: AgentSec Suite must link the integrated live demo'
-);
 for (const retiredDemo of [
   'https://mcpguard-lite.vercel.app',
   'https://agentmap-fawn.vercel.app',
@@ -448,6 +473,8 @@ assert.deepEqual(
 // CV case-study anchors: public projects link their verified repository;
 // private projects never link a public source repository.
 const anchoredProjects = {
+  faultline:
+    'https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline',
   'active-companion': 'https://github.com/pappdavid/active-companion',
   'voidarch-context': 'https://github.com/VoidArch-Labs/voidarch-context',
   'voidarch-router': null,
@@ -458,7 +485,7 @@ for (const [id, repoUrl] of Object.entries(anchoredProjects)) {
     .split(/\n  \{\n    id: /)
     .find((chunk) => chunk.startsWith(`'${id}'`));
   assert(entry, `projects page: missing #${id} anchor`);
-  const linked = entry.match(/repoUrl: '([^']+)'/)?.[1] ?? null;
+  const linked = entry.match(/repoUrl:\s*'([^']+)'/)?.[1] ?? null;
   assert.equal(linked, repoUrl, `projects page: #${id} repository link`);
 }
 

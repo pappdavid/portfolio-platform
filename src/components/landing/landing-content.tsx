@@ -123,13 +123,55 @@ type Project = {
 
 const PROJECTS: Project[] = [
   {
+    name: 'Client Studio',
+    stage: 'BETA',
+    mod: '2026-10',
+    badge: 'private',
+    desc: 'Hosted source-excerpt prototype; the hosted demo makes no AI calls',
+    body: 'Company assistant on a Supabase-backed workspace: answers questions from supplied text or Markdown with exact source excerpts. Splits sources into versions, filters internal sources from the customer view on the server, and goes live only after explicit review, approval and activation as a frozen snapshot. Writes are revision-checked and idempotent, and the database is closed to client roles so only the server can read or write. Retrieval is lexical and model calls are switched off in the hosted demo. Shown with fictional examples or user-provided material. Source is private.',
+    tech: [
+      'TypeScript',
+      'Next.js',
+      'Supabase',
+      'PostgreSQL',
+      'Lexical retrieval',
+      'Approval workflow'
+    ],
+    liveUrl: 'https://client-studio-psi.vercel.app'
+  },
+  {
+    name: 'Active Companion',
+    stage: 'BETA',
+    mod: '2026-10',
+    badge: 'live',
+    desc: 'Scripted-replay lab with public source: transcript in, evidence cards with named sources out',
+    body: 'Meeting-assistant lab in Python: a sliding context window, heuristic intent classification and TF-IDF retrieval turn a transcript into evidence cards with named sources. An optional model step keeps only answer bullets that cite a retrieved source title. Includes a server-sent-events API lab and provider-free automated tests, with public MIT-licensed source. The hosted page is a scripted replay of the pipeline output for four fictional conversations, with no inference, microphone or uploads. It is not evaluated on real meetings.',
+    tech: [
+      'Python',
+      'TF-IDF',
+      'Retrieval',
+      'Intent classification',
+      'Server-Sent Events',
+      'GitHub Actions'
+    ],
+    liveUrl: 'https://active-companion-replay.vercel.app',
+    repoUrl: 'https://github.com/pappdavid/active-companion',
+    repoName: 'pappdavid/active-companion'
+  },
+  {
     name: 'Faultline',
     stage: 'BETA',
     mod: '2026-11',
     badge: 'live',
-    desc: 'Run a lost-response retry, inspect duplicate effects, and compare an idempotent receiver',
-    body: 'An executable browser simulation of a booking request whose response is lost after commit. Retry the same operation, compare a naive receiver with a receiver that stores an idempotency receipt, and probe changed payloads or unstable keys. The trace and assertions come from the running in-memory model. All booking data is fictional; there is no network request or real booking. Atomic effect-and-receipt storage is an explicit model assumption, not proof of durable distributed behavior.',
-    tech: ['JavaScript', 'Idempotency', 'Fault injection', 'Executable model'],
+    desc: 'Executable browser model of retries and idempotency, with public source',
+    body: 'Executable browser model of retries and idempotency: lose the request before commit or the response after it, see the duplicate effect of a naive retry, then replay against an idempotent receiver. The receiver stores the operation key and payload fingerprint and rejects a changed payload under the same key. Events, receipts and assertions come from a tested in-memory engine with public source. Atomic effect-and-receipt storage is a model assumption. It is a teaching model in browser JavaScript, not a deployed service or a test of real distributed systems.',
+    tech: [
+      'JavaScript',
+      'Idempotency keys',
+      'Retries',
+      'Simulated network faults',
+      'Reliability patterns'
+    ],
     liveUrl: '/faultline/index.html',
     repoUrl:
       'https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline',
@@ -149,42 +191,10 @@ const PROJECTS: Project[] = [
     repoName: 'portfolio-platform / public/demos/mercury'
   },
   {
-    name: 'Active Companion',
-    stage: 'BETA',
-    mod: '2026-10',
-    badge: 'live',
-    desc: 'Scripted retrieval replay over fictional conversations; inspect evidence cards',
-    body: 'A conversation-context prototype with a public scripted retrieval replay and scenario harness. The hosted replay advances bundled fictional utterances and displays retrieval evidence cards. It uses no live microphone or hosted inference. The public repository is linked for inspection.',
-    tech: ['Retrieval', 'Scenario harness', 'Scripted replay'],
-    liveUrl: 'https://active-companion-replay.vercel.app',
-    repoUrl: 'https://github.com/pappdavid/active-companion',
-    repoName: 'pappdavid/active-companion'
-  },
-  {
-    name: 'VoidArch Router',
-    stage: 'BETA',
-    mod: '2026-10',
-    badge: 'private',
-    desc: 'Offline-testable capability, prerequisite and workflow routing with explainable plans',
-    body: 'A standalone personal TypeScript tool. Its private repository documents compilation of capability and workflow metadata, task classification, declared prerequisite checks, trusted implementation selection, and explainable route plans. Offline fixtures are included. The router does not execute workflows, read credentials, call models, or host a service; live Hermes and Studio adapters remain deferred interfaces.',
-    tech: ['TypeScript', 'Offline fixtures', 'Workflow routing']
-  },
-  {
-    name: 'Client Studio',
-    stage: 'BETA',
-    mod: '2026-10',
-    badge: 'private',
-    desc: 'Source-excerpt demo with fictional intake, review and activation; no AI calls',
-    body: 'The public demo supports fictional text intake, source-excerpt review, unresolved questions, review and activation states, and runtime reload recovery. This hosted mode makes no AI calls. Source is private and no public repository is claimed.',
-    tech: ['Source excerpts', 'Review workflow', 'Fictional intake'],
-    liveUrl: 'https://client-studio-psi.vercel.app'
-  },
-  {
     name: 'VoidArch Context',
     stage: 'BETA',
     mod: '2026-07',
     badge: 'live',
-    isFlagship: true,
     desc: 'Local-first memory, repo-query, code-graph, vector retrieval, and token-budgeted context packs for coding agents',
     body: 'A standalone, agent-neutral context engine for Claude Code, Codex, and other coding agents. It indexes repository files and documentation into embedded SurrealDB, builds a Tree-sitter code graph, stores durable decisions and lessons, supports local ONNX embeddings, and fuses the available channels into a deterministic token-budgeted context pack. It runs locally without Docker or Python; semantic retrieval requires an explicit embedding pass and the embedded database is single-process.',
     tech: [
@@ -217,53 +227,13 @@ const PROJECTS: Project[] = [
     ]
   },
   {
-    name: 'AgentSec Suite',
-    stage: 'LIVE',
-    mod: '2026-07',
-    badge: 'live',
-    desc: 'Integrated agent-security suite with prompt scanning, MCP analysis, agent risk mapping, approval workflows, and runtime hooks',
-    body: 'A working integrated security dashboard combining PromptShield, MCPGuard, AgentMap, ApproveOps, and the AgentSec hook pack. The deployed suite exposes the four web modules through one interface, while the local hook package gates Claude Code and Codex tool calls. The public component repositories remain linked as independently inspectable evidence; the suite is a portfolio-grade working system, not a claim of universal production protection.',
-    tech: [
-      'Next.js',
-      'TypeScript',
-      'Prisma',
-      'Clerk',
-      'Vitest',
-      'Node.js',
-      'Vercel'
-    ],
-    liveUrl: 'https://promptshield-cyan.vercel.app/demo',
-    image: '/saas-screenshots/promptshield.png',
-    componentLinks: [
-      {
-        label: 'PromptShield',
-        url: 'https://github.com/pappdavid/PromptShield'
-      },
-      {
-        label: 'Hook Pack',
-        url: 'https://github.com/pappdavid/agentsec-hook-pack'
-      },
-      { label: 'MCPGuard', url: 'https://github.com/pappdavid/mcpguard-lite' },
-      { label: 'AgentMap', url: 'https://github.com/pappdavid/agentmap' },
-      { label: 'ApproveOps', url: 'https://github.com/pappdavid/approveops' }
-    ]
-  },
-  {
-    name: 'saas-core',
+    name: 'VoidArch Router',
     stage: 'BETA',
-    mod: '2026-06',
+    mod: '2026-10',
     badge: 'private',
-    desc: 'Private modular Next.js product scaffold and factory infrastructure used to generate and validate bounded SaaS builds',
-    body: 'A private engineering repository containing a modular Next.js scaffold, typed module and preset planning, environment validation, product rendering scripts, CI workflows, and provider adapters. It is presented as supporting infrastructure rather than a public product or live demo; provider provisioning and generated integrations are described only where the repository implements them.',
-    tech: [
-      'Next.js',
-      'TypeScript',
-      'Prisma',
-      'Clerk',
-      'Stripe',
-      'GitHub Actions',
-      'Vercel'
-    ]
+    desc: 'Offline-testable capability, prerequisite and workflow routing with explainable plans',
+    body: 'A standalone personal TypeScript tool. Its private repository documents compilation of capability and workflow metadata, task classification, declared prerequisite checks, trusted implementation selection, and explainable route plans. Offline fixtures are included. The router does not execute workflows, read credentials, call models, or host a service; live Hermes and Studio adapters remain deferred interfaces.',
+    tech: ['TypeScript', 'Offline fixtures', 'Workflow routing']
   }
 ];
 
@@ -1111,12 +1081,12 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
       <p className='prose'>
         I build AI solutions professionally at WEBINFORM — production LLM
         features, APIs, and automation for web applications and ERP-integrated
-        systems — and, on my own time, local-first context infrastructure, agent
-        orchestration tooling, and the integrated AgentSec security suite. I
-        began university studies in 2024 and changed to Econometrics and Data
-        Science at VU Amsterdam in September 2026; graduation is expected in
-        2028. I&apos;m looking for full-time AI engineering, AI solutions,
-        integration, automation, or agent-infrastructure roles.
+        systems — and, on my own time, local-first context infrastructure and
+        agent orchestration tooling. I began university studies in 2024 and
+        changed to Econometrics and Data Science at VU Amsterdam in September
+        2026; graduation is expected in 2028. I&apos;m looking for full-time AI
+        engineering, AI solutions, integration, automation, or
+        agent-infrastructure roles.
       </p>
 
       {pitch && (
