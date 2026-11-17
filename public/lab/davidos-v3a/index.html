@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="portfolio:commit" content="c48fa2e">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>David Papp — DavidOS</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#workspace">Skip to portfolio</a>
+<header class="top"><div class="shell top-inner">
+  <a class="brand" href="#home" aria-label="DavidOS home"><b aria-hidden="true">›_</b>David<span>OS</span></a>
+  <nav aria-label="Sections"><a href="#home" aria-current="page">Home</a><a href="#projects">Projects</a><a href="#skills">Skills</a><a href="#contact">Contact</a></nav>
+  <div class="palette" aria-label="Accent color" role="group"><span class="minor">Accent</span></div>
+</div></header>
+<main class="shell" id="workspace" tabindex="-1">
+  <section class="hero" aria-label="Profile and project viewer">
+    <div class="inspector" id="home">
+      <article id="identity">
+        <p class="prompt"><span>david@dev:~$</span> whoami</p>
+        <div class="mark" aria-label="DAVID" role="img"></div>
+        <h1>David Papp<span class="period">.</span></h1>
+        <p class="profession">AI solution developer</p>
+        <div class="bio"><span class="availability">Open to full-time work</span><span class="location">Rotterdam, NL</span></div>
+        <p class="roles"><span>Target roles</span> AI engineering, backend and data</p>
+        <div class="actions"><a class="primary" href="/cv.pdf">Résumé <i aria-hidden="true">↗</i></a><a href="#projects">Projects <i aria-hidden="true">↓</i></a><a href="#contact">Contact <i aria-hidden="true">↗</i></a></div>
+      </article>
+      <article id="detail" hidden></article>
+      <article id="skills" hidden>
+        <p class="prompt"><span>david@dev:~$</span> skills</p><h2>Target roles<span class="period">.</span></h2>
+        <p class="profession">AI engineering, backend and data</p>
+        <ul class="skills-list"><li>Answers grounded in supplied text <button data-open="client-studio">client-studio ↗</button></li><li>Evidence linked to named sources <button data-open="active-companion">active-companion ↗</button></li><li>Retries and idempotency <button data-open="faultline">faultline ↗</button></li></ul>
+      </article>
+      <article id="contact" hidden>
+        <p class="prompt"><span>david@dev:~$</span> contact</p><h2>Contact<span class="period">.</span></h2>
+        <p class="profession">David Papp · Rotterdam, NL</p><p class="availability contact-status">Open to full-time work</p>
+        <p class="roles"><span>Target roles</span> AI engineering, backend and data</p>
+        <div class="actions"><a class="primary" href="https://www.linkedin.com/in/d%C3%A1vid-papp">LinkedIn ↗</a><a href="https://github.com/pappdavid">GitHub ↗</a><a href="/cv.pdf">Résumé ↗</a></div>
+      </article>
+    </div>
+    <figure class="field" aria-labelledby="field-caption">
+      <figcaption id="field-caption"><span class="figure-tag">Fig. A</span><strong id="field-name">Flow field</strong><span class="state"><b></b><span id="field-state">Idle</span></span></figcaption>
+      <div class="plot">
+        <div class="plot-grid"></div><canvas aria-hidden="true"></canvas><div class="guides" aria-hidden="true"></div>
+        <div class="axis" aria-hidden="true"><svg viewBox="0 0 40 36" fill="none" stroke="currentColor"><path d="M13 24V3m0 21 22-2m-22 2-9 8"/><path stroke="var(--accent)" d="M13 24V11"/></svg></div>
+      </div>
+      <div class="field-foot"><span><b class="legend-line"></b><span id="field-legend">Curl-noise advection</span></span><span id="field-count"></span></div>
+    </figure>
+  </section>
+  <section id="projects" aria-labelledby="projects-title">
+    <div class="section-title"><h2 id="projects-title" tabindex="-1"><span aria-hidden="true">~/</span> ps --featured</h2><span class="selection-hint"><kbd>1</kbd>–<kbd>3</kbd> Select process</span></div>
+    <div class="project-list"><div class="row headings" aria-hidden="true"><span>Key / process</span><span>Output</span><span>Runtime / proof</span><span>Links</span></div><div id="rows"></div></div>
+  </section>
+  <div class="command-area">
+    <div id="command-menu" hidden><div class="menu-head"><strong>Commands</strong><button type="button" id="close-menu" aria-label="Close commands">×</button></div><div id="commands"></div></div>
+    <form id="command" autocomplete="off"><label for="cli">david@dev:~$</label><input id="cli" type="text" placeholder="Enter a command…" spellcheck="false" autocapitalize="off"><button class="complete" type="button" title="Complete command">Tab ⇥</button><button class="help" type="button" aria-controls="command-menu" aria-expanded="false">Help <span>?</span></button></form>
+    <div id="response" role="status"></div>
+  </div>
+</main>
+<footer><div class="shell metrics" aria-label="Portfolio status"><span><b>REV</b> <output id="rev"></output></span><span><b>R'DAM</b> <time id="clock"></time></span><span><b>TTFB</b> <output id="ttfb">—</output></span><span><b>PUBLIC REPOS</b> 17</span><span><b>FRAME</b> <output id="frame">—</output></span></div></footer>
+<script type="module" src="src/main.js"></script>
+</body></html>

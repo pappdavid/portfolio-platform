@@ -49,3 +49,6 @@ ico
 
 # Vendored bundles retain their source build hashes and source-map offsets.
 /public/demos/
+
+# Prototypes kept byte-for-byte as built
+public/lab/

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="portfolio:commit" content="a71c9ef">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>David Papp — AI solution developer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Cpath d='m6 8 8 8-8 8m11-1h9' fill='none' stroke='%2300ff88' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#home">Skip to profile</a>
+<div class="shell">
+<header>
+  <a href="#home" class="brand"><span aria-hidden="true" class="brand-symbol">›_</span>David<span>OS</span></a>
+  <nav aria-label="Sections"><a href="#home">Home</a><a href="#projects">Projects</a><a href="#skills">Skills</a><a href="#contact">Contact</a></nav>
+  <div class="palette" role="group" aria-label="Ink accent"><span class="utility">Ink</span></div>
+</header>
+<main>
+<div class="hero">
+  <section id="home" tabindex="-1" aria-label="Profile">
+    <div class="terminal"><span>david@dev:~$</span> <b id="profile-command">whoami</b></div>
+    <div id="identity">
+      <div class="mark" aria-hidden="true"></div>
+      <h1>David Papp</h1>
+      <p class="role">AI solution developer</p>
+      <p class="availability"><i></i>Open to full-time work <span>/</span> Rotterdam, NL</p>
+      <p class="targets">AI engineering, backend and data</p>
+      <div class="actions"><a class="primary" href="/cv.pdf">View résumé <span aria-hidden="true">↗</span></a><a href="#projects">Projects <span aria-hidden="true">↓</span></a><a href="#contact">Contact <span aria-hidden="true">→</span></a></div>
+    </div>
+    <section id="skills" class="subview" tabindex="-1" hidden><p class="utility">Target roles</p><h2>Skills</h2><ul><li>AI engineering</li><li>Backend</li><li>Data</li></ul><a href="#projects">Explore featured work ↓</a></section>
+    <section id="contact" class="subview" tabindex="-1" hidden><p class="utility">Rotterdam, NL</p><h2>Contact</h2><p>Open to full-time work in AI engineering, backend and data.</p><div class="actions"><a class="primary" href="https://www.linkedin.com/in/d%C3%A1vid-papp">LinkedIn ↗</a><a href="/cv.pdf">View résumé ↗</a></div></section>
+  </section>
+  <figure id="instrument" tabindex="-1" aria-label="Interactive ink diagram">
+    <figcaption><div><span class="cross" aria-hidden="true">⌖</span> <span id="fig-title">Flow field</span></div><span class="fig-type">Ink instrument</span><button id="reset" aria-label="Clear project selection and return to flow field" hidden>Reset ↺</button></figcaption>
+    <div class="plot"><div class="grid"></div><canvas aria-hidden="true"></canvas><div id="labels" aria-hidden="true"></div><i class="registration tl"></i><i class="registration tr"></i><i class="registration bl"></i><i class="registration br"></i></div>
+    <div id="detail" aria-live="polite" aria-atomic="true"></div>
+  </figure>
+</div>
+<section id="projects" tabindex="-1" aria-labelledby="process-title">
+  <div class="section-heading"><h2 id="process-title"><span>$</span> ps <em>--featured</em></h2><p>Select a process to inspect <span aria-hidden="true">↳</span></p></div>
+  <div class="list-head row-grid utility" aria-hidden="true"><span>Process / description</span><span>Demo type</span><span>Proof</span><span>Links</span></div>
+  <ul id="rows"></ul>
+</section>
+</main>
+<footer>
+  <div class="console-wrap"><div id="command-menu" hidden aria-label="Commands"></div><form class="console"><label for="command">david@dev:~$</label><input id="command" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter a command…" aria-describedby="reply"><span id="reply" role="status"></span><button type="submit" aria-label="Run command" title="Run command">↵</button><button type="button" id="help" aria-expanded="false" aria-controls="command-menu">help <span>?</span></button></form></div>
+  <div class="status" aria-label="Runtime status"><span>Rev <b id="rev"></b></span><span>Rotterdam <b id="clock"></b></span><span>TTFB <b id="ttfb">—</b></span><span>Public repos <b>17</b></span><span>Frame <b id="frame">—</b></span></div>
+</footer>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
