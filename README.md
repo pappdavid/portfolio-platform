@@ -44,7 +44,7 @@ Built on [Kiranism/next-shadcn-dashboard-starter](https://github.com/Kiranism/ne
 - **Legacy catalogue** (`/saas-projects`) — redirects to `/projects`. The older catalogue data sync remains separate from the public route.
 - **Assistant APIs** — `/api/chat` streams answers plus retrieved-evidence cards from a reviewed portfolio KB; `/api/ama` shares the same KB while retaining deterministic answers for hiring/project identity. On Vercel they default to AI Gateway `deepseek/deepseek-v4-flash-0731` using deployment OIDC; when `OPENROUTER_API_KEY` is present they prefer OpenRouter `openrouter/free`. `PORTFOLIO_CHAT_MODEL` and `PORTFOLIO_OPENROUTER_MODEL` override those defaults.
 - **CV** — `public/cv.html` is the source; `public/cv.pdf` is generated from it with headless Chrome (`npm run cv:pdf`).
-- **Dashboard** (`/dashboard`, Clerk-protected) — starter-kit dashboard pages (overview charts, referrals, profile) retained from the upstream template; not part of the public portfolio.
+- **Dashboard** (`/dashboard`, Clerk-protected) — dashboard shell from the upstream template hosting the MCP, training, referrals, admin and profile pages; not part of the public portfolio. The template's demo chart pages and unused template components have been removed.
 - **Static pages** — `/brand`, `/security`, `/privacy-policy`, `/terms-of-service`.
 - **Redirects** — previously shared routes (`/mcp`, `/training`, `/chat`, `/projects/mcp-sentinel`, `/projects/rag-chat`, `/projects/training`, `/projects/portfolio`, `/about`) redirect to current pages instead of 404ing (see `next.config.ts`).
 
