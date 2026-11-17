@@ -127,10 +127,7 @@ export function buildPortfolioKnowledgeBase(
         ...project.techStack.flatMap(tokens),
         ...project.keyFeatures.flatMap(tokens)
       ],
-      href:
-        project.name === 'AgentSec Suite'
-          ? 'https://promptshield-cyan.vercel.app'
-          : '/#work'
+      href: '/#work'
     }));
   return [...sections, ...projectDocs];
 }

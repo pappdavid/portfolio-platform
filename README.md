@@ -25,13 +25,15 @@ Personal portfolio site of **David Papp** — AI Solutions Developer at WEBINFOR
 
 Project descriptions distinguish professional production work, public prototypes, local developer tools, and experiments. Decorative terminal status values are explicitly marked `SIM` (simulated), and CI checks recruiter-facing content for consistency.
 
-The four linked case studies are **Active Companion** (public source, scripted fictional retrieval replay), **VoidArch Context** (public source, active development v0.1, not a stable npm release), **VoidArch Router** (private source, no public repository) and **Client Studio** (private source, fictional source-excerpt demo with no AI backend). VoidArch Studio, AgentSec Suite and saas-core remain listed with their actual local/private/demo scope on the projects page. The existing hosted product samples are listed separately. Public AgentSec component repositories and supporting tooling include:
-[PromptShield](https://github.com/pappdavid/promptshield) ·
-[agentsec-hook-pack](https://github.com/pappdavid/agentsec-hook-pack) ·
-[mcpguard-lite](https://github.com/pappdavid/mcpguard-lite) ·
-[agentmap](https://github.com/pappdavid/agentmap) ·
-[approveops](https://github.com/pappdavid/approveops) ·
-[agent-cli-mcp-rust](https://github.com/pappdavid/agent-cli-mcp-rust)
+The three cited projects lead the site:
+
+- **Client Studio**: hosted source-excerpt prototype of a company assistant on a Supabase-backed workspace. The hosted demo makes no AI calls, and the source is private. [Live demo](https://client-studio-psi.vercel.app/)
+- **Active Companion**: scripted-replay lab with public source. [Source](https://github.com/pappdavid/active-companion) · [Replay](https://active-companion-replay.vercel.app/)
+- **Faultline**: executable browser model of retries and idempotency, with public source in [`public/faultline`](public/faultline). [Live](https://davidpapp.dev/faultline/index.html)
+
+VoidArch Context (public source, active development v0.1) and VoidArch Studio (active development) follow them with their current status. VoidArch Router has private source and no public repository.
+
+Built on [Kiranism/next-shadcn-dashboard-starter](https://github.com/Kiranism/next-shadcn-dashboard-starter) (MIT); the original copyright notice is kept in [LICENSE](LICENSE).
 
 ---
 
@@ -39,7 +41,7 @@ The four linked case studies are **Active Companion** (public source, scripted f
 
 - **Landing page** (`/`) — terminal-OS single-page experience: hero, project filesystem table with expandable case studies, work history, skills, field notes, contact section with a streaming assistant chat.
 - **Projects** (`/projects`) — project cards with overview / real-source-code-excerpt / architecture-diagram tabs.
-- **Legacy catalogue** (`/saas-projects`) — redirects to `/projects`; hosted samples appear in the current project case study. The older catalogue data sync remains separate from the public route.
+- **Legacy catalogue** (`/saas-projects`) — redirects to `/projects`. The older catalogue data sync remains separate from the public route.
 - **Assistant APIs** — `/api/chat` streams answers plus retrieved-evidence cards from a reviewed portfolio KB; `/api/ama` shares the same KB while retaining deterministic answers for hiring/project identity. On Vercel they default to AI Gateway `deepseek/deepseek-v4-flash-0731` using deployment OIDC; when `OPENROUTER_API_KEY` is present they prefer OpenRouter `openrouter/free`. `PORTFOLIO_CHAT_MODEL` and `PORTFOLIO_OPENROUTER_MODEL` override those defaults.
 - **CV** — `public/cv.html` is the source; `public/cv.pdf` is generated from it with headless Chrome (`npm run cv:pdf`).
 - **Dashboard** (`/dashboard`, Clerk-protected) — starter-kit dashboard pages (overview charts, referrals, profile) retained from the upstream template; not part of the public portfolio.
@@ -52,7 +54,7 @@ The assistant KB is built from the reviewed factual profile (`src/lib/ama/corpus
 
 ## Executable browser studies
 
-- [Faultline](https://davidpapp.dev/faultline/index.html) runs a fictional booking through lost-response retries and compares naive and idempotent in-memory receivers. Inspect the trace, completion/uniqueness assertions, and conflicting-payload behavior. It makes no real booking or network request. Atomic effect-and-receipt storage is a stated model assumption.
+- [Faultline](https://davidpapp.dev/faultline/index.html) is an executable browser model of retries and idempotency: lose the request before commit or the response after it, see the duplicate effect of a naive retry, then replay against an idempotent receiver. It makes no real booking or network request. Atomic effect-and-receipt storage is a model assumption. Source: [`public/faultline`](public/faultline); tests: [`scripts/faultline`](scripts/faultline).
 - [Mercury Renderer Study](https://davidpapp.dev/demos/mercury/index.html) plays bundled synthetic full-state snapshots through schema validation and SVG reconciliation. It supports scrubbing, malformed-frame recovery, interruption, and bounded trace export. It does not call a Mercury model or claim measured inference performance.
 - Six engineering field notes explain implementation choices and limits from the public security-tool repositories, with links pinned to reviewed source revisions.
 
@@ -131,7 +133,7 @@ Run `npm run test:visual -- https://EXACT-DEPLOYMENT /tmp/portfolio-visual-evide
 
 ### Hosted UI refinements
 
-The self-interview entry now uses readable ES modules under public/demos/self-interview/src/, recovered from the previously checked-in source map, with opt-in guided playback and a separate transcript/composer layout. Fit-Finder's hosted progress/back/focus changes are retained in patches/demos/rolefit-quiz-ux.patch; this is a host patch, not evidence of a clean upstream rebuild. Task-to-Flow's unbundled source includes an empty state, wrapped examples and result-start anchoring. Public AgentSec entry links target its simulated /demo walkthrough. Active Companion links target the scripted retrieval replay over fictional scenarios; no live microphone or hosted inference is claimed.
+The self-interview entry now uses readable ES modules under public/demos/self-interview/src/, recovered from the previously checked-in source map, with opt-in guided playback and a separate transcript/composer layout. Fit-Finder's hosted progress/back/focus changes are retained in patches/demos/rolefit-quiz-ux.patch; this is a host patch, not evidence of a clean upstream rebuild. Task-to-Flow's unbundled source includes an empty state, wrapped examples and result-start anchoring. Active Companion links target the scripted retrieval replay over fictional scenarios; no live microphone or hosted inference is claimed.
 
 ### Runtime verification and guided playback
 
@@ -140,4 +142,4 @@ The guided self-interview is optional. Typing a question pauses playback, and Re
 
 ### CV project links
 
-Direct case-study anchors: `/projects#active-companion`, `/projects#voidarch-context`, `/projects#voidarch-router`, and `/projects#client-studio`. The home `#projects` alias reaches the visible project list. VoidArch Router descriptions are grounded in its private repository README and package manifest; no public repository, live adapter integration, or hosted execution is claimed.
+Direct case-study anchors: `/projects#client-studio`, `/projects#active-companion`, `/projects#faultline`, `/projects#voidarch-context`, and `/projects#voidarch-router`. The home `#projects` alias reaches the visible project list. VoidArch Router descriptions are grounded in its private repository README and package manifest; no public repository, live adapter integration, or hosted execution is claimed.

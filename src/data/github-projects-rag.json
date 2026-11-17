@@ -1,18 +1,76 @@
 [
   {
+    "id": "client-studio",
+    "name": "Client Studio",
+    "description": "Company assistant on a Supabase-backed workspace: answers questions from supplied text or Markdown with exact source excerpts. Splits sources into versions, filters internal sources from the customer view on the server, and goes live only after explicit review, approval and activation as a frozen snapshot. Writes are revision-checked and idempotent, and the database is closed to client roles so only the server can read or write.",
+    "techStack": [
+      "TypeScript",
+      "Next.js",
+      "React",
+      "Supabase",
+      "PostgreSQL",
+      "REST API",
+      "backend services",
+      "lexical retrieval",
+      "approval workflow"
+    ],
+    "keyFeatures": [
+      "Answers from supplied text or Markdown with exact source excerpts",
+      "Versioned sources",
+      "Server-side filtering of internal sources from the customer view",
+      "Explicit review, approval and activation as a frozen snapshot",
+      "Revision-checked, idempotent writes"
+    ],
+    "architecture": "Next.js application on a Supabase-backed workspace; the database is closed to client roles so only the server can read or write.",
+    "fileStructure": [],
+    "details": "Live demo at https://client-studio-psi.vercel.app/. Retrieval is lexical and model calls are switched off in the hosted demo. Shown with fictional examples or user-provided material. Source is private."
+  },
+  {
+    "id": "active-companion",
+    "name": "Active Companion",
+    "description": "Meeting-assistant lab in Python: a sliding context window, heuristic intent classification and TF-IDF retrieval turn a transcript into evidence cards with named sources. An optional model step keeps only answer bullets that cite a retrieved source title. Includes a server-sent-events API lab and provider-free automated tests, with public MIT-licensed source.",
+    "techStack": [
+      "Python",
+      "NLP",
+      "TF-IDF",
+      "retrieval",
+      "intent classification",
+      "LLM",
+      "transcript pipeline",
+      "Server-Sent Events",
+      "GitHub Actions"
+    ],
+    "keyFeatures": [
+      "Sliding context window",
+      "Heuristic intent classification",
+      "TF-IDF retrieval into evidence cards with named sources",
+      "Optional model step keeps only bullets that cite a retrieved source title",
+      "Provider-free automated tests"
+    ],
+    "architecture": "Transcript pipeline: sliding context window, intent classification, TF-IDF retrieval, evidence cards, optional cited model step.",
+    "fileStructure": [],
+    "details": "Scripted replay at https://active-companion-replay.vercel.app/; public MIT-licensed source at https://github.com/pappdavid/active-companion. The hosted page is a scripted replay of the pipeline output for four fictional conversations, with no inference, microphone or uploads. It is not evaluated on real meetings. The model step runs only in the local lab and is tested with a stubbed model."
+  },
+  {
     "id": "faultline",
     "name": "Faultline",
-    "description": "Executable deterministic browser simulation of retries, duplicate effects, and idempotency for a fictional booking.",
-    "techStack": ["JavaScript", "Idempotency", "Fault injection"],
+    "description": "Executable browser model of retries and idempotency: lose the request before commit or the response after it, see the duplicate effect of a naive retry, then replay against an idempotent receiver. The receiver stores the operation key and payload fingerprint and rejects a changed payload under the same key. Events, receipts and assertions come from a tested in-memory engine with public source.",
+    "techStack": [
+      "JavaScript",
+      "idempotency keys",
+      "retries",
+      "simulated network faults",
+      "reliability patterns"
+    ],
     "keyFeatures": [
-      "Lost response before or after commit",
-      "Naive versus idempotent in-memory receiver",
-      "Stable-key and changed-payload probes",
-      "Event trace, assertions, and exportable receipt"
+      "Lose the request before commit or the response after it",
+      "Duplicate effect of a naive retry",
+      "Idempotent receiver stores the operation key and payload fingerprint",
+      "Changed payload under the same key is rejected"
     ],
     "architecture": "A deterministic engine models client attempts, receiver state, stored receipts, and the resulting completion/uniqueness assertions.",
     "fileStructure": ["public/faultline/", "scripts/faultline/engine.test.mjs"],
-    "details": "Public no-login simulation at /faultline/index.html. No network calls or real bookings. Atomic effect-plus-receipt storage is an explicit model assumption, not proof of durable distributed behavior."
+    "details": "Public no-login simulation at /faultline/index.html. No network calls or real bookings. Atomic effect-and-receipt storage is a model assumption. It is a teaching model in browser JavaScript, not a deployed service or a test of real distributed systems."
   },
   {
     "id": "mercury-renderer",
@@ -80,61 +138,6 @@
       "packages/voidarch-context/"
     ],
     "details": "In active development; not presented as a released hosted service."
-  },
-  {
-    "id": "agentsec-suite",
-    "name": "AgentSec Suite",
-    "description": "Integrated agent-security suite combining four web modules and a local tool-call hook.",
-    "techStack": [
-      "Next.js",
-      "TypeScript",
-      "Prisma",
-      "Clerk",
-      "Vitest",
-      "Node.js",
-      "Vercel"
-    ],
-    "keyFeatures": [
-      "PromptShield prompt and action inspection",
-      "MCPGuard manifest analysis",
-      "AgentMap declared-metadata risk scoring",
-      "ApproveOps approval and audit workflow",
-      "Claude Code and Codex PreToolUse hook"
-    ],
-    "architecture": "Prompt, manifest, and agent metadata checks feed allow, block, or review decisions, with approval and audit handling plus local hook enforcement.",
-    "fileStructure": [
-      "Integrated private suite repository",
-      "Public component repositories: PromptShield, agentsec-hook-pack, mcpguard-lite, agentmap, approveops"
-    ],
-    "details": "Live integrated demo: https://promptshield-cyan.vercel.app/demo. Component repositories are supporting modules rather than separate portfolio products."
-  },
-  {
-    "id": "saas-core",
-    "name": "saas-core",
-    "description": "Private modular Next.js product scaffold and factory infrastructure.",
-    "techStack": [
-      "Next.js",
-      "TypeScript",
-      "Prisma",
-      "Clerk",
-      "Stripe",
-      "GitHub Actions"
-    ],
-    "keyFeatures": [
-      "Typed module registry and presets",
-      "Environment validation and planning",
-      "Product template planning and rendering",
-      "CI and readiness scripts",
-      "Provider adapters"
-    ],
-    "architecture": "Presets and modules are planned and validated before templates are rendered into a bounded product scaffold and checked in CI.",
-    "fileStructure": [
-      "scripts/factory/",
-      "scripts/env-*.ts",
-      "scripts/modules/",
-      ".github/workflows/"
-    ],
-    "details": "Private supporting infrastructure. No public repository or live-demo claim."
   },
   {
     "id": "about-david",
