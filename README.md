@@ -29,7 +29,7 @@ The three cited projects lead the site:
 
 - **Client Studio**: hosted source-excerpt prototype of a company assistant on a Supabase-backed workspace. The hosted demo makes no AI calls, and the source is private. [Live demo](https://client-studio-psi.vercel.app/)
 - **Active Companion**: scripted-replay lab with public source. [Source](https://github.com/pappdavid/active-companion) · [Replay](https://active-companion-replay.vercel.app/)
-- **Faultline**: executable browser model of retries and idempotency, with public source in [`public/faultline`](public/faultline). [Live](https://davidpapp.dev/faultline/index.html)
+- **Faultline**: executable browser model of retries and idempotency, with public MIT source in its own repository, [pappdavid/faultline](https://github.com/pappdavid/faultline); the copy served by this site lives in [`public/faultline`](public/faultline). [Live](https://davidpapp.dev/faultline/index.html)
 
 VoidArch Context (public source, active development v0.1) and VoidArch Studio (active development) follow them with their current status. VoidArch Router has private source and no public repository.
 

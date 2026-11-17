@@ -172,9 +172,8 @@ const PROJECTS: Project[] = [
       'Reliability patterns'
     ],
     liveUrl: '/faultline/index.html',
-    repoUrl:
-      'https://github.com/pappdavid/portfolio-platform/tree/main/public/faultline',
-    repoName: 'portfolio-platform / public/faultline'
+    repoUrl: 'https://github.com/pappdavid/faultline',
+    repoName: 'pappdavid/faultline'
   },
   {
     name: 'Mercury Renderer Study',
