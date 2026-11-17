@@ -10,7 +10,6 @@ import type { ReferralPersonalizationSnapshot } from '@/lib/referral-personaliza
 import type { JobTypeProfile, JobTypeSiteView } from '@/lib/job-type';
 import { getJobTypeSiteView, prioritizeProjects } from '@/lib/job-type';
 import { DemoStrip } from '@/components/demos/demo-strip';
-import FIELD_NOTES from '@/data/field-notes.json';
 import { applyCaptureAttribute, isCaptureMode } from '@/lib/capture-mode';
 import {
   readPortfolioReply,
@@ -310,7 +309,7 @@ export function LandingContent({
       const hash = window.location.hash.slice(1);
       // #projects is the public alias of the work section.
       const id = hash === 'projects' ? 'work' : hash;
-      if (!['home', 'work', 'skills', 'notes', 'contact'].includes(id)) return;
+      if (!['home', 'work', 'skills', 'contact'].includes(id)) return;
       const el = document.getElementById(id);
       scrollRef.current?.scrollTo({
         top: Math.max(0, (el?.offsetTop ?? 0) - 16)
@@ -356,7 +355,7 @@ export function LandingContent({
   useEffect(() => {
     const cont = scrollRef.current;
     if (!cont) return;
-    const ids = ['home', 'work', 'skills', 'notes', 'contact'];
+    const ids = ['home', 'work', 'skills', 'contact'];
     const onScroll = () => {
       const top = cont.scrollTop + 120;
       let cur = 'home';
@@ -379,7 +378,7 @@ export function LandingContent({
       ) {
         return;
       }
-      const sections = ['home', 'work', 'skills', 'notes', 'contact'];
+      const sections = ['home', 'work', 'skills', 'contact'];
       const currentIndex = sections.indexOf(active);
       if (e.key === 'j' || e.key === 'ArrowDown') {
         const nextIndex = Math.min(currentIndex + 1, sections.length - 1);
@@ -724,12 +723,7 @@ export function LandingContent({
 
           <div className='divider' />
 
-          {/* ============ SECTION 4: TECH NOTES ============ */}
-          <NotesSection />
-
-          <div className='divider' />
-
-          {/* ============ SECTION 5: CONTACT / RAG CHAT ============ */}
+          {/* ============ SECTION 4: CONTACT / RAG CHAT ============ */}
           <ContactSection
             themeProfile={themeProfile}
             changeThemeProfile={changeThemeProfile}
@@ -796,24 +790,13 @@ export function LandingContent({
           <span>SKILLS</span>
         </button>
         <button
-          onClick={() => nav('notes')}
-          aria-label='Navigate to Technical Notes section'
-          aria-current={active === 'notes' ? 'page' : undefined}
-          className={cn('tab glitch-hover', active === 'notes' && 'active')}
-        >
-          <span className='tab-index' aria-hidden='true'>
-            04._
-          </span>
-          <span>NOTES</span>
-        </button>
-        <button
           onClick={() => nav('contact')}
           aria-label='Navigate to Contact and Assistant section'
           aria-current={active === 'contact' ? 'page' : undefined}
           className={cn('tab glitch-hover', active === 'contact' && 'active')}
         >
           <span className='tab-index' aria-hidden='true'>
-            05._
+            04._
           </span>
           <span>CONTACT</span>
         </button>
@@ -1296,46 +1279,6 @@ function SkillsSection({ pitch }: { pitch?: string | null }) {
             </ul>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function NotesSection() {
-  const notes = FIELD_NOTES;
-  return (
-    <section className='block' id='notes'>
-      <div className='sec-head'>
-        <h2 className='sec-cmd'>ls -la /notes/</h2>
-        <span className='sec-note'>FIELD NOTES</span>
-      </div>
-      <p className='sub-note'>
-        Implementation choices, failure cases, and limits from the public
-        projects. Each note includes a source revision you can inspect.
-      </p>
-      <div className='flex flex-col gap-3 font-mono text-sm'>
-        {notes.map((note) => (
-          <a
-            key={note.repo}
-            href={`/notes/${note.slug}`}
-            className='group border border-[var(--border)] bg-[#0f0f0f] p-3 transition-all hover:border-[var(--accent)]'
-          >
-            <div className='flex flex-wrap items-baseline justify-between gap-2'>
-              <span className='text-left font-bold text-[var(--accent)] group-hover:underline'>
-                {note.title}
-              </span>
-              <span className='shrink-0 text-xs text-[var(--text-dim)]'>
-                {note.repo}
-              </span>
-            </div>
-            <p className='mt-1.5 text-sm leading-relaxed text-[var(--text-dim)]'>
-              {note.summary}
-            </p>
-            <span className='mt-3 inline-block text-xs text-[var(--accent)]'>
-              Read engineering note →
-            </span>
-          </a>
-        ))}
       </div>
     </section>
   );

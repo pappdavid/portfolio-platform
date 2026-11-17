@@ -324,7 +324,7 @@
 
     <section>
       <div class="section-title">§ 1.0 PROFILE</div>
-      <p>AI Solutions Developer at WEBINFORM IT Ltd (contract, since Oct 2024), building internal AI tools and production LLM functionality for web applications and ERP-integrated systems. Studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Builds local-first context infrastructure, agent orchestration tooling, and the integrated AgentSec security suite on the side. Based in the Rotterdam area, NL.</p>
+      <p>AI Solutions Developer at WEBINFORM IT Ltd (contract, since Oct 2024), building internal AI tools and production LLM functionality for web applications and ERP-integrated systems. Studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; changed to this programme in September 2026; graduation expected in 2028. Builds local-first context infrastructure and agent orchestration tooling on the side. Based in the Rotterdam area, NL.</p>
     </section>
 
     <section>
@@ -332,7 +332,7 @@
       <div class="cap-list">
         <div class="cap-item">
           <div class="cap-label">LLMs · Agents:</div>
-          <div class="cap-val">LLM API integration, prompt & context engineering, MCP protocol, agent tool-call policy hooks, RAG prototyping</div>
+          <div class="cap-val">LLM API integration, prompt & context engineering, MCP protocol, RAG prototyping</div>
         </div>
         <div class="cap-item">
           <div class="cap-label">Languages:</div>
@@ -394,13 +394,11 @@
     <section>
       <div class="section-title">§ 4.0 SELECTED ENGINEERING PROJECTS</div>
       <ul class="exp-bullets">
+        <li><strong>Client Studio</strong> — Personal project: hosted source-excerpt prototype. Company assistant on a Supabase-backed workspace: answers questions from supplied text or Markdown with exact source excerpts. Splits sources into versions, filters internal sources from the customer view on the server, and goes live only after explicit review, approval and activation as a frozen snapshot. Writes are revision-checked and idempotent, and the database is closed to client roles so only the server can read or write. <a href="https://client-studio-psi.vercel.app/" target="_blank">Live demo</a> (source private)</li>
+        <li><strong>Active Companion</strong> — Personal project: scripted-replay lab with public source. Meeting-assistant lab in Python: a sliding context window, heuristic intent classification and TF-IDF retrieval turn a transcript into evidence cards with named sources. An optional model step keeps only answer bullets that cite a retrieved source title. Includes a server-sent-events API lab and provider-free automated tests, with public MIT-licensed source. <a href="https://active-companion-replay.vercel.app/" target="_blank">Replay</a> · <a href="https://github.com/pappdavid/active-companion" target="_blank">Source</a></li>
+        <li><strong>Faultline</strong> — Personal project: executable browser simulation with public source. Executable browser model of retries and idempotency: lose the request before commit or the response after it, see the duplicate effect of a naive retry, then replay against an idempotent receiver. The receiver stores the operation key and payload fingerprint and rejects a changed payload under the same key. Events, receipts and assertions come from a tested in-memory engine with public source. <a href="https://davidpapp.dev/faultline/index.html" target="_blank">Live demo</a></li>
         <li><strong>VoidArch Context</strong> — local-first repository memory and context engine using embedded SurrealDB, BM25 retrieval, a Tree-sitter code graph, durable memories, and optional local embeddings</li>
         <li><strong>VoidArch Studio</strong> — active-development local orchestration control room with daemon-owned agent sessions, worktrees, runs, safety hooks, observability, and a Tauri shell</li>
-        <li><strong>AgentSec Suite</strong> — integrated prompt scanning, MCP analysis, agent risk mapping, approval workflows, and local tool-call hooks; <a href="https://promptshield-cyan.vercel.app/demo" target="_blank">live demo</a></li>
-        <li><strong>Client Studio</strong> — source-excerpt demo over fictional intake, reviewed questions, activation, and runtime recovery; no AI calls. <a href="https://client-studio-psi.vercel.app">public demo</a> (source private)</li>
-        <li><strong>Active Companion</strong> — scripted retrieval replay over bundled fictional conversations; no live microphone or hosted inference. <a href="https://active-companion-replay.vercel.app">public replay</a> · <a href="https://github.com/pappdavid/active-companion">source</a></li>
-        <li><strong>saas-core</strong> — private modular Next.js scaffold and product-factory infrastructure with typed presets, validation, rendering, and CI workflows</li>
-        <li><strong>Hosted AI product showcases</strong> — six live sample workflows for stand-up drafting, meeting costs, delivery metrics, cloud-cost review, ticket-vs-diff scope, and code-documentation review. Inputs are synthetic or visitor-supplied; optional inference supports visitor keys or bounded invite access, with no connected-account OAuth. <a href="https://standup-liar-showcase.vercel.app/" target="_blank">StandupLiar</a> · <a href="https://meeting-receipt-showcase.vercel.app/" target="_blank">MeetingReceipt</a> · <a href="https://velocity-truth-showcase.vercel.app/" target="_blank">VelocityTruth</a> · <a href="https://cloud-shame-showcase.vercel.app/" target="_blank">CloudShame</a> · <a href="https://speccop-showcase.vercel.app/" target="_blank">Spec.cop</a> · <a href="https://crueldocs-showcase.vercel.app/" target="_blank">CruelDocs</a></li>
       </ul>
     </section>
 

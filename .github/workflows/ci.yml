@@ -71,7 +71,7 @@ jobs:
           check /projects               200
           check /faultline/index.html   200
           check /demos/mercury/index.html 200
-          check /notes/gating-agent-tool-calls 200
+          check /notes/gating-agent-tool-calls 308
           check /saas-projects          307
           check /brand                  200
           check /security               200
