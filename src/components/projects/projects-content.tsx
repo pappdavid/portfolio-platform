@@ -126,8 +126,7 @@ const receipt = run.receipts[key];`,
       'Validate full-state snapshots, retain the last valid SVG composition, and inspect malformed-frame recovery in a local rendering study.',
     tags: ['JavaScript', 'SVG', 'Validation', 'Synthetic fixtures'],
     liveUrl: '/demos/mercury/index.html',
-    repoUrl:
-      'https://github.com/pappdavid/portfolio-platform/tree/main/public/demos/mercury',
+    repoUrl: 'https://github.com/pappdavid/snapshot-stream-renderer',
     tabs: {
       overview:
         'Bundled synthetic snapshots refine text and graph connections over three sequences. Visitors play, pause, scrub, interrupt, reject malformed frames, and export the bounded event trace. The renderer preserves the last valid composition and reconciles SVG nodes by identity. It is inspired by diffusion-style full-state updates, but does not connect to a Mercury model or perform inference. Frame counts and playback timing describe the fixture, not model measurements.',

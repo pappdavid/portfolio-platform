@@ -159,6 +159,7 @@ jobs:
           set -euo pipefail
           for url in \
             https://github.com/pappdavid/faultline \
+            https://github.com/pappdavid/snapshot-stream-renderer \
             https://github.com/pappdavid/active-companion \
             https://github.com/pappdavid/portfolio-platform \
             https://github.com/VoidArch-Labs/voidarch-context; do

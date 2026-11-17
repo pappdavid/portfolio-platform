@@ -254,6 +254,47 @@
   flex: 1;
   min-width: 0;
 }
+/* The bar scrolls sideways; fade the edge so items leave cleanly. */
+.sb-scroll {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 calc(100% - 20px),
+    transparent
+  );
+  mask-image: linear-gradient(90deg, #000 calc(100% - 20px), transparent);
+  padding-right: 12px;
+}
+/* Accent picker: each swatch is the colour it selects. */
+.theme-swatch {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 1px solid var(--dp-border);
+  background: var(--swatch);
+  opacity: 0.55;
+  cursor: pointer;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+.theme-swatch:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+.theme-swatch.is-active {
+  opacity: 1;
+  outline: 1px solid var(--swatch);
+  outline-offset: 2px;
+  box-shadow: 0 0 8px var(--swatch);
+}
+.theme-swatch:focus-visible {
+  outline: 2px solid var(--dp-text);
+  outline-offset: 2px;
+}
+.sb-build {
+  color: inherit;
+  text-decoration-color: var(--dp-accent);
+}
 .sb-item {
   flex-shrink: 0;
   display: inline-flex;
@@ -448,6 +489,220 @@
   font-family: var(--font-hud-mono);
 }
 
+/* ---- Hero: identity beside the featured process list ---- */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-6);
+}
+.hero-id {
+  min-width: 0;
+}
+.hero-ps {
+  min-width: 0;
+  border: 1px solid var(--dp-border);
+  background: linear-gradient(
+      180deg,
+      var(--dp-accent-faint),
+      transparent 120px
+    ),
+    var(--dp-bg);
+  font-family: var(--font-hud-mono);
+  align-self: start;
+}
+.ps-cmd {
+  margin: 0;
+  font-weight: 400;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--dp-text);
+  border-bottom: 1px solid var(--dp-border);
+}
+.ps-head {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dp-text-dim);
+  border-bottom: 1px dashed var(--dp-border);
+}
+.ps-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ps-row {
+  position: relative;
+  padding: 12px 14px 12px;
+  border-bottom: 1px solid var(--dp-border);
+  transition: background var(--dur-fast) var(--ease);
+  animation: ps-in 0.32s var(--ease) both;
+}
+.ps-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--dp-accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.ps-row:hover,
+.ps-row:focus-within {
+  background: var(--dp-accent-faint);
+}
+.ps-row:hover::before,
+.ps-row:focus-within::before {
+  transform: scaleY(1);
+}
+@keyframes ps-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ps-top {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: baseline;
+}
+.ps-pid {
+  font-size: 11px;
+  color: var(--dp-text-dim);
+}
+.ps-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dp-accent);
+  text-shadow: 0 0 10px var(--dp-accent-glow);
+  overflow-wrap: anywhere;
+}
+.ps-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ps-rt {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--dp-accent-muted);
+  white-space: nowrap;
+}
+.ps-rt .dot {
+  width: 6px;
+  height: 6px;
+}
+.ps-line {
+  margin: 6px 0 8px 46px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--dp-text);
+}
+.ps-foot {
+  margin-left: 46px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  font-size: 11.5px;
+}
+.ps-proof {
+  color: var(--dp-text-dim);
+}
+.ps-proof::before {
+  content: '✓ ';
+  color: var(--dp-accent);
+}
+.ps-links {
+  display: inline-flex;
+  gap: 12px;
+}
+.ps-links a {
+  color: var(--dp-accent-muted);
+}
+.ps-links a:hover {
+  color: var(--dp-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ps-exit {
+  padding: 9px 14px;
+  font-size: 11.5px;
+  color: var(--dp-text-dim);
+}
+.ps-more {
+  color: var(--dp-accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.ps-more::before {
+  content: '$ ';
+  font-weight: 700;
+}
+.ps-more:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ps-name:focus-visible,
+.ps-links a:focus-visible,
+.ps-more:focus-visible,
+.sb-build:focus-visible {
+  outline: 2px solid var(--dp-accent);
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .ps-name {
+    font-size: 14px;
+  }
+  .ps-line {
+    display: none;
+  }
+  .ps-foot {
+    margin: 6px 0 0 46px;
+  }
+  .ps-row {
+    padding: 9px 14px;
+  }
+  /* Leave the bar's one visible item room to show in full. */
+  .sb-repos,
+  .sb-hyper {
+    display: none;
+  }
+  .sb-scroll {
+    -webkit-mask-image: none;
+    mask-image: none;
+    padding-right: 0;
+  }
+}
+@media (min-width: 1000px) {
+  .hero-id .hero-tag {
+    font-size: 15px;
+  }
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 372px);
+    align-items: start;
+  }
+  /* The name shares the row with the process list. */
+  .hero-id .hero-name {
+    font-size: clamp(56px, 6.1vw, 80px);
+  }
+}
+
 /* CTA buttons */
 .cta-row {
   display: flex;
@@ -521,6 +776,7 @@
   color: var(--dp-text-dim);
   padding-right: 4px !important;
   width: 110px;
+  white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -569,6 +825,10 @@
   font-weight: 500;
   color: var(--dp-text);
   white-space: nowrap;
+}
+/* Focused by script after a jump; it is a landmark, not a control. */
+.sec-cmd:focus {
+  outline: none;
 }
 .sec-cmd::before {
   content: '$ ';
@@ -1268,7 +1528,7 @@
     font-size: 12px;
   }
   .mk {
-    width: 90px;
+    width: 104px;
   }
   .chat-body {
     height: 200px;
@@ -1429,7 +1689,7 @@
     table-layout: fixed;
   }
   .meta-table .mk {
-    width: 82px;
+    width: 96px;
     letter-spacing: 0;
   }
   .meta-table .ms {
@@ -1726,21 +1986,34 @@ iframe[src*='clerk'] {
   --muted-foreground: var(--dp-text-dim);
   --border: var(--dp-border);
 }
+/* The constellation stays beside the content, never behind text. The clear
+   band is as wide as the widest content column; on screens narrower than
+   the band the points are not drawn over the page at all. */
 .portfolio-background {
   opacity: 0.58;
+  --bg-clear: 620px;
+  --bg-fade: 70px;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 0,
+    #000 calc(50% - var(--bg-clear) - var(--bg-fade)),
+    transparent calc(50% - var(--bg-clear)),
+    transparent calc(50% + var(--bg-clear)),
+    #000 calc(50% + var(--bg-clear) + var(--bg-fade)),
+    #000 100%
+  );
   mask-image: linear-gradient(
-    to right,
-    #000 0%,
-    #000 calc(50% - 560px),
-    transparent calc(50% - 440px),
-    transparent calc(50% + 440px),
-    #000 calc(50% + 560px),
+    90deg,
+    #000 0,
+    #000 calc(50% - var(--bg-clear) - var(--bg-fade)),
+    transparent calc(50% - var(--bg-clear)),
+    transparent calc(50% + var(--bg-clear)),
+    #000 calc(50% + var(--bg-clear) + var(--bg-fade)),
     #000 100%
   );
 }
-@media (max-width: 960px) {
-  .portfolio-background {
-    opacity: 0.22;
-    mask-image: none;
-  }
+/* The landing page's column is narrower, so its gutters keep more of it. */
+.crt-flicker:has(.shell) > .portfolio-background {
+  --bg-clear: 490px;
+  --bg-fade: 44px;
 }

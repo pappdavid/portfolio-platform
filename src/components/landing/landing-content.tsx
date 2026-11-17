@@ -184,9 +184,8 @@ const PROJECTS: Project[] = [
     body: 'A frontend rendering study using bundled synthetic snapshots. Play or scrub three sequences, inject a malformed frame, interrupt the stream, and inspect the retained last-valid composition. Stable SVG node identities survive valid replacements, and a bounded exportable trace records accepted and rejected frames. This is a local browser replay inspired by diffusion-style generation, not a connection to a Mercury model, hosted inference, or a measured performance benchmark.',
     tech: ['JavaScript', 'SVG', 'Schema validation', 'Synthetic replay'],
     liveUrl: '/demos/mercury/index.html',
-    repoUrl:
-      'https://github.com/pappdavid/portfolio-platform/tree/main/public/demos/mercury',
-    repoName: 'portfolio-platform / public/demos/mercury'
+    repoUrl: 'https://github.com/pappdavid/snapshot-stream-renderer',
+    repoName: 'pappdavid/snapshot-stream-renderer'
   },
   {
     name: 'VoidArch Context',
@@ -235,6 +234,63 @@ const PROJECTS: Project[] = [
   }
 ];
 
+// The three projects applications cite, shown on the first screen as a
+// process list. Every field is a checkable fact: the runtime says what kind
+// of thing the demo is, and the proof line names tests a reader can find.
+type FeaturedProcess = {
+  pid: string;
+  name: string;
+  runtime: string;
+  line: string;
+  proof: string;
+  liveUrl: string;
+  repoUrl?: string;
+};
+
+const FEATURED_PROCESSES: FeaturedProcess[] = [
+  {
+    pid: '001',
+    name: 'client-studio',
+    runtime: 'hosted, no AI calls',
+    line: 'Answers from supplied text with exact source excerpts. Review, approve, then activate a frozen snapshot.',
+    proof: '65 tests',
+    liveUrl: 'https://client-studio-psi.vercel.app'
+  },
+  {
+    pid: '002',
+    name: 'active-companion',
+    runtime: 'scripted replay',
+    line: 'Transcript in, evidence cards with named sources out.',
+    proof: '18 tests in CI',
+    liveUrl: 'https://active-companion-replay.vercel.app',
+    repoUrl: 'https://github.com/pappdavid/active-companion'
+  },
+  {
+    pid: '003',
+    name: 'faultline',
+    runtime: 'browser model',
+    line: 'Lose a response, see the duplicate a naive retry causes, then replay against an idempotent receiver.',
+    proof: '12 tests in CI',
+    liveUrl: '/faultline/index.html',
+    repoUrl: 'https://github.com/pappdavid/faultline'
+  }
+];
+
+// Accent themes offered in the status bar. Colours match davidpapp.css.
+const THEME_PROFILES = [
+  { key: 'green', color: '#00ff88', label: 'Green theme' },
+  { key: 'cyan', color: '#00f0ff', label: 'Cyan theme' },
+  { key: 'amber', color: '#ffb700', label: 'Amber theme' },
+  { key: 'pink', color: '#ff007f', label: 'Pink theme' }
+];
+
+// Real build revision, set at deploy time. Hidden when it is not recorded.
+const BUILD_SHA = /^[0-9a-f]{40}$/.test(
+  process.env.NEXT_PUBLIC_PORTFOLIO_COMMIT_SHA ?? ''
+)
+  ? (process.env.NEXT_PUBLIC_PORTFOLIO_COMMIT_SHA as string)
+  : null;
+
 // ============================================================
 // Unified Landing Page Component
 // ============================================================
@@ -255,14 +311,11 @@ export function LandingContent({
 
   const [repoCount, setRepoCount] = useState<number | null>(null);
   const [themeProfile, setThemeProfile] = useState<string>('green');
-  // Decorative terminal-UI values. Labelled SIM in the status bar — not
-  // real telemetry. Frozen to fixed values in capture mode.
-  const [latency, setLatency] = useState<string>(() =>
-    isCaptureMode() ? '5.2ms' : '5.2ms'
-  );
-  const [memLoad, setMemLoad] = useState<string>(() =>
-    isCaptureMode() ? '43.1%' : '43.1%'
-  );
+  // Status bar values are real: the time it took this page's first byte to
+  // arrive, and the current time where David works. Both stay empty until
+  // measured, and are frozen in capture mode.
+  const [ttfb, setTtfb] = useState<string | null>(null);
+  const [localTime, setLocalTime] = useState<string | null>(null);
 
   // Capture mode: flag the document so CSS freezes every animation
   // (entrance fades, CRT flicker, cursor blink, pulses) at final state.
@@ -270,9 +323,17 @@ export function LandingContent({
     applyCaptureAttribute();
   }, []);
 
-  // Load and apply initial theme profile from localStorage
+  // Load and apply the saved theme profile
   useEffect(() => {
-    const saved = 'green';
+    let saved = 'green';
+    try {
+      const stored = window.localStorage.getItem('dp-theme-profile');
+      if (stored && THEME_PROFILES.some((t) => t.key === stored)) {
+        saved = stored;
+      }
+    } catch {
+      // Storage can be blocked; the default theme still applies.
+    }
     setThemeProfile(saved);
     document.documentElement.setAttribute('data-theme-profile', saved);
   }, []);
@@ -298,8 +359,12 @@ export function LandingContent({
 
   const changeThemeProfile = useCallback((profile: string) => {
     setThemeProfile(profile);
-
     document.documentElement.setAttribute('data-theme-profile', profile);
+    try {
+      window.localStorage.setItem('dp-theme-profile', profile);
+    } catch {
+      // Storage can be blocked; the choice then lasts for this visit.
+    }
   }, []);
 
   // Follow direct section URLs, including CTAs escaping embedded demos.
@@ -320,24 +385,25 @@ export function LandingContent({
     return () => window.removeEventListener('hashchange', followHash);
   }, []);
 
-  // Decorative status-bar animation timers (labelled SIM in the UI).
-  // Skipped entirely in capture mode so values stay fixed.
+  // Measure the real values shown in the status bar.
   useEffect(() => {
     if (isCaptureMode()) return;
-    const lInterval = setInterval(() => {
-      const ms = (4.8 + Math.random() * 4.4).toFixed(1);
-      setLatency(`${ms}ms`);
-    }, 1100);
-
-    const mInterval = setInterval(() => {
-      const pct = (42.5 + Math.random() * 2.3).toFixed(1);
-      setMemLoad(`${pct}%`);
-    }, 1800);
-
-    return () => {
-      clearInterval(lInterval);
-      clearInterval(mInterval);
-    };
+    const [navEntry] = performance.getEntriesByType(
+      'navigation'
+    ) as PerformanceNavigationTiming[];
+    if (navEntry && navEntry.responseStart > 0) {
+      const ms = Math.round(navEntry.responseStart - navEntry.requestStart);
+      if (ms > 0) setTtfb(`${ms}ms`);
+    }
+    const clock = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Amsterdam',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    const tick = () => setLocalTime(clock.format(new Date()));
+    tick();
+    const timer = setInterval(tick, 20_000);
+    return () => clearInterval(timer);
   }, []);
 
   // Handle smooth nav scroll
@@ -345,7 +411,15 @@ export function LandingContent({
     const el = document.getElementById(id);
     const cont = scrollRef.current;
     if (el && cont) {
-      cont.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' });
+      const calm = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+      cont.scrollTo({
+        top: el.offsetTop - 16,
+        behavior: calm ? 'auto' : 'smooth'
+      });
+      // Keyboard and screen-reader users land where the page scrolled to.
+      el.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
     }
     setActive(id);
   }, []);
@@ -429,48 +503,56 @@ export function LandingContent({
             <span className='sb-accent'>PORTFOLIO_OS v1.0.0</span>
           </span>
           <span className='sb-sep sb-item-sysname'>|</span>
-          <span className='sb-item sb-item-auth'>
-            <span className='sb-k'>SYS.AUTH:</span>
-            <span className='sb-v'>GUEST_ACCESS_GRANTED</span>
-          </span>
-          <span className='sb-sep sb-item-auth'>|</span>
-          <span className='sb-item sb-item-terminal'>
-            <span className='sb-k'>TERMINAL:</span>
-            <span className='sb-v'>TTY0</span>
-          </span>
-          <span className='sb-sep sb-item-terminal'>|</span>
+          {BUILD_SHA && (
+            <>
+              <a
+                className='sb-item sb-build hover:underline'
+                href={`https://github.com/pappdavid/portfolio-platform/commit/${BUILD_SHA}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                title='The commit this page was built from'
+              >
+                <span className='sb-k'>BUILD:</span>
+                <span className='sb-v sb-accent'>{BUILD_SHA.slice(0, 7)}</span>
+              </a>
+              <span className='sb-sep'>|</span>
+            </>
+          )}
           <span className='sb-item sb-item-node'>
-            <span className='sb-k'>SYS.NODE:</span>
+            <span className='sb-k'>NODE:</span>
             <span className='sb-v'>davidpapp.dev</span>
           </span>
           <span className='sb-sep sb-item-node'>|</span>
-          <span
-            className='sb-item'
-            title='Decorative UI animation, not real telemetry'
-          >
-            <span className='sb-k'>SIM.LATENCY:</span>
-            <span className='sb-v sb-accent'>{latency}</span>
-          </span>
-          <span className='sb-sep'>|</span>
-          <span
-            className='sb-item'
-            title='Decorative UI animation, not real telemetry'
-          >
-            <span className='sb-k'>SIM.MEM:</span>
-            <span className='sb-v sb-accent'>{memLoad}</span>
-          </span>
-          <span className='sb-sep'>|</span>
-          <span className='sb-item sb-item-status'>
-            <span className='sb-k'>STATUS:</span>
-            <span className='sb-v sb-ok'>200</span>
-          </span>
-          <span className='sb-sep sb-item-status'>|</span>
+          {localTime && (
+            <>
+              <span
+                className='sb-item'
+                title='Current time in Rotterdam, where David works'
+              >
+                <span className='sb-k'>ROTTERDAM:</span>
+                <span className='sb-v sb-accent'>{localTime}</span>
+              </span>
+              <span className='sb-sep'>|</span>
+            </>
+          )}
+          {ttfb && (
+            <>
+              <span
+                className='sb-item sb-item-status'
+                title='Measured in your browser: time until this page started to arrive'
+              >
+                <span className='sb-k'>FIRST BYTE:</span>
+                <span className='sb-v sb-accent'>{ttfb}</span>
+              </span>
+              <span className='sb-sep sb-item-status'>|</span>
+            </>
+          )}
           <button
             onClick={() => {
               window.dispatchEvent(new CustomEvent('dp-portfolio-warp'));
             }}
             title='Easter egg: Toggle hyper-speed performance animations'
-            className='shrink-0 cursor-pointer border border-[var(--dp-accent)] px-1.5 py-0.5 text-[9px] font-bold text-[var(--dp-accent)] hover:bg-[var(--dp-accent-faint)]'
+            className='sb-hyper shrink-0 cursor-pointer border border-[var(--dp-accent)] px-1.5 py-0.5 text-[9px] font-bold text-[var(--dp-accent)] hover:bg-[var(--dp-accent-faint)]'
             style={{ borderRadius: 0 }}
           >
             🚀 HYPERDRIVE
@@ -490,14 +572,9 @@ export function LandingContent({
             }}
           >
             <span className='sb-k' style={{ marginRight: 4 }}>
-              THEME:
+              ACCENT:
             </span>
-            {[
-              { key: 'green', emoji: '🟢', label: 'Green theme' },
-              { key: 'cyan', emoji: '🔵', label: 'Cyan theme' },
-              { key: 'amber', emoji: '🟡', label: 'Amber theme' },
-              { key: 'pink', emoji: '🔴', label: 'Pink theme' }
-            ].map(({ key, emoji, label }) => (
+            {THEME_PROFILES.map(({ key, color, label }) => (
               <button
                 key={key}
                 aria-label={label}
@@ -505,15 +582,11 @@ export function LandingContent({
                 title={label}
                 onClick={() => changeThemeProfile(key)}
                 className={cn(
-                  'cursor-pointer border px-1.5 py-0.5 text-[9px] transition-all',
-                  themeProfile === key
-                    ? 'border-[var(--dp-accent)] bg-[var(--dp-accent-faint)] text-[var(--dp-accent)]'
-                    : 'border-[var(--dp-border)] text-[var(--dp-text-dim)]'
+                  'theme-swatch',
+                  themeProfile === key && 'is-active'
                 )}
-                style={{ borderRadius: 0 }}
-              >
-                {emoji}
-              </button>
+                style={{ '--swatch': color } as React.CSSProperties}
+              />
             ))}
           </div>
           <span className='sb-dot' />
@@ -524,7 +597,9 @@ export function LandingContent({
             className='sb-commits hover:underline'
           >
             ⎇ github.com/pappdavid
-            {repoCount !== null ? ` · ${repoCount} public repos` : ''}
+            {repoCount !== null && (
+              <span className='sb-repos'>{` · ${repoCount} public repos`}</span>
+            )}
           </a>
         </div>
       </div>
@@ -543,93 +618,170 @@ export function LandingContent({
                 <span className='term-title'>david@portfolio — ~/home</span>
                 <div className='float-widgets'>
                   <span className='fw'>
-                    david@:~/auth$ <b>guest_access</b>
+                    david@:~/status$ <b>open_to_work</b>
                   </span>
-                  <span className='fw'>
-                    david@:~/build$ <b>shipping →</b>
-                  </span>
+                  {BUILD_SHA && (
+                    <span className='fw'>
+                      david@:~/build$ <b>{BUILD_SHA.slice(0, 7)}</b>
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className='term-body'>
-                <pre
-                  className='ascii'
-                  aria-hidden='true'
-                >{`██████╗  █████╗ ██╗   ██╗██╗██████╗
+                <div className='hero-grid'>
+                  <div className='hero-id'>
+                    <pre
+                      className='ascii'
+                      aria-hidden='true'
+                    >{`██████╗  █████╗ ██╗   ██╗██╗██████╗
 ██╔══██╗██╔══██╗██║   ██║██║██╔══██╗
 ██║  ██║███████║██║   ██║██║██║  ██║
 ██║  ██║██╔══██║╚██╗ ██╔╝██║██║  ██║
 ██████╔╝██║  ██║ ╚████╔╝ ██║██████╔╝
 ╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═════╝ `}</pre>
 
-                <div className='hero-cmd'>
-                  <span className='prompt'>david@dev:~$ </span>whoami
-                </div>
+                    <div className='hero-cmd'>
+                      <span className='prompt'>david@dev:~$ </span>whoami
+                    </div>
 
-                <h1 className='hero-name'>David&nbsp;Papp</h1>
-                <p className='hero-role'>{siteView.heroRole}</p>
-                <div className='hero-tag'>
-                  <span className='prompt'>&gt; </span>
-                  {hasContext ? (
-                    <span>{siteView.heroTag}</span>
-                  ) : (
-                    <Typewriter text={siteView.heroTag} />
-                  )}
-                </div>
+                    <h1 className='hero-name'>David&nbsp;Papp</h1>
+                    <p className='hero-role'>{siteView.heroRole}</p>
+                    <div className='hero-tag'>
+                      <span className='prompt'>&gt; </span>
+                      {hasContext ? (
+                        <span>{siteView.heroTag}</span>
+                      ) : (
+                        <Typewriter text={siteView.heroTag} />
+                      )}
+                    </div>
 
-                <div className='hero-pill'>
-                  <div
-                    className='pill'
-                    style={{
-                      color: 'var(--dp-accent)',
-                      borderColor: 'var(--dp-accent)'
-                    }}
-                  >
-                    <span
-                      className='dot live'
-                      style={{ background: 'var(--dp-accent)' }}
-                    />
-                    OPEN TO WORK
+                    <div className='hero-pill'>
+                      <div
+                        className='pill'
+                        style={{
+                          color: 'var(--dp-accent)',
+                          borderColor: 'var(--dp-accent)'
+                        }}
+                      >
+                        <span
+                          className='dot live'
+                          style={{ background: 'var(--dp-accent)' }}
+                        />
+                        OPEN TO WORK
+                      </div>
+                      <span className='loc'>
+                        {'// Rotterdam, NL // full-time'}
+                      </span>
+                    </div>
+
+                    <div className='cta-row'>
+                      <a
+                        href='/cv.pdf'
+                        target='_blank'
+                        rel='noopener'
+                        className='cta cta-resume glitch-hover'
+                      >
+                        [view resume — PDF]
+                      </a>
+                      <button
+                        onClick={() => nav('work')}
+                        className='cta glitch-hover'
+                      >
+                        {siteView.projectsCta}
+                      </button>
+                      <button
+                        onClick={() => nav('skills')}
+                        className='cta glitch-hover'
+                      >
+                        [skills]
+                      </button>
+                      <button
+                        onClick={() => nav('contact')}
+                        className='cta glitch-hover'
+                      >
+                        [contact]
+                      </button>
+                      <a href='/privacy-policy' className='cta'>
+                        [privacy]
+                      </a>
+                    </div>
                   </div>
-                  <span className='loc'>{'// Rotterdam, NL'}</span>
-                </div>
 
-                <p className='hero-availability'>
-                  <span className='avail-label'>AVAIL</span>
-                  {' // '}
-                  Full-time
-                </p>
-
-                <div className='cta-row'>
-                  <a
-                    href='/cv.pdf'
-                    target='_blank'
-                    rel='noopener'
-                    className='cta cta-resume glitch-hover'
-                  >
-                    [view resume — PDF]
-                  </a>
-                  <button
-                    onClick={() => nav('work')}
-                    className='cta glitch-hover'
-                  >
-                    {siteView.projectsCta}
-                  </button>
-                  <button
-                    onClick={() => nav('skills')}
-                    className='cta glitch-hover'
-                  >
-                    [skills]
-                  </button>
-                  <button
-                    onClick={() => nav('contact')}
-                    className='cta glitch-hover'
-                  >
-                    [contact]
-                  </button>
-                  <a href='/privacy-policy' className='cta'>
-                    [privacy]
-                  </a>
+                  <aside className='hero-ps' aria-label='Featured projects'>
+                    <h2 className='ps-cmd'>
+                      <span className='prompt'>david@dev:~$ </span>ps --featured
+                    </h2>
+                    <div className='ps-head' aria-hidden='true'>
+                      <span>PID</span>
+                      <span>PROCESS</span>
+                      <span>RUNTIME</span>
+                    </div>
+                    <ol className='ps-list'>
+                      {FEATURED_PROCESSES.map((f, i) => (
+                        <li
+                          key={f.pid}
+                          className='ps-row'
+                          style={{ animationDelay: `${0.35 + i * 0.16}s` }}
+                        >
+                          <div className='ps-top'>
+                            <span className='ps-pid' aria-hidden='true'>
+                              {f.pid}
+                            </span>
+                            <a
+                              className='ps-name'
+                              href={f.liveUrl}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              aria-label={`Open the ${f.name} demo`}
+                            >
+                              {f.name}
+                            </a>
+                            <span className='ps-rt'>
+                              <span
+                                className='dot live'
+                                style={{ background: 'var(--dp-accent)' }}
+                              />
+                              {f.runtime}
+                            </span>
+                          </div>
+                          <p className='ps-line'>{f.line}</p>
+                          <div className='ps-foot'>
+                            <span className='ps-proof'>{f.proof}</span>
+                            <span className='ps-links'>
+                              {/* The process name above is the demo link for
+                                  keyboard and screen-reader users. */}
+                              <a
+                                href={f.liveUrl}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                aria-hidden='true'
+                                tabIndex={-1}
+                              >
+                                [demo]
+                              </a>
+                              {f.repoUrl && (
+                                <a
+                                  href={f.repoUrl}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  aria-label={`Source code of ${f.name} on GitHub`}
+                                >
+                                  [source]
+                                </a>
+                              )}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                    <div className='ps-exit'>
+                      3 of {PROJECTS.length} shown{' '}
+                      <button onClick={() => nav('work')} className='ps-more'>
+                        ls -la /projects/
+                      </button>
+                    </div>
+                  </aside>
                 </div>
 
                 <div className='statustxt'>
@@ -641,9 +793,7 @@ export function LandingContent({
                       <tr>
                         <td className='mk'>LOCATION</td>
                         <td className='ms'>:</td>
-                        <td className='mv'>
-                          Amsterdam · Rotterdam, NL · remote
-                        </td>
+                        <td className='mv'>Rotterdam / Randstad, NL</td>
                       </tr>
                       {siteView.target && (
                         <tr>
@@ -836,11 +986,13 @@ function WorkSection({ triggerFocus, referral, jobType }: WorkSectionProps) {
     <section className='block' id='work'>
       <span id='projects' className='scroll-mt-6' />
       <div className='sec-head'>
-        <h2 className='sec-cmd'>ls -la /projects/</h2>
+        <h2 className='sec-cmd' tabIndex={-1}>
+          ls -la /projects/
+        </h2>
         <span className='sec-note'>FILESYSTEM</span>
       </div>
       <p className='sub-note'>
-        {projects.length} active nodes found — click row to expand case study
+        {projects.length} entries — click a row to expand its case study
         {prioritized ? ' · role matches prioritized' : ''}
       </p>
 
