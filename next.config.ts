@@ -56,7 +56,13 @@ const nextConfig: NextConfig = {
         source,
         destination: '/projects',
         permanent: false
-      }))
+      })),
+      // The engineering notes were retired; their text stays in git history.
+      {
+        source: '/notes/:slug*',
+        destination: '/projects',
+        permanent: true
+      }
     ];
   },
   async headers() {

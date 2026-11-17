@@ -190,26 +190,13 @@ assert(
   'landing: superseded AI 2024-2027 graduation claim must not return'
 );
 
-// Field notes must be data-driven and every entry must link a real public repo.
-const fieldNotes = JSON.parse(read('src/data/field-notes.json'));
+// The engineering notes are retired: no route, data or landing section.
 assert(
-  Array.isArray(fieldNotes) && fieldNotes.length >= 4,
-  'field-notes: at least 4 notes'
+  !existsSync('src/data/field-notes.json') &&
+    !existsSync('src/app/(public)/notes'),
+  'field notes must stay retired'
 );
-for (const note of fieldNotes) {
-  assert(
-    note.title && note.repo && note.url && note.summary,
-    `field-notes: incomplete entry ${note.repo}`
-  );
-  assert(
-    note.url === `https://github.com/pappdavid/${note.repo}`,
-    `field-notes: ${note.repo} URL must point at pappdavid/${note.repo}`
-  );
-  assert(
-    !/undefined|\{\{/.test(note.summary),
-    `field-notes: ${note.repo} summary has placeholder text`
-  );
-}
+assert(!landing.includes('/notes/'), 'landing: no links to retired notes');
 
 const cvHtml = read('public/cv.html');
 assert(cvHtml.includes('Oct 2024'), 'cv.html: WEBINFORM start date');
@@ -396,8 +383,20 @@ for (const name of primaryProjectNames) {
   assert(landing.includes(name), `landing page: missing ${name}`);
   assert(corpus.includes(name), `assistant corpus: missing ${name}`);
 }
-// public/cv.html is reviewed separately by the owner; its project list is not
-// asserted here.
+// The public CV cites the three projects and none of the withheld ones.
+for (const name of ['Client Studio', 'Active Companion', 'Faultline']) {
+  assert(cvHtml.includes(name), `CV: missing ${name}`);
+}
+for (const marker of [
+  'AgentSec',
+  'PromptShield',
+  'MCPGuard',
+  'saas-core',
+  'CloudShame'
+]) {
+  assert(!cvHtml.includes(marker), `CV: withheld project ${marker}`);
+}
+assert(cvHtml.includes('<title>David Papp - CV</title>'), 'CV: document title');
 for (const path of [
   'src/components/projects/projects-content.tsx',
   'src/components/landing/landing-content.tsx',
