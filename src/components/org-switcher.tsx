@@ -13,7 +13,7 @@ export function OrgSwitcher() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton size='lg' asChild>
-          <Link href='/dashboard/overview'>
+          <Link href='/dashboard/mcp'>
             <div className='bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
               <IconShieldCheck className='size-4' />
             </div>

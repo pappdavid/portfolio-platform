@@ -42,14 +42,6 @@ export const publicNavItems: NavItem[] = [
 // Dashboard sidebar navigation (authenticated)
 export const navItems: NavItem[] = [
   {
-    title: 'Overview',
-    url: '/dashboard/overview',
-    icon: 'dashboard',
-    isActive: false,
-    shortcut: ['d', 'd'],
-    items: []
-  },
-  {
     title: 'MCP',
     url: '/dashboard/mcp',
     icon: 'shield',
