@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="portfolio:commit" content="c4a72ef" />
+    <title>DavidOS — David Papp · System tour</title>
+    <link rel="icon" href="favicon.ico" />
+    <link
+      rel="preload"
+      href="assets/JetBrainsMono-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#opening" aria-label="DavidOS opening"
+        ><i class="brand-icon" aria-hidden="true"></i>David<span>OS</span></a
+      ><span class="header-rule"></span
+      ><span class="header-title">System tour</span>
+      <div class="palette" aria-label="Accent colour"></div>
+      <a class="skip" href="#index">Skip the tour ↘</a>
+    </header>
+    <main id="tour">
+      <div id="anchors"></div>
+      <div id="screen">
+        <div id="field">
+          <canvas id="world" aria-hidden="true"></canvas>
+          <div class="viewport" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </div>
+          <div class="plate">
+            <span id="figure"></span><span class="slant">/</span
+            ><span id="device"></span>
+          </div>
+          <div id="plot-note"><i></i><span id="plot-text"></span></div>
+          <div id="leader" aria-hidden="true"><i></i><span></span></div>
+          <div id="part-tags" aria-hidden="true"></div>
+          <div id="copy">
+            <div class="kicker prompt">david@dev:~$ <span>whoami</span></div>
+            <h1>David <br />Papp<em>.</em></h1>
+            <p class="role">AI solution developer</p>
+            <div class="availability">
+              <i class="dot"></i>Open to full-time work
+              <i class="sep"></i>Rotterdam, NL
+            </div>
+            <p class="targets">
+              <span class="micro">Target roles</span>AI engineering, backend and
+              data
+            </p>
+            <div class="actions">
+              <a href="/cv.pdf">Résumé ↗</a
+              ><a href="#client-studio">Projects <span>↓</span></a
+              ><a href="#contact">Contact <span>↗</span></a>
+            </div>
+          </div>
+        </div>
+        <nav id="chapters" aria-label="Tour chapters"></nav>
+      </div>
+    </main>
+    <!-- The still edition is precomposed, so reading it requires no graphics context or engine run. -->
+    <template id="still-edition">
+      <nav aria-label="Tour chapters" class="reader-nav">
+        <a href="#opening">opening</a><a href="#client-studio">client-studio</a
+        ><a href="#active-companion">active-companion</a
+        ><a href="#faultline">faultline</a><a href="#index">index</a>
+      </nav>
+      <section id="opening">
+        <article>
+          <div class="kicker prompt">david@dev:~$ <span>whoami</span></div>
+          <h1>David <br />Papp<em>.</em></h1>
+          <p class="role">AI solution developer</p>
+          <div class="availability">
+            <i class="dot"></i>Open to full-time work
+            <i class="sep"></i>Rotterdam, NL
+          </div>
+          <p class="targets">
+            <span class="micro">Target roles</span>AI engineering, backend and
+            data
+          </p>
+          <div class="actions">
+            <a href="/cv.pdf">Résumé ↗</a
+            ><a href="#client-studio">Projects <span>↓</span></a
+            ><a href="#contact">Contact <span>↗</span></a>
+          </div>
+        </article>
+        <img
+          src="assets/stills/opening.webp"
+          alt="The woven DAVID mark on its loom."
+          decoding="sync"
+        />
+      </section>
+      <section id="client-studio">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 01</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">client-studio</h2>
+          <p class="desc">
+            A company assistant that answers only from the text you give it,
+            shows the exact sentence it used, and goes live only after a person
+            approves it.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>TypeScript, Next.js, React, Supabase (PostgreSQL)</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>65 unit tests</dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Hosted demo with fictional examples. Lexical retrieval, model
+                calls off. Private source.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://client-studio-psi.vercel.app"
+              >Open demo <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-0.webp"
+          alt="Source press"
+          decoding="sync"
+        />
+      </section>
+      <section id="client-studio-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>A customer asks a question.</h2>
+          <p class="tech">
+            The fictional request enters the versioned source lookup.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Question</span>
+                <p>What is the API batch limit?</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-1.webp"
+          alt="Question feed"
+          decoding="sync"
+        />
+      </section>
+      <section id="client-studio-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The answer comes straight from the text.</h2>
+          <p class="tech">
+            Lexical retrieval quotes the exact excerpt from source version 2.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Source v2</span>
+                <p>“up to 50 records”</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-2.webp"
+          alt="Source bed"
+          decoding="sync"
+        />
+      </section>
+      <section id="client-studio-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Internal text stays internal.</h2>
+          <p class="tech">
+            The server filters sources by audience before returning the customer
+            view.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Customer</span>
+                <p>“up to 50 records”</p>
+              </div>
+              <div class="ev-row">
+                <span>Internal</span>
+                <p>Withheld</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-3.webp"
+          alt="Audience gate"
+          decoding="sync"
+        />
+      </section>
+      <section id="client-studio-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>A person approves what goes live.</h2>
+          <p class="tech">
+            Approval and activation freeze the configuration and sources in an
+            immutable snapshot.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Review</span>
+                <p>Approved by a person</p>
+              </div>
+              <div class="ev-row">
+                <span>Snapshot</span>
+                <p>Sources + configuration frozen</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-4.webp"
+          alt="Snapshot press"
+          decoding="sync"
+        />
+      </section>
+      <section id="client-studio-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>A late edit is refused.</h2>
+          <p class="tech">
+            Writes are idempotent and revision-checked. A stale revision returns
+            409.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Stale write</span>
+                <p>409 · Revision conflict</p>
+              </div>
+              <div class="ev-row">
+                <span>Snapshot</span>
+                <p>Preserved</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-5.webp"
+          alt="Revision stop"
+          decoding="sync"
+        />
+      </section>
+      <section id="active-companion">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 02</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">active-companion</h2>
+          <p class="desc">
+            It follows a conversation transcript and puts the right reference
+            card in front of you at the right moment, and every card names its
+            source.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>Python</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>18 tests in CI · Public MIT source</dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Hosted replay of pipeline output for four fictional
+                conversations. No inference, microphone or uploads. No
+                evaluation on real meetings.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://active-companion-replay.vercel.app"
+              >Open demo <span>↗</span></a
+            ><a href="https://github.com/pappdavid/active-companion"
+              >Source <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-0.webp"
+          alt="Context reel"
+          decoding="sync"
+        />
+      </section>
+      <section id="active-companion-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>The conversation rolls in.</h2>
+          <p class="tech">
+            Timestamped utterances enter in order from the fictional
+            technical_discussion scenario.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>6s · engineer</span>
+                <p>
+                  How does your API integration work? Do you support webhooks?
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>10.7s · se</span>
+                <p>REST over HTTPS with OAuth2, webhooks signed with HMAC.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-1.webp"
+          alt="Transcript feed"
+          decoding="sync"
+        />
+      </section>
+      <section id="active-companion-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Only the last 30 seconds stay in view.</h2>
+          <p class="tech">
+            A 30-second sliding context window drops older transcript lines.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>31.2s · se</span>
+                <p>
+                  p50 is 120 milliseconds, sustained five thousand events per
+                  second.
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>44s · engineer</span>
+                <p>
+                  Who is from your team should review our security
+                  questionnaire? Who is the technical contact?
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-2.webp"
+          alt="Context window"
+          decoding="sync"
+        />
+      </section>
+      <section id="active-companion-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Someone asks who can help.</h2>
+          <p class="tech">
+            Heuristic intent classification identifies a contact lookup.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Engineer · 44s</span>
+                <p>
+                  Who is from your team should review our security
+                  questionnaire? Who is the technical contact?
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>Intent</span>
+                <p>contact_lookup</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-3.webp"
+          alt="Intent reader"
+          decoding="sync"
+        />
+      </section>
+      <section id="active-companion-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>A card names the right person.</h2>
+          <p class="tech">
+            TF-IDF retrieval surfaces a reference card carrying its source
+            title.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Who's who</span>
+                <p>
+                  Marcus Chen — Solutions Engineer, our side (technical
+                  deep-dives)
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-4.webp"
+          alt="Reference card"
+          decoding="sync"
+        />
+      </section>
+      <section id="active-companion-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>An answer needs a source.</h2>
+          <p class="tech">
+            Only bullets citing a retrieved source title survive. Retrieval
+            cards remain if the optional model step fails.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Retained · Who's who</span>
+                <p>
+                  Marcus Chen — Solutions Engineer, our side (technical
+                  deep-dives)
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>Uncited bullet</span>
+                <p>Dropped</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-5.webp"
+          alt="Citation gate"
+          decoding="sync"
+        />
+      </section>
+      <section id="faultline">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 03</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">faultline</h2>
+          <p class="desc">
+            It shows why “just try again” can book the same job twice, and the
+            fix that prevents it.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>JavaScript · In-memory engine</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>
+                12 tests in CI · Public MIT source. This animation runs the
+                demo’s engine.
+              </dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Browser teaching model. Atomic effect-and-receipt storage is a
+                model assumption. No deployed service.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://davidpapp.dev/faultline/index.html"
+              >Open demo <span>↗</span></a
+            ><a href="https://github.com/pappdavid/faultline"
+              >Source <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/faultline-0.webp"
+          alt="Receipt loop"
+          decoding="sync"
+        />
+      </section>
+      <section id="faultline-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>The receiver books the job.</h2>
+          <p class="tech">
+            The receiver commits the visit and generates its confirmation before
+            the reply travels back.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>01 / request</span>
+                <p>POST /visits · attempt 1</p>
+              </div>
+              <div class="ev-row">
+                <span>02 / commit</span>
+                <p>Committed · VIS-742</p>
+              </div>
+            </div>
+          </div>
+          <p class="stats">
+            WORK-318 · Boiler inspection · 1 booking · plain receiver
+          </p>
+        </article>
+        <img
+          src="assets/stills/faultline-1.webp"
+          alt="Receiver commit"
+          decoding="sync"
+        />
+      </section>
+      <section id="faultline-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The confirmation gets lost.</h2>
+          <p class="tech">
+            The reply drops after commit. The sender cannot tell whether the
+            visit exists.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>02 / commit</span>
+                <p>Committed · VIS-742</p>
+              </div>
+              <div class="ev-row">
+                <span>03 / drop</span>
+                <p>Response lost · after commit</p>
+              </div>
+            </div>
+          </div>
+          <p class="stats">
+            WORK-318 · Boiler inspection · 1 booking · plain receiver
+          </p>
+        </article>
+        <img
+          src="assets/stills/faultline-2.webp"
+          alt="Broken return"
+          decoding="sync"
+        />
+      </section>
+      <section id="faultline-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Trying again books it twice.</h2>
+          <p class="tech">
+            The plain receiver commits a second visit for the same operation.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>05 / commit</span>
+                <p>Committed · VIS-743</p>
+              </div>
+              <div class="ev-row">
+                <span>06 / response</span>
+                <p>201 received · VIS-743</p>
+              </div>
+            </div>
+          </div>
+          <p class="stats">
+            WORK-318 · Boiler inspection · 2 bookings · plain receiver
+          </p>
+        </article>
+        <img
+          src="assets/stills/faultline-3.webp"
+          alt="Duplicate visit"
+          decoding="sync"
+        />
+      </section>
+      <section id="faultline-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>A saved receipt prevents a duplicate.</h2>
+          <p class="tech">
+            The fixed receiver stores the operation key and payload fingerprint,
+            then replays the original receipt.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>05 / replay</span>
+                <p>Replay stored result · VIS-742</p>
+              </div>
+              <div class="ev-row">
+                <span>06 / response</span>
+                <p>200 received · VIS-742</p>
+              </div>
+            </div>
+          </div>
+          <p class="stats">
+            WORK-318 · Boiler inspection · 1 booking · key stored
+          </p>
+        </article>
+        <img
+          src="assets/stills/faultline-4.webp"
+          alt="Stored receipt"
+          decoding="sync"
+        />
+      </section>
+      <section id="faultline-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>A changed booking is rejected.</h2>
+          <p class="tech">
+            The same key with a different payload returns 409 without creating
+            another visit.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>07 / request</span>
+                <p>POST /visits · attempt 3</p>
+              </div>
+              <div class="ev-row">
+                <span>08 / conflict</span>
+                <p>409 · Key reused with a different payload</p>
+              </div>
+            </div>
+          </div>
+          <p class="stats">
+            WORK-318 · Boiler inspection · 1 booking · key stored
+          </p>
+        </article>
+        <img
+          src="assets/stills/faultline-5.webp"
+          alt="Conflict stop"
+          decoding="sync"
+        />
+      </section>
+      <section id="overview">
+        <article>
+          <div class="kicker">
+            <span class="bright">System tour</span
+            ><span class="bar"></span>Overview
+          </div>
+          <h2>Three systems.<br />One workbench.</h2>
+          <p class="desc">
+            A quoted answer, a source card and a booking receipt.
+          </p>
+        </article>
+        <img
+          src="assets/stills/closing.webp"
+          alt="All four assemblies along the rail."
+          decoding="sync"
+        />
+      </section>
+      <section id="index">
+        <article>
+          <div class="kicker prompt">
+            david@dev:~$ <span>ps --featured</span>
+          </div>
+          <h2>Project index<em class="bright">.</em></h2>
+          <div class="index-list">
+            <div>
+              <span class="serial">B</span
+              ><a href="#client-studio">client-studio</a
+              ><a class="ext" href="https://client-studio-psi.vercel.app"
+                >Demo ↗</a
+              ><span></span>
+            </div>
+            <div>
+              <span class="serial">C</span
+              ><a href="#active-companion">active-companion</a
+              ><a class="ext" href="https://active-companion-replay.vercel.app"
+                >Demo ↗</a
+              ><a
+                class="ext"
+                href="https://github.com/pappdavid/active-companion"
+                >Source ↗</a
+              >
+            </div>
+            <div>
+              <span class="serial">D</span><a href="#faultline">faultline</a
+              ><a class="ext" href="https://davidpapp.dev/faultline/index.html"
+                >Demo ↗</a
+              ><a class="ext" href="https://github.com/pappdavid/faultline"
+                >Source ↗</a
+              >
+            </div>
+          </div>
+          <div class="actions"><a href="/cv.pdf">Résumé ↗</a></div>
+          <div class="index-contact">
+            <span class="micro">Contact</span
+            ><a
+              data-contact=""
+              href="https://www.linkedin.com/in/d%C3%A1vid-papp"
+              >LinkedIn ↗</a
+            ><a href="https://github.com/pappdavid">GitHub ↗</a>
+          </div>
+        </article>
+        <img
+          src="assets/stills/closing.webp"
+          alt="Overview of the tour."
+          decoding="sync"
+        />
+      </section>
+    </template>
+    <svg class="ink-filter" width="0" height="0" aria-hidden="true">
+      <defs>
+        <filter id="still-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix id="ink-matrix" type="matrix" />
+        </filter>
+      </defs>
+    </svg>
+    <div id="reader" hidden></div>
+    <footer>
+      <div class="command">
+        <form>
+          <label for="cmd">david@dev:~$</label
+          ><input
+            id="cmd"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter a command…"
+            aria-describedby="reply"
+          />
+        </form>
+        <output id="reply" aria-live="polite"></output
+        ><button id="help" aria-label="Command help">
+          ? <span>Help</span>
+        </button>
+      </div>
+      <div class="status">
+        <span>REV <b id="rev"></b></span
+        ><span>ROTTERDAM <b id="clock"></b></span
+        ><span>TTFB <b id="ttfb"></b></span
+        ><span><em>PUBLIC </em>REPOS <b>17</b></span
+        ><span>FRAME <b id="ms">—</b></span>
+      </div>
+    </footer>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

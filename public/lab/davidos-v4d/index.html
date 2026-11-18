@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="portfolio:commit" content="c48fa2e">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>DavidOS — David Papp · Project atlas</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="preload" href="assets/JetBrainsMono-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#projects">Skip to projects</a>
+<header>
+  <a class="brand" href="#home" aria-label="DavidOS home">
+    <svg width="31" height="29" viewBox="0 0 36 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="bevel"><path d="m2 20 12-16 7-2 13 21-11 6-18-2z"/><path d="m8 19 8-11 4-2 9 15-7 4-12-2z"/><path d="m14 18 4-6 2-1 5 9-4 2-6-1z"/></g></svg>
+    DavidOS<span class="slash">/</span><span class="brand-sub">Portfolio</span>
+  </a>
+  <nav aria-label="Sections"><a href="#home" aria-current="page">Home</a><a href="#projects">Projects</a><a href="#skills">Skills</a><a href="#contact">Contact</a></nav>
+  <div class="palette"><button id="color-toggle" aria-expanded="false" aria-controls="colors"><i></i><span>Accent</span> ⌄</button><div id="colors" hidden></div></div>
+</header>
+<main>
+  <section class="identity" id="home" aria-labelledby="name">
+    <div class="signature"><p class="prompt">david@dev:~$ <b>whoami</b></p><div class="mark" role="img" aria-label="DAVID"><svg aria-hidden="true" viewBox="0 0 326 58"><defs><pattern id="courses" patternUnits="userSpaceOnUse" width="2" height="4"><path fill="currentColor" d="M0 0h2v3.5H0z"/></pattern></defs><g fill="url(#courses)" fill-rule="evenodd"><path d="M0 0h45l14 14v30L45 58H0zm15 13v32h24l5-5V18l-5-5z"/><path d="m67 58 0-44L81 0h31l14 14v44h-15V39H82v19zm15-32h29v-8l-5-5H87l-5 5z"/><path d="M133 0h17l14 41 15-41h17l-22 58h-20z"/><path d="M203 0h43v13h-14v32h14v13h-43V45h14V13h-14z"/><path d="M254 0h48l16 15v28l-16 15h-48zm15 13v32h27l7-7V20l-7-7z"/></g></svg></div></div>
+    <div class="bio"><h1 id="name">David Papp<span>.</span></h1><p>AI solution developer</p><div class="location"><svg aria-hidden="true" width="13" height="15" viewBox="0 0 16 18"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M8 16S2 10 2 7a6 6 0 0 1 12 0c0 3-6 9-6 9Z"/><circle cx="8" cy="7" r="2" fill="currentColor"/></svg> Rotterdam, NL</div></div>
+    <div class="career"><p class="available"><i></i>Open to full-time work</p><p class="roles"><span>Target roles</span> AI engineering, backend and data</p><div class="actions"><a class="primary" href="/cv.pdf">Résumé ↗</a><a href="#projects">Projects ↓</a><a href="#contact">Contact ↗</a></div></div>
+  </section>
+  <figure aria-labelledby="atlas-title">
+    <div class="map-heading"><div class="chart-title"><span class="figure-id">Fig. A</span><h2 id="atlas-title">Project atlas</h2></div><div class="view-control"><span class="mini-cross" aria-hidden="true">⌖</span><span id="view-label">Contour survey</span><button id="reset" hidden>Overview ↶</button></div></div>
+    <div class="map">
+      <div class="corner" aria-hidden="true">PX</div><div id="x-ruler" class="ruler" aria-hidden="true"></div><div id="y-ruler" class="ruler" aria-hidden="true"></div>
+      <div id="surface"><canvas aria-hidden="true"></canvas><div id="pins" aria-label="Project landforms"></div><div id="annotations" aria-hidden="true"></div><div id="stations" aria-hidden="true"></div></div>
+    </div>
+    <figcaption><span class="note-label">Field note</span><span id="caption">Select a landform to explore its project.</span><span class="trace-key" hidden>Process trace</span><span class="key-hint"><kbd>1</kbd>–<kbd>3</kbd> select</span></figcaption>
+  </figure>
+  <div class="lower">
+    <section id="projects" aria-labelledby="projects-title"><h2 id="projects-title"><span class="command-prefix">~/</span> ps --featured</h2><ul id="rows"></ul></section>
+    <section id="inspector" aria-labelledby="detail-title" tabindex="-1"></section>
+  </div>
+  <form id="command"><label for="cmd">david@dev:~$</label><input id="cmd" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter a command…" aria-describedby="completion"><span id="completion"></span><button id="help" type="button" aria-expanded="false">Help <kbd>?</kbd></button><div id="commands" aria-label="Available commands" hidden></div></form>
+  <p class="sr-only" id="announcement" role="status"></p>
+</main>
+<footer><span>Revision <b id="revision"></b></span><span>Rotterdam <time id="clock"></time></span><span>TTFB <b id="ttfb">—</b></span><span>Public repos <b>17</b></span><span class="frame"><i></i>Frame <b id="frame">—</b></span></footer>
+<script type="module" src="src/main.js"></script>
+</body></html>

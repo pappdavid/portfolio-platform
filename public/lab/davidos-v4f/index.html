@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0a"><meta name="portfolio:commit" content="c48fa2e">
+<title>David Papp · DavidOS Signal Bench</title>
+<link rel="icon" href="favicon.ico"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#projects">Skip to projects</a>
+<header class="mast"><div class="wrap top">
+<a class="brand" href="#home" aria-label="DavidOS home"><svg width="28" height="24" viewBox="0 0 28 24" aria-hidden="true"><path d="M1 13h6l3-9 5 16 3-10 2 3h7"/></svg>David<span>OS</span></a>
+<nav aria-label="Sections"><a href="#home" aria-current="page">HOME</a><a href="#projects">PROJECTS</a><a href="#skills">SKILLS</a><a href="#contact">CONTACT</a></nav>
+<div class="palette" role="group" aria-label="Accent color"><span>ACCENT</span><button data-accent="green" aria-label="Green accent" aria-pressed="true"></button><button data-accent="cyan" aria-label="Cyan accent"></button><button data-accent="amber" aria-label="Amber accent"></button><button data-accent="pink" aria-label="Pink accent"></button></div>
+</div></header>
+<main class="wrap">
+<section class="identity" id="home" aria-label="David Papp profile">
+<div class="wordplate"><svg class="mark" role="img" aria-label="DAVID" viewBox="0 0 314 84"><defs><pattern id="cuts" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="3.45" fill="currentColor"/></pattern></defs><g fill="url(#cuts)" fill-rule="evenodd"><path d="M2 7h43l15 15v39L45 76H2z M18 23v37h21l6-6V29l-6-6z"/><path d="M66 76V23L82 7h27l16 16v53h-16V53H82v23z M82 38h27V28l-5-5H87l-5 5z"/><path d="M130 7h18l13 48 14-48h18l-22 69h-21z M198 7h44v16h-14v37h14v16h-44V60h14V23h-14z"/><path d="M249 7h43l16 15v39l-16 15h-43z M265 23v37h21l6-6V29l-6-6z"/></g></svg></div>
+<div class="person"><div class="prompt">david@dev:~$ <span>whoami</span></div><h1>David Papp</h1><p>AI solution developer</p></div>
+<div class="bio"><div class="available"><i></i>Open to full-time work</div><p>Rotterdam, NL</p><div class="target">Target roles</div><p>AI engineering, backend and data</p></div>
+<div class="hero-actions"><a class="resume" href="/cv.pdf">Résumé <span>↗</span></a><div><a href="#projects">Projects ↓</a><a href="#contact">Contact ↗</a></div></div>
+</section>
+<section id="projects" aria-labelledby="bench-title">
+<div class="bench-head"><div><h2 id="bench-title" tabindex="-1">Signal bench</h2><code>ps --featured</code></div><p><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> Select a lane</p></div>
+<div class="rack">
+<article class="lane" id="client-studio" data-index="0">
+<div class="info"><div class="kind"><b>CH A</b> Hosted workflow</div><h3><button class="lane-name">client-studio</button></h3><p>Answers with exact excerpts from supplied text.</p><div class="proof">65 tests · Private source</div><div class="links"><a href="https://client-studio-psi.vercel.app">Demo ↗</a><span>No AI calls</span></div></div>
+<figure><div class="scope-head"><strong>Excerpt routing</strong><span>Fictional · Source v2</span></div><div class="screen"><canvas aria-hidden="true"></canvas></div><div class="axis client-axis"><span>Source</span><span>Review</span><span>Approve</span><span>Activate</span><span>Snapshot</span></div><figcaption></figcaption></figure>
+<div class="controls"><div class="control-head"><span>Workflow</span><button class="play" data-action="play">▷ Play all</button></div><div class="switches"><button data-action="ask">Ask</button><button data-action="review">Review</button><button data-action="approve">Approve</button><button data-action="activate">Activate snapshot</button></div></div>
+</article>
+<article class="lane" id="active-companion" data-index="1">
+<div class="info"><div class="kind"><b>CH B</b> Scripted replay</div><h3><button class="lane-name">active-companion</button></h3><p>Turns transcripts into evidence cards with named sources.</p><div class="proof">18 tests in CI · Public MIT source</div><div class="links"><a href="https://active-companion-replay.vercel.app">Demo ↗</a><a href="https://github.com/pappdavid/active-companion">Source ↗</a></div></div>
+<figure><div class="scope-head"><strong>Transcript capture</strong><span>Fictional · Delivery delay</span></div><div class="screen"><canvas aria-hidden="true"></canvas></div><div class="axis"><span>Transcript in</span><span>Source tether</span><span>Evidence cards</span></div><figcaption></figcaption></figure>
+<div class="controls"><div class="control-head"><span>Replay</span><button class="play" data-action="play">▷ Play</button></div><label class="range-label" for="scrub">Transcript line <output id="line-num"></output></label><input type="range" id="scrub" min="1" max="6" value="1"><ul id="cards" aria-label="Evidence cards and sources"></ul><button class="transcript-link" data-dialog="transcript">Read transcript ↗</button></div>
+</article>
+<article class="lane" id="faultline" data-index="2">
+<div class="info"><div class="kind"><b>CH C</b> Browser model</div><h3><button class="lane-name">faultline</button></h3><p>Shows when retrying a request creates a duplicate.</p><div class="proof">12 tests in CI · Public MIT source</div><div class="links"><a href="https://davidpapp.dev/faultline/index.html">Demo ↗</a><a href="https://github.com/pappdavid/faultline">Source ↗</a></div></div>
+<figure><div class="scope-head"><strong>Request / return</strong><span>Retry trace</span></div><div class="screen"><canvas aria-hidden="true"></canvas></div><div class="axis"><span>Sender</span><span>Request ⇄ response</span><span>Receiver</span></div><figcaption></figcaption></figure>
+<div class="controls"><div class="control-head"><span>Transport</span><button class="play" data-action="play">▷ Play all</button></div><div class="switches"><button data-action="send">Send request</button><button data-action="lose">Lose the response</button><button data-action="retry">Retry (no key)</button><button data-action="retry --key">Retry (same key)</button></div><p class="counters">Your receipts <output id="receipts">0</output> <span>Duplicates <output id="duplicates">0</output></span></p></div>
+</article>
+</div></section>
+<form id="command" autocomplete="off"><label for="cli">david@dev:~$</label><input id="cli" placeholder="Enter a command…" autocapitalize="off" spellcheck="false"><output id="reply" aria-live="polite"></output><button type="button" id="complete">Tab ⇥</button><button type="button" data-dialog="help">Help ?</button></form>
+</main>
+<footer><div class="wrap metrics"><span>REV <output id="revision"></output></span><span>ROTTERDAM <time id="clock"></time></span><span>TTFB <output id="ttfb">—</output></span><span>PUBLIC REPOS <b>17</b></span><span>FRAME <output id="frame">—</output></span></div></footer>
+<dialog aria-labelledby="dialog-title"><div class="dialog-heading"><h2 id="dialog-title"></h2><button id="close">Close ×</button></div><div id="dialog-body"></div></dialog>
+<script type="module" src="src/main.js"></script>
+</body></html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="portfolio:commit" content="c4b72de" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>DavidOS — David Papp · System tour</title>
+    <link rel="icon" href="./favicon.ico" />
+    <link
+      rel="preload"
+      href="./assets/JetBrainsMono-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="anchors"></div>
+    <div class="console">
+      <header>
+        <a class="brand" href="#opening" aria-label="DavidOS opening"
+          ><svg viewBox="0 0 32 32" aria-hidden="true">
+            <path
+              d="m5 12 11-6 11 6-11 6z M5 16l11 6 11-6 M5 20l11 6 11-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            /></svg
+          ><strong>David<span>OS</span></strong></a
+        ><span class="head-desc">Developer portfolio</span>
+        <nav class="topnav" aria-label="Site">
+          <a href="#opening">System tour</a><a href="#index">Index</a
+          ><button data-contact>Contact ↗</button>
+        </nav>
+        <div class="accents" aria-label="Accent colour">
+          <span>Accent</span>
+        </div>
+      </header>
+      <main id="film">
+        <nav id="rail" aria-label="Tour chapters"></nav>
+        <div class="composition">
+          <section id="copy" aria-label="Tour caption"></section>
+          <figure>
+            <figcaption>
+              <div><span id="fig-id"></span><b id="fig-name"></b></div>
+              <span class="view-type">Orthographic</span>
+            </figcaption>
+            <div class="viewport">
+              <canvas id="stage" aria-hidden="true"></canvas>
+              <div class="surfaces"></div>
+              <div class="tags"></div>
+            </div>
+            <div class="fig-foot">
+              <span><b id="view-label"></b></span><span id="view-state"></span>
+            </div>
+          </figure>
+        </div>
+        <section id="directory" aria-label="Project directory">
+          <div class="directory-head">
+            <span>Project directory</span
+            ><a id="skip" href="#index">Skip the tour ↓</a>
+          </div>
+          <div class="project-list"></div>
+        </section>
+      </main>
+      <div id="reader"></div>
+      <footer>
+        <form id="terminal">
+          <label for="cmd">david@dev:~$</label
+          ><input
+            id="cmd"
+            placeholder="Enter command…"
+            spellcheck="false"
+            autocomplete="off"
+          /><output id="reply"></output
+          ><button type="button" id="help" aria-label="Command help">
+            <kbd>?</kbd> <span>Commands</span>
+          </button>
+        </form>
+        <div class="status">
+          <span>Rotterdam <b id="clock"></b></span
+          ><span>TTFB <b id="ttfb"></b></span
+          ><span>Frame <b id="frame">—</b></span>
+        </div>
+      </footer>
+    </div>
+    <dialog id="dialog">
+      <div class="dialog-head">
+        <span class="eyebrow">DavidOS / terminal</span
+        ><button aria-label="Close" onclick="this.closest('dialog').close()">
+          ×
+        </button>
+      </div>
+      <div id="dialog-body"></div>
+    </dialog>
+    <noscript
+      ><h1>David Papp</h1>
+      <p>AI solution developer · Rotterdam, NL · Open to full-time work</p>
+      <a href="/cv.pdf">Résumé</a>
+      <p>
+        This system tour uses JavaScript. View the
+        <a href="https://github.com/pappdavid">public repositories</a>.
+      </p></noscript
+    >
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
