@@ -1,0 +1,2088 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="portfolio:commit" content="c4a72ef" />
+    <title>DavidOS — David Papp · System tour</title>
+    <link rel="icon" href="favicon.ico" />
+    <link
+      rel="preload"
+      href="assets/JetBrainsMono-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" as="image" href="assets/stills/opening.webp" media="(min-width:961px)" />
+    <link rel="preload" as="image" crossorigin="anonymous" href="assets/stills/opening-emission.webp" media="(min-width:961px)" />
+    <link rel="preload" as="image" href="assets/stills/opening-narrow.webp" media="(max-width:960px)" />
+    <link rel="preload" as="image" crossorigin="anonymous" href="assets/stills/opening-narrow-emission.webp" media="(max-width:960px)" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+<svg aria-hidden="true" width="0" height="0" style="position: absolute">
+  <defs>
+    <symbol id="folio-studio" viewBox="0 0 356 156" preserveAspectRatio="none">
+      <g class="folio-drawing" fill="none" stroke-linejoin="round">
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 102.0 C86 102.0,99 117,129 117 L177 117 Q197 117 212 104 L246 81 Q258 74 278 74 L305 74"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 54.0 C171 79,206 69,234 70 S267 72,277 76 L305 76"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 103.4 C86 103.4,99 118,129 118 L177 118 Q197 118 212 105 L246 82 Q258 75 278 75 L305 75"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 55.1 C171 80,206 70,234 71 S267 73,277 77 L305 77"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 104.8 C86 104.8,99 119,129 119 L177 119 Q197 119 212 106 L246 83 Q258 76 278 76 L305 76"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 56.2 C171 81,206 71,234 72 S267 74,277 78 L305 78"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 106.2 C86 106.2,99 120,129 120 L177 120 Q197 120 212 107 L246 84 Q258 77 278 77 L305 77"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 57.3 C171 82,206 72,234 73 S267 75,277 79 L305 79"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 107.6 C86 107.6,99 121,129 121 L177 121 Q197 121 212 108 L246 85 Q258 78 278 78 L305 78"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 58.4 C171 83,206 73,234 74 S267 76,277 80 L305 80"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 109.0 C86 109.0,99 122,129 122 L177 122 Q197 122 212 109 L246 86 Q258 79 278 79 L305 79"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 59.5 C171 84,206 74,234 75 S267 77,277 81 L305 81"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 110.4 C86 110.4,99 123,129 123 L177 123 Q197 123 212 110 L246 87 Q258 80 278 80 L305 80"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 60.6 C171 85,206 75,234 76 S267 78,277 82 L305 82"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.65"
+          d="M42 111.8 C86 111.8,99 124,129 124 L177 124 Q197 124 212 111 L246 88 Q258 81 278 81 L305 81"
+        />
+        <path
+          class="focus"
+          stroke-width="0.85"
+          d="M169 61.7 C171 86,206 76,234 77 S267 79,277 83 L305 83"
+        />
+        <path class="muteline" stroke-width="0.52" d="M108 11h21l8 8v35h-29" />
+        <path class="muteline" stroke-width="0.52" d="M106.5 12.5h21l8 8v35h-29" />
+        <path class="muteline etch" stroke-width="1.6" d="M105 14h21l8 8v35h-29z" />
+        <path class="muteline" stroke-width="1" d="M126 14v8h8" />
+        <path class="muteline" stroke-width="0.8" d="M109 27.0h19.0" />
+        <path class="muteline" stroke-width="0.8" d="M109 31.6h16.5" />
+        <path class="muteline" stroke-width="0.8" d="M109 36.2h14.1" />
+        <path class="muteline" stroke-width="0.8" d="M109 40.8h19.0" />
+        <path class="muteline" stroke-width="0.8" d="M109 45.4h16.5" />
+        <path class="focus" stroke-width="0.52" d="M148 11h21l8 8v35h-29" />
+        <path class="focus" stroke-width="0.52" d="M146.5 12.5h21l8 8v35h-29" />
+        <path class="focus etch" stroke-width="1.6" d="M145 14h21l8 8v35h-29z" />
+        <path class="focus" stroke-width="1" d="M166 14v8h8" />
+        <path class="focus" stroke-width="1.25" d="M149 27.0h19.0" />
+        <path class="focus" stroke-width="1.25" d="M149 31.6h16.5" />
+        <path class="focus" stroke-width="1.25" d="M149 36.2h14.1" />
+        <path class="focus" stroke-width="1.25" d="M149 40.8h19.0" />
+        <path class="focus" stroke-width="1.25" d="M149 45.4h16.5" />
+        <path class="muteline" stroke-width="0.52" d="M188 11h21l8 8v35h-29" />
+        <path class="muteline" stroke-width="0.52" d="M186.5 12.5h21l8 8v35h-29" />
+        <path class="muteline etch" stroke-width="1.6" d="M185 14h21l8 8v35h-29z" />
+        <path class="muteline" stroke-width="1" d="M206 14v8h8" />
+        <path class="muteline" stroke-width="0.8" d="M189 27.0h19.0" />
+        <path class="muteline" stroke-width="0.8" d="M189 31.6h16.5" />
+        <path class="muteline" stroke-width="0.8" d="M189 36.2h14.1" />
+        <path class="muteline" stroke-width="0.8" d="M189 40.8h19.0" />
+        <path class="muteline" stroke-width="0.8" d="M189 45.4h16.5" />
+        <path class="muteline" stroke-width="0.52" d="M13 57h40l8 8v61h-48" />
+        <path class="muteline" stroke-width="0.52" d="M11.5 58.5h40l8 8v61h-48" />
+        <path class="muteline etch" stroke-width="1.6" d="M10 60h40l8 8v61h-48z" />
+        <path class="muteline" stroke-width="1" d="M50 60v8h8" />
+        <path class="muteline" stroke-width="0.8" d="M14 73.0h38.0" />
+        <path class="muteline" stroke-width="0.8" d="M14 82.8h33.1" />
+        <path class="muteline" stroke-width="0.8" d="M14 92.6h28.1" />
+        <path class="muteline" stroke-width="0.8" d="M14 102.4h38.0" />
+        <path class="muteline" stroke-width="0.8" d="M14 112.2h33.1" />
+        <path class="muteline" stroke-width="0.52" d="M303 52h36l8 8v54h-44" />
+        <path class="muteline" stroke-width="0.52" d="M301.5 53.5h36l8 8v54h-44" />
+        <path class="muteline etch" stroke-width="1.6" d="M300 55h36l8 8v54h-44z" />
+        <path class="muteline" stroke-width="1" d="M336 55v8h8" />
+        <path class="muteline" stroke-width="0.8" d="M304 68.0h34.0" />
+        <path class="muteline" stroke-width="0.8" d="M304 76.4h29.6" />
+        <path class="muteline" stroke-width="0.8" d="M304 84.8h25.2" />
+        <path class="muteline" stroke-width="0.8" d="M304 93.2h34.0" />
+        <path class="muteline" stroke-width="0.8" d="M304 101.6h29.6" />
+        <path class="muteline" stroke-width="1" d="M107 64v4h109v-4 M171 121v20h-30" />
+        <circle class="focus etch" cx="174" cy="120" r="8" stroke-width="1.4" />
+        <circle class="focus" cx="174" cy="120" r="4" />
+        <path class="dimline" stroke-width="0.8" d="M191 17h14 M175 117v20h20 M112 115v9h7" />
+        <rect class="focus paper" x="232" y="69" width="28" height="28" stroke-width="1" />
+        <path class="focus" stroke-width="1" d="M238 77h16M238 82h9M238 87h13" />
+      </g>
+    </symbol>
+    <symbol id="folio-companion" viewBox="0 0 356 156" preserveAspectRatio="none">
+      <g class="folio-drawing" fill="none" stroke-linejoin="round">
+        <path class="muteline etch" stroke-width="0.8" d="M13 24h37l-6 22h-37z" />
+        <path class="muteline etch" stroke-width="0.8" d="M17 20h37l-6 22h-37z" />
+        <path class="muteline etch" stroke-width="0.8" d="M21 16h37l-6 22h-37z" />
+        <path
+          class="dimline"
+          stroke-width="0.8"
+          d="M61 29.0 C91 29,86 51.0,119 51.0 L214 51.0 C250 51.0,251 24,276 24 H303"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M61 30.45 C91 30,86 52.4,119 52.4 L214 52.4 C250 52.4,251 25,276 25 H303"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M61 31.9 C91 31,86 53.8,119 53.8 L214 53.8 C250 53.8,251 26,276 26 H303"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.8"
+          d="M61 33.35 C91 32,86 55.2,119 55.2 L214 55.2 C250 55.2,251 27,276 27 H303"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M61 34.8 C91 33,86 56.6,119 56.6 L214 56.6 C250 56.6,251 28,276 28 H303"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M61 36.25 C91 34,86 58.0,119 58.0 L214 58.0 C250 58.0,251 29,276 29 H303"
+        />
+        <path
+          class="dimline"
+          stroke-width="0.8"
+          d="M61 37.7 C91 35,86 59.4,119 59.4 L214 59.4 C250 59.4,251 30,276 30 H303"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M61 39.15 C91 36,86 60.8,119 60.8 L214 60.8 C250 60.8,251 31,276 31 H303"
+        />
+        <path class="focus" stroke-width="0.52" d="M305 9h26l8 8v36h-34" />
+        <path class="focus" stroke-width="0.52" d="M303.5 10.5h26l8 8v36h-34" />
+        <path class="focus etch" stroke-width="1.6" d="M302 12h26l8 8v36h-34z" />
+        <path class="focus" stroke-width="1" d="M328 12v8h8" />
+        <path class="focus" stroke-width="1.25" d="M306 25.0h24.0" />
+        <path class="focus" stroke-width="1.25" d="M306 29.8h20.9" />
+        <path class="focus" stroke-width="1.25" d="M306 34.6h17.8" />
+        <path class="focus" stroke-width="1.25" d="M306 39.4h24.0" />
+        <path class="focus" stroke-width="1.25" d="M306 44.2h20.9" />
+        <path class="dimline" stroke-width="0.65" d="M65 17H93L106 30H198M67 14H94L107 27H198" />
+        <path class="muteline" stroke-width="1.5" d="M9 114H347" />
+        <path class="muteline" stroke-width="0.65" d="M10 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M17 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M24 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M31 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M38 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M45 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M52 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M59 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M66 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M73 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M80 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M87 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M94 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M101 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M108 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M115 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M122 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M129 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M136 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M143 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M150 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M157 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M164 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M171 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M178 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M185 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M192 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M199 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M206 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M213 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M220 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M227 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M234 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M241 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M248 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M255 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M262 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M269 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M276 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M283 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M290 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M297 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M304 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M311 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M318 114v8" />
+        <path class="muteline" stroke-width="0.65" d="M325 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M332 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M339 114v3" />
+        <path class="muteline" stroke-width="0.65" d="M346 114v8" />
+        <rect class="muteline etch" x="44.17" y="83" width="25.63" height="10" stroke-width="1.4" />
+        <rect class="muteline etch" x="70.94" y="98" width="21.64" height="10" stroke-width="1.4" />
+        <rect class="focus tint" x="163.76" y="83" width="22.78" height="10" stroke-width="1.4" />
+        <rect class="focus tint" x="187.68" y="98" width="21.64" height="10" stroke-width="1.4" />
+        <rect class="focus tint" x="260.58" y="83" width="28.47" height="10" stroke-width="1.4" />
+        <rect
+          class="muteline etch"
+          x="290.19"
+          y="98"
+          width="18.79"
+          height="10"
+          stroke-width="1.4"
+        />
+        <rect
+          class="muteline etch"
+          x="317.53"
+          y="83"
+          width="28.47"
+          height="10"
+          stroke-width="1.4"
+        />
+        <rect
+          class="focus tint"
+          x="118.20338983050847"
+          y="72"
+          width="170.84745762711867"
+          height="60"
+          stroke-width="1.7"
+        />
+        <path class="focus" stroke-width="1.4" d="M118.20338983050847 129v9H289.0508474576271v-9" />
+      </g>
+    </symbol>
+    <symbol id="folio-fault" viewBox="0 0 356 156" preserveAspectRatio="none">
+      <g class="folio-drawing" fill="none" stroke-linejoin="round">
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 75.0 H40 C78 75,85 29.0,143 28 S218 12,263 57 Q285 76,314 76 H343"
+        />
+        <path
+          class="focus"
+          stroke-width="0.72"
+          d="M343 76.0 H314 C268 76,247 130,192 131.0 S108 145.0,67 105 Q52 90,13 90"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 76.5 H40 C78 76,85 30.05,143 29 S218 13,263 58 Q285 77,314 77 H343"
+        />
+        <path
+          class="muteline"
+          stroke-width="0.72"
+          d="M343 77.3 H314 C268 77,247 131,192 131.8 S108 145.6,67 106 Q52 91,13 91"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 78.0 H40 C78 77,85 31.1,143 30 S218 14,263 59 Q285 78,314 78 H343"
+        />
+        <path
+          class="focus"
+          stroke-width="0.72"
+          d="M343 78.6 H314 C268 78,247 132,192 132.6 S108 146.2,67 107 Q52 92,13 92"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 79.5 H40 C78 78,85 32.15,143 31 S218 15,263 60 Q285 79,314 79 H343"
+        />
+        <path
+          class="muteline"
+          stroke-width="0.72"
+          d="M343 79.9 H314 C268 79,247 133,192 133.4 S108 146.8,67 108 Q52 93,13 93"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 81.0 H40 C78 79,85 33.2,143 32 S218 16,263 61 Q285 80,314 80 H343"
+        />
+        <path
+          class="focus"
+          stroke-width="0.72"
+          d="M343 81.2 H314 C268 80,247 134,192 134.2 S108 147.4,67 109 Q52 94,13 94"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 82.5 H40 C78 80,85 34.25,143 33 S218 17,263 62 Q285 81,314 81 H343"
+        />
+        <path
+          class="muteline"
+          stroke-width="0.72"
+          d="M343 82.5 H314 C268 81,247 135,192 135.0 S108 148.0,67 110 Q52 95,13 95"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 84.0 H40 C78 81,85 35.3,143 34 S218 18,263 63 Q285 82,314 82 H343"
+        />
+        <path
+          class="focus"
+          stroke-width="0.72"
+          d="M343 83.8 H314 C268 82,247 136,192 135.8 S108 148.6,67 111 Q52 96,13 96"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 85.5 H40 C78 82,85 36.35,143 35 S218 19,263 64 Q285 83,314 83 H343"
+        />
+        <path
+          class="muteline"
+          stroke-width="0.72"
+          d="M343 85.1 H314 C268 83,247 137,192 136.6 S108 149.2,67 112 Q52 97,13 97"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 87.0 H40 C78 83,85 37.4,143 36 S218 20,263 65 Q285 84,314 84 H343"
+        />
+        <path
+          class="focus"
+          stroke-width="0.72"
+          d="M343 86.4 H314 C268 84,247 138,192 137.4 S108 149.8,67 113 Q52 98,13 98"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 88.5 H40 C78 84,85 38.45,143 37 S218 21,263 66 Q285 85,314 85 H343"
+        />
+        <path
+          class="muteline"
+          stroke-width="0.72"
+          d="M343 87.7 H314 C268 85,247 139,192 138.2 S108 150.4,67 114 Q52 99,13 99"
+        />
+        <path
+          class="focus"
+          stroke-width="0.8"
+          d="M12 90.0 H40 C78 85,85 39.5,143 38 S218 22,263 67 Q285 86,314 86 H343"
+        />
+        <path
+          class="focus"
+          stroke-width="0.72"
+          d="M343 89.0 H314 C268 86,247 140,192 139.0 S108 151.0,67 115 Q52 100,13 100"
+        />
+        <rect class="muteline paper" x="7" y="70" width="19" height="28" stroke-width="1" />
+        <rect class="focus paper" x="326" y="69" width="20" height="26" stroke-width="1" />
+        <path class="focus" stroke-width="1.8" d="M156 30l9-4-3 8M197 133l-9 4 3-8" />
+        <path class="dimline" stroke-width="1" d="M322 100v25h-33" />
+        <path class="focus" stroke-width="0.52" d="M273 114h13l8 8v22h-21" />
+        <path class="focus" stroke-width="0.52" d="M271.5 115.5h13l8 8v22h-21" />
+        <path class="focus etch" stroke-width="1.6" d="M270 117h13l8 8v22h-21z" />
+        <path class="focus" stroke-width="1" d="M283 117v8h8" />
+        <path class="focus" stroke-width="1.25" d="M274 130.0h11.0" />
+        <path class="focus" stroke-width="1.25" d="M274 132.0h9.6" />
+        <path class="focus" stroke-width="1.25" d="M274 134.0h8.1" />
+        <path class="focus" stroke-width="1.25" d="M274 136.0h11.0" />
+        <path class="focus" stroke-width="1.25" d="M274 138.0h9.6" />
+      </g>
+    </symbol>
+  </defs>
+</svg>
+    <header>
+      <a class="brand" href="#opening" aria-label="DavidOS opening"
+        ><i class="brand-icon" aria-hidden="true"></i>David<span>OS</span></a
+      ><span class="header-rule"></span
+      ><span class="header-title">System tour</span>
+      <div class="palette" aria-label="Accent colour"></div>
+      <a class="skip" href="#index">Skip the tour ↘</a>
+    </header>
+    <main id="tour">
+      <div id="anchors"></div>
+      <div id="screen">
+        <div id="field">
+          <canvas id="world" aria-hidden="true"></canvas>
+          <div id="surfaces"></div>
+          <svg id="wires" aria-hidden="true"></svg>
+          <div id="scene-name"></div>
+          <aside id="readout" aria-label="Current record" hidden></aside>
+<div class="folio-opening">
+  <div class="folio-poster" aria-hidden="true"></div>
+  <div class="folio-id">
+    <p class="folio-command">david@dev:~$ <b>whoami</b></p>
+    <h1 aria-label="David Papp">
+      <span class="folio-mark" aria-hidden="true"><span class="folio-spelling">David </span></span><span>Papp<i>.</i></span>
+    </h1>
+    <p class="folio-role">AI solution developer</p>
+    <p class="folio-availability">Rotterdam, NL · Open to full-time work</p>
+    <div class="folio-actions">
+      <a href="/cv.pdf">Résumé ↗</a><a href="#client-studio">See the work ↓</a>
+    </div>
+    <small>AI engineering, backend and data</small>
+  </div>
+  <div class="folio-face">
+    <p class="folio-command">
+      david@dev:~$ <b>ps --featured</b><i class="folio-cursor" aria-hidden="true"></i>
+    </p>
+    <ol>
+      <li>
+        <div>
+          <h2><a href="#client-studio">client-studio</a></h2>
+          <p>A company assistant that quotes your text.</p>
+        </div>
+        <svg class="system-ink" aria-hidden="true" viewBox="0 0 356 156" preserveAspectRatio="none">
+          <use href="#folio-studio" />
+          <path
+            class="pulse pulse-0"
+            pathLength="1"
+            stroke-width="2.8"
+            d="M169 57 C171 82 206 73 234 74 S268 76 277 80 L305 80"
+          />
+          <path
+            class="pulse pulse-1"
+            pathLength="1"
+            stroke-width="2.3499999999999996"
+            d="M169 57 C171 82 206 73 234 74 S268 76 277 80 L305 80"
+          />
+          <path
+            class="pulse pulse-2"
+            pathLength="1"
+            stroke-width="1.9"
+            d="M169 57 C171 82 206 73 234 74 S268 76 277 80 L305 80"
+          />
+        </svg>
+      </li>
+      <li>
+        <div>
+          <h2><a href="#active-companion">active-companion</a></h2>
+          <p>Source cards for a conversation transcript.</p>
+        </div>
+        <svg class="system-ink" aria-hidden="true" viewBox="0 0 356 156" preserveAspectRatio="none">
+          <use href="#folio-companion" />
+          <path
+            class="pulse pulse-0"
+            pathLength="1"
+            stroke-width="2.8"
+            d="M61 34 C91 34 86 57 119 57 L214 57 C250 57 251 29 276 29 H303"
+          />
+          <path
+            class="pulse pulse-1"
+            pathLength="1"
+            stroke-width="2.3499999999999996"
+            d="M61 34 C91 34 86 57 119 57 L214 57 C250 57 251 29 276 29 H303"
+          />
+          <path
+            class="pulse pulse-2"
+            pathLength="1"
+            stroke-width="1.9"
+            d="M61 34 C91 34 86 57 119 57 L214 57 C250 57 251 29 276 29 H303"
+          />
+        </svg>
+      </li>
+      <li>
+        <div>
+          <h2><a href="#faultline">faultline</a></h2>
+          <p>How a retry can book a job twice.</p>
+        </div>
+        <svg class="system-ink" aria-hidden="true" viewBox="0 0 356 156" preserveAspectRatio="none">
+          <use href="#folio-fault" />
+          <path
+            class="pulse pulse-0"
+            pathLength="1"
+            stroke-width="2.8"
+            d="M12 81 H40 C78 81 85 35 143 34 S218 18 263 63 Q285 82 314 82 H343 M343 82 H314 C268 82 247 136 192 137 S108 151 67 111 Q52 96 13 96"
+          />
+          <path
+            class="pulse pulse-1"
+            pathLength="1"
+            stroke-width="2.3499999999999996"
+            d="M12 81 H40 C78 81 85 35 143 34 S218 18 263 63 Q285 82 314 82 H343 M343 82 H314 C268 82 247 136 192 137 S108 151 67 111 Q52 96 13 96"
+          />
+          <path
+            class="pulse pulse-2"
+            pathLength="1"
+            stroke-width="1.9"
+            d="M12 81 H40 C78 81 85 35 143 34 S218 18 263 63 Q285 82 314 82 H343 M343 82 H314 C268 82 247 136 192 137 S108 151 67 111 Q52 96 13 96"
+          />
+        </svg>
+      </li>
+    </ol>
+  </div>
+  <div class="folio-proof" hidden>
+    <small>ps --featured / 01</small>
+    <h2>client-studio</h2>
+    <p>A company assistant that quotes your text.</p>
+    <div class="folio-question">
+      <small>Fictional sample</small>
+      <p>What is the API batch limit?</p>
+    </div>
+  </div>
+  <div class="folio-leaf" hidden>
+    <b>client-studio</b
+    ><svg class="system-ink" aria-hidden="true" viewBox="0 0 356 156" preserveAspectRatio="none">
+      <use href="#folio-studio" />
+      <path
+        class="pulse pulse-0"
+        pathLength="1"
+        stroke-width="2.8"
+        d="M169 57 C171 82 206 73 234 74 S268 76 277 80 L305 80"
+      />
+      <path
+        class="pulse pulse-1"
+        pathLength="1"
+        stroke-width="2.3499999999999996"
+        d="M169 57 C171 82 206 73 234 74 S268 76 277 80 L305 80"
+      />
+      <path
+        class="pulse pulse-2"
+        pathLength="1"
+        stroke-width="1.9"
+        d="M169 57 C171 82 206 73 234 74 S268 76 277 80 L305 80"
+      />
+    </svg>
+  </div>
+  <div class="folio-leaf" hidden>
+    <b>active-companion</b
+    ><svg class="system-ink" aria-hidden="true" viewBox="0 0 356 156" preserveAspectRatio="none">
+      <use href="#folio-companion" />
+      <path
+        class="pulse pulse-0"
+        pathLength="1"
+        stroke-width="2.8"
+        d="M61 34 C91 34 86 57 119 57 L214 57 C250 57 251 29 276 29 H303"
+      />
+      <path
+        class="pulse pulse-1"
+        pathLength="1"
+        stroke-width="2.3499999999999996"
+        d="M61 34 C91 34 86 57 119 57 L214 57 C250 57 251 29 276 29 H303"
+      />
+      <path
+        class="pulse pulse-2"
+        pathLength="1"
+        stroke-width="1.9"
+        d="M61 34 C91 34 86 57 119 57 L214 57 C250 57 251 29 276 29 H303"
+      />
+    </svg>
+  </div>
+  <div class="folio-leaf" hidden>
+    <b>faultline</b
+    ><svg class="system-ink" aria-hidden="true" viewBox="0 0 356 156" preserveAspectRatio="none">
+      <use href="#folio-fault" />
+      <path
+        class="pulse pulse-0"
+        pathLength="1"
+        stroke-width="2.8"
+        d="M12 81 H40 C78 81 85 35 143 34 S218 18 263 63 Q285 82 314 82 H343 M343 82 H314 C268 82 247 136 192 137 S108 151 67 111 Q52 96 13 96"
+      />
+      <path
+        class="pulse pulse-1"
+        pathLength="1"
+        stroke-width="2.3499999999999996"
+        d="M12 81 H40 C78 81 85 35 143 34 S218 18 263 63 Q285 82 314 82 H343 M343 82 H314 C268 82 247 136 192 137 S108 151 67 111 Q52 96 13 96"
+      />
+      <path
+        class="pulse pulse-2"
+        pathLength="1"
+        stroke-width="1.9"
+        d="M12 81 H40 C78 81 85 35 143 34 S218 18 263 63 Q285 82 314 82 H343 M343 82 H314 C268 82 247 136 192 137 S108 151 67 111 Q52 96 13 96"
+      />
+    </svg>
+  </div>
+  <div class="folio-source" hidden>
+    <small>Public source · version 2</small>
+    <p>The API batch limit is<br /><strong></strong>.</p>
+  </div>
+  <div class="folio-strip" hidden></div>
+</div>
+<div id="copy"></div>
+        </div>
+        <nav id="chapters" aria-label="Tour chapters"><div class="track"><i class="travelled"></i><i class="cursor"></i></div>
+          <a class="chapter" style="left:0%" href="#opening"><span>Opening</span></a>
+          <a class="chapter" style="left:8.1633%" href="#client-studio"><span>client-studio</span></a>
+          <a class="chapter" style="left:36.7347%" href="#active-companion"><span>active-companion</span></a>
+          <a class="chapter" style="left:65.3061%" href="#faultline"><span>faultline</span></a>
+          <a class="chapter" style="left:100%" href="#index"><span>Index</span></a></nav>
+      </div>
+    </main>
+    <!-- The still edition is precomposed, so reading it requires no graphics context or engine run. -->
+    <template id="still-edition">
+      <nav aria-label="Tour chapters" class="reader-nav">
+        <a href="#opening">opening</a><a href="#client-studio">client-studio</a
+        ><a href="#active-companion">active-companion</a
+        ><a href="#faultline">faultline</a><a href="#index">index</a>
+      </nav>
+      <section id="opening" class="folio-reader"><div class="folio-reader-stage"></div><div class="folio-reader-proof"><small>Fictional sample · client-studio</small><h2>What is the API batch limit?</h2><p>Public source · version 2</p><p>The API batch limit is <strong>up to 50 records</strong>.</p><p>Quoted excerpt · <strong>up to 50 records</strong></p></div></section>
+      <section id="client-studio">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 01</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">client-studio</h2>
+          <p class="desc">
+            A company assistant that answers only from the text you give it,
+            shows the exact sentence it used, and goes live only after a person
+            approves it.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>TypeScript, Next.js, React, Supabase (PostgreSQL)</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>65 unit tests</dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Hosted demo with fictional examples. Lexical retrieval, model
+                calls off. Private source.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://client-studio-psi.vercel.app"
+              >Open demo <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-0.webp"
+          alt="A company assistant that answers only from the text you give it, shows the exact sentence it used, and goes live only after a person approves it."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>A question arrives in the Studio.</h2>
+          <p class="tech">
+            The server uses the anonymous session to find the workspace for this
+            question.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Question</span>
+                <p>What is the API batch limit?</p>
+              </div>
+              <div class="ev-row">
+                <span>Session</span>
+                <p>Cookie → Workspace</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-1.webp"
+          alt="A question arrives in the Studio."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The answer quotes the limit in the source.</h2>
+          <p class="tech">
+            Lexical retrieval selects the permitted source in version 2. The
+            answer repeats its exact excerpt.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Source v2</span>
+                <p>“up to 50 records”</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-2.webp"
+          alt="The answer quotes the limit in the source."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Internal text stays out of the customer answer.</h2>
+          <p class="tech">
+            The server filters by audience before lexical retrieval sees the
+            source text.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Public · v2</span>
+                <p>“up to 50 records”</p>
+              </div>
+              <div class="ev-row">
+                <span>Internal · v2</span>
+                <p>Withheld</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-3.webp"
+          alt="Internal text stays out of the customer answer."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>A person approves what customers can use.</h2>
+          <p class="tech">
+            Approval captures the tested configuration and permitted sources.
+            Activation copies that revision into the runtime snapshot.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Review</span>
+                <p>Approved</p>
+              </div>
+              <div class="ev-row">
+                <span>Active source</span>
+                <p>v2 · public</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-4.webp"
+          alt="A person approves what customers can use."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>A late edit cannot overwrite the approved version.</h2>
+          <p class="tech">
+            Writes are idempotent and revision-checked. A new write based on a
+            stale revision returns 409.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Stale edit</span>
+                <p>409 · Revision conflict</p>
+              </div>
+              <div class="ev-row">
+                <span>Active source</span>
+                <p>v2 · public</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-5.webp"
+          alt="A late edit cannot overwrite the approved version."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 02</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">active-companion</h2>
+          <p class="desc">
+            It follows a conversation transcript and puts the right reference
+            card in front of you at the right moment, and every card names its
+            source.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>Python</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>18 tests in CI · Public MIT source</dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Hosted replay of pipeline output for four fictional
+                conversations. No inference, microphone or uploads. No
+                evaluation on real meetings.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://active-companion-replay.vercel.app"
+              >Open demo <span>↗</span></a
+            ><a href="https://github.com/pappdavid/active-companion"
+              >Source <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-0.webp"
+          alt="It follows a conversation transcript and puts the right reference card in front of you at the right moment, and every card names its source."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>Each speaker’s words arrive with a time.</h2>
+          <p class="tech">
+            The fictional transcript supplies the speaker, text, start and end
+            of each utterance.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>6.0–10.5 s</span>
+                <p>
+                  How does your API integration work? Do you support webhooks?
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>10.7–14.5 s</span>
+                <p>REST over HTTPS with OAuth2, webhooks signed with HMAC.</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>speaker</th>
+                  <th>start (s)</th>
+                  <th>end (s)</th>
+                  <th>text</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>engineer</td>
+                  <td>6</td>
+                  <td>10.5</td>
+                  <td>
+                    How does your API integration work? Do you support webhooks?
+                  </td>
+                </tr>
+                <tr>
+                  <td>se</td>
+                  <td>10.7</td>
+                  <td>14.5</td>
+                  <td>
+                    REST over HTTPS with OAuth2, webhooks signed with HMAC.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-1.webp"
+          alt="Each speaker’s words arrive with a time."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The two oldest lines leave the working conversation.</h2>
+          <p class="tech">
+            SlidingWindow keeps utterances whose end time falls on or after the
+            30-second cutoff.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Window</span>
+                <p>19.0–49.0 s</p>
+              </div>
+              <div class="ev-row">
+                <span>Released</span>
+                <p>10.5 s · engineer / 14.5 s · se</p>
+              </div>
+              <div class="ev-row">
+                <span>Retained</span>
+                <p>31.0 s / 35.0 s / 49.0 s</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>speaker</th>
+                  <th>start (s)</th>
+                  <th>end (s)</th>
+                  <th>text</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>engineer</td>
+                  <td>6</td>
+                  <td>10.5</td>
+                  <td>
+                    How does your API integration work? Do you support webhooks?
+                  </td>
+                </tr>
+                <tr>
+                  <td>se</td>
+                  <td>10.7</td>
+                  <td>14.5</td>
+                  <td>
+                    REST over HTTPS with OAuth2, webhooks signed with HMAC.
+                  </td>
+                </tr>
+                <tr>
+                  <td>engineer</td>
+                  <td>27</td>
+                  <td>31</td>
+                  <td>What's the latency and throughput spec under load?</td>
+                </tr>
+                <tr>
+                  <td>se</td>
+                  <td>31.2</td>
+                  <td>35</td>
+                  <td>
+                    p50 is 120 milliseconds, sustained five thousand events per
+                    second.
+                  </td>
+                </tr>
+                <tr>
+                  <td>engineer</td>
+                  <td>44</td>
+                  <td>49</td>
+                  <td>
+                    Who is from your team should review our security
+                    questionnaire? Who is the technical contact?
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-2.webp"
+          alt="The two oldest lines leave the working conversation."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Someone asks who should handle a security review.</h2>
+          <p class="tech">
+            The heuristic classifier weights recent keyword matches and returns
+            contact_lookup.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Engineer</span>
+                <p>
+                  Who is from your team should review our security
+                  questionnaire? Who is the technical contact?
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>Intent</span>
+                <p>contact_lookup</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <p>
+              Who is from your team should review our security questionnaire?
+              Who is the technical contact?
+            </p>
+            <p>contact_lookup</p>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-3.webp"
+          alt="Someone asks who should handle a security review."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>
+            A reference card names two people and shows where both names came
+            from.
+          </h2>
+          <p class="tech">
+            TF-IDF ranks the chunks. The card selects two matching snippets from
+            “Who's who” and cites that title on each bullet.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Rank 2</span>
+                <p>notes:4 · Who's who</p>
+              </div>
+              <div class="ev-row">
+                <span>Card</span>
+                <p>Who's Who · 2 sourced bullets</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>chunk</th>
+                  <th>source</th>
+                  <th>cosine</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>notes:3</td>
+                  <td>Technical spec sheet</td>
+                  <td>0.2976</td>
+                </tr>
+                <tr>
+                  <td>notes:4</td>
+                  <td>Who's who</td>
+                  <td>0.2702</td>
+                </tr>
+                <tr>
+                  <td>contacts_and_facts:3</td>
+                  <td>Ingestion platform facts</td>
+                  <td>0.252</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Who's Who</h3>
+            <p>
+              Tom Okafor — Security lead, ACME Corp (runs the security
+              review)<br />Source: Who's who
+            </p>
+            <p>
+              Marcus Chen — Solutions Engineer, our side (technical
+              deep-dives)<br />Source: Who's who
+            </p>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-4.webp"
+          alt="A reference card names two people and shows where both names came from."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>An uncited bullet is dropped. The reference card stays.</h2>
+          <p class="tech">
+            Only bullets citing a retrieved title can replace retrieval bullets.
+            This local parser test shows a missing citation.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Parser test</span>
+                <p>claim without cite</p>
+              </div>
+              <div class="ev-row">
+                <span>Result</span>
+                <p>Dropped · retrieval card retained</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <p>Local parser test · claim without cite → Dropped</p>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-5.webp"
+          alt="An uncited bullet is dropped. The reference card stays."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 03</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">faultline</h2>
+          <p class="desc">
+            It shows why “just try again” can book the same job twice, and the
+            fix that prevents it.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>JavaScript · In-memory engine</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>
+                12 tests in CI · Public MIT source. This animation runs the
+                demo’s engine.
+              </dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Browser teaching model. Atomic effect-and-receipt storage is a
+                model assumption. No deployed service.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://davidpapp.dev/faultline/index.html"
+              >Open demo <span>↗</span></a
+            ><a href="https://github.com/pappdavid/faultline"
+              >Source <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/faultline-0.webp"
+          alt="It shows why “just try again” can book the same job twice, and the fix that prevents it."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>The receiver books the job and saves its receipt.</h2>
+          <p class="tech">
+            The fixed receiver commits VIS-742 and its keyed payload fingerprint
+            together in the engine’s atomic storage model.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>01 / request</span>
+                <p>POST /visits · attempt 1</p>
+              </div>
+              <div class="ev-row">
+                <span>02 / commit</span>
+                <p>Committed · VIS-742</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-1.webp"
+          alt="The receiver books the job and saves its receipt."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The confirmation is lost on the way back.</h2>
+          <p class="tech">
+            The reply drops after commit. The client times out with no observed
+            visit ID.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>02 / commit</span>
+                <p>Committed · VIS-742</p>
+              </div>
+              <div class="ev-row">
+                <span>03 / drop</span>
+                <p>Response lost · after commit</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-2.webp"
+          alt="The confirmation is lost on the way back."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Trying again books the same job twice.</h2>
+          <p class="tech">
+            In the separate baseline run, the same operation commits VIS-743
+            after VIS-742.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>05 / commit</span>
+                <p>Committed · VIS-743</p>
+              </div>
+              <div class="ev-row">
+                <span>06 / response</span>
+                <p>201 received · VIS-743</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+                <tr>
+                  <td>VIS-743</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Receiver creates a visit. It does not remember the operation
+                    key.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 2</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-743</td>
+                  <td>
+                    Receiver creates a visit. It does not remember the operation
+                    key.
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>response</td>
+                  <td>201 received · VIS-743</td>
+                  <td>
+                    Client can now confirm this visit against receiver state.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-3.webp"
+          alt="Trying again books the same job twice."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>The same retry returns the original booking.</h2>
+          <p class="tech">
+            The fixed receiver matches the key and payload fingerprint and
+            returns VIS-742 with 200.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>05 / replay</span>
+                <p>Replay stored result · VIS-742</p>
+              </div>
+              <div class="ev-row">
+                <span>06 / response</span>
+                <p>200 received · VIS-742</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 2</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2</td>
+                  <td>replay</td>
+                  <td>Replay stored result · VIS-742</td>
+                  <td>
+                    Same key + same payload. Return the original visit without
+                    another effect.
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>response</td>
+                  <td>200 received · VIS-742</td>
+                  <td>
+                    Client can now confirm this visit against receiver state.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-4.webp"
+          alt="The same retry returns the original booking."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>The same key cannot book a different time.</h2>
+          <p class="tech">
+            The fingerprint mismatch returns 409 and preserves the original
+            visit.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>07 / request</span>
+                <p>POST /visits · attempt 3</p>
+              </div>
+              <div class="ev-row">
+                <span>08 / conflict</span>
+                <p>409 · Key reused with a different payload</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 2</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2</td>
+                  <td>replay</td>
+                  <td>Replay stored result · VIS-742</td>
+                  <td>
+                    Same key + same payload. Return the original visit without
+                    another effect.
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>response</td>
+                  <td>200 received · VIS-742</td>
+                  <td>
+                    Client can now confirm this visit against receiver state.
+                  </td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>3</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 3</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>3</td>
+                  <td>conflict</td>
+                  <td>409 · Key reused with a different payload</td>
+                  <td>
+                    Receiver rejects the mutation. No extra visit is created.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-5.webp"
+          alt="The same key cannot book a different time."
+          decoding="async"
+        />
+      </section>
+      <section id="overview">
+        <article>
+          <div class="kicker">
+            <span class="bright">System tour</span
+            ><span class="bar"></span>Overview
+          </div>
+          <h2>Three systems.</h2>
+          <p class="desc">
+            A quoted answer, a source card and a booking receipt.
+          </p>
+        </article>
+        <img
+          src="assets/stills/closing.webp"
+          alt="System tour"
+          decoding="async"
+        />
+      </section>
+      <section id="index">
+        <article>
+          <div class="kicker prompt">
+            david@dev:~$ <span>ps --featured</span>
+          </div>
+          <h2>Project index<em class="bright">.</em></h2>
+          <div class="index-list">
+            <div>
+              <span class="serial">B</span
+              ><a href="#client-studio">client-studio</a
+              ><a class="ext" href="https://client-studio-psi.vercel.app"
+                >Demo ↗</a
+              ><span></span>
+            </div>
+            <div>
+              <span class="serial">C</span
+              ><a href="#active-companion">active-companion</a
+              ><a class="ext" href="https://active-companion-replay.vercel.app"
+                >Demo ↗</a
+              ><a
+                class="ext"
+                href="https://github.com/pappdavid/active-companion"
+                >Source ↗</a
+              >
+            </div>
+            <div>
+              <span class="serial">D</span><a href="#faultline">faultline</a
+              ><a class="ext" href="https://davidpapp.dev/faultline/index.html"
+                >Demo ↗</a
+              ><a class="ext" href="https://github.com/pappdavid/faultline"
+                >Source ↗</a
+              >
+            </div>
+          </div>
+          <div class="actions"><a href="/cv.pdf">Résumé ↗</a></div>
+          <div class="index-contact">
+            <span class="micro">Contact</span
+            ><a
+              data-contact=""
+              href="https://www.linkedin.com/in/d%C3%A1vid-papp"
+              >LinkedIn ↗</a
+            ><a href="https://github.com/pappdavid">GitHub ↗</a>
+          </div>
+        </article>
+        <img
+          src="assets/stills/index.webp"
+          alt="Three featured systems with their quoted answer, working window and saved visit"
+          decoding="async"
+        />
+      </section>
+    </template>
+    <svg class="ink-filter" width="0" height="0" aria-hidden="true">
+      <defs>
+        <filter id="still-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix id="ink-matrix" type="matrix" />
+        </filter>
+      </defs>
+    </svg>
+    <div id="reader" hidden></div>
+    <footer>
+      <div class="command">
+        <form>
+          <label for="cmd">david@dev:~$</label
+          ><input
+            id="cmd"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter a command…"
+            aria-describedby="reply"
+          />
+        </form>
+        <output id="reply" aria-live="polite"></output
+        ><button id="help" aria-label="Command help">
+          ? <span>Help</span>
+        </button>
+      </div>
+      <div class="status">
+        <span>REV <b id="revision">c4a72ef</b></span><span><b>17</b> public repos</span
+        ><span>ROTTERDAM <b id="clock">—</b></span
+        ><span>TTFB <b id="ttfb">—</b></span><span>FRAME <b id="ms">—</b></span>
+      </div>
+    </footer>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
