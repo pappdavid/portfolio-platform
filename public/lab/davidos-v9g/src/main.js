@@ -135,7 +135,8 @@ function spec(a) {
     .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`)
     .join("")}</dl>${links(a)}`;
 }
-const copy = $("#copy"),
+const field = $("#field"),
+  copy = $("#copy"),
   readout = $("#readout"),
   wires = $("#wires"),
   sceneName = $("#scene-name");
@@ -558,7 +559,8 @@ function draw() {
       else el.removeAttribute("aria-current");
     }
   }
-  copy.style.opacity = index ? ramp(u, 22.08, 22.72) : view.fade;
+  const captionLight = travel && idFor(at) !== travel.caption ? 0 : travelLight;
+  copy.style.opacity = captionLight * (index ? ramp(u, 22.08, 22.72) : view.fade);
   sceneName.style.opacity = view.fade;
   $("#chapters").style.setProperty("--position", (u / end) * 100 + "%");
   readout.hidden = !(isAct && f.b);
@@ -805,7 +807,67 @@ function draw() {
 const maxScroll = () =>
   Math.max(1, document.documentElement.scrollHeight - innerHeight);
 const nativeU = () => (scrollY / maxScroll()) * end;
+let travel = null,
+  travelLight = 1,
+  jumpRequested = false;
+function followLongMove(goal, now, dt) {
+  const distance = goal - u;
+  const requested = jumpRequested;
+  jumpRequested = false;
+  if (!travel && (distance === 0 || (!requested && Math.abs(distance) <= 1.5)))
+    return false;
+
+  if (!travel || goal !== travel.to) {
+    const fresh = !travel || requested || Math.abs(goal - travel.to) > 1.5;
+    const start = now - Math.min(dt, 0.12) * 1000;
+    // Wheel events in one gesture steer the same move and keep its deadline.
+    const end = fresh ? start + 1200 : Math.max(travel.end, start + 320);
+    const seconds = (end - start) / 1000;
+    travel = {
+      from: u,
+      to: goal,
+      start,
+      end,
+      fadeStart: fresh ? start : travel.fadeStart,
+      origin: fresh ? idFor(u) : travel.origin,
+      startLight: fresh ? travelLight : travel.startLight,
+      // A cubic with this entrance tangent and a flat exit stays between its endpoints.
+      tangent: distance
+        ? distance * clamp((velocity * seconds) / distance, 0, 3)
+        : 0,
+    };
+  }
+
+  const p = clamp((now - travel.start) / (travel.end - travel.start));
+  const left = 1 - p,
+    span = travel.to - travel.from;
+  u =
+    p === 1
+      ? goal
+      : travel.from +
+        span * p * p * (3 - 2 * p) +
+        travel.tangent * p * left * left;
+  velocity =
+    ((6 * p * left * span + travel.tangent * left * (1 - 3 * p)) * 1000) /
+    (travel.end - travel.start);
+  travelLight = Math.max(
+    travel.startLight *
+      (1 - ramp(now, travel.fadeStart, travel.fadeStart + 220)),
+    ramp(now, travel.fadeStart + 940, travel.fadeStart + 1200),
+  );
+  travel.caption = now < travel.fadeStart + 220 ? travel.origin : idFor(goal);
+  field.style.opacity = String(0.15 + 0.85 * travelLight);
+  if (p === 1) {
+    travel = null;
+    field.style.removeProperty("opacity");
+  }
+  return true;
+}
 function seek(value, formation = 1) {
+  travel = null;
+  travelLight = 1;
+  jumpRequested = false;
+  field.style.removeProperty("opacity");
   u = clamp(value, 0, end);
   velocity = 0;
   intro = formation;
@@ -848,11 +910,11 @@ function animate(now) {
   if (locked && goal !== locked.value) locked = null;
   const old = u,
     oldIntro = intro;
-  // Local critical spring (400 ms). A distant target advances the spring's
-  // equilibrium at its terminal speed, so neither a flick nor an anchor can cut.
+  // Keep the original 400 ms spring and gentle speed cap for nearby scroll targets.
   const omega = 2.5,
     limit = 1 / 0.9;
-  let remaining = Math.min(dt, 0.12);
+  const travelling = followLongMove(goal, now, dt);
+  let remaining = travelling ? 0 : Math.min(dt, 0.12);
   while (remaining > 0 && (u !== goal || velocity !== 0)) {
     const step = Math.min(remaining, 1 / 60);
     remaining -= step;
@@ -878,7 +940,7 @@ function animate(now) {
     ? locked.formation
     : Math.max(intro, clamp((now - boot) / 1900));
   if (!locked) loopPhase = Math.max(0, u - 21.9) / 3;
-  if (dirty || u !== old || intro !== oldIntro) {
+  if (dirty || travelling || u !== old || intro !== oldIntro) {
     draw();
     dirty = false;
   }
@@ -935,6 +997,7 @@ function jump(id) {
     return;
   }
   if (dest.has(id)) {
+    jumpRequested = true;
     locked = null;
     scrollTo(0, (dest.get(id) / end) * maxScroll());
   }
