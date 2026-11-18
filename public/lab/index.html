@@ -4,37 +4,191 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>DavidOS prototypes</title>
+    <title>DavidOS design concepts</title>
     <style>
-      body { margin: 0; min-height: 100vh; background: #0a0a0a; color: #e8e8e8; font: 16px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; display: grid; place-items: center; }
-      main { max-width: 640px; padding: 32px 24px; }
-      h1 { font-size: 20px; font-weight: 700; margin: 0 0 8px; }
-      p { color: #9a9a9a; margin: 0 0 24px; }
-      a { display: block; color: #00ff88; padding: 14px 0; border-top: 1px solid #222; text-decoration: none; }
-      a:last-child { border-bottom: 1px solid #222; }
-      a:hover, a:focus-visible { text-decoration: underline; text-underline-offset: 4px; outline: none; }
-      span { display: block; color: #9a9a9a; font-size: 13px; }
+      :root {
+        --ground: #0a0a0a;
+        --ink: #e8e8e8;
+        --quiet: #9a9a9a;
+        --rule: #222;
+        --accent: #00ff88;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font:
+          16px/1.6 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 16px 64px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 8px;
+      }
+      .lede {
+        color: var(--quiet);
+        margin: 0 0 32px;
+      }
+      section {
+        border-top: 1px solid var(--rule);
+        padding: 20px 0;
+      }
+      h2 {
+        font-size: 17px;
+        margin: 0 0 4px;
+      }
+      h2 a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover,
+      a:focus-visible {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        outline: none;
+      }
+      p {
+        margin: 0 0 6px;
+      }
+      .verdict {
+        color: var(--quiet);
+        font-size: 14px;
+      }
+      .revisions {
+        color: var(--quiet);
+        font-size: 13px;
+        margin: 8px 0 0;
+      }
+      .revisions a {
+        color: var(--ink);
+        margin-right: 14px;
+        white-space: nowrap;
+      }
     </style>
   </head>
   <body>
     <main>
-      <h1>DavidOS prototypes</h1>
-      <p>Working prototypes of the landing page. Preview only; the live site is unchanged.</p>
-      <a href="./davidos-v11/index.html">Full folio tour<span>Latest. The whole page in Terminal folios style: text on the sheets, matte, project name always on screen.</span></a>
-      <a href="./davidos-v10/index.html">Terminal folios opening<span>New first screen and first scroll on top of G5: words first, three named projects, one proof.</span></a>
-      <a href="./davidos-v9g/index.html">G5: one-shot tour, scroll feel and strands<span>Damped, slower scroll; fuller strands with travelling pulses.</span></a>
-      <a href="./davidos-v8g/index.html">G4: one-shot tour, finishing pass<span>One visual system, recomposed ending, clearer Client Studio.</span></a>
-      <a href="./davidos-v7g/index.html">G3: one-shot tour, visualised<span>Full-bleed stage, real data drawn as visualisation, new opening and ending.</span></a>
-      <a href="./davidos-v6g/index.html">G2: one-shot tour, real anatomy<span>Same camera flight; each system is now its actual components and data.</span></a>
-      <a href="./davidos-v6h/index.html">H2: cutaway tour, real anatomy<span>Isometric tiers; each system is now its actual components and data.</span></a>
-      <a href="./davidos-v5g/index.html">G: one-shot tour<span>Cinematic scroll tour: one continuous camera flight through three machines.</span></a>
-      <a href="./davidos-v5h/index.html">H: cutaway tour<span>Cinematic scroll tour: each system opens as an exploded drawing and runs step by step.</span></a>
-      <a href="./davidos-v3a/index.html">A: flow field<span>GPU particles moved by a flow field; they pour into each project's diagram.</span></a>
-      <a href="./davidos-v3b/index.html">B: ink<span>A fluid simulation; each project's diagram is drawn in ink and decays.</span></a>
-      <a href="./davidos-v4c/index.html">C: glyph field<span>The terminal characters are the fluid; currents resolve into each diagram.</span></a>
-      <a href="./davidos-v4d/index.html">D: contours<span>A living survey map in hairlines; each project is a landform.</span></a>
-      <a href="./davidos-v4e/index.html">E: scroll journey<span>Scrolling unravels the DAVID mark, strand by strand, into each project's diagram.</span></a>
-      <a href="./davidos-v4f/index.html">F: bench<span>Each project is a small simulation you step through with buttons.</span></a>
+      <h1>DavidOS design concepts</h1>
+      <p class="lede">
+        Nine concepts for the landing page. Each title opens the newest
+        revision of that concept; earlier revisions are listed under it.
+        Preview only; the live site is unchanged.
+      </p>
+
+      <section>
+        <h2><a href="./davidos-v11/index.html">Terminal folios</a></h2>
+        <p>
+          A cover and three sheets, one per project, on a single stage. The
+          text is printed on the sheets, and a fixed column always shows the
+          project name, a plain sentence and the step.
+        </p>
+        <p class="verdict">
+          Your verdict, 18 Nov: the transitions are rejected. The rest is not
+          judged yet.
+        </p>
+        <p class="revisions">
+          Revisions:
+          <a href="./davidos-v10/index.html">1 · opening only</a>
+          <a href="./davidos-v11/index.html">2 · full tour (newest)</a>
+        </p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v9g/index.html">G · One-shot tour</a></h2>
+        <p>
+          One continuous camera flight through the three systems, drawn from
+          their real components and data, driven by scroll.
+        </p>
+        <p class="verdict">
+          Your verdict: much better by revision 5, but it took you more than
+          10 seconds to recognise your own projects.
+        </p>
+        <p class="revisions">
+          Revisions:
+          <a href="./davidos-v5g/index.html">1 · first flight</a>
+          <a href="./davidos-v6g/index.html">2 · real anatomy</a>
+          <a href="./davidos-v7g/index.html">3 · visualised</a>
+          <a href="./davidos-v8g/index.html">4 · finishing pass</a>
+          <a href="./davidos-v9g/index.html">5 · scroll and strands (newest)</a>
+        </p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v6h/index.html">H · Cutaway tour</a></h2>
+        <p>
+          Each system opens as an exploded isometric drawing and runs step by
+          step.
+        </p>
+        <p class="verdict">
+          Your verdict: dropped. Jumpy and badly paced.
+        </p>
+        <p class="revisions">
+          Revisions:
+          <a href="./davidos-v5h/index.html">1 · first cutaway</a>
+          <a href="./davidos-v6h/index.html">2 · real anatomy (newest)</a>
+        </p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v3a/index.html">A · Flow field</a></h2>
+        <p>
+          Particles moved by a flow field pour into each project's diagram.
+        </p>
+        <p class="verdict">
+          Your verdict: pretty cool, renders fluidly on your M1.
+        </p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v3b/index.html">B · Ink</a></h2>
+        <p>
+          A fluid simulation; each project's diagram is drawn in ink and
+          decays.
+        </p>
+        <p class="verdict">
+          Your verdict: pretty cool, renders fluidly on your M1.
+        </p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v4c/index.html">C · Glyph field</a></h2>
+        <p>
+          The terminal characters are the fluid; currents resolve into each
+          diagram.
+        </p>
+        <p class="verdict">No verdict recorded.</p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v4d/index.html">D · Contours</a></h2>
+        <p>A living survey map in hairlines; each project is a landform.</p>
+        <p class="verdict">No verdict recorded.</p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v4e/index.html">E · Scroll journey</a></h2>
+        <p>
+          Scrolling unravels the DAVID mark, strand by strand, into each
+          project's diagram.
+        </p>
+        <p class="verdict">No verdict recorded.</p>
+      </section>
+
+      <section>
+        <h2><a href="./davidos-v4f/index.html">F · Bench</a></h2>
+        <p>Each project is a small simulation you step through with buttons.</p>
+        <p class="verdict">No verdict recorded.</p>
+      </section>
     </main>
   </body>
 </html>
