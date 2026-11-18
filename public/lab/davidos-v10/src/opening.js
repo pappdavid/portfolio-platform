@@ -1,6 +1,7 @@
 // The opening uses screen-sized model units. Its orthographic view makes the front
 // writing plane and semantic HTML share an aperture at every aspect ratio.
 import * as T from "../vendor/three.module.min.js";
+import { createDiagram } from "./folio-diagrams.js";
 import { ramp, sourceReplay } from "./story.js";
 
 const mix = T.MathUtils.lerp;
@@ -37,7 +38,7 @@ function place(el, x, y, w, h) {
   if (w !== undefined) el.style.width = w + "px";
   if (h !== undefined) el.style.height = h + "px";
 }
-export function createOpening() {
+export function createOpening(models) {
   const root = document.querySelector(".folio-opening"),
     face = root.querySelector(".folio-face"),
     id = root.querySelector(".folio-id"),
@@ -49,8 +50,8 @@ export function createOpening() {
     cursor = face.querySelector(".folio-cursor"),
     proofTitle = proof.querySelector("h2"),
     question = proof.querySelector(".folio-question"),
-    pulses = rows.map((row) => [...row.querySelectorAll(".pulse")]),
-    drawings = leaves.map((leaf) => leaf.querySelector("svg"));
+    apertures = rows.map((row) => row.querySelector(".system-ink")),
+    names = leaves.map((leaf) => leaf.querySelector("b"));
   proof.querySelector(".folio-question p").textContent = sourceReplay.question;
   source.querySelector("small").textContent =
     "Public source · version " + sourceReplay.source.version;
@@ -80,6 +81,21 @@ export function createOpening() {
   const ink = { value: new T.Vector3(0, 1, 0.533) },
     pass = { value: 0 };
 
+  const diagrams = models.map((model, i) => createDiagram(model, i, ink));
+  diagrams.forEach((d) => scene.add(d.cover, d.group));
+  const notes = diagrams.map((d, i) =>
+    d.anchors().map(({ name, kind }) => {
+      const el = document.createElement("span");
+      el.className = "folio-note" + (kind ? " folio-" + kind : "");
+      el.textContent = name;
+      leaves[i].append(el);
+      return el;
+    }),
+  );
+  const vertical = V(0, 1);
+  function snap(value) {
+    return Math.round(value * devicePixelRatio) / devicePixelRatio;
+  }
   function surface(rgb, tile = -1, strength = 0) {
     const mat = new T.ShaderMaterial({
       side: T.DoubleSide,
@@ -97,10 +113,31 @@ export function createOpening() {
         alpha: { value: 1 },
       },
       vertexShader:
-        "varying vec2 st;void main(){st=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
-      fragmentShader: `varying vec2 st;uniform sampler2D body,matte;uniform vec3 color,ink;uniform float tile,strength,pass,alpha;
+        "varying vec2 st;varying vec3 pt;void main(){st=uv;pt=(modelViewMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*vec4(pt,1.);}",
+      fragmentShader: `varying vec2 st;varying vec3 pt;uniform sampler2D body,matte;uniform vec3 color,ink;uniform float tile,strength,pass,alpha;
         void main(){vec3 c=color;float e=strength;
-        if(tile>=0.){vec2 uv=tile==1.?st.yx:st;vec2 p=vec2(uv.x,1.-(tile+mix(.02,.98,uv.y))*.25);c+=texture2D(body,p).rgb;e+=texture2D(matte,p).r;}
+        if(tile>=4.){
+          // Sample the unbroken graphite and laminated edge of the generated housing.
+          vec2 faceUV=vec2(.10+.37*st.x,.247-.12*st.y);
+          vec3 graphite=texture2D(body,faceUV).rgb;
+          vec3 n=normalize(cross(dFdx(pt),dFdy(pt)));
+          float key=.30+.70*abs(dot(n,normalize(vec3(-.35,.70,.66))));
+          float rake=clamp(.95-.58*st.x+.15*st.y,.32,1.);
+          vec3 grain=texture2D(body,vec2(.12+.25*st.x,.245-.072*st.y)).rgb;
+          vec2 weave=abs(fract(st*vec2(6.5,3.8))-.5)*2.;
+          vec2 fineUV=vec2(.26+.12*weave.x,.238-.073*weave.y);
+          vec3 fine=texture2D(body,fineUV).rgb-texture2D(body,fineUV+vec2(.008,.009)).rgb;
+          c=(color+graphite*.50+(grain-vec3(.205))*.13+fine*1.18)*(key*rake+.21);
+          if(tile>4.5){
+            vec2 edges=vec2(.23+.17*st.x,.999-.23*st.y);
+            float lamina=texture2D(body,edges).r;
+            c=(color+vec3(lamina*.55))*key;
+            vec2 contact=vec2(st.x,.998-.236*st.y);
+            float ply=sin(st.y*39.5+lamina*2.)*.5+.5;
+            c*=.76+.31*ply;
+            e=texture2D(matte,contact).r*(1.-smoothstep(.18,.78,st.y))*.86;
+          }
+        } else if(tile>=0.){vec2 uv=tile==1.?st.yx:st;vec2 p=vec2(uv.x,1.-(tile+mix(.02,.98,uv.y))*.25);c+=texture2D(body,p).rgb;e+=texture2D(matte,p).r;}
         vec3 result=pass==2.?vec3(e):c+(pass==1.?vec3(0.):ink)*e;
         gl_FragColor=vec4(result,alpha);}`,
     });
@@ -110,7 +147,14 @@ export function createOpening() {
     rim = surface([0.032, 0.032, 0.032], 3),
     top = surface([0.05, 0.05, 0.05], 0),
     side = surface([0.04, 0.04, 0.04], 1),
-    paper = surface([0.058, 0.068, 0.064]),
+    cardStock = [
+      surface([0.096, 0.104, 0.1], 4),
+      surface([0.063, 0.07, 0.066], 4),
+      surface([0.048, 0.055, 0.052], 4),
+    ],
+    section = surface([0.205, 0.211, 0.205], 5),
+    bevel = surface([0.25, 0.26, 0.25], 4),
+    tabStock = surface([0.15, 0.16, 0.15], 4),
     edge = surface([0.33, 0.36, 0.34]),
     fold = surface([0.135, 0.16, 0.145]),
     lit = surface([0.02, 0.025, 0.02], -1, 0.77),
@@ -168,10 +212,14 @@ export function createOpening() {
   const folios = Array.from({ length: 3 }, (_, i) => {
     const z = 22 + (2 - i) * 5;
     return {
-      back: sheet(5, fold, z - 0.5),
+      rims: Array.from({ length: 5 }, () => sheet(4, bevel, z + 0.92)),
+      walls: Array.from({ length: 5 }, () => sheet(4, section, z - 0.4)),
+      tabSide: sheet(4, section, z + 0.02),
+      tab: sheet(4, tabStock, z + 0.03),
+      tabEdge: sheet(4, section, z + 0.04),
       edge: sheet(5, edge, z),
-      face: sheet(5, paper, z + 1),
-      line: sheet(4, lit, z + 2),
+      face: sheet(5, cardStock[i], z + 1),
+      line: sheet(4, bevel, z + 2),
       fold: sheet(4, fold, z + 3),
     };
   });
@@ -326,6 +374,10 @@ export function createOpening() {
       faceInk = 1 - ramp(pivot, 0.035, 0.13);
     show(id, byline);
     show(face, faceInk);
+    const coverInk = 1 - ramp(u, 0.28, 0.44);
+    // Keep registration measurable after the words have left the turning plane.
+    if (coverInk > 0.001) face.hidden = false;
+    const acrossCover = V(Math.cos(yaw), -0.052 * Math.sin(yaw));
     face.style.transform =
       "matrix(" +
       Math.cos(yaw) +
@@ -339,16 +391,6 @@ export function createOpening() {
     question.style.opacity = open * (1 - ramp(u, 1.61, 1.77));
     face.style.setProperty("--selection", ramp(u, 0.03, 0.22));
     cursor.style.opacity = time % 1.12 < 0.72 ? 1 : 0;
-    pulses.forEach((paths, i) => {
-      const phase = (((time / 3.6 + 1 - i / 3) % 1) + 1) % 1;
-      const p = phase * 2.45;
-      paths.forEach((path, j) => {
-        path.style.strokeDashoffset = String(-p - j * 0.029);
-        path.style.opacity = String(
-          (1 - ramp(p, 0.93, 1.09)) * [0.48, 0.8, 1][j] * idle,
-        );
-      });
-    });
     const expose = ramp(u, 0.27, 0.51);
     let sourceBox, sourceCorners;
     folios.forEach((q, i) => {
@@ -356,16 +398,17 @@ export function createOpening() {
       const front = 2 - i;
       const fw = mobile
           ? W * (0.89 + 0.022 * front)
-          : W * (0.73 + 0.035 * front),
-        fh = mobile ? H * 0.33 : H * 0.36;
+          : W * (0.94 + 0.021 * front),
+        fh = mobile ? H * 0.314 : H * 0.357;
       const xx = mobile
         ? x + W * (0.11 - 0.051 * front)
-        : x + W * (0.32 - 0.135 * front);
+        : x + W * (0.124 - 0.086 * front);
       const yy = mobile
-        ? y + H * (0.018 + 0.313 * front)
-        : y + H * (-0.075 + 0.349 * front);
-      const fx = mix(x + W * 0.08, xx, fan),
-        fy = mix(y + H * (0.03 + 0.075 * front), yy, fan);
+        ? y + H * (-0.025 + 0.348 * front)
+        : y + H * (-0.095 + 0.389 * front);
+      const parallax = fan * (1 - fan) * (front - 1) * unit;
+      const fx = mix(x + W * 0.08, xx, fan) + 42 * parallax,
+        fy = mix(y + H * (0.03 + 0.075 * front), yy, fan) - 18 * parallax;
       const sx =
           i === 0 ? mix(fx, mobile ? x + 5 * unit : x + W * 0.037, open) : fx,
         sy =
@@ -373,23 +416,27 @@ export function createOpening() {
         sw = i === 0 ? mix(fw, mobile ? W * 0.97 : W * 0.82, open) : fw,
         sh = i === 0 ? mix(fh, mobile ? H * 0.35 : H * 0.403, open) : fh;
       // The rear leaves lean out of the hinge around their vertical and horizontal axes.
-      // Their projected plane basis drives the SVG scale and the tab's DOM baseline.
+      // Their projected plane basis drives the shared meshes and the tab’s page-space anchor.
       const angle =
-        (((10 + i * 4) * Math.PI) / 180) * fan * (i === 0 ? 1 - open : 1);
+        (((14 + i * 6) * Math.PI) / 180) * fan * (i === 0 ? 1 - open : 1);
       const pitch =
-        (((mobile ? 3.5 : 8) * Math.PI) / 180) * fan * (i === 0 ? 1 - open : 1);
+        (((mobile ? 4.2 : 10 + i * 2) * Math.PI) / 180) *
+        fan *
+        (i === 0 ? 1 - open : 1);
       const along = V(
         Math.cos(angle) + 0.32 * Math.sin(angle),
-        -0.15 * Math.sin(angle),
+        -0.14 * Math.sin(angle),
         Math.sin(angle),
       );
       const down = V(
-        -0.3 * Math.sin(pitch),
+        -0.38 * Math.sin(pitch),
         Math.cos(pitch) + 0.16 * Math.sin(pitch),
         -Math.sin(pitch),
       );
       const planeAt = (lx, ly) =>
-        V(sx, sy).addScaledVector(along, lx).addScaledVector(down, ly);
+        V(sx, sy, front * 48 * unit * fan * (1 - dock))
+          .addScaledVector(along, lx)
+          .addScaledVector(down, ly);
       let corners = panel(rect(sx, sy, sw, sh));
       corners[1].x -= mobile ? 13 : 25;
       corners[2].y = sy + (mobile ? 13 : 25);
@@ -397,14 +444,15 @@ export function createOpening() {
       if (i === 0)
         corners = corners.map((v, j) => blend(v, targets.doc[j], dock));
       const a = expose * (i === 0 ? 1 - ramp(u, 1.96, 1.995) : 1 - gone);
-      q.back(
-        corners.map((v) =>
-          v
-            .clone()
-            .add(V(4 * unit * (1 - dock), -4 * unit * (1 - dock), -4 * unit)),
-        ),
-        a,
+      // Top, five return faces and bevel share the same clipped outline during the dock.
+      const thickness = (mobile ? 6 : 13) * unit * (1 + 0.17 * i) * (1 - dock);
+      const back = corners.map((v) =>
+        v.clone().add(V(thickness * 0.57, thickness, -thickness * 1.8)),
       );
+      q.walls.forEach((put, j) => {
+        const k = (j + 1) % 5;
+        put([corners[j], corners[k], back[k], back[j]], a);
+      });
       q.edge(corners, a);
       const inset = corners.map((v, j) =>
         V(
@@ -413,7 +461,23 @@ export function createOpening() {
           v.z,
         ),
       );
-      q.face(inset, a);
+      const bevelW = (mobile ? 1.6 : 2.8) * unit * (1 - dock);
+      const inner = inset.map((v, j) =>
+        v
+          .clone()
+          .add(
+            V(
+              ([0, 4].includes(j) ? 1 : -1) * bevelW,
+              (j < 2 ? 1 : -1) * bevelW,
+              bevelW,
+            ),
+          ),
+      );
+      q.rims.forEach((put, j) => {
+        const k = (j + 1) % 5;
+        put([corners[j], corners[k], inner[k], inner[j]], a);
+      });
+      q.face(inner, a);
       const v0 = corners[0],
         v1 = corners[1];
       q.line(
@@ -429,21 +493,93 @@ export function createOpening() {
         [corners[1], corners[2], V(corners[1].x, corners[2].y), corners[1]],
         a * (1 - dock),
       );
-      const el = leaves[i];
-      const mx = mobile ? 12 * unit : 19 * unit,
+      const el = leaves[i],
+        mx = mobile ? 12 * unit : 19 * unit,
         my = mobile ? 8 * unit : 12 * unit;
-      const tab = planeAt(mx, my);
-      place(el, tab.x, tab.y, sw - 2 * mx, sh - 2 * my);
-      el.style.transform =
-        "matrix(" + [along.x, along.y, down.x, down.y, 0, 0].join(",") + ")";
-      // Occlude ink with the sheet in front until there is room for its named shelf.
-      const shelf = mix(H * 0.075, H * (mobile ? 0.313 : 0.349), fan);
-      el.style.clipPath =
-        i === 0
-          ? "none"
-          : "inset(0 0 " + Math.max(0, sh - shelf - my) + "px 0)";
+      const tabHeight = (mobile ? 23 : 35) * unit,
+        tabWidth = (mobile ? 165 : 245) * unit;
+      const lip = mx * 0.6;
+      const outline = [
+        planeAt(lip, -tabHeight * 0.65),
+        planeAt(lip + tabWidth, -tabHeight * 0.65),
+        planeAt(lip + tabWidth + tabHeight * 0.45, tabHeight * 0.38),
+        planeAt(lip, tabHeight * 0.38),
+      ];
+      const endTab = a * (1 - gone);
+      q.tabSide(
+        [
+          outline[0],
+          outline[1],
+          outline[1].clone().add(V(2, -2, -2)),
+          outline[0].clone().add(V(2, -2, -2)),
+        ],
+        endTab,
+      );
+      q.tab(outline, endTab);
+      q.tabEdge(
+        [
+          outline[0],
+          outline[1],
+          blend(outline[1], outline[2], 0.11),
+          blend(outline[0], outline[3], 0.11),
+        ],
+        endTab,
+      );
+      const label = planeAt(lip + mx * 0.5, -tabHeight * 0.58);
+      place(el, 0, 0);
+      place(names[i], snap(label.x), snap(label.y));
+      const shelf = mix(H * 0.075, H * (mobile ? 0.348 : 0.389), fan);
       show(el, expose * (1 - gone));
-      drawings[i].style.opacity = i === 0 ? 1 - open : 1;
+      const drawing = diagrams[i];
+      if (coverInk > 0.001) {
+        const r = apertures[i].getBoundingClientRect();
+        const flatWidth = r.width / acrossCover.x;
+        const flatHeight = r.height - Math.abs(acrossCover.y) * flatWidth;
+        drawing.place(
+          V(r.left + r.width / 2, r.top + r.height / 2),
+          acrossCover,
+          vertical,
+          flatWidth * 0.985,
+          flatHeight * 0.92,
+          17,
+          coverInk,
+          time,
+          w,
+          h,
+          true,
+        );
+      } else {
+        drawing.cover.visible = false;
+      }
+      const visibleH = Math.min(sh, shelf);
+      const opacity = expose * (1 - gone) * (i === 0 ? 1 - open : 1);
+      drawing.place(
+        planeAt(sw * 0.505, visibleH * 0.519),
+        along,
+        down,
+        sw - (mobile ? 21 : 42) * unit,
+        visibleH * (mobile ? 0.83 : 0.88),
+        22 + front * 5 + 3.3,
+        opacity * (i === 0 ? 1 : 0.88),
+        time,
+        w,
+        h,
+      );
+      const detailAlpha = ramp(fan, 0.8, 1) * opacity;
+      diagrams[i].showRecordValues(!mobile && detailAlpha > 0.5);
+      if (detailAlpha > 0.005) {
+        diagrams[i].anchors().forEach(({ name, x, y }, j) => {
+          const node = notes[i][j];
+
+          place(node, snap(x - node.offsetWidth / 2), snap(y - 6));
+        });
+      }
+      notes[i].forEach((node) => {
+        const eligible = !mobile || node.classList.contains("folio-caption");
+        node.style.visibility =
+          eligible && detailAlpha > 0.005 ? "visible" : "hidden";
+        node.style.opacity = detailAlpha;
+      });
       if (i === 0) {
         sourceBox = { sx, sy, sw, sh, mx, my };
         sourceCorners = corners;
@@ -546,6 +682,20 @@ export function createOpening() {
     draw,
     materialsReady,
     positionTitle,
+    drawingBounds() {
+      return diagrams.map((d) => {
+        const box = new T.Box3().setFromObject(
+          d.group.visible ? d.group : d.cover,
+          true,
+        );
+        return {
+          left: box.min.x,
+          top: -box.max.y,
+          right: box.max.x,
+          bottom: -box.min.y,
+        };
+      });
+    },
     accent(hex) {
       const n = parseInt(hex.slice(1), 16);
       ink.value.set((n >> 16) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);

@@ -58,7 +58,7 @@ export function createWorld(canvas) {
     system.uniforms = local.uniforms;
     return system;
   });
-  const opening = createOpening();
+  const opening = createOpening(systems.slice(1).map(system => system.folio));
   const closingCamera = camera.clone();
   let width,
     height,
@@ -114,6 +114,8 @@ export function createWorld(canvas) {
     return { x: ((v.x + 1) * width) / 2, y: ((1 - v.y) * height) / 2, z: v.z };
   }
   function render(u, formation, loop = 0, idleTime = 0, light = 1) {
+    const ratio = Math.min(devicePixelRatio, u < 1.8 ? 3 : 2);
+    if (renderer.getPixelRatio() !== ratio) renderer.setPixelRatio(ratio);
     const f = frame(u),
       closing = ramp(u, 21.52, 23.0),
       gather = ramp(u, 23.18, 24.43),

@@ -308,6 +308,12 @@ export function companion(m) {
     endpoints: ends,
     gateway: lab,
     fieldCorners: frameCorners,
+    folio: {
+      parts: [axis, ...bars.map(b => b.archive), ...spines, field.mesh, outline, ...ranks, classifier, evidence, citations, list],
+      bracket, bracketStart: xTime(49 - 30),
+      highlight: [evidence,classifier],
+      pulses: [[matches, 21, .105], [citePath, 20, .076, {fork}]],
+    },
     update(t, closing = 0) {
       const replayStart = ramp(t, 0.45, 0.66),
         p = stage(t, 2),

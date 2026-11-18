@@ -43,7 +43,7 @@ export function fault(m) {
     [5.73, -0.6, 0.57],
     [8.65, -0.6, 0.5],
   ];
-  s.part((d) => {
+  const clientLink = s.part((d) => {
     cable(d, request, 25, 0.18, -0.65, { inlets: true });
 
     for (let f = 0; f < 5; f++) {
@@ -280,6 +280,12 @@ export function fault(m) {
   return {
     ...s,
     endpoints: ends,
+    folio: {
+      parts: [clientLink, brokenReply, visitHead, rows[0], map],
+      highlight: [clientLink],
+      pulses: [[request, 25, .18, {inlets:true}], [response.slice(0,4), 24, .16, {fray:1}]],
+      visit: runs[3].visits[0], receipt: runs[3].receipts[booking.operation], columns,
+    },
     update(t, closing = 0) {
       const b = sceneBeat(t),
         p = stage(t, b),

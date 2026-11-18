@@ -950,8 +950,8 @@ function animate(now) {
     ? locked.formation
     : Math.max(intro, clamp((now - boot) / 1900));
   if (!locked) loopPhase = Math.max(0, u - 21.9) / 3;
-  if (!locked && u < .23) idleTime = now / 1000;
-  if (dirty || travelling || u !== old || intro !== oldIntro || (!locked && u < .23)) {
+  if (!locked && u < 1.8) idleTime = now / 1000;
+  if (dirty || travelling || u !== old || intro !== oldIntro || (!locked && u < 1.8)) {
     draw();
     dirty = false;
   }
@@ -1213,6 +1213,7 @@ window.tourCapture = {
   get u() {
     return u;
   },
+  drawingBounds: () => world?.opening.drawingBounds(),
   posterPass: n => world?.opening.setPass(n),
   seek: (p, formation = 1, loop = 0, seconds = 0) => {
     idleTime = seconds;

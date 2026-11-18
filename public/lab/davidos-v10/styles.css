@@ -1956,37 +1956,6 @@ body[data-shot="opening"] #copy {
   overflow: visible;
   color: var(--accent);
 }
-.folio-drawing .focus {
-  stroke: var(--accent);
-}
-.folio-drawing .muteline {
-  stroke: #b6bdb9;
-}
-.folio-drawing .dimline {
-  stroke: #69756e;
-}
-.folio-drawing .etch,
-.folio-drawing .paper {
-  fill: #101311;
-}
-.folio-drawing .tint {
-  fill: var(--accent);
-  fill-opacity: 0.08;
-}
-.pulse {
-  fill: none;
-  stroke: var(--accent);
-  stroke-dasharray: 0.075 1.1;
-  opacity: 0;
-}
-.pulse-1 {
-  stroke: color-mix(in srgb, var(--accent) 72%, #fff);
-  stroke-dasharray: 0.045 1.1;
-}
-.pulse-2 {
-  stroke: #f4fff9;
-  stroke-dasharray: 0.016 1.1;
-}
 .folio-proof h2 {
   font-size: clamp(25px, 3vw, 58px);
   margin: 12px 0;
@@ -2013,15 +1982,9 @@ body[data-shot="opening"] #copy {
   pointer-events: none;
 }
 .folio-leaf b {
-  font-size: clamp(14px, 1.55vw, 24px);
-  color: var(--accent);
-  line-height: 1.05;
   letter-spacing: -0.045em;
 }
-.folio-leaf .system-ink {
-  height: calc(100% - 33px);
-  margin-top: 6px;
-}
+
 .folio-source {
   line-height: 1.35;
 }
@@ -2156,9 +2119,6 @@ body[data-shot="opening"] #copy {
   .folio-question {
     margin: 12px 0;
   }
-  .folio-leaf b {
-    font-size: 16px;
-  }
   .folio-source p,
   .folio-strip {
     font-size: 17px;
@@ -2172,11 +2132,6 @@ body[data-shot="opening"] #copy {
   }
   .folio-reader-stage .folio-id {
     top: 8px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pulse {
-    display: none;
   }
 }
 @media (max-width: 960px) {
@@ -2201,4 +2156,34 @@ body.folio-arrival #copy h2 {
 }
 body.folio-arrival .folio-opening {
   z-index: 3;
+}
+
+.folio-opening.is-live .folio-face .system-ink { visibility: hidden }
+.folio-leaf { position: absolute; inset: 0; transform: none; }
+.folio-leaf b, .folio-leaf .folio-note {
+  position: absolute;
+  display: block;
+  white-space: nowrap;
+  margin: 0;
+}
+.folio-leaf b {
+  font-size: clamp(19px,1.55vw,26px);
+  color: var(--paper);
+  font-weight: 700;
+  line-height: 1;
+}
+.folio-leaf .folio-note {
+  font-size: 12px;
+  line-height: 1;
+  color: #c6cbc6;
+  letter-spacing: -.025em;
+}
+@media(max-width:960px){.folio-leaf b{font-size:16px}}
+.folio-leaf .folio-value {
+  white-space: pre;
+  line-height: 1.15;
+  text-align: center;
+  color: #e3e9e4;
+  background: #151917;
+  padding: 0 2px;
 }

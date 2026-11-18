@@ -411,6 +411,11 @@ export function studio(m) {
     ...s,
     gateway,
     publicDocument: docs[1],
+    folio: {
+      parts: [author.obj, customer.obj, ...docs, routing, routeSocket, runtimeRead, store, filter, snapshotLink, snapshot],
+      highlight: [routing,runtimeRead],
+      pulses: [[request, 22, 0.116], [publicPath, 22, 0.083], [read, 18, 0.09]],
+    },
     endpoints,
     update(t, closing = 0) {
       const b = sceneBeat(t),
