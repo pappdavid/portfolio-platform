@@ -29,6 +29,9 @@ jobs:
       - name: Chat stream regression tests
         run: npm run test:chat
 
+      - name: API guard regression tests
+        run: npm run test:api
+
       - name: Showcase and engineering note regression tests
         run: npm run test:showcases
 

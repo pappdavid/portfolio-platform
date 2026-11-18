@@ -76,7 +76,13 @@ export async function POST(req: Request) {
   const identifier = userId || req.headers.get('x-forwarded-for') || 'anon';
 
   const limiter = userId ? chatAuthRateLimit : chatPublicRateLimit;
-  const { success } = await limiter.limit(identifier);
+  const { success, unavailable } = await limiter.limit(identifier);
+  if (unavailable) {
+    return NextResponse.json(
+      { error: 'Chat is temporarily unavailable. Please try again later.' },
+      { status: 503 }
+    );
+  }
   if (!success) {
     return NextResponse.json(
       { error: `Rate limit exceeded (${userId ? '50' : '2'}/hr)` },
