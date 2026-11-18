@@ -1,0 +1,1531 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="portfolio:commit" content="c4a72ef" />
+    <title>DavidOS — David Papp · System tour</title>
+    <link rel="icon" href="favicon.ico" />
+    <link
+      rel="preload"
+      href="assets/JetBrainsMono-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#opening" aria-label="DavidOS opening"
+        ><i class="brand-icon" aria-hidden="true"></i>David<span>OS</span></a
+      ><span class="header-rule"></span
+      ><span class="header-title">System tour</span>
+      <div class="palette" aria-label="Accent colour"></div>
+      <a class="skip" href="#index">Skip the tour ↘</a>
+    </header>
+    <main id="tour">
+      <div id="anchors"></div>
+      <div id="screen">
+        <div id="field">
+          <canvas id="world" aria-hidden="true"></canvas>
+          <div id="surfaces"></div>
+          <div class="viewport" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </div>
+          <div class="plate">
+            <span id="figure"></span><span class="slant">/</span
+            ><span id="device"></span>
+          </div>
+          <div id="plot-note"><i></i><span id="plot-text"></span></div>
+
+          <div id="part-tags" aria-hidden="true"></div>
+          <div id="copy">
+            <div class="kicker prompt">david@dev:~$ <span>whoami</span></div>
+            <h1>David <br />Papp<em>.</em></h1>
+            <p class="role">AI solution developer</p>
+            <div class="availability">
+              <i class="dot"></i>Open to full-time work
+              <i class="sep"></i>Rotterdam, NL
+            </div>
+            <p class="targets">
+              <span class="micro">Target roles</span>AI engineering, backend and
+              data
+            </p>
+            <div class="actions">
+              <a href="/cv.pdf">Résumé ↗</a
+              ><a href="#client-studio">Projects <span>↓</span></a
+              ><a href="#contact">Contact <span>↗</span></a>
+            </div>
+          </div>
+        </div>
+        <nav id="chapters" aria-label="Tour chapters"></nav>
+      </div>
+    </main>
+    <!-- The still edition is precomposed, so reading it requires no graphics context or engine run. -->
+    <template id="still-edition">
+      <nav aria-label="Tour chapters" class="reader-nav">
+        <a href="#opening">opening</a><a href="#client-studio">client-studio</a
+        ><a href="#active-companion">active-companion</a
+        ><a href="#faultline">faultline</a><a href="#index">index</a>
+      </nav>
+      <section id="opening">
+        <article>
+          <div class="kicker prompt">david@dev:~$ <span>whoami</span></div>
+          <h1>David <br />Papp<em>.</em></h1>
+          <p class="role">AI solution developer</p>
+          <div class="availability">
+            <i class="dot"></i>Open to full-time work
+            <i class="sep"></i>Rotterdam, NL
+          </div>
+          <p class="targets">
+            <span class="micro">Target roles</span>AI engineering, backend and
+            data
+          </p>
+          <div class="actions">
+            <a href="/cv.pdf">Résumé ↗</a
+            ><a href="#client-studio">Projects <span>↓</span></a
+            ><a href="#contact">Contact <span>↗</span></a>
+          </div>
+        </article>
+        <img src="assets/stills/opening.webp" alt="DAVID" decoding="async" />
+      </section>
+      <section id="client-studio">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 01</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">client-studio</h2>
+          <p class="desc">
+            A company assistant that answers only from the text you give it,
+            shows the exact sentence it used, and goes live only after a person
+            approves it.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>TypeScript, Next.js, React, Supabase (PostgreSQL)</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>65 unit tests</dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Hosted demo with fictional examples. Lexical retrieval, model
+                calls off. Private source.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://client-studio-psi.vercel.app"
+              >Open demo <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-0.webp"
+          alt="A company assistant that answers only from the text you give it, shows the exact sentence it used, and goes live only after a person approves it."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>A question arrives in the Studio.</h2>
+          <p class="tech">
+            The server uses the anonymous session to find the workspace for this
+            question.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Question</span>
+                <p>What is the API batch limit?</p>
+              </div>
+              <div class="ev-row">
+                <span>Session</span>
+                <p>Cookie → Workspace</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-1.webp"
+          alt="A question arrives in the Studio."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The answer quotes the limit in the source.</h2>
+          <p class="tech">
+            Lexical retrieval selects the permitted source in version 2. The
+            answer repeats its exact excerpt.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Source v2</span>
+                <p>“up to 50 records”</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-2.webp"
+          alt="The answer quotes the limit in the source."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Internal text stays out of the customer answer.</h2>
+          <p class="tech">
+            The server filters by audience before lexical retrieval sees the
+            source text.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Public · v2</span>
+                <p>“up to 50 records”</p>
+              </div>
+              <div class="ev-row">
+                <span>Internal · v2</span>
+                <p>Withheld</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-3.webp"
+          alt="Internal text stays out of the customer answer."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>A person approves what customers can use.</h2>
+          <p class="tech">
+            Approval captures the tested configuration and permitted sources.
+            Activation copies that revision into the runtime snapshot.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Review</span>
+                <p>Approved</p>
+              </div>
+              <div class="ev-row">
+                <span>Active source</span>
+                <p>v2 · public</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-4.webp"
+          alt="A person approves what customers can use."
+          decoding="async"
+        />
+      </section>
+      <section id="client-studio-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">client-studio</span
+            ><span class="bar"></span>Beat 05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>A late edit cannot overwrite the approved version.</h2>
+          <p class="tech">
+            Writes are idempotent and revision-checked. A new write based on a
+            stale revision returns 409.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Source record</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Stale edit</span>
+                <p>409 · Revision conflict</p>
+              </div>
+              <div class="ev-row">
+                <span>Active source</span>
+                <p>v2 · public</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <img
+          src="assets/stills/client-studio-5.webp"
+          alt="A late edit cannot overwrite the approved version."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 02</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">active-companion</h2>
+          <p class="desc">
+            It follows a conversation transcript and puts the right reference
+            card in front of you at the right moment, and every card names its
+            source.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>Python</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>18 tests in CI · Public MIT source</dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Hosted replay of pipeline output for four fictional
+                conversations. No inference, microphone or uploads. No
+                evaluation on real meetings.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://active-companion-replay.vercel.app"
+              >Open demo <span>↗</span></a
+            ><a href="https://github.com/pappdavid/active-companion"
+              >Source <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/active-companion-0.webp"
+          alt="It follows a conversation transcript and puts the right reference card in front of you at the right moment, and every card names its source."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>Each speaker’s words arrive with a time.</h2>
+          <p class="tech">
+            The fictional transcript supplies the speaker, text, start and end
+            of each utterance.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>6.0–10.5 s</span>
+                <p>
+                  How does your API integration work? Do you support webhooks?
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>10.7–14.5 s</span>
+                <p>REST over HTTPS with OAuth2, webhooks signed with HMAC.</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>speaker</th>
+                  <th>start (s)</th>
+                  <th>end (s)</th>
+                  <th>text</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>engineer</td>
+                  <td>6</td>
+                  <td>10.5</td>
+                  <td>
+                    How does your API integration work? Do you support webhooks?
+                  </td>
+                </tr>
+                <tr>
+                  <td>se</td>
+                  <td>10.7</td>
+                  <td>14.5</td>
+                  <td>
+                    REST over HTTPS with OAuth2, webhooks signed with HMAC.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-1.webp"
+          alt="Each speaker’s words arrive with a time."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The two oldest lines leave the working conversation.</h2>
+          <p class="tech">
+            SlidingWindow keeps utterances whose end time falls on or after the
+            30-second cutoff.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Window</span>
+                <p>19.0–49.0 s</p>
+              </div>
+              <div class="ev-row">
+                <span>Released</span>
+                <p>10.5 s · engineer / 14.5 s · se</p>
+              </div>
+              <div class="ev-row">
+                <span>Retained</span>
+                <p>31.0 s / 35.0 s / 49.0 s</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>speaker</th>
+                  <th>start (s)</th>
+                  <th>end (s)</th>
+                  <th>text</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>engineer</td>
+                  <td>6</td>
+                  <td>10.5</td>
+                  <td>
+                    How does your API integration work? Do you support webhooks?
+                  </td>
+                </tr>
+                <tr>
+                  <td>se</td>
+                  <td>10.7</td>
+                  <td>14.5</td>
+                  <td>
+                    REST over HTTPS with OAuth2, webhooks signed with HMAC.
+                  </td>
+                </tr>
+                <tr>
+                  <td>engineer</td>
+                  <td>27</td>
+                  <td>31</td>
+                  <td>What's the latency and throughput spec under load?</td>
+                </tr>
+                <tr>
+                  <td>se</td>
+                  <td>31.2</td>
+                  <td>35</td>
+                  <td>
+                    p50 is 120 milliseconds, sustained five thousand events per
+                    second.
+                  </td>
+                </tr>
+                <tr>
+                  <td>engineer</td>
+                  <td>44</td>
+                  <td>49</td>
+                  <td>
+                    Who is from your team should review our security
+                    questionnaire? Who is the technical contact?
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-2.webp"
+          alt="The two oldest lines leave the working conversation."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Someone asks who should handle a security review.</h2>
+          <p class="tech">
+            The heuristic classifier weights recent keyword matches and returns
+            contact_lookup.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Engineer</span>
+                <p>
+                  Who is from your team should review our security
+                  questionnaire? Who is the technical contact?
+                </p>
+              </div>
+              <div class="ev-row">
+                <span>Intent</span>
+                <p>contact_lookup</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <p>
+              Who is from your team should review our security questionnaire?
+              Who is the technical contact?
+            </p>
+            <p>contact_lookup</p>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-3.webp"
+          alt="Someone asks who should handle a security review."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>
+            A reference card names two people and shows where both names came
+            from.
+          </h2>
+          <p class="tech">
+            TF-IDF ranks the chunks. The card selects two matching snippets from
+            “Who's who” and cites that title on each bullet.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Rank 2</span>
+                <p>notes:4 · Who's who</p>
+              </div>
+              <div class="ev-row">
+                <span>Card</span>
+                <p>Who's Who · 2 sourced bullets</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>chunk</th>
+                  <th>source</th>
+                  <th>cosine</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>notes:3</td>
+                  <td>Technical spec sheet</td>
+                  <td>0.2976</td>
+                </tr>
+                <tr>
+                  <td>notes:4</td>
+                  <td>Who's who</td>
+                  <td>0.2702</td>
+                </tr>
+                <tr>
+                  <td>contacts_and_facts:3</td>
+                  <td>Ingestion platform facts</td>
+                  <td>0.252</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Who's Who</h3>
+            <p>
+              Tom Okafor — Security lead, ACME Corp (runs the security
+              review)<br />Source: Who's who
+            </p>
+            <p>
+              Marcus Chen — Solutions Engineer, our side (technical
+              deep-dives)<br />Source: Who's who
+            </p>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-4.webp"
+          alt="A reference card names two people and shows where both names came from."
+          decoding="async"
+        />
+      </section>
+      <section id="active-companion-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">active-companion</span
+            ><span class="bar"></span>Beat 05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>An uncited bullet is dropped. The reference card stays.</h2>
+          <p class="tech">
+            Only bullets citing a retrieved title can replace retrieval bullets.
+            This local parser test shows a missing citation.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Transcript replay</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>Parser test</span>
+                <p>claim without cite</p>
+              </div>
+              <div class="ev-row">
+                <span>Result</span>
+                <p>Dropped · retrieval card retained</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <p>Local parser test · claim without cite → Dropped</p>
+          </details>
+        </article>
+        <img
+          src="assets/stills/active-companion-5.webp"
+          alt="An uncited bullet is dropped. The reference card stays."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline">
+        <article>
+          <div class="kicker">
+            <span class="bright">System 03</span
+            ><span class="bar"></span>Establishing view
+          </div>
+          <h2 class="project">faultline</h2>
+          <p class="desc">
+            It shows why “just try again” can book the same job twice, and the
+            fix that prevents it.
+          </p>
+          <dl class="spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>JavaScript · In-memory engine</dd>
+            </div>
+            <div>
+              <dt>Proof</dt>
+              <dd>
+                12 tests in CI · Public MIT source. This animation runs the
+                demo’s engine.
+              </dd>
+            </div>
+            <div>
+              <dt>Scope</dt>
+              <dd>
+                Browser teaching model. Atomic effect-and-receipt storage is a
+                model assumption. No deployed service.
+              </dd>
+            </div>
+          </dl>
+          <div class="links">
+            <a href="https://davidpapp.dev/faultline/index.html"
+              >Open demo <span>↗</span></a
+            ><a href="https://github.com/pappdavid/faultline"
+              >Source <span>↗</span></a
+            >
+          </div>
+        </article>
+        <img
+          src="assets/stills/faultline-0.webp"
+          alt="It shows why “just try again” can book the same job twice, and the fix that prevents it."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-1">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            01 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="now"></i><i class=""></i><i class=""></i><i class=""></i
+            ><i class=""></i>
+          </div>
+          <h2>The receiver books the job and saves its receipt.</h2>
+          <p class="tech">
+            The fixed receiver commits VIS-742 and its keyed payload fingerprint
+            together in the engine’s atomic storage model.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>01 / request</span>
+                <p>POST /visits · attempt 1</p>
+              </div>
+              <div class="ev-row">
+                <span>02 / commit</span>
+                <p>Committed · VIS-742</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-1.webp"
+          alt="The receiver books the job and saves its receipt."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-2">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            02 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="now"></i><i class=""></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>The confirmation is lost on the way back.</h2>
+          <p class="tech">
+            The reply drops after commit. The client times out with no observed
+            visit ID.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>02 / commit</span>
+                <p>Committed · VIS-742</p>
+              </div>
+              <div class="ev-row">
+                <span>03 / drop</span>
+                <p>Response lost · after commit</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-2.webp"
+          alt="The confirmation is lost on the way back."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-3">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            03 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="now"></i
+            ><i class=""></i><i class=""></i>
+          </div>
+          <h2>Trying again books the same job twice.</h2>
+          <p class="tech">
+            In the separate baseline run, the same operation commits VIS-743
+            after VIS-742.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>05 / commit</span>
+                <p>Committed · VIS-743</p>
+              </div>
+              <div class="ev-row">
+                <span>06 / response</span>
+                <p>201 received · VIS-743</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+                <tr>
+                  <td>VIS-743</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Receiver creates a visit. It does not remember the operation
+                    key.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 2</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-743</td>
+                  <td>
+                    Receiver creates a visit. It does not remember the operation
+                    key.
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>response</td>
+                  <td>201 received · VIS-743</td>
+                  <td>
+                    Client can now confirm this visit against receiver state.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-3.webp"
+          alt="Trying again books the same job twice."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-4">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            04 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="now"></i><i class=""></i>
+          </div>
+          <h2>The same retry returns the original booking.</h2>
+          <p class="tech">
+            The fixed receiver matches the key and payload fingerprint and
+            returns VIS-742 with 200.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>05 / replay</span>
+                <p>Replay stored result · VIS-742</p>
+              </div>
+              <div class="ev-row">
+                <span>06 / response</span>
+                <p>200 received · VIS-742</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 2</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2</td>
+                  <td>replay</td>
+                  <td>Replay stored result · VIS-742</td>
+                  <td>
+                    Same key + same payload. Return the original visit without
+                    another effect.
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>response</td>
+                  <td>200 received · VIS-742</td>
+                  <td>
+                    Client can now confirm this visit against receiver state.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-4.webp"
+          alt="The same retry returns the original booking."
+          decoding="async"
+        />
+      </section>
+      <section id="faultline-5">
+        <article>
+          <div class="kicker">
+            <span class="bright">faultline</span><span class="bar"></span>Beat
+            05 / 05
+          </div>
+          <div class="beat-progress" aria-hidden="true">
+            <i class="done"></i><i class="done"></i><i class="done"></i
+            ><i class="done"></i><i class="now"></i>
+          </div>
+          <h2>The same key cannot book a different time.</h2>
+          <p class="tech">
+            The fingerprint mismatch returns 409 and preserves the original
+            visit.
+          </p>
+          <div class="evidence">
+            <div class="panel-title">
+              <b>Engine trace</b><span>Fictional sample data</span>
+            </div>
+            <div class="rows">
+              <div class="ev-row">
+                <span>07 / request</span>
+                <p>POST /visits · attempt 3</p>
+              </div>
+              <div class="ev-row">
+                <span>08 / conflict</span>
+                <p>409 · Key reused with a different payload</p>
+              </div>
+            </div>
+          </div>
+          <details>
+            <summary>Inspect the records</summary>
+            <h3>Visits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>operation</th>
+                  <th>key</th>
+                  <th>service</th>
+                  <th>slot</th>
+                  <th>location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VIS-742</td>
+                  <td>WORK-318</td>
+                  <td>WORK-318</td>
+                  <td>Boiler inspection</td>
+                  <td>09:30–10:00</td>
+                  <td>Demo workshop</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Receipts</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>key</th>
+                  <th>fingerprint</th>
+                  <th>id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WORK-318</td>
+                  <td>
+                    ["WORK-318","Boiler inspection","09:30–10:00","Demo
+                    workshop"]
+                  </td>
+                  <td>VIS-742</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Trace</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>sequence</th>
+                  <th>attempt</th>
+                  <th>kind</th>
+                  <th>title</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 1</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>commit</td>
+                  <td>Committed · VIS-742</td>
+                  <td>
+                    Visit and idempotency receipt committed atomically in the
+                    model.
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>drop</td>
+                  <td>Response lost · after commit</td>
+                  <td>
+                    The visit exists. The client times out and cannot tell
+                    whether it committed.
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 2</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2</td>
+                  <td>replay</td>
+                  <td>Replay stored result · VIS-742</td>
+                  <td>
+                    Same key + same payload. Return the original visit without
+                    another effect.
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>response</td>
+                  <td>200 received · VIS-742</td>
+                  <td>
+                    Client can now confirm this visit against receiver state.
+                  </td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>3</td>
+                  <td>request</td>
+                  <td>POST /visits · attempt 3</td>
+                  <td>Idempotency-Key: WORK-318</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>3</td>
+                  <td>conflict</td>
+                  <td>409 · Key reused with a different payload</td>
+                  <td>
+                    Receiver rejects the mutation. No extra visit is created.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+        <img
+          src="assets/stills/faultline-5.webp"
+          alt="The same key cannot book a different time."
+          decoding="async"
+        />
+      </section>
+      <section id="overview">
+        <article>
+          <div class="kicker">
+            <span class="bright">System tour</span
+            ><span class="bar"></span>Overview
+          </div>
+          <h2>Three systems.</h2>
+          <p class="desc">
+            A quoted answer, a source card and a booking receipt.
+          </p>
+        </article>
+        <img
+          src="assets/stills/closing.webp"
+          alt="System tour"
+          decoding="async"
+        />
+      </section>
+      <section id="index">
+        <article>
+          <div class="kicker prompt">
+            david@dev:~$ <span>ps --featured</span>
+          </div>
+          <h2>Project index<em class="bright">.</em></h2>
+          <div class="index-list">
+            <div>
+              <span class="serial">B</span
+              ><a href="#client-studio">client-studio</a
+              ><a class="ext" href="https://client-studio-psi.vercel.app"
+                >Demo ↗</a
+              ><span></span>
+            </div>
+            <div>
+              <span class="serial">C</span
+              ><a href="#active-companion">active-companion</a
+              ><a class="ext" href="https://active-companion-replay.vercel.app"
+                >Demo ↗</a
+              ><a
+                class="ext"
+                href="https://github.com/pappdavid/active-companion"
+                >Source ↗</a
+              >
+            </div>
+            <div>
+              <span class="serial">D</span><a href="#faultline">faultline</a
+              ><a class="ext" href="https://davidpapp.dev/faultline/index.html"
+                >Demo ↗</a
+              ><a class="ext" href="https://github.com/pappdavid/faultline"
+                >Source ↗</a
+              >
+            </div>
+          </div>
+          <div class="actions"><a href="/cv.pdf">Résumé ↗</a></div>
+          <div class="index-contact">
+            <span class="micro">Contact</span
+            ><a
+              data-contact=""
+              href="https://www.linkedin.com/in/d%C3%A1vid-papp"
+              >LinkedIn ↗</a
+            ><a href="https://github.com/pappdavid">GitHub ↗</a>
+          </div>
+          <p class="stats">REV c4a72ef · 17 public repos</p>
+        </article>
+        <img
+          src="assets/stills/closing.webp"
+          alt="System tour"
+          decoding="async"
+        />
+      </section>
+    </template>
+    <svg class="ink-filter" width="0" height="0" aria-hidden="true">
+      <defs>
+        <filter id="still-ink" color-interpolation-filters="sRGB">
+          <feColorMatrix id="ink-matrix" type="matrix" />
+        </filter>
+      </defs>
+    </svg>
+    <div id="reader" hidden></div>
+    <footer>
+      <div class="command">
+        <form>
+          <label for="cmd">david@dev:~$</label
+          ><input
+            id="cmd"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter a command…"
+            aria-describedby="reply"
+          />
+        </form>
+        <output id="reply" aria-live="polite"></output
+        ><button id="help" aria-label="Command help">
+          ? <span>Help</span>
+        </button>
+      </div>
+      <div class="status">
+        <span>ROTTERDAM <b id="clock"></b></span
+        ><span>TTFB <b id="ttfb"></b></span><span>FRAME <b id="ms">—</b></span>
+      </div>
+    </footer>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
