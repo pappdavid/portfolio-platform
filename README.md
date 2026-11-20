@@ -23,7 +23,7 @@
 
 Personal portfolio site of **David Papp** — AI Solutions Developer at WEBINFORM IT Ltd and studying Econometrics and Data Science at Vrije Universiteit Amsterdam. University studies began in 2024; he changed to this programme in September 2026 and expects to graduate in 2028. The site presents professional experience, open-source projects, a downloadable CV, and a small RAG-grounded assistant, wrapped in a terminal-OS ("DavidOS") visual identity.
 
-Project descriptions distinguish professional production work, public prototypes, local developer tools, and experiments. Decorative terminal status values are explicitly marked `SIM` (simulated), and CI checks recruiter-facing content for consistency.
+Project descriptions distinguish professional production work, public prototypes, local developer tools, and experiments, and CI checks recruiter-facing content for consistency.
 
 The three cited projects lead the site:
 
@@ -39,7 +39,7 @@ Built on [Kiranism/next-shadcn-dashboard-starter](https://github.com/Kiranism/ne
 
 ## What this repo actually contains
 
-- **Landing page** (`/`) — terminal-OS single-page experience: hero, project filesystem table with expandable case studies, work history, skills, field notes, contact section with a streaming assistant chat.
+- **Landing page** (`/`) — terminal-OS single-page experience: hero, project filesystem table with expandable case studies, work history, skills, contact section with a streaming assistant chat.
 - **Projects** (`/projects`) — project cards with overview / real-source-code-excerpt / architecture-diagram tabs.
 - **Legacy catalogue** (`/saas-projects`) — redirects to `/projects`. The older catalogue data sync remains separate from the public route.
 - **Assistant APIs** — `/api/chat` streams answers plus retrieved-evidence cards from a reviewed portfolio KB; `/api/ama` shares the same KB while retaining deterministic answers for hiring/project identity. On Vercel they default to AI Gateway `deepseek/deepseek-v4-flash-0731` using deployment OIDC; when `OPENROUTER_API_KEY` is present they prefer OpenRouter `openrouter/free`. `PORTFOLIO_CHAT_MODEL` and `PORTFOLIO_OPENROUTER_MODEL` override those defaults.
@@ -56,9 +56,8 @@ The assistant KB is built from the reviewed factual profile (`src/lib/ama/corpus
 
 - [Faultline](https://davidpapp.dev/faultline/index.html) is an executable browser model of retries and idempotency: lose the request before commit or the response after it, see the duplicate effect of a naive retry, then replay against an idempotent receiver. It makes no real booking or network request. Atomic effect-and-receipt storage is a model assumption. Source: [`public/faultline`](public/faultline); tests: [`scripts/faultline`](scripts/faultline).
 - [Mercury Renderer Study](https://davidpapp.dev/demos/mercury/index.html) plays bundled synthetic full-state snapshots through schema validation and SVG reconciliation. It supports scrubbing, malformed-frame recovery, interruption, and bounded trace export. It does not call a Mercury model or claim measured inference performance.
-- Six engineering field notes explain implementation choices and limits from the public security-tool repositories, with links pinned to reviewed source revisions.
 
-Run `npm run test:showcases` for the demo engine and field-note checks. These are executable portfolio studies, not evidence of customer use or production reliability.
+Run `npm run test:showcases` for the demo engine checks. These are executable portfolio studies, not evidence of customer use or production reliability.
 
 ## Stack
 
